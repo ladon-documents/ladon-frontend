@@ -1,17 +1,21 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ServiceService } from './services/service.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'service-a';
 
-  fetchTitle(): string {
-    return this.title
+  constructor(private serviceService: ServiceService) {
+
+  }
+
+  ngOnInit(): void {
+    this.title = this.serviceService.title
   }
 }

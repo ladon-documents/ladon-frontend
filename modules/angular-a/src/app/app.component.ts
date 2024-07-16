@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-// import { AppComponent as ServiceComponent } from 'service-a/src/app/app.component'
+import { ServiceService } from 'service-a/src/app/services/service.service'
 
 @Component({
   selector: 'app-root',
@@ -12,8 +12,9 @@ import { RouterOutlet } from '@angular/router';
 export class AppComponent implements OnInit {
   title = 'angular-a';
 
+
   ngOnInit(): void {
-    // const serviceCmp = new ServiceComponent()
-    // this.title = serviceCmp.fetchTitle()
+    const service = new ServiceService()
+    this.title = service.title
   }
 }

@@ -9,6 +9,7 @@
   "author": "Mind Consulting GmbH",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@angular/cli": "^18.1.0"
+    "@angular/cli": "^18.1.0",
+    "prettier": "^3.3.3"
   }
 }

@@ -4,7 +4,7 @@ import { ServiceService } from './services/service.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [],
+  providers: [ServiceService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

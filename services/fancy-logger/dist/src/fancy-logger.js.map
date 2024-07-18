@@ -1,0 +1,1 @@
+{"version":3,"file":"fancy-logger.js","sourceRoot":"","sources":["../../src/fancy-logger.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,WAAW;IACpB,MAAM,CAAC,GAAG,CAAC,OAAe;QACtB,OAAO,CAAC,GAAG,CAAC,gBAAgB,OAAO,EAAE,CAAC,CAAA;IAC1C,CAAC;CACJ"}

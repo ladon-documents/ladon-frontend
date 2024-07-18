@@ -1,0 +1,14 @@
+{
+  "name": "fancy-logger",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/*/**.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "npm test"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

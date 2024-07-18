@@ -19,6 +19,7 @@
     "karma-jasmine-html-reporter": "~2.1.0"
   },
   "dependencies": {
+    "fancy-logger": "^0.0.1",
     "service-a": "^0.0.0"
   }
 }

@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+/// Ladon micro frontend styles
+/// Architecture and guidelines are strict: https://sass-guidelin.es/#architecture
+
+@import "basics";
+
+@import "base/reset";
+@import "base/typography";
+@import "base/globals";
+
+@import "bootstrap/scss/bootstrap.scss"

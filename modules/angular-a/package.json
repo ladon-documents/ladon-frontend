@@ -19,7 +19,9 @@
     "karma-jasmine-html-reporter": "~2.1.0"
   },
   "dependencies": {
-    "fancy-logger": "^0.0.3",
+    "angular-b": "^0.0.1",
+    "craft": "^0.0.0",
+    "fancy-logger": "^0.0.4",
     "ladon-theme": "^0.0.0"
   }
 }

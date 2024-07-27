@@ -4,6 +4,6 @@ export class FancyLogger {
     }
 
     static getTitle(): string {
-        return `FancyLogger 🚀`;
+        return `FancyLogger 🚀🚀🚀`;
     }
 }

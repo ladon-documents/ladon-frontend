@@ -3,7 +3,7 @@ export class FancyLogger {
         console.log(`Fancy logged ${message}`);
     }
     static getTitle() {
-        return `FancyLogger 🚀`;
+        return `FancyLogger 🚀🚀🚀`;
     }
 }
 //# sourceMappingURL=fancy-logger.js.map

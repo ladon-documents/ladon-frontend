@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FancyLogger } from 'fancy-logger';
+import { AppAngularBComponent } from 'angular-b/src/app/app.component'
 
 @Component({
   selector: 'app-root',

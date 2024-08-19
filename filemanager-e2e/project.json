@@ -1,9 +1,0 @@
-{
-  "name": "filemanager-e2e",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
-  "projectType": "application",
-  "sourceRoot": "filemanager-e2e/src",
-  "implicitDependencies": ["filemanager"],
-  "// targets": "to see all targets run: nx show project filemanager-e2e --web",
-  "targets": {}
-}

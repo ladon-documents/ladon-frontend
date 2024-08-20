@@ -1,0 +1,55 @@
+$context-config: (
+	min-width: 180px,
+	min-width-icon: 16px,
+	background-color: var(--ladon-theme-white),
+	background-color-hover: var(--ladon-context-background-hover, #e8edf2),
+	background-color-active: var(--ladon-context-background-active, var(--ladon-primary)),
+);
+
+#ladon-context-wrapper {
+	@include custom-box-shadow(0 1px 3px rgba(41, 41, 41, 0.3));
+
+	position: absolute;
+	min-width: map-get($context-config, min-width);
+	background-color: map-get($context-config, background-color);
+	left: var(--ladon-context-position-x, 0);
+	top: var(--ladon-context-position-y, 0);
+	z-index: 1001;
+}
+
+.ladon-context-item {
+	padding: 0.75rem 0.5rem;
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	cursor: pointer;
+
+	&:hover {
+		background-color: map-get($context-config, background-color-hover);
+	}
+
+	&:active {
+		background-color: map-get($context-config, background-color-active);
+		color: var(--ladon-theme-white);
+
+		.ladon-context-item__icon {
+			filter: invert(1);
+		}
+	}
+
+	& > div {
+		display: flex;
+		align-items: center;
+	}
+
+	&__icon {
+		width: map-get($context-config, min-width-icon);
+		margin-right: 0.5rem;
+	}
+
+	&__shortcut {
+		font-size: small;
+		margin-left: 1rem;
+		opacity: 0.7;
+	}
+}

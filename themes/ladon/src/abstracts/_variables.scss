@@ -1,0 +1,137 @@
+$base-colors: (
+	primary: #4d9bf4,
+	theme-black: #414141,
+	theme-white: #ffffff,
+	code: #005f6a,
+	success: #55cd97,
+	danger: #ff6455,
+);
+
+$variant-colors: (
+	primary-80: darken(map-get($base-colors, primary), 20%),
+	secondary: lighten(map-get($base-colors, primary), 20%),
+	tertiary: adjust-hue(map-get($base-colors, primary), 60deg),
+	theme-black-120: lighten(map-get($base-colors, theme-black), 20%),
+	theme-gray: lighten(map-get($base-colors, theme-black), 60%),
+	theme-gray-110: lighten(map-get($base-colors, theme-black), 70%),
+	personal-folder: #d8dfe7,
+);
+
+$zindex: (
+	overlays: 8000,
+	spinner: 7000,
+	header: 6000,
+	importance: 1000,
+);
+
+$spacing: (
+	queries: (
+		small: 320px,
+		medium: 640px,
+		large: 768px,
+		xlarge: 1024px,
+	),
+);
+
+$font: (
+	size: (
+		h1: 32px,
+		h2: 28px,
+		h3: 24px,
+		h4: 20px,
+		h5: 18px,
+		h6: 16px,
+		paragragh-hero: 18px,
+		paragraph: 16px,
+		paragraph-info: 12px,
+	),
+	letter-spacing: (
+		narrow: 0.0015em,
+		medium: 0.0045em,
+		wide: 0.0125em,
+	),
+	weights: (
+		light: 200,
+		roman: 400,
+		medium: 500,
+		bold: 700,
+	),
+);
+
+$container-md: map-deep-get($spacing, "queries", "medium");
+$container-lg: map-deep-get($spacing, "queries", "large");
+$container-xlg: map-deep-get($spacing, "queries", "xlarge");
+
+$font-stack: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$system-font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell;
+$monospace-font-stack: Monaco, "Courier New", Courier, monospace;
+$ladon-font-size-base: 14px;
+$fonts-url: "./assets/fonts";
+
+$active-stick-dimension: 2px;
+
+$shadow-key-umbra-opacity: 0.2 !default;
+$shadow-key-penumbra-opacity: 0.14 !default;
+$shadow-ambient-shadow-opacity: 0.12 !default;
+
+/**
+ * Loops over the $base-colors map and defines a css 3 variable in :root for you
+ * Output:
+ ** --ion-color-colorname: #YOURHEX
+ ** --ion-color-colorname-rgb: rr, gg, bb
+ */
+:root {
+	@each $color, $value in $base-colors {
+		--ladon-#{$color}: #{$value};
+		--ladon-#{$color}-rgb: #{derive-rgb-values-from-hex($value)};
+	}
+
+	@each $color, $value in $variant-colors {
+		--ladon-#{$color}: #{$value};
+		--ladon-#{$color}-rgb: #{derive-rgb-values-from-hex($value)};
+	}
+
+	--ladon-font-stack: #{$font-stack};
+	--ladon-system-font-stack: #{$system-font-stack};
+	--ladon-font-size-base: #{$ladon-font-size-base};
+	--ladon-mf-padding: clamp(2px, 3%, 1.5rem);
+}
+
+@each $color, $value in $base-colors {
+	.ladon-#{$color} {
+		--ladon-base: var(--ladon-#{$color});
+		--ladon-rgb: var(--ladon-#{$color}-rgb);
+	}
+}
+
+$ease: (
+	"in-quad": cubic-bezier(0.55, 0.085, 0.68, 0.53),
+	"in-cubic": cubic-bezier(0.55, 0.055, 0.675, 0.19),
+	"in-quart": cubic-bezier(0.895, 0.03, 0.685, 0.22),
+	"in-quint": cubic-bezier(0.755, 0.05, 0.855, 0.06),
+	"in-sine": cubic-bezier(0.47, 0, 0.745, 0.715),
+	"in-expo": cubic-bezier(0.95, 0.05, 0.795, 0.035),
+	"in-circ": cubic-bezier(0.6, 0.04, 0.98, 0.335),
+	"in-back": cubic-bezier(0.6, -0.28, 0.735, 0.045),
+	"out-quad": cubic-bezier(0.25, 0.46, 0.45, 0.94),
+	"out-cubic": cubic-bezier(0.215, 0.61, 0.355, 1),
+	"out-quart": cubic-bezier(0.165, 0.84, 0.44, 1),
+	"out-quint": cubic-bezier(0.23, 1, 0.32, 1),
+	"out-sine": cubic-bezier(0.39, 0.575, 0.565, 1),
+	"out-expo": cubic-bezier(0.19, 1, 0.22, 1),
+	"out-circ": cubic-bezier(0.075, 0.82, 0.165, 1),
+	"out-back": cubic-bezier(0.175, 0.885, 0.32, 1.275),
+	"in-out-quad": cubic-bezier(0.455, 0.03, 0.515, 0.955),
+	"in-out-cubic": cubic-bezier(0.645, 0.045, 0.355, 1),
+	"in-out-quart": cubic-bezier(0.77, 0, 0.175, 1),
+	"in-out-quint": cubic-bezier(0.86, 0, 0.07, 1),
+	"in-out-sine": cubic-bezier(0.445, 0.05, 0.55, 0.95),
+	"in-out-expo": cubic-bezier(1, 0, 0, 1),
+	"in-out-circ": cubic-bezier(0.785, 0.135, 0.15, 0.86),
+	"in-out-back": cubic-bezier(0.68, -0.55, 0.265, 1.55),
+	"animation-curve-fast-out-slow-in": cubic-bezier(0.4, 0, 0.2, 1),
+	"animation-curve-linear-out-slow-in": cubic-bezier(0, 0, 0.2, 1),
+	"animation-curve-fast-out-linear-in": cubic-bezier(0.4, 0, 1, 1),
+);
+
+$animation-curve-default: map-get($ease, animation-curve-fast-out-slow-in) !default;

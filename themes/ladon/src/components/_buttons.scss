@@ -1,0 +1,111 @@
+%button-defaults {
+	appearance: none;
+	outline: none;
+	border: none;
+	text-align: center;
+	font-size: 1em;
+	line-height: 1.2;
+	padding: 0.5em 0.75em 0.5em;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+button {
+	--ladon-btn-background-color: var(--ladon-primary);
+	--ladon-btn-background-color-hover: var(--ladon-secondary);
+	--ladon-btn-color: var(--ladon-theme-white);
+
+	@extend %button-defaults;
+	color: var(--ladon-btn-color);
+	background-color: var(--ladon-btn-background-color);
+
+	&:hover {
+		background-color: var(--ladon-btn-background-color-hover);
+	}
+
+	&:active {
+		opacity: 0.7;
+	}
+
+	&[size="small"] {
+		font-size: 0.875em;
+	}
+}
+
+button.outline {
+	--ladon-btn-outline-color: var(--ladon-primary);
+	--ladon-btn-outline-background-color: var(--ladon-primary);
+
+	background-color: transparent;
+	border: 1px solid currentColor;
+
+	color: var(--ladon-btn-outline-color, --ladon-btn-background-color);
+
+	&:hover {
+		--ladon-btn-outline-color: var(--ladon-secondary);
+	}
+
+	@each $key, $value in $base-colors {
+		&[class*="outline--#{$key}"] {
+			--ladon-btn-outline-color: var(--ladon-#{$key});
+		}
+	}
+}
+
+button.clear {
+	--ladon-btn-clear-color: var(--ladon-primary);
+
+	background-color: transparent;
+	border: none;
+	color: var(--ladon-btn-clear-color);
+
+	&:hover {
+		--ladon-btn-clear-color: var(--ladon-primary-80);
+	}
+
+	@each $key, $value in $base-colors {
+		&[class*="clear--#{$key}"] {
+			--ladon-btn-clear-color: var(--ladon-#{$key});
+		}
+	}
+}
+
+button.transparent {
+	background-color: transparent;
+	border-color: transparent;
+	color: var(--ladon-theme-black);
+
+	&:hover {
+		opacity: 0.5;
+	}
+
+	&.active {
+		color: var(--ladon-btn-background-color);
+	}
+}
+
+button[disabled] {
+	opacity: 0.5;
+}
+
+button.close,
+button.remove {
+	--ladon-btn-icon-color: var(--ladon-btn-background-color);
+	background-color: transparent;
+	font-family: var(--ladon-vendor-material-icons);
+	line-height: 1;
+
+	&:hover {
+		opacity: 0.5;
+	}
+
+	span {
+		color: var(--ladon-btn-icon-color);
+		font-size: 1.5em;
+		display: inline-block;
+
+		&::before {
+			content: "\F011";
+		}
+	}
+}

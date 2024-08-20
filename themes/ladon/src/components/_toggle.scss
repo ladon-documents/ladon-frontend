@@ -1,0 +1,75 @@
+$switch-config: (
+	width: 3rem,
+	height: 1.5rem,
+	slider-dimension: 1.5rem,
+);
+
+.switch {
+	@include pseudo-tag(before);
+
+	width: map-get($switch-config, width);
+	height: map-get($switch-config, height);
+	margin: 0.5rem 0 !important;
+	line-height: 1;
+
+	> input {
+		opacity: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	&[slot="top"] {
+		margin-top: 2rem !important;
+		&::before {
+			content: attr(data-label);
+			left: 0;
+			top: 0;
+			transform: translateY(-1rem);
+		}
+	}
+
+	&[slot="left"] {
+		margin-left: 5rem !important;
+		&::before {
+			content: attr(data-label);
+			left: 0;
+			top: 0;
+			transform: translate(-5rem, 50%);
+		}
+	}
+
+	.slider {
+		--color-state: var(--ladon-theme-gray);
+
+		@include pseudo-tag(before);
+		@include border-radius(calc(#{map-get($switch-config, height)} / 2));
+		@include cursor(pointer);
+
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		color: var(--color-state);
+		background-color: currentColor;
+
+		&::before {
+			@include border-radius(50%);
+			@include custom-box-shadow(inset 0 0 0 2px currentColor);
+
+			width: map-get($switch-config, slider-dimension);
+			height: map-get($switch-config, slider-dimension);
+			background-color: var(--ladon-theme-white);
+			transition: transform 650ms ease("out-quint");
+			transform: translateX(0);
+		}
+	}
+}
+
+input:checked + .slider {
+	--color-state: var(--ladon-primary);
+
+	&::before {
+		transform: translateX(100%);
+	}
+}

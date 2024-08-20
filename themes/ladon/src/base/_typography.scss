@@ -1,0 +1,93 @@
+h1,
+.h1 {
+	font-size: map-deep-get($font, "size", "h1");
+	line-height: 1.2;
+	letter-spacing: map-deep-get($font, "letter-spacing", "wide");
+	font-weight: map-deep-get($font, "weights", "bold");
+}
+
+h2,
+.h2 {
+	font-size: map-deep-get($font, "size", "h2");
+	line-height: 1.2;
+	letter-spacing: map-deep-get($font, "letter-spacing", "wide");
+	font-weight: map-deep-get($font, "weights", "bold");
+}
+
+h3,
+.h3 {
+	font-size: map-deep-get($font, "size", "h3");
+	line-height: 1.2;
+	letter-spacing: map-deep-get($font, "letter-spacing", "wide");
+	font-weight: map-deep-get($font, "weights", "bold");
+}
+
+h4,
+.h4 {
+	font-size: map-deep-get($font, "size", "h4");
+	line-height: 1.2;
+	letter-spacing: map-deep-get($font, "letter-spacing", "wide");
+	font-weight: map-deep-get($font, "weights", "bold");
+}
+
+h5,
+.h5 {
+	font-size: map-deep-get($font, "size", "h5");
+	line-height: 1.4;
+	letter-spacing: map-deep-get($font, "letter-spacing", "wide");
+	font-weight: map-deep-get($font, "weights", "bold");
+}
+
+h6,
+.h6 {
+	font-size: map-deep-get($font, "size", "h6");
+	line-height: 1.4;
+	letter-spacing: map-deep-get($font, "letter-spacing", "medium");
+	font-weight: map-deep-get($font, "weights", "medium");
+}
+
+p {
+	font-size: map-deep-get($font, "size", "paragraph");
+	line-height: 1.5;
+	letter-spacing: map-deep-get($font, "letter-spacing", "narrow");
+	font-weight: map-deep-get($font, "weights", "roman");
+}
+
+.info {
+	font-size: map-deep-get($font, "size", "paragraph-info");
+	opacity: 0.65;
+}
+
+strong {
+	@extend p;
+	font-weight: map-deep-get($font, "weights", "bold");
+}
+
+.line-through,
+.strike-through {
+	text-decoration: line-through;
+}
+
+@font-face {
+	font-family: "Webix Material Icons";
+	src: url("#{$fonts-url}/webixmdi-webfont.woff2") format("woff2"),
+		url("#{$fonts-url}/webixmdi-webfont.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "filemanager-webfont";
+	src: url("#{$fonts-url}/filemanager-webfont.woff2") format("woff2"),
+		url("#{$fonts-url}/filemanager-webfont.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "docmanager-webfont";
+	src: url("#{$fonts-url}/docmanager-webfont.woff2") format("woff2"),
+		url("#{$fonts-url}/docmanager-webfont.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+}

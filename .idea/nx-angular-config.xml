@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="NxAngularConfigService" workspaceLocation="file://$PROJECT_DIR$/nx.json">
+    <projects>
+      <project name="auth" file="file://$PROJECT_DIR$/libs/auth/project.json" />
+      <project name="core" file="file://$PROJECT_DIR$/apps/core/project.json" />
+      <project name="core-e2e" file="file://$PROJECT_DIR$/apps/core-e2e/project.json" />
+      <project name="filemanager" file="file://$PROJECT_DIR$/apps/filemanager/project.json" />
+      <project name="filemanager-e2e" file="file://$PROJECT_DIR$/apps/filemanager-e2e/project.json" />
+      <project name="ladon-api" file="file://$PROJECT_DIR$/libs/ladon-api/project.json" />
+      <project name="login" file="file://$PROJECT_DIR$/libs/login/project.json" />
+      <project name="navigation" file="file://$PROJECT_DIR$/libs/navigation/project.json" />
+      <project name="webcomponents" file="file://$PROJECT_DIR$/libs/webcomponents/project.json" />
+    </projects>
+  </component>
+</project>

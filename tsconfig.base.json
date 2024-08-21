@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "auth": ["libs/auth/src/index.ts"],
+      "ladon": ["themes/ladon/src/index.ts"],
       "ladon-api": ["libs/ladon-api/src/index.ts"],
       "login": ["libs/login/src/index.ts"],
       "navigation": ["libs/navigation/src/index.ts"],

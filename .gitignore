@@ -5,4 +5,8 @@ node_modules
 
 .settings/
 .vscode/
-.idea/
+
+
+.nx/cache
+.nx/workspace-data
+.angular

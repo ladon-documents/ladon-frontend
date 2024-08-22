@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { LadonComponent } from "./ladon.component";
+import { LadonSpinnerComponent } from "./ladon-spinner.component";
 
-describe("LadonComponent", () => {
-	let component: LadonComponent;
-	let fixture: ComponentFixture<LadonComponent>;
+describe("LadonSpinnerComponent", () => {
+	let component: LadonSpinnerComponent;
+	let fixture: ComponentFixture<LadonSpinnerComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [LadonComponent],
+			imports: [LadonSpinnerComponent],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(LadonComponent);
+		fixture = TestBed.createComponent(LadonSpinnerComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

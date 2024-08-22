@@ -7,6 +7,6 @@ import { CommonModule } from "@angular/common";
 	imports: [CommonModule],
 	encapsulation: ViewEncapsulation.None,
 	templateUrl: "./ladon.component.html",
-	styleUrl: "./ladon.component.scss",
+	styleUrls: ["./ladon.component.scss", "../../node_modules/bootstrap/scss/bootstrap.scss"],
 })
 export class LadonComponent {}

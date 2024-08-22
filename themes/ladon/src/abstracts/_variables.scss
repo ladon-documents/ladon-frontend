@@ -65,8 +65,6 @@ $container-xlg: map-deep-get($spacing, "queries", "xlarge");
 $font-stack: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $system-font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell;
 $monospace-font-stack: Monaco, "Courier New", Courier, monospace;
-$webix-material-icons: "Webix Material Icons";
-$font-size-base: 14px;
 $fonts-url: "./assets/fonts";
 
 $active-stick-dimension: 2px;
@@ -94,8 +92,6 @@ $shadow-ambient-shadow-opacity: 0.12 !default;
 
 	--ladon-font-stack: #{$font-stack};
 	--ladon-system-font-stack: #{$system-font-stack};
-	--ladon-font-size-base: #{$font-size-base};
-	--ladon-vendor-material-icons: #{$webix-material-icons};
 	--ladon-mf-padding: clamp(2px, 3%, 1.5rem);
 }
 

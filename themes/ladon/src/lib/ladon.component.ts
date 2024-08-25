@@ -1,12 +1,13 @@
 import { Component, ViewEncapsulation } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { CraftComponent } from "../../../craft/src";
 
 @Component({
 	selector: "lib-ladon",
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, CraftComponent],
 	encapsulation: ViewEncapsulation.None,
-	templateUrl: "./ladon.component.html",
-	styleUrls: ["./ladon.component.scss", "../../node_modules/bootstrap/scss/bootstrap.scss"],
+	template: `<lib-craft></lib-craft>`,
+	styleUrls: ["./ladon.component.scss"],
 })
 export class LadonComponent {}

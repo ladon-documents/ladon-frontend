@@ -1,0 +1,15 @@
+//
+// Notice
+//
+
+// Light mode
+@include color-mode(light) {
+	.notice.bg-light-warning {
+		background-color: #fff9f4 !important;
+		border-color: #f89c47 !important;
+
+		i.i-warning {
+			color: #f89c47;
+		}
+	}
+}

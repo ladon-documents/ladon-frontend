@@ -901,7 +901,6 @@ nx affected:e2e</pre>
       </div>
     </div>
   `,
-  styles: [],
-  encapsulation: ViewEncapsulation.None,
+  styles: []
 })
 export class NxWelcomeComponent {}

@@ -1,0 +1,102 @@
+$dialog-config: (
+	top-position: 50%,
+	left-position: 50%,
+	dialog-min-width: 320px,
+	dialog-width: 520px,
+	backdrop-color: rgba(0, 0, 0, 0.15),
+);
+
+mf-ladon-docmanager-share {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: none;
+	background-color: map-get($dialog-config, backdrop-color);
+	z-index: map-get($zindex, overlays);
+}
+
+.share-dialog {
+	$top: map-get($dialog-config, top-position);
+	$left: map-get($dialog-config, left-position);
+	$backdrop: map-get($dialog-config, backdrop-color);
+
+	&-wrapper {
+		position: fixed;
+		background-color: var(--ladon-theme-white);
+		min-width: map-get($dialog-config, dialog-min-width);
+		width: map-get($dialog-config, dialog-width);
+		top: $top;
+		left: $left;
+		transform: translate(-($left), -($top));
+		box-shadow: 0 5px 12px rgba(41, 41, 41, 0.2);
+	}
+
+	&-header {
+		font-weight: 500;
+		padding: 0.75rem 1rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	&-content {
+		padding: 1.5rem 1rem 1.5rem;
+		overflow-y: auto;
+
+		.item-wrapper {
+			display: grid;
+			grid-template-columns: 3fr 1fr;
+			margin-top: 1.5em;
+			grid-gap: 1rem;
+
+			.item:last-child {
+				align-self: end;
+			}
+		}
+
+		#copy-to-clipboard-btn {
+			--ladon-btn-background-color: var(--ladon-theme-gray-110);
+			--ladon-btn-background-color-hover: var(--ladon-theme-gray);
+
+			position: absolute;
+			top: 0;
+			right: 0;
+			z-index: map-get($zindex, importance);
+		}
+
+		.form-feedback {
+			$success: map-get($base-colors, success);
+			$danger: map-get($base-colors, danger);
+
+			@include border-radius(4px);
+			background-color: fade-out($success, 0.9);
+			padding: 0.75em 1em;
+			margin: 1em 0 1em;
+			overflow: hidden;
+
+			code {
+				user-select: all;
+			}
+
+			& > p {
+				margin: 0;
+			}
+		}
+	}
+
+	&-footer {
+		width: 100%;
+		display: flex;
+		padding: 0.75rem;
+
+		button {
+			flex: 1 1 auto;
+			margin: 0 0.25rem 0;
+			color: var(--ladon-theme-black);
+			background-color: var(--ladon-theme-gray-110);
+			border-radius: 4px;
+		}
+	}
+}

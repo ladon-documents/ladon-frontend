@@ -1,0 +1,46 @@
+//
+// Root
+//
+
+// Light mode
+@include color-mode(light) {
+	// Page
+	--#{$prefix}page-bg: #{$page-bg};
+	--#{$prefix}content-bg-color: #{$content-bg-color};
+	--#{$prefix}content-auth-bg-color: #{$content-auth-bg-color};
+
+	// Header
+	--#{$prefix}header-desktop-fixed-bg-color: #{get($header-config, desktop, fixed, bg-color)};
+	--#{$prefix}header-desktop-fixed-box-shadow: #{get($header-config, desktop, fixed, box-shadow)};
+
+	--#{$prefix}header-tablet-and-mobile-fixed-bg-color: #{get($header-config, tablet-and-mobile, fixed, bg-color)};
+	--#{$prefix}header-tablet-and-mobile-fixed-box-shadow: #{get($header-config, tablet-and-mobile, fixed, box-shadow)};
+
+	// Aside
+	--#{$prefix}aside-general-bg-color: #{get($aside-config, general, bg-color)};
+	--#{$prefix}aside-default-minimized-hover-box-shadow: #{get($aside-config, default, minimized-hover-box-shadow)};
+}
+
+// Dark mode
+@include color-mode(dark) {
+	// Page
+	--#{$prefix}page-bg: #{$page-bg-dark};
+	--#{$prefix}content-bg-color: #{$content-bg-color-dark};
+	--#{$prefix}content-auth-bg-color: #{$content-auth-bg-color-dark};
+
+	// Header
+	--#{$prefix}header-desktop-fixed-bg-color: #{get($header-config, desktop, fixed, bg-color-dark)};
+	--#{$prefix}header-desktop-fixed-box-shadow: #{get($header-config, desktop, fixed, box-shadow-dark)};
+
+	--#{$prefix}header-tablet-and-mobile-fixed-bg-color: #{get($header-config, tablet-and-mobile, fixed, bg-color-dark)};
+	--#{$prefix}header-tablet-and-mobile-fixed-box-shadow: #{get(
+			$header-config,
+			tablet-and-mobile,
+			fixed,
+			box-shadow-dark
+		)};
+
+	// Aside
+	--#{$prefix}aside-general-bg-color: #{get($aside-config, general, bg-color-dark)};
+	--#{$prefix}aside-default-minimized-hover-box-shadow: #{get($aside-config, default, minimized-hover-box-shadow-dark)};
+}

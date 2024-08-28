@@ -1,0 +1,54 @@
+%select-defaults {
+	border: 1px solid var(--ladon-theme-gray);
+	margin: 0;
+
+	font-size: 1em;
+	font-family: var(--ladon-font-stack);
+	line-height: 1;
+
+	&:hover {
+		border-color: var(--ladon-primary);
+	}
+}
+
+// Reset default select tag
+select {
+	appearance: none;
+	background-color: transparent;
+	border: none;
+	outline: none;
+	padding: 0.5em;
+	margin: 0;
+	width: 100%;
+	font-family: inherit;
+	font-size: inherit;
+	cursor: inherit;
+	line-height: inherit;
+}
+
+.select {
+	@include pseudo-tag(before);
+	@extend %select-defaults;
+	width: 100%;
+	cursor: pointer;
+
+	&::before {
+		--r: 0deg;
+		content: "";
+		position: absolute;
+		border-left: 0.5em solid transparent;
+		border-right: 0.5em solid transparent;
+		border-top: 0.65em solid var(--ladon-primary);
+		width: 0;
+		right: 0.5em;
+		transform: translateY(0.75em) rotate(var(--r));
+	}
+
+	&:has(select:selected) {
+		--r: 180deg;
+	}
+}
+
+// .webix_tree_close:before {
+//   content: "\F028";
+// }

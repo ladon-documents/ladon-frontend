@@ -1,0 +1,75 @@
+/**
+ * Displaying a native dialog with a closing button and content
+ * Required syntax
+ * 
+<dialog #dialog>
+	<div class="dialog__header">
+		<button class="close"><span></span></button>
+	</div>
+	<div class="dialog__content"></div>
+</dialog>
+*/
+
+$dialog-config: (
+	top-position: 50%,
+	left-position: 50%,
+	min-width: 320px,
+	max-width: 640px,
+	backdrop-color: rgba(0, 0, 0, 0.15),
+);
+
+dialog {
+	$top: map-get($dialog-config, top-position);
+	$left: map-get($dialog-config, left-position);
+	$backdrop: map-get($dialog-config, backdrop-color);
+	$min-w: map-get($dialog-config, min-width);
+	$max-w: map-get($dialog-config, max-width);
+
+	@include shadow-24dp;
+
+	border: none;
+	position: fixed;
+	background-color: var(--ladon-theme-white);
+	width: clamp($min-w, 100vw, $max-w);
+	aspect-ratio: 1;
+	padding: 1rem;
+	left: $left;
+	transform: translateX(-($left));
+	overflow-y: hidden;
+
+	&::backdrop {
+		background-color: $backdrop;
+	}
+
+	.dialog {
+		&__header {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+		}
+
+		&__content {
+			height: calc(100% - 2rem);
+			overflow-y: auto;
+		}
+	}
+}
+
+.ladon-dialog {
+	@extend dialog;
+
+	& + .backdrop {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: map-get($dialog-config, backdrop-color);
+	}
+}
+
+@media screen and (width <= 680px) {
+	dialog {
+		aspect-ratio: 1 / 2;
+	}
+}

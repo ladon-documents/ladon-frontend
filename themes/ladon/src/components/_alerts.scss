@@ -1,0 +1,52 @@
+$alert-config: (
+	width: 380px,
+	height: 400px,
+);
+
+.alert {
+	position: fixed;
+	z-index: map-get($zindex, overlays);
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.2);
+
+	&[open="false"] {
+		display: none;
+	}
+
+	&[open="true"] {
+		display: initial;
+	}
+
+	&-wrapper {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		width: map-get($alert-config, width);
+		height: map-get($alert-config, height);
+		border: 1px solid var(--ladon-theme-gray);
+		transform: translate(-50%, -60%);
+		background-color: var(--ladon-theme-white);
+	}
+
+	&-content {
+		padding: 1.5rem;
+		overflow-y: auto;
+	}
+
+	&-controls {
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		display: flex;
+
+		button {
+			flex: 1 1 auto;
+		}
+	}
+}

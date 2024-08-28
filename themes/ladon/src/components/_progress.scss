@@ -1,0 +1,41 @@
+$prefix: webkit moz ms o;
+
+progress {
+	--progress-br: 0.25rem;
+	--progress-br-value: var(--progress-br) 0 0 var(--progress-br);
+	--progress-h: 0.5rem;
+
+	width: 100%;
+	height: var(--progress-h);
+	appearance: none;
+
+	@each $p in $prefix {
+		&::-#{$p}-progress-bar {
+			border-radius: var(--progress-br);
+			background-color: var(--ladon-theme-gray-110);
+		}
+	}
+
+	// without prefix is supported
+	&::progress-bar {
+		border-radius: var(--progress-br);
+		background-color: var(--ladon-theme-gray-110);
+	}
+
+	@each $p in $prefix {
+		&::-#{$p}-progress-value {
+			border-radius: var(--progress-br-value);
+			background-color: var(--ladon-primary);
+		}
+	}
+
+	// without prefix is supported
+	&::progress-value {
+		border-radius: var(--progress-br-value);
+		background-color: var(--ladon-primary);
+	}
+
+	&:is([value="100"]) {
+		--progress-br-value: var(--progress-br);
+	}
+}

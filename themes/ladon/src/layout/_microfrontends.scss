@@ -1,0 +1,15 @@
+#mf-main-nav-node {
+	position: sticky;
+	top: 0;
+	z-index: map-get($zindex, header);
+}
+
+div[id$="@mind/mf-ladon-template"] #static-page-content {
+	width: 100%;
+	height: 100%;
+}
+
+div[id*="single-spa-application:@mind/"]:not(:empty) {
+	overflow-y: hidden;
+	height: calc(100% - var(--mf-main-nav-height) * 1px);
+}

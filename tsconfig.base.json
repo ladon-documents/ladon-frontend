@@ -16,6 +16,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@mind/ladon-theme": ["themes/ladon/src/index.ts"],
+			"@mind/craft": ["themes/craft/src/index.ts"],
 			"auth": ["libs/auth/src/index.ts"],
 			"ladon-api": ["libs/ladon-api/src/index.ts"],
 			"login": ["libs/login/src/index.ts"],

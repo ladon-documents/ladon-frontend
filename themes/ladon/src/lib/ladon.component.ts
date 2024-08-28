@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { CraftComponent } from "../../../craft/src";
+import { CraftComponent } from "@mind/craft";
 
 @Component({
 	selector: "lib-ladon",

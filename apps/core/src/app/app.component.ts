@@ -1,20 +1,14 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NxWelcomeComponent } from './nx-welcome.component';
-import { WebcomponentsComponent } from 'webcomponents';
-import { LadonComponent } from '@mind/ladon-theme';
-import { AppBootstrap } from './app.bootstrap';
+import { Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { LadonComponent } from "@mind/ladon-theme";
 
 @Component({
-  standalone: true,
-  imports: [
-    NxWelcomeComponent, RouterModule, WebcomponentsComponent, LadonComponent,
-    AppBootstrap
-  ],
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+	standalone: true,
+	imports: [RouterModule, LadonComponent],
+	selector: "app-root",
+	templateUrl: "./app.component.html",
+	styleUrl: "./app.component.scss",
 })
 export class AppComponent {
-  title = 'core';
+	title = "core";
 }

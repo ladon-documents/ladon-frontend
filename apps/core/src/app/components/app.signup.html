@@ -22,6 +22,8 @@
 			<div class="d-flex flex-center flex-column flex-column-fluid">
 				<div class="w-lg-600px p-10 p-lg-15 mx-auto">
 					<form
+						[formGroup]="signUpFormGroup"
+						(ngSubmit)="onSubmit()"
 						class="form w-100"
 						novalidate="novalidate"
 						data-kt-redirect-url="authentication/sign-in/basic.html"
@@ -49,10 +51,9 @@
 							<div class="col-xl-6">
 								<label class="form-label fw-bold text-gray-900 fs-6">First Name</label>
 								<input
+									formControlName="firstName"
 									class="form-control form-control-lg form-control-solid"
 									type="text"
-									placeholder=""
-									name="first-name"
 									autocomplete="off"
 								/>
 							</div>
@@ -62,8 +63,7 @@
 								<input
 									class="form-control form-control-lg form-control-solid"
 									type="text"
-									placeholder=""
-									name="last-name"
+									formControlName="lastName"
 									autocomplete="off"
 								/>
 							</div>
@@ -74,8 +74,7 @@
 							<input
 								class="form-control form-control-lg form-control-solid"
 								type="email"
-								placeholder=""
-								name="email"
+								formControlName="email"
 								autocomplete="off"
 							/>
 						</div>
@@ -88,7 +87,7 @@
 										class="form-control form-control-lg form-control-solid"
 										type="password"
 										placeholder=""
-										name="password"
+										formControlName="password"
 										autocomplete="off"
 									/>
 									<span
@@ -117,7 +116,7 @@
 								class="form-control form-control-lg form-control-solid"
 								type="password"
 								placeholder=""
-								name="confirm-password"
+								formControlName="confirmPassword"
 								autocomplete="off"
 							/>
 						</div>
@@ -132,7 +131,12 @@
 						</div>
 
 						<div class="text-center">
-							<button type="button" id="kt_sign_up_submit" class="btn btn-lg btn-primary">
+							<button
+								type="button"
+								[disabled]="signUpFormGroup.invalid"
+								id="kt_sign_up_submit"
+								class="btn btn-lg btn-primary"
+							>
 								<span class="indicator-label">Submit</span>
 								<span class="indicator-progress"
 									>Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span

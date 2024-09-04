@@ -6,21 +6,16 @@ import { RouterModule } from "@angular/router";
 @Component({
 	standalone: true,
 	imports: [CommonModule, RouterModule, ReactiveFormsModule],
-	selector: "app-signup",
-	templateUrl: "./app.signup.html",
+	templateUrl: "./app.password-reset.html",
 })
-export class AppSignup {
+export class AppPasswordReset {
 	title = "Willkommen bei Ladon";
 
-	signUpFormGroup = new FormGroup({
-		firstName: new FormControl("", Validators.required),
-		lastName: new FormControl("", Validators.required),
+	resetFormGroup = new FormGroup({
 		email: new FormControl("", Validators.required),
-		password: new FormControl("", Validators.required),
-		confirmPassword: new FormControl("", Validators.required),
 	});
 
 	onSubmit() {
-		console.log(this.signUpFormGroup.value);
+		console.log(this.resetFormGroup.value);
 	}
 }

@@ -5,6 +5,7 @@
   "prefix": "app",
   "sourceRoot": "apps/core/src",
   "tags": [],
+  "implicitDependencies": ["craft"],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
@@ -22,7 +23,10 @@
             "input": "apps/core/public"
           }
         ],
-        "styles": ["apps/core/src/styles.scss"],
+        "styles": [
+          "dist/libs/themes/craft/style.css",
+          "apps/core/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {

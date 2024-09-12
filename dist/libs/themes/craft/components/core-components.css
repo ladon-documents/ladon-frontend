@@ -1,0 +1,18 @@
+/* Error: Undefined variable.
+ *   ,
+ * 6 |     $utilities,
+ *   |     ^^^^^^^^^^
+ *   '
+ *   libs/themes/craft/src/sass/components/_utilities.scss 6:5       @import
+ *   libs/themes/craft/src/sass/components/core-components.scss 6:9  root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Undefined variable.\a   \2577 \a 6 \2502      $utilities,\a   \2502      ^^^^^^^^^^\a   \2575 \a   libs/themes/craft/src/sass/components/_utilities.scss 6:5       @import\a   libs/themes/craft/src/sass/components/core-components.scss 6:9  root stylesheet";
+}

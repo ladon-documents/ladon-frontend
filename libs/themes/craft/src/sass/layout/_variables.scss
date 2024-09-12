@@ -1,0 +1,104 @@
+//
+// Layout Config
+//
+
+// Root font Sizes
+$root-font-size:                                    13px; // Root font size for desktop mode
+$root-font-size-lg:                             	13px; // Root font size for tablet mode
+$root-font-size-md:                             	12px; // Root font size for mobile mode
+
+// Page background color
+$page-bg:                                           $body-bg;
+$page-bg-dark:                                      $coal-400;
+
+// Content background color
+$content-bg-color: 									$gray-100;
+$content-bg-color-dark:								$coal-600;
+$content-border-radius:								1.5rem !default;
+
+$content-auth-bg-color:								$body-bg;
+$content-auth-bg-color-dark:						$content-bg-color-dark;
+
+// Page Spacing
+$page-spacing: (
+	desktop: 40px, // Padding for desktop mode
+	desktop-aside-secondary-disabled: 25px, // Padding for desktop mode when aside secondary is disabled
+	tablet-and-mobile: 20px // Padding for tablet and mobile modes
+) !default;
+
+
+// Content Spacing
+$content-spacing: (
+	desktop: 30px, // Padding for desktop mode
+	tablet-and-mobile: 20px // Padding for tablet and mobile modes
+) !default;
+
+
+// Header
+$header-config: (
+	// Desktop Mode
+	desktop: (
+		// Default Mode
+		default: (
+			height: 90px
+		),
+
+		// Fixed Mode
+		fixed: (
+			height: 65px,
+			z-index: 97,
+			bg-color: $page-bg,
+			bg-color-dark: $page-bg-dark,
+			box-shadow: 0px 10px 30px 0px rgba(82,63,105,0.1),
+			box-shadow-dark: none
+		)
+	),
+
+	// Tablet & Mobile Modes
+	tablet-and-mobile: (
+		// Default Mode
+		default: (
+			height: 60px,
+		),
+
+		// Fixed Mode
+		fixed: (
+			z-index: 97,
+			height: 55px,
+			bg-color: $page-bg,
+			bg-color-dark: $page-bg-dark,
+			box-shadow: 0px 10px 30px 0px rgba(82,63,105,0.025),
+			box-shadow-dark: none
+		)
+	)
+) !default;
+
+// Aside
+$aside-config: (
+	// General
+	general: (
+		z-index: 98, // Aside's z-index property
+		transition-speed: 0.3s, // transition speed
+		bg-color: $page-bg,
+		bg-color-dark: $page-bg-dark
+	),
+
+	// Default
+	default: (		
+		width: 300px, // Aside width for desktop mode
+		minimized-width: 100px,  // Aside minimized width for desktop mode
+		menu-width: 300px, // Aside width for desktop mode
+		box-shadow: none, //5px 0px 10px rgba(70, 78, 95, 0.05), // Aside's box shadow
+		minimized-hover-box-shadow: 5px 0px 10px rgba(70, 78, 95, 0.05), // Monimized hover box shadow,
+		minimized-hover-box-shadow-dark: none // Monimized hover box shadow
+	),
+
+	// Compact
+	extended: (
+		width: 340px,
+		primary-width: (
+			desktop: 100px, 
+			tablet-and-mobile: 70px
+		)
+	)
+) !default;

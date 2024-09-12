@@ -9,9 +9,9 @@
   "author": "Mind Consulting GmbH",
   "license": "Apache-2.0",
   "prettier": {
-		"useTabs": true,
-		"printWidth": 120
-	},
+    "useTabs": true,
+    "printWidth": 120
+  },
   "devDependencies": {
     "@angular-devkit/build-angular": "~18.0.0",
     "@angular-devkit/core": "~18.0.0",
@@ -63,7 +63,9 @@
     "@angular/platform-browser": "~18.0.0",
     "@angular/platform-browser-dynamic": "~18.0.0",
     "@angular/router": "~18.0.0",
+    "bootstrap": "^5.3.3",
     "rxjs": "~7.8.0",
+    "sass": "^1.78.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   }

@@ -24,11 +24,6 @@
           {
             "glob": "**/*",
             "input": "apps/ladon-core/public"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/shared/styles/src/craft/assets",
-            "output": "/assets/"
           }
         ],
         "styles": [
@@ -37,13 +32,7 @@
         "scripts": [],
         "customWebpackConfig": {
           "path": "apps/ladon-core/webpack.config.ts"
-        },
-        "stylePreprocessorOptions": {
-          "includePaths": [
-            "libs/shared/styles/src/craft"
-          ]
-        },
-        "extractCss": true
+        }
       },
       "configurations": {
         "production": {

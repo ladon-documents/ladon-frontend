@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import {Component, ViewEncapsulation} from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 @Component({
@@ -6,6 +6,8 @@ import { CommonModule } from "@angular/common";
 	standalone: true,
 	imports: [CommonModule],
 	templateUrl: "./docmanager.component.html",
-	styleUrl: "./docmanager.component.css",
+	styleUrl: "./docmanager.component.css"
 })
-export class DocmanagerComponent {}
+export class DocmanagerComponent {
+
+}

@@ -6,10 +6,7 @@ import { CommonModule } from "@angular/common";
 	standalone: true,
 	imports: [CommonModule],
 	template: `
-
-		<div class="wrapper">
-
-		</div>
+		
 	`,
 	styles: [],
 	encapsulation: ViewEncapsulation.None,

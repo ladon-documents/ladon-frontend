@@ -15,8 +15,6 @@
 		"skipDefaultLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
-			"@mind/craft": ["themes/craft/src/index.ts"],
-			"@mind/ladon-theme": ["themes/ladon/src/index.ts"],
 			"auth": ["libs/auth/src/index.ts"],
 			"filemanager/Routes": ["apps/filemanager/src/app/remote-entry/entry.routes.ts"],
 			"ladon-api": ["libs/ladon-api/src/index.ts"],

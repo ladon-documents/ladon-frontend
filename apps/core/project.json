@@ -16,13 +16,27 @@
         "polyfills": ["zone.js"],
         "tsConfig": "apps/core/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
+        "optimization": {
+          "styles": {
+            "inlineCritical": false
+          }
+        },
         "assets": [
           {
             "glob": "**/*",
             "input": "apps/core/public"
           }
         ],
-        "styles": ["apps/core/src/styles.scss"],
+        "styles": [
+          {
+            "input": "apps/core/src/tailwind.scss",
+            "bundleName": "tailwind"
+          },
+          {
+            "input": "apps/core/src/styles.scss",
+            "bundleName": "core"
+          }
+        ],
         "scripts": []
       },
       "configurations": {
@@ -38,8 +52,7 @@
               "maximumWarning": "2kb",
               "maximumError": "4kb"
             }
-          ],
-          "outputHashing": "all"
+          ]
         },
         "development": {
           "buildOptimizer": false,

@@ -1,6 +1,4 @@
-@media (min-width: 640px) {
-  .w-fixed {
-    flex: 0 1 230px;
-    min-width: 230px;
-  }
+:host {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
 }

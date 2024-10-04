@@ -6,6 +6,11 @@
 npm i
 npx nx serve ladon-core
 ```
+or
+
+```bash
+npm run ladon-dev
+```
 
 ## Theme
 

@@ -18,7 +18,6 @@
 			"auth": ["libs/auth/src/index.ts"],
 			"filemanager/Routes": ["apps/filemanager/src/app/remote-entry/entry.routes.ts"],
 			"ladon-api": ["libs/ladon-api/src/index.ts"],
-			"ladon-theme": ["libs/shared/styles"],
 			"login": ["libs/login/src/index.ts"],
 			"navigation": ["libs/navigation/src/index.ts"],
 			"webcomponents": ["libs/webcomponents/src/index.ts"]

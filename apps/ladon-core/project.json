@@ -20,6 +20,11 @@
         ],
         "tsConfig": "apps/ladon-core/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
+        "optimization": {
+          "styles": {
+            "inlineCritical": false
+          }
+        },
         "assets": [
           {
             "glob": "**/*",
@@ -27,7 +32,14 @@
           }
         ],
         "styles": [
-          "apps/ladon-core/src/styles.scss"
+          {
+            "input": "apps/ladon-core/src/tailwind.scss",
+            "bundleName": "tailwind"
+          },
+          {
+            "input": "apps/ladon-core/src/styles.scss",
+            "bundleName": "core"
+          }
         ],
         "scripts": [],
         "customWebpackConfig": {
@@ -48,7 +60,6 @@
               "maximumError": "4kb"
             }
           ],
-          "outputHashing": "all",
           "customWebpackConfig": {
             "path": "apps/ladon-core/webpack.prod.config.ts"
           }

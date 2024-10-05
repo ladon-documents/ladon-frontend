@@ -1,67 +1,89 @@
-<nav role="navigation" class="navbar flex-col bg-indigo-50 h-screen">
-	<a class="btn btn-ghost text-lg">Ladon</a>
+<nav role="navigation" class="navbar flex-col h-screen items-start border-r">
+	<a class="btn btn-ghost" id="logo">
+		<img src="svg/ladon-slogan.svg" alt="Ladon Slogan Logo" />
+	</a>
 
-	<nav class="grow items-start self-stretch">
-		<ul class="menu menu-md menu-vertical w-full">
-			<li>
-				<a>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						class="size-6"
+	<div class="grow self-stretch flex-col items-start">
+		<nav class="grow self-stretch">
+			<ul class="menu menu-md menu-vertical w-full">
+				<li>
+					<a>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="size-6"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+							/>
+						</svg>
+
+						Buckets</a
 					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
-						/>
-					</svg>
+				</li>
+				<li>
+					<a routerLink="filemanager">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="size-6"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+							/>
+						</svg>
 
-					Buckets</a
-				>
-			</li>
-			<li>
-				<a routerLink="filemanager">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						class="size-6"
+						Filemanager</a
 					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
-						/>
-					</svg>
+				</li>
+			</ul>
+		</nav>
 
-					Filemanager</a
-				>
-			</li>
-		</ul>
-	</nav>
-
-	<div class="dropdown dropdown-top dropdown-end">
-		<div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-			<div class="w-10 rounded-full ring-primary ring ring-offset-2">
-				<img
-					alt="Tailwind CSS Navbar component"
-					src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-				/>
+		<div class="dropdown dropdown-top dropdown-start p-5">
+			<div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+				<div class="w-10 rounded-full ring-primary ring ring-offset-2">
+					<img
+						alt="Tailwind CSS Navbar component"
+						src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+					/>
+				</div>
 			</div>
+			<ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box shadow">
+				<li><a>User manager</a></li>
+				<li><a>Share manager</a></li>
+				<li><a>Plugins</a></li>
+				<li><a>Rest API</a></li>
+				<li><a>Documentation</a></li>
+			</ul>
 		</div>
-		<ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box shadow">
-			<li><a>User manager</a></li>
-			<li><a>Share manager</a></li>
-			<li><a>Plugins</a></li>
-			<li><a>Rest API</a></li>
-			<li><a>Documentation</a></li>
-			<li><a>Logout</a></li>
-		</ul>
 	</div>
+
+	<a class="btn btn-ghost px-5 font-normal text-red-800">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke-width="1.5"
+			stroke="currentColor"
+			class="size-6"
+		>
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+			/>
+		</svg>
+
+		<span>Logout</span>
+	</a>
 </nav>

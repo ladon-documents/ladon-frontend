@@ -11,6 +11,12 @@ import { CommonModule } from "@angular/common";
       display: block;
       height: 100%
     }
+
+    #logo {
+      img {
+        width: 120px
+      }
+    }
   `,
 })
 export class NavigationComponent {}

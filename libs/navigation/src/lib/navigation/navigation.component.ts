@@ -1,11 +1,11 @@
-import { Component } from "@angular/core";
+import { Component, input, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { RouterLink } from "@angular/router";
+import { NavigationEntry } from "../../interface/navigation-entry";
 
 @Component({
 	selector: "lib-navigation",
 	standalone: true,
-	imports: [CommonModule, RouterLink],
+	imports: [CommonModule],
 	templateUrl: "./navigation.component.html",
 	styles: `
     :host {
@@ -20,4 +20,8 @@ import { RouterLink } from "@angular/router";
     }
   `,
 })
-export class NavigationComponent {}
+export class NavigationComponent {
+	navigation = input.required<NavigationEntry[]>();
+	mainMenu = computed(() => this.navigation().filter(({ type }) => type === "main"));
+	subMenu = computed(() => this.navigation().filter(({ type }) => type === "menu"));
+}

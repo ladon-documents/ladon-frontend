@@ -1,11 +1,19 @@
 import { Component, input, computed } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { NavigationEntry } from "../../interface/navigation-entry";
+import { NgIconComponent, provideIcons } from "@ng-icons/core";
+import {
+	heroFolder,
+	heroDocumentText,
+	heroListBullet,
+	heroArrowRightStartOnRectangle,
+} from "@ng-icons/heroicons/outline";
 
 @Component({
 	selector: "lib-navigation",
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, NgIconComponent],
+	providers: [provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle })],
 	templateUrl: "./navigation.component.html",
 	styles: `
     :host {
@@ -17,6 +25,10 @@ import { NavigationEntry } from "../../interface/navigation-entry";
       img {
         width: 120px
       }
+    }
+
+    ng-icon {
+      --ng-icon__size: 1.5em !important;
     }
   `,
 })

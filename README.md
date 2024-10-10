@@ -20,3 +20,4 @@ npm run ladon-dev
 
 - [Tailwind CSS](https://tailwindcss.com/docs/installation)
 - [Daisy UI](https://daisyui.com)
+- [NgIcons](https://github.com/ng-icons/ng-icons)

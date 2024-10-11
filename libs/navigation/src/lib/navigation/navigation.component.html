@@ -7,8 +7,8 @@
 		<nav class="grow self-stretch">
 			<ul class="menu menu-md menu-vertical w-full">
 				@for (item of mainMenu(); track $index) {
-				<li>
-					<a>
+				<li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }">
+					<a (click)="invokeItem(item)">
 						@if (item.icon) {
 						<ng-icon [name]="item.icon"></ng-icon>
 						}
@@ -30,8 +30,8 @@
 			</div>
 			<ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box shadow">
 				@for (item of subMenu(); track $index) {
-				<li>
-					<a>
+				<li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }">
+					<a (click)="invokeItem(item)">
 						@if (item.icon) {
 						<ng-icon [name]="item.icon"></ng-icon>
 						}

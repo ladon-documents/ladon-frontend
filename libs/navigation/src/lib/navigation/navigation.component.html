@@ -1,5 +1,5 @@
 <nav role="navigation" class="navbar flex-col h-screen items-start border-r">
-	<a class="btn btn-ghost" id="logo">
+	<a class="btn btn-ghost px-5" id="logo">
 		<img src="svg/ladon-slogan.svg" alt="Ladon Slogan Logo" />
 	</a>
 
@@ -7,7 +7,7 @@
 		<nav class="grow self-stretch">
 			<ul class="menu menu-md menu-vertical w-full">
 				@for (item of mainMenu(); track $index) {
-				<li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }">
+				<li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target">
 					<a (click)="invokeItem(item)">
 						@if (item.icon) {
 						<ng-icon [name]="item.icon"></ng-icon>
@@ -30,7 +30,7 @@
 			</div>
 			<ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box shadow">
 				@for (item of subMenu(); track $index) {
-				<li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }">
+				<li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target">
 					<a (click)="invokeItem(item)">
 						@if (item.icon) {
 						<ng-icon [name]="item.icon"></ng-icon>
@@ -42,9 +42,4 @@
 			</ul>
 		</div>
 	</div>
-
-	<a class="btn btn-ghost px-5 font-normal text-red-800">
-		<ng-icon name="heroArrowRightStartOnRectangle"></ng-icon>
-		<span>Logout</span>
-	</a>
 </nav>

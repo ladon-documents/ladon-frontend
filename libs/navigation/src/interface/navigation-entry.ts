@@ -1,4 +1,4 @@
-export type NavigationEntryTarget = "internal" | "external" | "static" | "action";
+export type NavigationEntryTarget = "internal" | "external" | "static" | "action" | "remote";
 export type NavigationEntryType = "main" | "menu";
 
 export interface NavigationEntry {

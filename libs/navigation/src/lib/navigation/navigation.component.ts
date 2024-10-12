@@ -24,7 +24,7 @@ import { Router } from "@angular/router";
 
     #logo {
       img {
-        width: 120px
+        width: 100px
       }
     }
 
@@ -44,7 +44,11 @@ export class NavigationComponent {
 	invokeItem(item: NavigationEntry) {
 		switch (item.target) {
 			case "internal":
-				this.router.navigate([item.path]);
+				if (item.path?.startsWith("http")) {
+					window.open(item.path, "_self");
+				} else {
+					this.router.navigate([item.path]);
+				}
 				break;
 			case "action":
 				this.navigationEntryAction.emit(item);

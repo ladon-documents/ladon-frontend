@@ -1,4 +1,3 @@
 export function ladonApi(): string {
-  return 'ladon-api';
+	return "ladon-api";
 }
-

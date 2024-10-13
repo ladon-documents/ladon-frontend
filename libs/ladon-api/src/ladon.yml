@@ -49,12 +49,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/UserDataWrapper'
+                $ref: "#/components/schemas/UserDataWrapper"
     put:
       tags:
         - Usermanager
@@ -69,10 +69,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserDataWrapper'
+              $ref: "#/components/schemas/UserDataWrapper"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
     delete:
       tags:
@@ -85,7 +85,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
   /api/usermanager/user/{userId}/credentials:
     put:
@@ -102,10 +102,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CredentialsWrapper'
+              $ref: "#/components/schemas/CredentialsWrapper"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
     post:
       tags:
@@ -124,7 +124,7 @@ paths:
               type: string
         required: true
       responses:
-        '200':
+        "200":
           description: OK
   /api/usermanager/roles/user/{userId}:
     get:
@@ -138,10 +138,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -162,7 +162,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
     delete:
       tags:
@@ -180,7 +180,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
   /api/usermanager/permissions/user/{userId}:
     get:
@@ -194,14 +194,14 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Permission'
+                  $ref: "#/components/schemas/Permission"
     put:
       tags:
         - Usermanager
@@ -218,7 +218,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
     delete:
       tags:
@@ -236,7 +236,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
   /api/usermanager/permissions/role/{roleId}:
     get:
@@ -250,14 +250,14 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Permission'
+                  $ref: "#/components/schemas/Permission"
     put:
       tags:
         - Usermanager
@@ -274,7 +274,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
     delete:
       tags:
@@ -292,7 +292,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
   /api/rest/v1/stream/put:
     put:
@@ -300,12 +300,12 @@ paths:
         - Stream
       operationId: retrieveStreamOps
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/ResponseSuccess'
+                $ref: "#/components/schemas/ResponseSuccess"
   /api/rest/v1/meta/buckets:
     put:
       tags:
@@ -320,15 +320,15 @@ paths:
                 storageId:
                   type: string
                 body:
-                  $ref: '#/components/schemas/Bucket'
+                  $ref: "#/components/schemas/Bucket"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Bucket'
+                $ref: "#/components/schemas/Bucket"
   /api/rest/v1/meta/buckets/{bucket}/documents:
     get:
       tags:
@@ -346,12 +346,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Document'
+                $ref: "#/components/schemas/Document"
     put:
       tags:
         - Documents
@@ -376,15 +376,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Metadata'
+              $ref: "#/components/schemas/Metadata"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Document'
+                $ref: "#/components/schemas/Document"
   /api/rest/v1/content/zipupload/{bucket}:
     put:
       tags:
@@ -407,7 +407,7 @@ paths:
                   format: binary
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -433,12 +433,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Document'
+                $ref: "#/components/schemas/Document"
   /api/rest/v1/content/buckets/{bucket}/documents:
     get:
       tags:
@@ -461,10 +461,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: string
                 format: binary
@@ -498,12 +498,12 @@ paths:
                   type: string
                   format: binary
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Document'
+                $ref: "#/components/schemas/Document"
     delete:
       tags:
         - Documents
@@ -525,12 +525,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseSuccess'
+                $ref: "#/components/schemas/ResponseSuccess"
   /api/rest/v1/actions/bucket/{bucket}:
     get:
       tags:
@@ -543,14 +543,14 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/BucketAction'
+                  $ref: "#/components/schemas/BucketAction"
     put:
       tags:
         - Buckets
@@ -565,25 +565,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BucketAction'
+              $ref: "#/components/schemas/BucketAction"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseSuccess'
+                $ref: "#/components/schemas/ResponseSuccess"
   /auth/logout:
     get:
       tags:
         - Authentication
       operationId: logoutGet
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
     post:
@@ -591,10 +591,10 @@ paths:
         - Authentication
       operationId: logout
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
   /auth/login:
@@ -606,13 +606,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
   /api/usermanager/users:
@@ -621,14 +621,14 @@ paths:
         - Usermanager
       operationId: getUsers
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserEntry'
+                  $ref: "#/components/schemas/UserEntry"
     post:
       tags:
         - Usermanager
@@ -637,13 +637,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserWrapper'
+              $ref: "#/components/schemas/UserWrapper"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 additionalProperties:
@@ -676,7 +676,7 @@ paths:
                   type: string
                   format: binary
       responses:
-        '200':
+        "200":
           description: OK
   /api/usermanager/roles:
     get:
@@ -684,14 +684,14 @@ paths:
         - Usermanager
       operationId: getRoles
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RoleEntry'
+                  $ref: "#/components/schemas/RoleEntry"
     post:
       tags:
         - Usermanager
@@ -700,10 +700,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RoleWrapper'
+              $ref: "#/components/schemas/RoleWrapper"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
   /api/usermanager/permissions:
     get:
@@ -711,14 +711,14 @@ paths:
         - Usermanager
       operationId: getAllPermissions
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Permission'
+                  $ref: "#/components/schemas/Permission"
     post:
       tags:
         - Usermanager
@@ -727,15 +727,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LadonPermission'
+              $ref: "#/components/schemas/LadonPermission"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/Unit'
+                $ref: "#/components/schemas/Unit"
   /api/rest/v1/taskmanager/stop:
     post:
       tags:
@@ -749,7 +749,7 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -776,7 +776,7 @@ paths:
                 type: string
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -803,14 +803,14 @@ paths:
             items:
               type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DocumentAction'
+                  $ref: "#/components/schemas/DocumentAction"
     post:
       tags:
         - Actions
@@ -825,15 +825,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DocumentAction'
+              $ref: "#/components/schemas/DocumentAction"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseSuccess'
+                $ref: "#/components/schemas/ResponseSuccess"
   /api/rest/v1/converters/applyandstore:
     post:
       tags:
@@ -843,13 +843,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConverterJob'
+              $ref: "#/components/schemas/ConverterJob"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -863,13 +863,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConverterJob'
+              $ref: "#/components/schemas/ConverterJob"
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: string
                 format: binary
@@ -887,7 +887,7 @@ paths:
             items:
               type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/octet-stream:
@@ -909,10 +909,10 @@ paths:
                 type: string
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 additionalProperties:
@@ -931,7 +931,7 @@ paths:
             items:
               type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/pdf:
@@ -953,10 +953,10 @@ paths:
                 type: string
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 additionalProperties:
@@ -973,10 +973,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -988,22 +988,22 @@ paths:
         - Users
       operationId: getCurrentUser
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
   /user/allowableactions:
     get:
       tags:
         - Users
       operationId: getAllowableActions
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 additionalProperties:
@@ -1020,10 +1020,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -1040,26 +1040,26 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserLogins'
+                  $ref: "#/components/schemas/UserLogins"
   /api/rest/v1/transaction/start:
     get:
       tags:
         - Transaction
       operationId: startTransaction
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TxInfo'
+                $ref: "#/components/schemas/TxInfo"
   /api/rest/v1/transaction/commit:
     get:
       tags:
@@ -1072,19 +1072,19 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseSuccess'
+                $ref: "#/components/schemas/ResponseSuccess"
   /api/rest/v1/transaction/active:
     get:
       tags:
         - Transaction
       operationId: isTxActive
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1103,19 +1103,19 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TaskStatus'
+                $ref: "#/components/schemas/TaskStatus"
   /api/rest/v1/taskmanager/available:
     get:
       tags:
         - Tasks
       operationId: getAvailableTasks
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1129,21 +1129,21 @@ paths:
         - Tasks
       operationId: getActiveTasks
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TaskStatus'
+                  $ref: "#/components/schemas/TaskStatus"
   /api/rest/v1/node/info:
     get:
       tags:
         - NodeInfo
       operationId: getNodeInfo
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1163,12 +1163,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Bucket'
+                $ref: "#/components/schemas/Bucket"
     delete:
       tags:
         - Buckets
@@ -1180,12 +1180,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseSuccess'
+                $ref: "#/components/schemas/ResponseSuccess"
   /api/rest/v1/meta/buckets/{bucket}/pathsearch:
     get:
       tags:
@@ -1211,10 +1211,10 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
@@ -1256,14 +1256,14 @@ paths:
             type: string
           example: "2023-01-31"
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Document'
+                  $ref: "#/components/schemas/Document"
   /api/rest/v1/meta/buckets/{bucket}/documentversions:
     get:
       tags:
@@ -1281,14 +1281,14 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Document'
+                  $ref: "#/components/schemas/Document"
   /api/rest/v1/meta/buckets/{bucket}/documentlist:
     get:
       tags:
@@ -1338,14 +1338,14 @@ paths:
           schema:
             type: boolean
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Document'
+                  $ref: "#/components/schemas/Document"
   /api/rest/v1/meta/bucketlist:
     get:
       tags:
@@ -1364,28 +1364,28 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Bucket'
+                  $ref: "#/components/schemas/Bucket"
   /api/rest/v1/converters/meta:
     get:
       tags:
         - Converter
       operationId: listConverterInfo
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ConverterInfo'
+                  $ref: "#/components/schemas/ConverterInfo"
   /api/rest/v1/converters/getdocument:
     get:
       tags:
@@ -1396,12 +1396,12 @@ paths:
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/MultiValueMapStringString'
+            $ref: "#/components/schemas/MultiValueMapStringString"
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: string
                 format: binary
@@ -1438,7 +1438,7 @@ paths:
           schema:
             type: boolean
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
@@ -1461,7 +1461,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/pdf:
@@ -1476,10 +1476,10 @@ paths:
         - Pluginmanager
       operationId: installedPlugins
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
                 type: object
                 additionalProperties:
@@ -1496,7 +1496,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
   /api/usermanager/permissions/{permissionId}:
     delete:
@@ -1510,12 +1510,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
-            '*/*':
+            "*/*":
               schema:
-                $ref: '#/components/schemas/Unit'
+                $ref: "#/components/schemas/Unit"
   /api/rest/v1/transaction/rollback:
     delete:
       tags:
@@ -1528,12 +1528,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResponseSuccess'
+                $ref: "#/components/schemas/ResponseSuccess"
   /api/plugins/uninstall:
     delete:
       tags:
@@ -1546,7 +1546,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
 components:
   schemas:
@@ -1776,7 +1776,7 @@ components:
         converters:
           type: array
           items:
-            $ref: '#/components/schemas/ConverterConfig'
+            $ref: "#/components/schemas/ConverterConfig"
     FolderEntry:
       required:
         - data
@@ -1802,7 +1802,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/FolderEntry'
+            $ref: "#/components/schemas/FolderEntry"
     User:
       required:
         - email
@@ -1962,7 +1962,7 @@ components:
         parameters:
           type: array
           items:
-            $ref: '#/components/schemas/ConverterParameter'
+            $ref: "#/components/schemas/ConverterParameter"
         cardinality:
           type: string
           enum:

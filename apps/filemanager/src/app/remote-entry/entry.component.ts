@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import {DocmanagerComponent} from "../docmanager/docmanager.component";
+import { DocmanagerComponent } from "../docmanager/docmanager.component";
 
 @Component({
 	standalone: true,

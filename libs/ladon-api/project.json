@@ -1,26 +1,26 @@
 {
-  "name": "ladon-api",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/ladon-api/src",
-  "projectType": "library",
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/ladon-api",
-        "main": "libs/ladon-api/src/index.ts",
-        "tsConfig": "libs/ladon-api/tsconfig.lib.json",
-        "assets": ["libs/ladon-api/*.md"]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/ladon-api/jest.config.ts"
-      }
-    }
-  }
+	"name": "ladon-api",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/ladon-api/src",
+	"projectType": "library",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:tsc",
+			"outputs": ["{options.outputPath}"],
+			"options": {
+				"outputPath": "dist/libs/ladon-api",
+				"main": "libs/ladon-api/src/index.ts",
+				"tsConfig": "libs/ladon-api/tsconfig.lib.json",
+				"assets": ["libs/ladon-api/*.md"]
+			}
+		},
+		"test": {
+			"executor": "@nx/jest:jest",
+			"outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+			"options": {
+				"jestConfig": "libs/ladon-api/jest.config.ts"
+			}
+		}
+	}
 }

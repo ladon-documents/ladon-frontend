@@ -4,6 +4,7 @@
 	"description": "",
 	"scripts": {
 		"ladon-dev": "npx nx serve ladon-core --devRemotes filemanager",
+		"prettier": "npx prettier --write apps --write libs",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],

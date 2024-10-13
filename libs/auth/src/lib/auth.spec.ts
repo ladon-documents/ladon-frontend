@@ -1,7 +1,7 @@
-import { auth } from './auth';
+import { auth } from "./auth";
 
-describe('auth', () => {
-  it('should work', () => {
-    expect(auth()).toEqual('auth');
-  });
+describe("auth", () => {
+	it("should work", () => {
+		expect(auth()).toEqual("auth");
+	});
 });

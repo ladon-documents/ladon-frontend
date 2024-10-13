@@ -1,6 +1,14 @@
 import { setRemoteDefinitions } from '@nx/angular/mf';
+import {setNavigation} from "./app/app.navconfig";
 
-fetch('/assets/module-federation.manifest.json')
+const fetchNavigation = fetch('/assets/navigation.json')
+
+fetchNavigation
     .then((res) => res.json())
-    .then((definitions) => setRemoteDefinitions(definitions))
-    .then(() => import('./bootstrap').catch((err) => console.error(err)));
+    .then((nav) => setNavigation(nav))
+    .then( () => {
+      fetch('/assets/module-federation.manifest.json')
+          .then((res) => res.json())
+          .then((definitions) => setRemoteDefinitions(definitions))
+          .then(() => import('./bootstrap').catch((err) => console.error(err)));
+    })

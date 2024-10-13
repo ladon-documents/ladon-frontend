@@ -1,0 +1,21 @@
+[
+  {
+    "label": "FILEMANAGER.NAVITEM",
+    "target": "internal",
+    "path": "filemanager",
+    "isRemote": true,
+    "id": "@mind/mf-ladon-docmanager",
+    "type": "main",
+    "index": 30
+  },
+  {
+    "label": "USER_MANAGER.NAVITEM",
+    "target": "internal",
+    "component": "usermanager",
+    "path": "usermanager",
+    "isRemote": false,
+    "id": "@mind/mf-ladon-user-manager",
+    "type": "menu",
+    "index": 10
+  }
+]

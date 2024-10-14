@@ -71,9 +71,11 @@
 		"@angular/platform-browser": "18.2.7",
 		"@angular/platform-browser-dynamic": "18.2.7",
 		"@angular/router": "18.2.7",
+		"@ng-icons/core": "^29.5.1",
+		"@ng-icons/heroicons": "^29.5.1",
+		"@nx/angular": "19.8.3",
 		"rxjs": "~7.8.0",
 		"tslib": "^2.3.0",
-		"zone.js": "~0.14.3",
-		"@nx/angular": "19.8.3"
+		"zone.js": "~0.14.3"
 	}
 }

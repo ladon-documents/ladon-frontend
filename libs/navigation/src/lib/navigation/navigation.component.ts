@@ -44,11 +44,8 @@ export class NavigationComponent {
 	invokeItem(item: NavigationEntry) {
 		switch (item.target) {
 			case "internal":
-				if (item.path?.startsWith("http")) {
-					window.open(item.path, "_self");
-				} else {
-					this.router.navigate([item.path]);
-				}
+			case "remote":
+				this.router.navigate([item.path]);
 				break;
 			case "action":
 				this.navigationEntryAction.emit(item);

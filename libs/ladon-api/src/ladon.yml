@@ -1,0 +1,1985 @@
+openapi: 3.0.1
+info:
+  title: Ladon Datacenter Edition
+  description: Ladon Datacenter Edition REST API
+  version: 5.3.21
+externalDocs:
+  description: Mind Consulting GmbH
+  url: https://mind-consulting.de
+servers:
+  - url: /admin
+    description: Server url
+tags:
+  - name: Actions
+    description: Ladon Actions API
+  - name: Transaction
+    description: Ladon Transaction API
+  - name: Converter
+    description: Ladon Converter API
+  - name: Downloads
+    description: Ladon Documents API
+  - name: NodeInfo
+    description: Ladon Node Info API
+  - name: Stream
+    description: Ladon Stream API
+  - name: Usermanager
+    description: Ladon Usermanager API
+  - name: Buckets
+    description: Ladon Buckets API
+  - name: Pluginmanager
+    description: Ladon PluginManager API
+  - name: Documents
+    description: Ladon Documents API
+  - name: Tasks
+    description: Ladon Tasks API
+  - name: Users
+    description: Ladon UserInfo API
+  - name: Authentication
+    description: Ladon Authentication API
+paths:
+  /api/usermanager/users/{userId}:
+    get:
+      tags:
+        - Usermanager
+      operationId: getUserData
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserDataWrapper'
+    put:
+      tags:
+        - Usermanager
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDataWrapper'
+        required: true
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Usermanager
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/usermanager/user/{userId}/credentials:
+    put:
+      tags:
+        - Usermanager
+      operationId: updateCredentials
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialsWrapper'
+        required: true
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+        - Usermanager
+      operationId: setCredentials
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+  /api/usermanager/roles/user/{userId}:
+    get:
+      tags:
+        - Usermanager
+      operationId: getRoleForUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+    put:
+      tags:
+        - Usermanager
+      operationId: addRoleForUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: roleId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Usermanager
+      operationId: deleteRoleForUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: roleId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/usermanager/permissions/user/{userId}:
+    get:
+      tags:
+        - Usermanager
+      operationId: getPermissionsForUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+    put:
+      tags:
+        - Usermanager
+      operationId: addPermissionForUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: permissionId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Usermanager
+      operationId: removePermissionFromUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: permissionId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/usermanager/permissions/role/{roleId}:
+    get:
+      tags:
+        - Usermanager
+      operationId: getPermissionsForRole
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+    put:
+      tags:
+        - Usermanager
+      operationId: addPermissionForRole
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: permissionId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+        - Usermanager
+      operationId: removePermissionFromRole
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: permissionId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/rest/v1/stream/put:
+    put:
+      tags:
+        - Stream
+      operationId: retrieveStreamOps
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+  /api/rest/v1/meta/buckets:
+    put:
+      tags:
+        - Buckets
+      operationId: createBucket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                storageId:
+                  type: string
+                body:
+                  $ref: '#/components/schemas/Bucket'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bucket'
+  /api/rest/v1/meta/buckets/{bucket}/documents:
+    get:
+      tags:
+        - Documents
+      operationId: getDocumentMeta
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+    put:
+      tags:
+        - Documents
+      operationId: putDocumentMeta
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metadata'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+  /api/rest/v1/content/zipupload/{bucket}:
+    put:
+      tags:
+        - Downloads
+      operationId: zipUpload
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+                  format: int32
+  /api/rest/v1/content/buckets/{bucket}/folders:
+    put:
+      tags:
+        - Documents
+      operationId: putFolder
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+  /api/rest/v1/content/buckets/{bucket}/documents:
+    get:
+      tags:
+        - Documents
+      operationId: getDocument
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+    put:
+      tags:
+        - Documents
+      operationId: putDocument
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+    delete:
+      tags:
+        - Documents
+      operationId: deleteDocument
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+  /api/rest/v1/actions/bucket/{bucket}:
+    get:
+      tags:
+        - Buckets
+      operationId: getBucketActions
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BucketAction'
+    put:
+      tags:
+        - Buckets
+      operationId: applyBucketAction
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BucketAction'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+  /auth/logout:
+    get:
+      tags:
+        - Authentication
+      operationId: logoutGet
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+        - Authentication
+      operationId: logout
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      operationId: authenticateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/usermanager/users:
+    get:
+      tags:
+        - Usermanager
+      operationId: getUsers
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserEntry'
+    post:
+      tags:
+        - Usermanager
+      operationId: addUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWrapper'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/usermanager/users/{userId}/avatar:
+    post:
+      tags:
+        - Usermanager
+      operationId: addAvatar
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: upload_fullpath
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - upload
+              type: object
+              properties:
+                upload:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+  /api/usermanager/roles:
+    get:
+      tags:
+        - Usermanager
+      operationId: getRoles
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleEntry'
+    post:
+      tags:
+        - Usermanager
+      operationId: createRole
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleWrapper'
+        required: true
+      responses:
+        '200':
+          description: OK
+  /api/usermanager/permissions:
+    get:
+      tags:
+        - Usermanager
+      operationId: getAllPermissions
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+    post:
+      tags:
+        - Usermanager
+      operationId: createPermissions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LadonPermission'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Unit'
+  /api/rest/v1/taskmanager/stop:
+    post:
+      tags:
+        - Tasks
+      operationId: stopTask
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+  /api/rest/v1/taskmanager/start:
+    post:
+      tags:
+        - Tasks
+      operationId: startTask
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/rest/v1/meta/actions:
+    get:
+      tags:
+        - Actions
+      operationId: getDocumentActions
+      parameters:
+        - name: context
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: paths
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DocumentAction'
+    post:
+      tags:
+        - Actions
+      operationId: acceptDocumentActions
+      parameters:
+        - name: context
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentAction'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+  /api/rest/v1/converters/applyandstore:
+    post:
+      tags:
+        - Converter
+      operationId: applyConverterAndStore
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConverterJob'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/rest/v1/converters/applyanddownload:
+    post:
+      tags:
+        - Converter
+      operationId: applyAndDownload
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConverterJob'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+  /api/rest/v1/content/zipdownload:
+    get:
+      tags:
+        - Downloads
+      operationId: zipDownload
+      parameters:
+        - name: paths
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: byte
+    post:
+      tags:
+        - Downloads
+      operationId: zipDownloadPost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/rest/v1/content/mergepdfdocuments:
+    get:
+      tags:
+        - Downloads
+      operationId: mergePdfDocumentsGet
+      parameters:
+        - name: paths
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: byte
+    post:
+      tags:
+        - Downloads
+      operationId: mergePdfDocumentsPost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /user/{userId}/picture:
+    get:
+      tags:
+        - Users
+      operationId: getPicture
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: byte
+  /user/me:
+    get:
+      tags:
+        - Users
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/allowableactions:
+    get:
+      tags:
+        - Users
+      operationId: getAllowableActions
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /api/usermanager/users/role/{roleId}:
+    get:
+      tags:
+        - Usermanager
+      operationId: getUsersForRole
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/usermanager/logs/login/{userId}:
+    get:
+      tags:
+        - Usermanager
+      operationId: getLoginLogs
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserLogins'
+  /api/rest/v1/transaction/start:
+    get:
+      tags:
+        - Transaction
+      operationId: startTransaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxInfo'
+  /api/rest/v1/transaction/commit:
+    get:
+      tags:
+        - Transaction
+      operationId: commitTransaction
+      parameters:
+        - name: txId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+  /api/rest/v1/transaction/active:
+    get:
+      tags:
+        - Transaction
+      operationId: isTxActive
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /api/rest/v1/taskmanager/status:
+    get:
+      tags:
+        - Tasks
+      operationId: statusTask
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatus'
+  /api/rest/v1/taskmanager/available:
+    get:
+      tags:
+        - Tasks
+      operationId: getAvailableTasks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/rest/v1/taskmanager/active:
+    get:
+      tags:
+        - Tasks
+      operationId: getActiveTasks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskStatus'
+  /api/rest/v1/node/info:
+    get:
+      tags:
+        - NodeInfo
+      operationId: getNodeInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /api/rest/v1/meta/buckets/{bucket}:
+    get:
+      tags:
+        - Buckets
+      operationId: getBucket
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bucket'
+    delete:
+      tags:
+        - Buckets
+      operationId: deleteBucket
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+  /api/rest/v1/meta/buckets/{bucket}/pathsearch:
+    get:
+      tags:
+        - Documents
+      operationId: findDocumentPath
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 100
+          example: 100
+        - name: term
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/rest/v1/meta/buckets/{bucket}/datepathsearch:
+    get:
+      tags:
+        - Documents
+      operationId: datepathsearch
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 1000
+          example: 1000
+        - name: term
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "2023-01-01"
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "2023-01-31"
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+  /api/rest/v1/meta/buckets/{bucket}/documentversions:
+    get:
+      tags:
+        - Documents
+      operationId: listDocumentMetaVersions
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+  /api/rest/v1/meta/buckets/{bucket}/documentlist:
+    get:
+      tags:
+        - Documents
+      operationId: listDocuments
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 1000
+          example: 1000
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 1
+          example: 1
+        - name: prefix
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: orderby
+          in: query
+          required: false
+          schema:
+            type: string
+          example: name, created, name_desc, created_asc
+        - name: showAllVersions
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: currentFolder
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+  /api/rest/v1/meta/bucketlist:
+    get:
+      tags:
+        - Buckets
+      operationId: listBuckets
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bucket'
+  /api/rest/v1/converters/meta:
+    get:
+      tags:
+        - Converter
+      operationId: listConverterInfo
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConverterInfo'
+  /api/rest/v1/converters/getdocument:
+    get:
+      tags:
+        - Converter
+      operationId: applyAndDownloadGet
+      parameters:
+        - name: queryMap
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/MultiValueMapStringString'
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+  /api/rest/v1/content/buckets/{bucket}/jsonlist:
+    get:
+      tags:
+        - Documents
+      operationId: listDocumentJson
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: prefix
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: orderby
+          in: query
+          required: false
+          schema:
+            type: string
+          example: name, created, name_desc, created_asc
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: asMap
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/rest/v1/content/addTextAsWatermark:
+    get:
+      tags:
+        - Downloads
+      operationId: addTextAsWatermarkGet
+      parameters:
+        - name: pdfPath
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: text
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/pdf:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: byte
+  /api/plugins/installed:
+    get:
+      tags:
+        - Pluginmanager
+      operationId: installedPlugins
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/usermanager/roles/{roleId}:
+    delete:
+      tags:
+        - Usermanager
+      operationId: deleteRole
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+  /api/usermanager/permissions/{permissionId}:
+    delete:
+      tags:
+        - Usermanager
+      operationId: removePermission
+      parameters:
+        - name: permissionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Unit'
+  /api/rest/v1/transaction/rollback:
+    delete:
+      tags:
+        - Transaction
+      operationId: rollbackTransaction
+      parameters:
+        - name: txId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuccess'
+  /api/plugins/uninstall:
+    delete:
+      tags:
+        - Pluginmanager
+      operationId: uninstallPlugin
+      parameters:
+        - name: puginId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    UserDataWrapper:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        status:
+          type: boolean
+        imageUrl:
+          type: string
+    CredentialsWrapper:
+      type: object
+      properties:
+        oldPW:
+          type: string
+        newPW:
+          type: string
+    MultiValueMapStringString:
+      type: object
+      properties:
+        all:
+          type: object
+          additionalProperties:
+            type: string
+          writeOnly: true
+        empty:
+          type: boolean
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    ResponseSuccess:
+      required:
+        - success
+      type: object
+      properties:
+        success:
+          type: boolean
+        reason:
+          type: string
+    Bucket:
+      type: object
+      properties:
+        created:
+          type: string
+        name:
+          type: string
+        owner:
+          type: string
+        versioned:
+          type: boolean
+        virtual:
+          type: boolean
+        indexed:
+          type: boolean
+    Metadata:
+      type: object
+      properties:
+        empty:
+          type: boolean
+      additionalProperties:
+        type: string
+    Document:
+      type: object
+      properties:
+        content-type:
+          type: string
+        created:
+          type: string
+        last-modified:
+          type: string
+        bucket:
+          type: string
+        key:
+          type: string
+        path:
+          type: string
+        etag:
+          type: string
+        metadata:
+          type: object
+          properties:
+            empty:
+              type: boolean
+          additionalProperties:
+            type: string
+        owner:
+          type: string
+        size:
+          type: integer
+          format: int64
+        version:
+          type: string
+        isFolder:
+          type: boolean
+    BucketAction:
+      type: object
+      properties:
+        i18nName:
+          type: string
+        label:
+          type: string
+        actionId:
+          type: string
+        icon:
+          type: string
+        selection:
+          type: array
+          items:
+            type: string
+    Unit:
+      type: object
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    UserWrapper:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    RoleWrapper:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    LadonPermission:
+      required:
+        - allowed
+        - description
+        - operation
+        - permissionId
+        - type
+        - value
+      type: object
+      properties:
+        permissionId:
+          type: string
+        operation:
+          type: string
+          enum:
+            - CREATE_OBJECT
+            - READ_OBJECT
+            - WRITE_OBJECT
+            - DELETE_OBJECT
+            - WIPE_OUT_OBJECT
+            - CREATE_BUCKET
+            - READ_BUCKET
+            - WRITE_BUCKET
+            - DELETE_BUCKET
+            - LADON_UI
+            - ADD_USER
+            - LIST_USER
+            - DELETE_USER
+            - EDIT_PERMISSIONS
+            - SHOW_PERMISSIONS
+        type:
+          type: string
+          enum:
+            - ANT
+            - REGEX
+            - EQUALS
+            - SPEL
+            - GLOB
+        value:
+          type: string
+        allowed:
+          type: boolean
+        description:
+          type: string
+    DocumentAction:
+      type: object
+      properties:
+        i18nName:
+          type: string
+        label:
+          type: string
+        actionId:
+          type: string
+        icon:
+          type: string
+        input:
+          type: array
+          items:
+            type: string
+        target:
+          type: string
+    ConverterConfig:
+      required:
+        - config
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+        config:
+          type: object
+          additionalProperties:
+            type: string
+    ConverterJob:
+      required:
+        - converters
+        - inputPaths
+      type: object
+      properties:
+        inputPaths:
+          type: array
+          items:
+            type: string
+        converters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConverterConfig'
+    FolderEntry:
+      required:
+        - data
+        - date
+        - id
+        - size
+        - type
+        - value
+      type: object
+      properties:
+        value:
+          type: string
+        id:
+          type: string
+        size:
+          type: integer
+          format: int64
+        date:
+          type: integer
+          format: int64
+        type:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FolderEntry'
+    User:
+      required:
+        - email
+        - emailVerified
+        - fullName
+        - homeBucket
+        - roles
+        - userId
+      type: object
+      properties:
+        userId:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+        imageUrl:
+          type: string
+        provider:
+          type: string
+        emailVerified:
+          type: string
+        homeBucket:
+          type: string
+    UserEntry:
+      required:
+        - id
+        - status
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+        status:
+          type: boolean
+    RoleEntry:
+      required:
+        - details
+        - id
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        details:
+          type: string
+    Permission:
+      required:
+        - allowed
+        - description
+        - operation
+        - permissionId
+        - type
+        - value
+      type: object
+      properties:
+        value:
+          type: string
+        type:
+          type: string
+          enum:
+            - ANT
+            - REGEX
+            - EQUALS
+            - SPEL
+            - GLOB
+        permissionId:
+          type: string
+        operation:
+          type: string
+          enum:
+            - CREATE_OBJECT
+            - READ_OBJECT
+            - WRITE_OBJECT
+            - DELETE_OBJECT
+            - WIPE_OUT_OBJECT
+            - CREATE_BUCKET
+            - READ_BUCKET
+            - WRITE_BUCKET
+            - DELETE_BUCKET
+            - LADON_UI
+            - ADD_USER
+            - LIST_USER
+            - DELETE_USER
+            - EDIT_PERMISSIONS
+            - SHOW_PERMISSIONS
+        allowed:
+          type: boolean
+        description:
+          type: string
+    UserLogins:
+      required:
+        - date
+        - details
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        details:
+          type: string
+    TxInfo:
+      required:
+        - txId
+      type: object
+      properties:
+        txId:
+          type: string
+    TaskStatus:
+      required:
+        - id
+        - name
+        - percent
+        - result
+        - running
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        running:
+          type: boolean
+        percent:
+          type: integer
+          format: int32
+        result:
+          type: string
+        success:
+          type: boolean
+        exception:
+          type: string
+    ConverterInfo:
+      required:
+        - cardinality
+        - description
+        - id
+        - parameters
+      type: object
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConverterParameter'
+        cardinality:
+          type: string
+          enum:
+            - ONE_TO_ONE
+            - ONE_TO_MANY
+            - MANY_TO_ONE
+            - MANY_TO_MANY
+    ConverterParameter:
+      required:
+        - description
+        - name
+        - optional
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        optional:
+          type: boolean

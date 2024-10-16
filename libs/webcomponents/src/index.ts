@@ -1,1 +1,1 @@
-export * from './lib/webcomponents/webcomponents.component';
+export * from "./lib/webcomponents/webcomponents.component";

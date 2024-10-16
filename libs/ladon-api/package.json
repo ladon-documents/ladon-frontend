@@ -1,11 +1,16 @@
 {
-  "name": "ladon-api",
-  "version": "0.0.1",
-  "dependencies": {
-    "tslib": "^2.3.0"
-  },
-  "type": "commonjs",
-  "main": "./src/index.js",
-  "typings": "./src/index.d.ts",
-  "private": true
+	"name": "ladon-api",
+	"version": "0.0.1",
+	"dependencies": {
+		"tslib": "^2.3.0"
+	},
+	"scripts": {
+		"generate:client:ts": "rm -rf src/lib/generated-sources/fetch-client; openapi-generator-cli generate -i src/ladon.yml -g typescript-fetch -o src/lib/generated-sources/fetch-client --additional-properties=supportsES6=true",
+		"generate:client:ng": "rm -rf src/lib/generated-sources/angular-client; openapi-generator-cli generate -i  src/ladon.yml -g typescript-angular -o src/lib/generated-sources/angular-client",
+		"build-all": "npm run generate:client:ts & npm run generate:client:ng"
+	},
+	"type": "commonjs",
+	"main": "./src/index.js",
+	"typings": "./src/index.d.ts",
+	"private": true
 }

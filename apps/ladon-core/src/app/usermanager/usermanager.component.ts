@@ -6,6 +6,6 @@ import { CommonModule } from "@angular/common";
 	standalone: true,
 	imports: [CommonModule],
 	templateUrl: "./usermanager.component.html",
-	styleUrl: "./usermanager.component.css",
+	styleUrl: "./usermanager.component.scss",
 })
 export class UsermanagerComponent {}

@@ -9,7 +9,7 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
 		const data: any = {
 			path: navItem.path,
 		};
-		if (navItem.target === 'remote') {
+		if (navItem.target === "remote") {
 			data.loadChildren = () => loadRemoteModule(navItem.path, "./Routes").then((m) => m.remoteRoutes);
 		} else {
 			const compName = (navItem.component.charAt(0).toUpperCase() +

@@ -15,5 +15,12 @@
 		"id": "@mind/mf-ladon-user-manager",
 		"type": "menu",
 		"index": 10
+	},
+	{
+		"label": "BUCKETS.NAVITEM",
+		"target": "internal",
+		"path": "buckets",
+		"type": "menu",
+		"index": 9
 	}
 ]

@@ -2,14 +2,17 @@ import { Route } from "@angular/router";
 import { loadRemoteModule } from "@nx/angular/mf";
 import { Component } from "@angular/core";
 import { environment } from "@ladon/environment";
+import { setNavigation } from "./app.navconfig";
 
 export const setNavigationDefinitions = (navigation: Array<any>) => {
+	setNavigation();
+
 	const _appRoutes: any = [];
 	navigation.forEach((navItem) => {
 		const data: any = {
 			path: navItem.path,
 		};
-		if (navItem.target === 'remote') {
+		if (navItem.target === "remote") {
 			data.loadChildren = () => loadRemoteModule(navItem.path, "./Routes").then((m) => m.remoteRoutes);
 		} else {
 			const compName = (navItem.component.charAt(0).toUpperCase() +
@@ -22,5 +25,4 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
 	});
 	return _appRoutes;
 };
-
 export const appRoutes: Route[] = setNavigationDefinitions(environment.navigation);

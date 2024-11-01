@@ -1,11 +1,12 @@
 import { setRemoteDefinitions } from "@nx/angular/mf";
-import { setNavigation } from "./app/app.navconfig";
 
 const fetchNavigation = fetch("/assets/navigation.json");
 
+export let navigationConfig: Array<any> = [];
+
 fetchNavigation
 	.then((res) => res.json())
-	.then((nav) => setNavigation(nav))
+	.then((nav) => (navigationConfig = nav))
 	.then(() => {
 		fetch("/assets/module-federation.manifest.json")
 			.then((res) => res.json())

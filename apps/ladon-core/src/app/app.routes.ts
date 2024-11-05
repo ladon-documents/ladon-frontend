@@ -2,10 +2,16 @@ import { Route } from "@angular/router";
 import { loadRemoteModule } from "@nx/angular/mf";
 import { Component } from "@angular/core";
 import { environment } from "@ladon/environment";
+import { setNavigation } from "./app.navconfig";
+
+const NO_ROUTING_TARGETS = ['action', 'external'];
 
 export const setNavigationDefinitions = (navigation: Array<any>) => {
+	setNavigation();
+
 	const _appRoutes: any = [];
 	navigation.forEach((navItem) => {
+		if (NO_ROUTING_TARGETS.includes(navItem.target)) return;
 		const data: any = {
 			path: navItem.path,
 		};
@@ -22,5 +28,4 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
 	});
 	return _appRoutes;
 };
-
 export const appRoutes: Route[] = setNavigationDefinitions(environment.navigation);

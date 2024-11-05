@@ -3,6 +3,7 @@
 		"label": "FILEMANAGER.NAVITEM",
 		"target": "remote",
 		"path": "filemanager",
+		"icon": "heroDocumentText",
 		"id": "@mind/mf-ladon-docmanager",
 		"type": "main",
 		"index": 30
@@ -17,10 +18,18 @@
 		"index": 10
 	},
 	{
-		"label": "BUCKETS.NAVITEM",
-		"target": "internal",
-		"path": "buckets",
+		"label": "NAVIGATION.SUBNAV.LOGOUT",
+		"icon": "heroArrowRightStartOnRectangle",
+		"id": "ladon:logout",
+		"target": "action",
 		"type": "menu",
-		"index": 9
+		"index": 50
+	},
+	{
+		"label": "Documentation",
+		"target": "external",
+		"path": "https://ladon.org/doc",
+		"type": "menu",
+		"index": 40
 	}
 ]

@@ -1,4 +1,5 @@
 import { ModuleFederationConfig } from "@nx/webpack";
+const coreLibraries = new Set(["@ladon/environment"]);
 
 const config: ModuleFederationConfig = {
 	name: "ladon-core",

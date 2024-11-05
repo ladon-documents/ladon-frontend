@@ -1,6 +1,7 @@
 import { environment } from "@ladon/environment";
 import { merge } from "lodash";
+import { navigationConfig } from "../main";
 
-export const setNavigation = (navigation: any) => {
-	merge(environment, { navigation });
+export const setNavigation = () => {
+	merge(environment, { navigation: navigationConfig });
 };

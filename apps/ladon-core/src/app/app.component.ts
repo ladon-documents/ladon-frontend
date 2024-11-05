@@ -4,8 +4,8 @@ import { NavigationComponent } from "navigation";
 import { AsideComponent } from "./layout/aside/aside.component";
 import { UsermanagerComponent } from "./usermanager/usermanager.component";
 import { BucketsComponent } from "./buckets/buckets.component";
-import {NavigationEntry} from "../../../../libs/navigation/src/interface/navigation-entry";
-import {environment} from "@ladon/environment";
+import { NavigationEntry } from "../../../../libs/navigation/src/interface/navigation-entry";
+import { environment } from "@ladon/environment";
 
 @Component({
 	standalone: true,

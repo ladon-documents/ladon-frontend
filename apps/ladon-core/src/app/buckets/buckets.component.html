@@ -1,1 +1,17 @@
-<p>buckets works!</p>
+<ul role="list" class="divide-y divide-gray-100 gap-x-6 py-4">
+	@for (item of [1, 2, 3, 4, 5, 6]; track $index) {
+	<li class="flex justify-between py-3">
+		<div class="flex min-w-0 gap-x-4">
+			<ng-icon name="heroFolder" size="2em"></ng-icon>
+			<div class="min-w-0 flex-auto">
+				<p class="text-sm/6 font-semibold text-gray-900">Leslie Alexander</p>
+				<p class="truncate text-xs/5 text-gray-500">system</p>
+			</div>
+		</div>
+		<div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+			<p class="text-sm/6 text-gray-900">Co-Founder / CEO</p>
+			<p class="text-xs/5 text-gray-500"><time datetime="2022-01-01">01.01.2022</time></p>
+		</div>
+	</li>
+	}
+</ul>

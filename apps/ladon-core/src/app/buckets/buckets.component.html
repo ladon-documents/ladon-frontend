@@ -1,16 +1,28 @@
+<div class="flex">
+	<lib-searchbar></lib-searchbar>
+</div>
 <ul role="list" class="divide-y divide-gray-100 gap-x-6 py-4">
-	@for (item of [1, 2, 3, 4, 5, 6]; track $index) {
+	@for (bucket of bucketsList; track $index) {
 	<li class="flex justify-between py-3">
 		<div class="flex min-w-0 gap-x-4">
 			<ng-icon name="heroFolder" size="2em"></ng-icon>
 			<div class="min-w-0 flex-auto">
-				<p class="text-sm/6 font-semibold text-gray-900">Leslie Alexander</p>
-				<p class="truncate text-xs/5 text-gray-500">system</p>
+				<p class="text-sm/6 font-semibold text-gray-900">{{ bucket.id }}</p>
+				<p class="truncate text-xs/5 text-gray-500">{{ bucket.createdBy }}</p>
 			</div>
 		</div>
 		<div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-			<p class="text-sm/6 text-gray-900">Co-Founder / CEO</p>
-			<p class="text-xs/5 text-gray-500"><time datetime="2022-01-01">01.01.2022</time></p>
+			@if (bucket.favourite) {
+			<span
+				class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs/5 font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
+				>Favorit</span
+			>
+			} @else {
+			<p class="text-xs/5">&nbsp;</p>
+			}
+			<p class="text-xs/5 text-gray-500">
+				<time [attr.datetime]="bucket.created | date : dateFormat">{{ bucket.created | date : dateFormat }}</time>
+			</p>
 		</div>
 	</li>
 	}

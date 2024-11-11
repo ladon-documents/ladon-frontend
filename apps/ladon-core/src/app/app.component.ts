@@ -2,9 +2,9 @@ import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { NavigationComponent } from "@ladon/navigation";
 import { AsideComponent } from "./layout/aside/aside.component";
-import {UsermanagerComponent} from "./usermanager/usermanager.component";
-import {NavigationEntry} from "../../../../libs/navigation/src/interface/navigation-entry";
-import {environment} from "@ladon/environment";
+import { UsermanagerComponent } from "./usermanager/usermanager.component";
+import { NavigationEntry } from "../../../../libs/navigation/src/interface/navigation-entry";
+import { environment } from "@ladon/environment";
 
 @Component({
 	standalone: true,
@@ -19,8 +19,5 @@ export class AppComponent {
 
 	constructor() {
 		this.navigationEntries = environment.navigation;
-
 	}
-
-
 }

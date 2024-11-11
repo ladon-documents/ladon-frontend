@@ -4,7 +4,7 @@ import { Component } from "@angular/core";
 import { environment } from "@ladon/environment";
 import { setNavigation } from "./app.navconfig";
 
-const NO_ROUTING_TARGETS = ['action', 'external'];
+const NO_ROUTING_TARGETS = ["action", "external"];
 
 export const setNavigationDefinitions = (navigation: Array<any>) => {
 	setNavigation();

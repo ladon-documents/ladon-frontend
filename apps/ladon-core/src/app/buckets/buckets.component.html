@@ -1,5 +1,26 @@
-<div class="flex">
-	<lib-searchbar></lib-searchbar>
+<div class="flex items-center gap-4 py-4 justify-between border-b sticky top-0 bg-white">
+	<div class="flex gap-4">
+		<lib-searchbar></lib-searchbar>
+
+		<div class="flex items-center gap-2 text-sm">
+			Favoriten
+			<label class="relative inline-flex items-center cursor-pointer">
+				<input type="checkbox" class="sr-only peer" />
+				<div
+					class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-indigo-600 peer-focus:ring-2 peer-focus:ring-indigo-300 transition-all duration-300"
+				></div>
+				<div
+					class="absolute left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-5"
+				></div>
+			</label>
+		</div>
+	</div>
+
+	<button
+		class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
+	>
+		Click Me
+	</button>
 </div>
 <ul role="list" class="divide-y divide-gray-100 gap-x-6 py-4">
 	@for (bucket of bucketsList; track $index) {

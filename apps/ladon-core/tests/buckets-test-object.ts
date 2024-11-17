@@ -1,4 +1,5 @@
 import { BucketItem } from "../src/app/interfaces/bucket-item";
+import { BucketStats } from "../src/app/interfaces/bucket-stats";
 
 export class BucketsTestObject {
 	getBucketsMock(): BucketItem[] {
@@ -62,7 +63,7 @@ export class BucketsTestObject {
 				createdBy: "944aa9ab-b075-469c-b55d-10110443cd08",
 				size: 0,
 				versioned: true,
-				favourite: false,
+				favourite: true,
 				created: "2023-02-10T19:33:59.092",
 				createdDate: 1676057639,
 			},
@@ -103,5 +104,17 @@ export class BucketsTestObject {
 				createdDate: 1644959022,
 			},
 		];
+	}
+
+	getBucketStats(): BucketStats {
+		return {
+			size: 3014479,
+			versions: 17,
+			objects: 15,
+			name: "8e30fd8c-ab79-4519-9bf0-1323ba6123c8",
+			lastModified: "2024-06-24T17:48:18.926Z",
+			folderCount: 4,
+			fileCount: 11,
+		};
 	}
 }

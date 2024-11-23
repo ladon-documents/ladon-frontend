@@ -9,6 +9,16 @@
 		"index": 30
 	},
 	{
+		"label": "BUCKETS.NAVITEM",
+		"target": "internal",
+		"component": "buckets",
+		"path": "buckets",
+		"icon": "heroFolder",
+		"id": "@mind/mf-ladon-docmanager",
+		"type": "main",
+		"index": 31
+	},
+	{
 		"label": "USER_MANAGER.NAVITEM",
 		"target": "internal",
 		"component": "usermanager",

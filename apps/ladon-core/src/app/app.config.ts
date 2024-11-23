@@ -4,6 +4,7 @@ import { appRoutes } from "./app.routes";
 
 import { ApiModule, Configuration, ConfigurationParameters } from "ladon-api";
 import { provideHttpClient } from "@angular/common/http";
+import { provideNgIconsConfig } from "@ng-icons/core";
 
 export function apiConfigFactory(): Configuration {
 	const params: ConfigurationParameters = {
@@ -15,6 +16,10 @@ export function apiConfigFactory(): Configuration {
 
 export const appConfig: ApplicationConfig = {
 	providers: [
+		provideNgIconsConfig({
+			size: "1.5em",
+			color: "darkblue",
+		}),
 		provideHttpClient(),
 		provideZoneChangeDetection({ eventCoalescing: true }),
 		provideRouter(appRoutes),

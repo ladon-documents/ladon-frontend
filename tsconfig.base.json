@@ -20,6 +20,7 @@
 			"filemanager/Routes": ["apps/filemanager/src/app/remote-entry/entry.routes.ts"],
 			"ladon-api": ["libs/ladon-api/src/index.ts"],
 			"login": ["libs/login/src/index.ts"],
+			"@ladon/searchbar": ["libs/searchbar/src/index.ts"],
 			"@ladon/navigation": ["libs/navigation/src/index.ts"],
 			"shared/ng/ladon-auth": ["libs/shared/ng/ladon-auth/src/index.ts"],
 			"webcomponents": ["libs/webcomponents/src/index.ts"]

@@ -24,6 +24,7 @@ export class BucketsComponent implements OnInit {
 	bucketStats$: Observable<any> | undefined;
 
 	private _bucketsList: BucketItem[] | undefined;
+	private _favoritesToggle = false;
 
 	constructor(public bucketsService: BucketsService) {}
 
@@ -33,20 +34,22 @@ export class BucketsComponent implements OnInit {
 		this.bucketStats$ = this.bucketsService.retrieveBucketStats();
 		this._bucketsList = this.bucketsService.bucketsListBehaviorSubject.getValue();
 	}
-
+	
 	selectBucket(bucket: BucketItem) {
 		this.selectedBucket = bucket;
 		this.bucketsService.selectedBucketSubject.next(bucket);
 	}
+	
+	updateBucketsList(event: any[]) {
+		this.bucketsService.bucketsListBehaviorSubject.next(this._favoritesToggle ? event.filter( ({favourite}) => favourite === this._favoritesToggle) : event)
+		this._bucketsList = this.bucketsService.bucketsListBehaviorSubject.getValue();
+	}
 
 	toggleFavorites(event: any) {
 		const { target } = event;
-		if (target.checked) {
-			this.bucketsService.bucketsListBehaviorSubject.next(
-				this._bucketsList?.filter((bucket: BucketItem) => bucket.favourite === target.checked) as BucketItem[]
-			);
-		} else {
-			this.bucketsService.bucketsListBehaviorSubject.next(this._bucketsList);
-		}
+		this._favoritesToggle = target.checked
+		this.bucketsService.bucketsListBehaviorSubject.next(
+			this._favoritesToggle ? this._bucketsList?.filter((bucket: BucketItem) => bucket.favourite === target.checked) : this._bucketsList
+		);
 	}
 }

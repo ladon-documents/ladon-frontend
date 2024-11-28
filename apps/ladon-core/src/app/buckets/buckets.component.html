@@ -1,0 +1,110 @@
+<div class="flex items-center gap-4 p-4 justify-between border-b sticky top-0 z-10 bg-white/95 backdrop-blur-sm">
+	<div class="flex gap-4">
+		<lib-searchbar></lib-searchbar>
+
+		<div class="flex items-center gap-2 text-sm">
+			Favoriten
+			<label class="relative inline-flex items-center cursor-pointer">
+				<input type="checkbox" class="sr-only peer" (change)="toggleFavorites($event)" />
+				<div
+					class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-indigo-600 peer-focus:ring-2 peer-focus:ring-indigo-300 transition-all duration-300"
+				></div>
+				<div
+					class="absolute left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-5"
+				></div>
+			</label>
+		</div>
+	</div>
+
+	<button
+		(click)="modal.showModal()"
+		class="flex gap-2 center px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-950 focus:outline-none"
+	>
+		<ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
+		<span class="hidden lg:block">Neues Verzeichnis erstellen</span>
+	</button>
+</div>
+
+<div class="grid grid-cols-[2fr_1fr]">
+	<ul role="list" class="divide-y divide-gray-100 gap-x-6 py-4 grow">
+		@for (bucket of (bucketsList$ | async); track $index) {
+		<li
+			[ngClass]="{ active: selectedBucket && selectedBucket.id === bucket.id }"
+			class="flex justify-between p-4 cursor-pointer"
+			(click)="selectBucket(bucket)"
+		>
+			<div class="flex min-w-0 gap-x-4">
+				<ng-icon name="heroFolderSolid" size="1.5em" class="shrink-0"></ng-icon>
+				<div class="min-w-0 flex-auto">
+					<p class="text-sm/6 font-semibold">{{ bucket.id }}</p>
+					<p class="truncate text-xs text-gray-500">{{ bucket.createdBy }}</p>
+				</div>
+			</div>
+			<div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+				@if (bucket.favourite) {
+				<span
+					class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
+					>Favorit</span
+				>
+				} @else {
+				<p class="text-xs/5">&nbsp;</p>
+				}
+				<p class="text-xs/5 text-gray-500">
+					<time [attr.datetime]="bucket.created | date : dateFormat">{{ bucket.created | date : dateFormat }}</time>
+				</p>
+			</div>
+		</li>
+		}
+	</ul>
+
+	<div class="border-l">
+		<div>
+			<img src="png/1.png" alt="" />
+		</div>
+		<div class="grid grid-cols-[1fr_2fr] gap-2 p-4">
+			<div class="text-sm text-gray-500">Name</div>
+			<div class="text-sm">{{ (bucketStats$ | async)?.id }}</div>
+			<div class="text-sm text-gray-500">Größe</div>
+			<div class="text-sm">{{ (bucketStats$ | async)?.size }}</div>
+			<div class="text-sm text-gray-500">Ordner</div>
+			<div class="text-sm">{{ (bucketStats$ | async)?.folderCount }}</div>
+			<div class="text-sm text-gray-500">Datei</div>
+			<div class="text-sm">{{ (bucketStats$ | async)?.fileCount }}</div>
+			<div class="text-sm text-gray-500">Geändert</div>
+			<div class="text-sm">{{ (bucketStats$ | async)?.lastModified | date : dateFormat }}</div>
+			<div class="flex items-center gap-2 text-sm text-gray-500">
+				Favoriten
+				<label class="relative inline-flex items-center cursor-pointer">
+					<input type="checkbox" class="sr-only peer" />
+					<div
+						class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-indigo-600 peer-focus:ring-2 peer-focus:ring-indigo-300 transition-all duration-300"
+					></div>
+					<div
+						class="absolute left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-5"
+					></div>
+				</label>
+			</div>
+		</div>
+	</div>
+</div>
+
+<dialog #modal class="modal">
+	<div class="modal-box">
+		<h3 class="text-lg font-bold mb-4">Neues Verzeichnis erstelen</h3>
+		<div class="flex flex-col gap-2">
+			<label for="bucket" class="text-sm text-gray-500">Verzeichnisname</label>
+			<input
+				type="text"
+				id="bucket"
+				name="bucket"
+				class="w-full rounded-md p-2 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-blue-900 sm:text-sm/6"
+			/>
+		</div>
+		<div class="modal-action">
+			<form method="dialog">
+				<!-- if there is a button in form, it will close the modal -->
+				<button class="text-sm">Schließen</button>
+			</form>
+		</div>
+	</div>
+</dialog>

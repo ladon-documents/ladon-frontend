@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AuthenticationService, LoginRequest, UsersService } from "ladon-api";
-import { mergeMap } from "rxjs";
+import {BehaviorSubject, mergeMap} from "rxjs";
 
 @Injectable({
 	providedIn: "root",
@@ -11,6 +11,8 @@ export class AuthService {
 		prefix: "etc/",
 		bucket: "_system",
 	};
+	private userSubject$ = new BehaviorSubject<any>(null);
+	user$ = this.userSubject$.asObservable();
 
 	constructor(private as: AuthenticationService, private us: UsersService) {}
 

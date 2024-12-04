@@ -1,8 +1,8 @@
 export default {
-	displayName: 'shared-ng-ladon-auth',
+	displayName: "shared-ng-ladon-auth",
 	preset: "../../../../jest.preset.js",
 	setupFilesAfterEnv: ["<rootDir>/src/test-setup.ts"],
-	coverageDirectory: "../../../../coverage/libs/shared/ng/ladon-auth',
+	coverageDirectory: "../../../../coverage/libs/shared/ng/ladon-auth",
 	transform: {
 		"^.+\\.(ts|mjs|js|html)$": [
 			"jest-preset-angular",

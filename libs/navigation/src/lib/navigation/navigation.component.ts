@@ -9,6 +9,7 @@ import {
 	heroArrowRightStartOnRectangle,
 } from "@ng-icons/heroicons/outline";
 import { Router } from "@angular/router";
+import {environment} from "@ladon/environment";
 
 @Component({
 	selector: "lib-navigation",
@@ -45,7 +46,7 @@ export class NavigationComponent {
 		switch (item.target) {
 			case "internal":
 			case "remote":
-				this.router.navigate([item.path]);
+				this.router.navigate([`${environment.baseHref}/${item.path}`]);
 				break;
 			case "action":
 				this.navigationEntryAction.emit(item);

@@ -8,6 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { AuthService } from '../../service/auth.service';
 import { map } from 'rxjs/operators';
+import {environment} from "@ladon/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class AuthGuard implements CanActivate {
           if (user) {
             return true;
           } else {
-            this.router.navigate([`/login`]);
+            this.router.navigateByUrl(`${environment.baseHref}/login`);
             return false;
           }
         })

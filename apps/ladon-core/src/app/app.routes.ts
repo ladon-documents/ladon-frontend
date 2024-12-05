@@ -3,8 +3,9 @@ import { loadRemoteModule } from "@nx/angular/mf";
 import { Component } from "@angular/core";
 import { environment } from "@ladon/environment";
 import { setNavigation } from "./app.navconfig";
-import {LoginComponent} from "login";
-import {AuthGuard} from "../../../../libs/shared/ng/ladon-auth/src/lib/guards/auth/auth.guard";
+import {AuthGuard} from "@ladon/auth-guard";
+import {LoginComponent} from "@ladon/login";
+import {EmptyRouteComponent} from "./app.component";
 
 const NO_ROUTING_TARGETS = ["action", "external"];
 
@@ -13,12 +14,14 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
 
 	const _appRoutes: any = [];
 	_appRoutes.push(
-			{ path: 'login', component: LoginComponent }
-	);
+			{ path: `${environment.baseHref}/login`, component: LoginComponent },
+			{ path: '', redirectTo: `${environment.baseHref}/login`, pathMatch: "full" },
+);
 	navigation.forEach((navItem) => {
 		if (NO_ROUTING_TARGETS.includes(navItem.target)) return;
+		const navPath = `${environment.baseHref}/${navItem.path}`;
 		const data: any = {
-			path: navItem.path,
+			path: navPath,
 			canActivate: [AuthGuard]
 		};
 		if (navItem.target === "remote") {
@@ -32,6 +35,8 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
 		}
 		_appRoutes.push(data);
 	});
+	_appRoutes.push(		{ path: '**', component: EmptyRouteComponent },
+	)
 	return _appRoutes;
 };
 export const appRoutes: Route[] = setNavigationDefinitions(environment.navigation);

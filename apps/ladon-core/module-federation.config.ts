@@ -15,7 +15,7 @@ const config: ModuleFederationConfig = {
 	 * declare module 'my-external-remote';
 	 *
 	 */
-	remotes: ["filemanager"],
+	remotes: [],
 };
 
 export default config;

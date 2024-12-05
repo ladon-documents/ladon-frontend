@@ -10,6 +10,7 @@
 			"executor": "@nx/angular:webpack-browser",
 			"outputs": ["{options.outputPath}"],
 			"options": {
+				"baseHref": "/ui/draco/apps/ladon-core/",
 				"outputPath": "dist/apps/ladon-core",
 				"index": "apps/ladon-core/src/index.html",
 				"main": "apps/ladon-core/src/main.ts",

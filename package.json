@@ -5,7 +5,13 @@
 	"scripts": {
 		"ladon-dev": "npx nx serve ladon-core --devRemotes filemanager",
 		"prettier": "npx prettier --write apps --write libs",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"update": "nx migrate latest",
+		"dep-graph": "nx dep-graph",
+		"format": "nx format:write",
+		"format:write": "nx format:write",
+		"format:check": "nx format:check"
+
 	},
 	"keywords": [],
 	"author": "Mind Consulting GmbH",

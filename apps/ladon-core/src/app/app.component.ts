@@ -6,20 +6,32 @@ import { UsermanagerComponent } from "./usermanager/usermanager.component";
 import { BucketsComponent } from "./buckets/buckets.component";
 import { NavigationEntry } from "../../../../libs/navigation/src/interface/navigation-entry";
 import { environment } from "@ladon/environment";
-import {LoginComponent} from "login";
+import {LoginComponent} from "@ladon/login";
+import {AsyncPipe, CommonModule} from "@angular/common";
+import {BehaviorSubject} from "rxjs";
+import {AuthService} from "@ladon/auth-guard";
 
 @Component({
 	standalone: true,
-	imports: [RouterModule, NavigationComponent, AsideComponent, UsermanagerComponent, BucketsComponent, LoginComponent],
+	imports: [CommonModule, RouterModule, NavigationComponent, AsideComponent, UsermanagerComponent, BucketsComponent, LoginComponent, AsyncPipe],
 	selector: "ldn-mf-root",
 	templateUrl: "./app.component.html",
 	styleUrl: "./app.component.scss",
 })
 export class AppComponent {
 	public navigationEntries: Array<NavigationEntry> = [];
+	isAuthenticated$ = this.as.user$;
 	title = "ladon-core";
 
-	constructor() {
+	constructor(private as: AuthService) {
 		this.navigationEntries = environment.navigation;
 	}
 }
+
+
+@Component({
+	standalone: true,
+	selector: 'app-empty-route',
+	template: '',
+})
+export class EmptyRouteComponent {}

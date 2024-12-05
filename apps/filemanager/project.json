@@ -10,6 +10,7 @@
 			"executor": "@nx/angular:webpack-browser",
 			"outputs": ["{options.outputPath}"],
 			"options": {
+				"baseHref": "/ui/draco/apps/filemanager/",
 				"outputPath": "dist/apps/filemanager",
 				"index": "apps/filemanager/src/index.html",
 				"main": "apps/filemanager/src/main.ts",

@@ -1,0 +1,78 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"properties": {
+		"contentType": {
+			"description": "The type of content (e.g., MIME type).",
+			"type": "string"
+		},
+		"created": {
+			"description": "The timestamp when the item was created.",
+			"format": "date-time",
+			"type": "string"
+		},
+		"createdBy": {
+			"description": "The creator of the item.",
+			"type": "string"
+		},
+		"etag": {
+			"description": "The ETag value for the item, used for cache validation.",
+			"type": "string"
+		},
+		"favourite": {
+			"description": "Whether the item is marked as a favourite.",
+			"type": "boolean"
+		},
+		"id": {
+			"description": "The unique identifier of the item.",
+			"type": "string"
+		},
+		"itemType": {
+			"description": "The type of item, either 'folder' or 'file'.",
+			"enum": ["folder", "file", "plugin", "user"],
+			"type": "string"
+		},
+		"key": {
+			"description": "The unique key for the item.",
+			"type": "string"
+		},
+		"lastModified": {
+			"description": "The timestamp when the item was last modified.",
+			"format": "date-time",
+			"type": "string"
+		},
+		"metadata": {
+			"additionalProperties": true,
+			"description": "Additional metadata associated with the item.",
+			"type": "object"
+		},
+		"owner": {
+			"description": "The owner of the item.",
+			"type": "string"
+		},
+		"path": {
+			"description": "The path to the item.",
+			"type": "string"
+		},
+		"size": {
+			"description": "The size of the item in bytes.",
+			"type": "number"
+		},
+		"version": {
+			"description": "The version of the item.",
+			"type": "number"
+		}
+	},
+	"required": [
+		"contentType",
+		"itemType",
+		"created",
+		"createdBy",
+		"lastModified",
+		"size",
+		"version",
+		"key",
+		"path",
+		"favourite"
+	],
+	"type": "object"
+}

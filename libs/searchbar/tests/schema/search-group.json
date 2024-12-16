@@ -1,0 +1,22 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"properties": {
+		"label": {
+			"type": "string",
+			"description": "Label of the search group"
+		},
+		"groupType": {
+			"type": "string",
+			"enum": ["buckets", "files", "plugins", "users", "permissions", "roles"],
+			"description": "The type of the group"
+		},
+		"items": {
+			"type": "array",
+			"description": "The list of search items",
+			"items": {
+				"$ref": "./search-item.json"
+			}
+		}
+	}
+}

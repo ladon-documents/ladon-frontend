@@ -1,6 +1,6 @@
 <div class="flex items-center gap-4 p-4 justify-between border-b sticky top-0 z-10 bg-white/95 backdrop-blur-sm">
 	<div class="flex gap-4">
-		<lib-searchbar (searchResult)="updateBucketsList($event)"></lib-searchbar>
+		<lib-searchbar (searchResult)="updateBucketsList($event)" [searchType]="'buckets'"></lib-searchbar>
 
 		<div class="flex items-center gap-2 text-sm">
 			Favoriten

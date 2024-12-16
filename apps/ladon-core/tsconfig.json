@@ -3,6 +3,8 @@
 		"target": "es2022",
 		"useDefineForClassFields": false,
 		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
 		"strict": true,
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,

@@ -9,11 +9,12 @@ import {
 	heroArrowRightStartOnRectangle,
 } from "@ng-icons/heroicons/outline";
 import { Router } from "@angular/router";
+import { SearchbarComponent } from "@ladon/searchbar";
 
 @Component({
 	selector: "lib-navigation",
 	standalone: true,
-	imports: [CommonModule, NgIconComponent],
+	imports: [CommonModule, NgIconComponent, SearchbarComponent],
 	providers: [provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle })],
 	templateUrl: "./navigation.component.html",
 	styles: `

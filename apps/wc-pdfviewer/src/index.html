@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>wc-pdfviewer</title>
+		<base href="/" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+	</head>
+	<body>
+  <wc-ladon-pdfviewer src="apps/wc-pdfviewer/public/assets"
+                      pdf="/apps/wc-pdfviewer/public/assets/test.pdf"
+  ></wc-ladon-pdfviewer>
+
+  <script type="module">
+      function show() {
+          alert('shpw')
+      }
+      var node = document.querySelector('wc-ladon-pdfviewer');
+      node.addEventListener('pdfLoaded', () => {show()});
+  </script>
+  </body>
+</html>

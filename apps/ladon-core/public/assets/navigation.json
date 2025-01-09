@@ -5,6 +5,7 @@
 		"path": "filemanager",
 		"icon": "heroDocumentText",
 		"id": "@mind/mf-ladon-docmanager",
+		"exposedModule": "./routes",
 		"type": "main",
 		"index": 30
 	},
@@ -17,6 +18,15 @@
 		"id": "@mind/mf-ladon-docmanager",
 		"type": "main",
 		"index": 31
+	},
+	{
+		"label": "Our Team",
+		"target": "static",
+		"component": "Staticweb",
+		"path": "html/test.html",
+		"icon": "heroFolder",
+		"type": "main",
+		"index": 32
 	},
 	{
 		"label": "USER_MANAGER.NAVITEM",

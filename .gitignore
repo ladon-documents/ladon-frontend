@@ -29,3 +29,5 @@ testem.log
 Thumbs.db
 
 .angular
+
+vite.config.*.timestamp*

@@ -6,6 +6,27 @@
 		<base href="/" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script type="importmap">
+      {
+        "imports": {
+          "pdfviewer": "http://localhost:4203/pdfviewer.js",
+´            "foo": "/dist/libs/webcomponents/pdfviewer/fesm2022/mind-ladon-pdfviewer.mjs"
+
+        }
+      }
+    </script>
+    <script>
+        if (HTMLScriptElement.supports?.("importmap")) {
+            console.log("Browser supports import maps.");
+        }
+    </script>
+    <script type="module">
+          import  "foo";
+          if (HTMLScriptElement.supports?.("importmap")) {
+              console.log("Browser supports import maps.");
+          }
+
+    </script>
 	</head>
 	<body>
 		<ldn-mf-root></ldn-mf-root>

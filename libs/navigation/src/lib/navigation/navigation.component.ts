@@ -48,6 +48,9 @@ export class NavigationComponent {
 			case "remote":
 				this.router.navigate([`${environment.baseHref}/${item.path}`]);
 				break;
+			case "static":
+				this.router.navigate([`${environment.baseHref}/static`], { queryParams: { page: item.path }});
+				break;
 			case "action":
 				this.navigationEntryAction.emit(item);
 				break;

@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {AuthenticationService, LoginRequest, User, UsersService} from "@ladon/api";
-import {BehaviorSubject, mergeMap, tap} from "rxjs";
+import {BehaviorSubject, mergeMap, of, tap} from "rxjs";
 import {map} from "rxjs/operators";
 
 @Injectable({
@@ -13,6 +13,19 @@ export class AuthService {
     bucket: "_system",
   };
   private userSubject$ = new BehaviorSubject<any>(null);
+  private readonly devUser: User = {
+    "userId": "admin",
+    "fullName": "Armin Strator",
+    "email": "info@mind-consulting.de",
+    "roles": [
+      "admin",
+      "user"
+    ],
+    "imageUrl": undefined,
+    "provider": "ladon",
+    "emailVerified": "true",
+    "homeBucket": "admin"
+  }
   user$ = this.userSubject$.asObservable();
 
   constructor(private as: AuthenticationService, private us: UsersService) {
@@ -20,6 +33,10 @@ export class AuthService {
   }
 
   public login(Login: LoginRequest) {
+    if (this.isDevelopmentEnironment()) {
+      this.userSubject$.next(this.devUser);
+      return of(this.devUser)
+    }
     return this.as.authenticateUser(Login).pipe(
         mergeMap((res) => {
           return this.us.getCurrentUser();
@@ -37,5 +54,10 @@ export class AuthService {
           this.userSubject$.next(user);
         })
     );
+  }
+
+  private isDevelopmentEnironment() {
+    // TODO: implement check for devlopment environment
+    return true;
   }
 }

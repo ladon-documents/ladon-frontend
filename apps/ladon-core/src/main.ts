@@ -1,4 +1,6 @@
-import { setRemoteDefinitions } from "@nx/angular/mf";
+//import { setRemoteDefinitions } from "@nx/angular/mf";
+import { loadManifest } from '@angular-architects/module-federation';
+
 export const assetUrl = (url: string): string  => {
 	// @ts-ignore
 	const publicPath = __webpack_public_path__;
@@ -15,8 +17,8 @@ fetchNavigation
 	.then((res) => res.json())
 	.then((nav) => (navigationConfig = nav))
 	.then(() => {
-		fetch(assetUrl("/module-federation.manifest.json"))
-			.then((res) => res.json())
-			.then((definitions) => setRemoteDefinitions(definitions))
+		loadManifest(assetUrl("/module-federation.manifest.json"))
+			//.then((res) => res.json())
+	//		.then((definitions) => setRemoteDefinitions(definitions))
 			.then(() => import("./bootstrap").catch((err) => console.error(err)));
 	});

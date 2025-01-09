@@ -1,4 +1,9 @@
-import { withModuleFederation } from "@nx/angular/module-federation";
-import config from "./module-federation.config";
+import {shareAll, withModuleFederationPlugin} from "@angular-architects/module-federation/webpack";
 
-export default withModuleFederation(config, { dts: false });
+module.exports = withModuleFederationPlugin({
+
+  shared: {
+    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: "auto" }),
+  }
+
+});

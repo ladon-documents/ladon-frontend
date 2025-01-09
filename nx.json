@@ -69,6 +69,16 @@
 		},
 		"e2e-ci--**/*": {
 			"dependsOn": ["^build"]
+		},
+		"@angular-devkit/build-angular:application": {
+			"cache": true,
+			"dependsOn": ["^build"],
+			"inputs": ["production", "^production"]
+		},
+		"@nx/angular:package": {
+			"cache": true,
+			"dependsOn": ["^build"],
+			"inputs": ["production", "^production"]
 		}
 	},
 	"defaultBase": "develop",
@@ -83,6 +93,17 @@
 			"plugin": "@nx/eslint/plugin",
 			"options": {
 				"targetName": "lint"
+			}
+		},
+		{
+			"plugin": "@nx/vite/plugin",
+			"options": {
+				"buildTargetName": "build",
+				"testTargetName": "test",
+				"serveTargetName": "serve",
+				"previewTargetName": "preview",
+				"serveStaticTargetName": "serve-static",
+				"typecheckTargetName": "typecheck"
 			}
 		}
 	],
@@ -99,6 +120,12 @@
 		},
 		"@nx/angular:component": {
 			"style": "scss"
+		},
+		"@nx/web:application": {
+			"style": "css",
+			"linter": "eslint",
+			"unitTestRunner": "vitest",
+			"e2eTestRunner": "playwright"
 		}
 	}
 }

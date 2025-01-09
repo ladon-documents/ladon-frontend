@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import {Component, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { NavigationComponent } from "@ladon/navigation";
 import { AsideComponent } from "./layout/aside/aside.component";
@@ -17,6 +17,7 @@ import {AuthService} from "@ladon/auth-guard";
 	selector: "ldn-mf-root",
 	templateUrl: "./app.component.html",
 	styleUrl: "./app.component.scss",
+	schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppComponent {
 	public navigationEntries: Array<NavigationEntry> = [];

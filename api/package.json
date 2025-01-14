@@ -1,0 +1,30 @@
+{
+  "name": "ladon-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate:client:ts": "rm -rf generated-sources/fetch-client; openapi-generator-cli generate -i ladon.yml -g typescript-fetch -o generated-sources/fetch-client --additional-properties=supportsES6=true --additional-properties=disallowAdditionalPropertiesIfNotPresent=false",
+    "generate:client:ng": "rm -rf generated-sources/angular-client; openapi-generator-cli generate -i  ladon.yml -g typescript-angular -o generated-sources/angular-client",
+    "generate:apis": "npm run generate:client:ts & npm run generate:client:ng",
+    "build:fetch": "esbuild generated-sources/fetch-client/index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api-fetch-client.mjs",
+    "build:ng": "esbuild generated-sources/angular-client/index.ts --bundle  --outfile=dist/ladon-api-angular-client.js"
+
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "files": [
+    "dist/",
+    "ladon-plugin.json",
+    "ladon-plugin.md",
+    "releasenotes.md"
+  ],
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.15.3",
+    "esbuild": "0.24.2"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
+  }
+}

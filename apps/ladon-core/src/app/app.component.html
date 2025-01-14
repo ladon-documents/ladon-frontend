@@ -1,9 +1,0 @@
-<header >
-	<lib-navigation [navigation]="navigationEntries" *ngIf="isAuthenticated$ | async"></lib-navigation>
-</header>
-<main role="main" class="w-full h-screen overflow-y-auto flex-grow">
-	<router-outlet></router-outlet>
-</main>
-<wc-ladon-pdfviewer src="apps/wc-pdfviewer/public/assets"
-                    pdf="/apps/wc-pdfviewer/public/assets/test.pdf"
-></wc-ladon-pdfviewer>

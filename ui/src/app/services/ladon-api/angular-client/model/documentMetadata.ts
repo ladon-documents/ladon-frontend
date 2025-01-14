@@ -10,7 +10,7 @@
  */
 
 export interface DocumentMetadata {
-	[key: string]: string | any;
+  [key: string]: string | any;
 
-	empty?: boolean;
+  empty?: boolean;
 }

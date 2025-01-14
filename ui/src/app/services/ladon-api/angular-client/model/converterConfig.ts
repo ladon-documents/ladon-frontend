@@ -10,6 +10,6 @@
  */
 
 export interface ConverterConfig {
-	id: string;
-	config: { [key: string]: string };
+  id: string;
+  config: { [key: string]: string };
 }

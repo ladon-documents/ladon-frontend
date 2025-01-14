@@ -10,6 +10,6 @@
  */
 
 export interface CredentialsWrapper {
-	oldPW?: string;
-	newPW?: string;
+  oldPW?: string;
+  newPW?: string;
 }

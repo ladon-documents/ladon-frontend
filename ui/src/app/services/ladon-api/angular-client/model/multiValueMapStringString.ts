@@ -10,8 +10,8 @@
  */
 
 export interface MultiValueMapStringString {
-	[key: string]: Array<string> | any;
+  [key: string]: Array<string> | any;
 
-	all?: { [key: string]: string };
-	empty?: boolean;
+  all?: { [key: string]: string };
+  empty?: boolean;
 }

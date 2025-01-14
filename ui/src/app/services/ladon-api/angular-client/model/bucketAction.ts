@@ -10,9 +10,9 @@
  */
 
 export interface BucketAction {
-	i18nName?: string;
-	label?: string;
-	actionId?: string;
-	icon?: string;
-	selection?: Array<string>;
+  i18nName?: string;
+  label?: string;
+  actionId?: string;
+  icon?: string;
+  selection?: Array<string>;
 }

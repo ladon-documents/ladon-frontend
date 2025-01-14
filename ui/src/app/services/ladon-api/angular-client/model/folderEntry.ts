@@ -10,10 +10,10 @@
  */
 
 export interface FolderEntry {
-	value: string;
-	id: string;
-	size: number;
-	date: number;
-	type: string;
-	data: Array<FolderEntry>;
+  value: string;
+  id: string;
+  size: number;
+  date: number;
+  type: string;
+  data: Array<FolderEntry>;
 }

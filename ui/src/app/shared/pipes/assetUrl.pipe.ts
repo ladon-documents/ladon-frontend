@@ -1,4 +1,4 @@
-import {Pipe, PipeTransform} from "@angular/core";
+import { Pipe, PipeTransform } from '@angular/core';
 
 const assetUrl = (url: string): string => {
   // @ts-ignore
@@ -7,17 +7,14 @@ const assetUrl = (url: string): string => {
   const urlPrefix = url.startsWith('/') ? '' : '/';
 
   return `${publicPath}${publicPathSuffix}assets${urlPrefix}${url}`;
-}
-
+};
 
 @Pipe({
-  name: "assetUrl",
+  name: 'assetUrl',
   standalone: true,
 })
 export class AssetUrlPipe implements PipeTransform {
   transform(value: string): string {
     return assetUrl(value);
-
   }
 }
-

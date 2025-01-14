@@ -10,7 +10,7 @@
  */
 
 export interface ConverterParameter {
-	name: string;
-	description: string;
-	optional: boolean;
+  name: string;
+  description: string;
+  optional: boolean;
 }

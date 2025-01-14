@@ -10,12 +10,12 @@
  */
 
 export interface User {
-	userId: string;
-	fullName: string;
-	email: string;
-	roles: Array<string>;
-	imageUrl?: string;
-	provider?: string;
-	emailVerified: string;
-	homeBucket: string;
+  userId: string;
+  fullName: string;
+  email: string;
+  roles: Array<string>;
+  imageUrl?: string;
+  provider?: string;
+  emailVerified: string;
+  homeBucket: string;
 }

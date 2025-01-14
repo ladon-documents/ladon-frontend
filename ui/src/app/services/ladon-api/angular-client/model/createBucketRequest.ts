@@ -8,9 +8,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Bucket } from "./bucket";
+import { Bucket } from './bucket';
 
 export interface CreateBucketRequest {
-	storageId?: string;
-	body?: Bucket;
+  storageId?: string;
+  body?: Bucket;
 }

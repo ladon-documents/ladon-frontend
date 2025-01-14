@@ -10,9 +10,9 @@
  */
 
 export interface UserEntry {
-	id: string;
-	name?: string;
-	email?: string;
-	avatar?: string;
-	status: boolean;
+  id: string;
+  name?: string;
+  email?: string;
+  avatar?: string;
+  status: boolean;
 }

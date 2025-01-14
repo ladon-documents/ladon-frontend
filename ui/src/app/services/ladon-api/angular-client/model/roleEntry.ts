@@ -10,7 +10,7 @@
  */
 
 export interface RoleEntry {
-	id: string;
-	name: string;
-	details: string;
+  id: string;
+  name: string;
+  details: string;
 }

@@ -1,0 +1,45 @@
+[
+	{
+		"label": "BUCKETS.NAVITEM",
+		"target": "internal",
+		"component": "buckets",
+		"path": "buckets",
+		"icon": "heroFolder",
+		"id": "@mind/mf-ladon-docmanager",
+		"type": "main",
+		"index": 31
+	},
+	{
+		"label": "Our Team",
+		"target": "static",
+		"component": "Staticweb",
+		"path": "html/test.html",
+		"icon": "heroFolder",
+		"type": "main",
+		"index": 32
+	},
+	{
+		"label": "USER_MANAGER.NAVITEM",
+		"target": "internal",
+		"component": "usermanager",
+		"path": "usermanager",
+		"id": "@mind/mf-ladon-user-manager",
+		"type": "menu",
+		"index": 10
+	},
+	{
+		"label": "NAVIGATION.SUBNAV.LOGOUT",
+		"icon": "heroArrowRightStartOnRectangle",
+		"id": "ladon:logout",
+		"target": "action",
+		"type": "menu",
+		"index": 50
+	},
+	{
+		"label": "Documentation",
+		"target": "external",
+		"path": "https://ladon.org/doc",
+		"type": "menu",
+		"index": 40
+	}
+]

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "api": "../api/dist/fetch-client.mjs"
+      }
+    }
+  </script>
+  <script type="module">
+      import  * as foo from  "api";
+      if (HTMLScriptElement.supports?.("importmap")) {
+          console.log("Browser supports import maps.");
+          console.log(foo)
+          console.log(foo.BASE_PATH)
+      }
+
+  </script>
+</head>
+<body>
+
+</body>
+</html>

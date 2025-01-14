@@ -1,0 +1,57 @@
+<div *ngIf="error">
+  Keine PDF Vorschau verfügbar
+</div>
+
+
+<div *ngIf="isLoading">
+  <progress value="{{progressCount}}" max="100"> {{progressCount}}</progress>
+</div>
+
+<ng-container *ngIf="appIsReady && pdfurl">
+
+  <ngx-extended-pdf-viewer [src]="pdfurl"
+                           [customToolbar]="customLadonToolbar"
+                           #pdfViewer
+                           (pdfDownloaded)="onEvent('pdfDownloaded', $event)"
+                           (pdfLoaded)="onEvent('pdfLoaded', $event)"
+                           (pdfLoadingFailed)="onEvent('pdfLoadingFailed', $event)"
+                           (progress)="onEvent('onProgress', $event)"
+                           (pageChange)="onEvent('pageChange', $event)"
+  >
+  </ngx-extended-pdf-viewer>
+</ng-container>
+
+<ng-template #customLadonToolbar>
+  <div id="toolbarViewer" class="card-style">
+    <div>
+      <div class="toolbar-controls">
+        <app-ladon-pdf-toggle-sidebar></app-ladon-pdf-toggle-sidebar>
+        <div class="toolbarButtonSpacer"></div>
+        <app-ladon-pdf-paging></app-ladon-pdf-paging>
+      </div>
+    </div>
+
+    <app-ladon-pdf-zoom-toolbar></app-ladon-pdf-zoom-toolbar>
+
+    <div>
+      <div class="toolbar-controls">
+        <button class="transparent" (click)="reloadPDF()">
+          <span class="webix_icon wxi-sync"></span>
+        </button>
+        <app-ladon-pdf-rotate></app-ladon-pdf-rotate>
+        <app-ladon-pdf-presentation-mode></app-ladon-pdf-presentation-mode>
+        <app-ladon-pdf-print></app-ladon-pdf-print>
+        <app-ladon-pdf-download></app-ladon-pdf-download>
+        <div class="toolbar-control">
+          <button class="close"
+                  size="small"
+                  (click)="close()">
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+

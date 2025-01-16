@@ -1,8 +1,7 @@
-
-import SearchGroupMock from "../public/mock/search-item-group.json";
+import SearchGroupMock from '../public/mock/search-item-group.json';
 
 export class SearchbarTestObject {
-	retrieveSearchGroupMock() {
-		return SearchGroupMock;
-	}
+  retrieveSearchGroupMock() {
+    return SearchGroupMock;
+  }
 }

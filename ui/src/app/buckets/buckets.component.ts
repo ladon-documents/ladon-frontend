@@ -7,7 +7,7 @@ import { BucketItem } from '../interfaces/bucket-item';
 import { BucketsService } from './buckets.service';
 import { Observable } from 'rxjs';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
-import { BucketsTestObject } from '../../../tests/buckets-test-object';
+import { BucketsTestObject } from '@ladon/tests/buckets-test-object';
 
 @Component({
   selector: 'buckets',

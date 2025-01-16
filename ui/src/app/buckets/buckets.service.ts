@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BucketItem } from '../interfaces/bucket-item';
 import { BehaviorSubject, Observable, Subject, mergeMap, of } from 'rxjs';
 import { BucketStats } from '../interfaces/bucket-stats';
-import { BucketsTestObject } from '../../../tests/buckets-test-object';
+import { BucketsTestObject } from '@ladon/tests/buckets-test-object';
 
 @Injectable({
   providedIn: 'root',

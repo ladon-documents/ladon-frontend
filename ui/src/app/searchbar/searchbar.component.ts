@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounce, EMPTY, forkJoin, interval, mergeMap, of, Subject } from 'rxjs';
+import { debounce, forkJoin, interval, mergeMap, of, Subject } from 'rxjs';
 import { SearchGroup } from '../interfaces/search-group';
 
 type SearchTypes = 'buckets' | 'files' | 'plugins' | 'users' | 'permissions' | 'roles';
@@ -24,9 +24,7 @@ export class SearchbarComponent {
   searchResult$ = new Subject<SearchGroup[]>();
   toggleDialog: boolean | undefined;
 
-  constructor() // private searchbarTO: SearchbarTestObject,
-  // private bucketsTO: BucketsTestObject
-  {}
+  constructor() {} // private bucketsTO: BucketsTestObject // private searchbarTO: SearchbarTestObject,
 
   ngAfterViewInit() {
     this.search.valueChanges

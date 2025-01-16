@@ -24,7 +24,11 @@
     "lib": [
       "ES2022",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@ladon/assets/*": ["./src/assets/*"],
+      "@ladon/tests/*": ["./tests/*"],
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

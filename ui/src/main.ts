@@ -9,7 +9,7 @@ export const assetUrl = (url: string): string => {
 }
    */
 
-const fetchNavigation = fetch('/mock/navigation.json');
+const fetchNavigation = fetch('/mocks/navigation.json');
 
 export let navigationConfig: Array<any> = [];
 

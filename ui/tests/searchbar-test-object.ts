@@ -1,4 +1,4 @@
-import SearchGroupMock from '../public/mock/search-item-group.json';
+import SearchGroupMock from '@ladon/mocks/search-item-group.json';
 
 export class SearchbarTestObject {
   retrieveSearchGroupMock() {

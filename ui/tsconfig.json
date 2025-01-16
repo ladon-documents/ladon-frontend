@@ -26,7 +26,8 @@
       "dom"
     ],
     "paths": {
-      "@ladon/assets/*": ["./src/assets/*"],
+      "@ladon/assets/*": ["./public/assets/*", "./src/assets/*"],
+      "@ladon/mocks/*": ["./public/mocks/*", "./src/mocks/*"],
       "@ladon/tests/*": ["./tests/*"],
     }
   },

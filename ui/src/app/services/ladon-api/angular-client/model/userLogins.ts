@@ -10,6 +10,6 @@
  */
 
 export interface UserLogins {
-	date: string;
-	details: string;
+  date: string;
+  details: string;
 }

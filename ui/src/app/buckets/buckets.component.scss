@@ -1,17 +1,17 @@
 li {
-	--active-indicator-width: 0.5rem;
-	position: relative;
+  --active-indicator-width: 0.5rem;
+  position: relative;
 
-	&[class$="active"] {
-		&::before {
-			content: "";
-			position: absolute;
-			left: 0;
-			top: 0;
-			height: 100%;
-			width: var(--active-indicator-width);
-			transform: translateX(-50%);
-			background-color: darkblue;
-		}
-	}
+  &[class$="active"] {
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: var(--active-indicator-width);
+      transform: translateX(-50%);
+      background-color: darkblue;
+    }
+  }
 }

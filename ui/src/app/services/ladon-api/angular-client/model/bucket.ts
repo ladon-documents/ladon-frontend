@@ -10,10 +10,10 @@
  */
 
 export interface Bucket {
-	created?: string;
-	name?: string;
-	owner?: string;
-	versioned?: boolean;
-	virtual?: boolean;
-	indexed?: boolean;
+  created?: string;
+  name?: string;
+  owner?: string;
+  versioned?: boolean;
+  virtual?: boolean;
+  indexed?: boolean;
 }

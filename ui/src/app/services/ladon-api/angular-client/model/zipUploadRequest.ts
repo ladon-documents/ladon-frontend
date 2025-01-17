@@ -10,5 +10,5 @@
  */
 
 export interface ZipUploadRequest {
-	content?: Blob;
+  content?: Blob;
 }

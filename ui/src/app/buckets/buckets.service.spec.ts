@@ -1,16 +1,15 @@
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
+import { BucketsService } from './buckets.service';
 
-import { BucketsService } from "./buckets.service";
+describe('BucketsService', () => {
+  let service: BucketsService;
 
-describe("BucketsService", () => {
-	let service: BucketsService;
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(BucketsService);
+  });
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({});
-		service = TestBed.inject(BucketsService);
-	});
-
-	it("should be created", () => {
-		expect(service).toBeTruthy();
-	});
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 });

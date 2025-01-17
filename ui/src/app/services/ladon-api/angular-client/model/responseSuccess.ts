@@ -10,6 +10,6 @@
  */
 
 export interface ResponseSuccess {
-	success: boolean;
-	reason?: string;
+  success: boolean;
+  reason?: string;
 }

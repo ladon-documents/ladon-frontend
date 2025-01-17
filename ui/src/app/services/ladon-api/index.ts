@@ -1,2 +1,2 @@
-export * from "./angular-client";
-export * as fetchClient from "./fetch-client";
+export * from './angular-client';
+export * as fetchClient from './fetch-client';

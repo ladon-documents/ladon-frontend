@@ -8,19 +8,19 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { DocumentMetadata } from "./documentMetadata";
+import { DocumentMetadata } from './documentMetadata';
 
 export interface Document {
-	content_type?: string;
-	created?: string;
-	last_modified?: string;
-	bucket?: string;
-	key?: string;
-	path?: string;
-	etag?: string;
-	metadata?: DocumentMetadata;
-	owner?: string;
-	size?: number;
-	version?: string;
-	isFolder?: boolean;
+  content_type?: string;
+  created?: string;
+  last_modified?: string;
+  bucket?: string;
+  key?: string;
+  path?: string;
+  etag?: string;
+  metadata?: DocumentMetadata;
+  owner?: string;
+  size?: number;
+  version?: string;
+  isFolder?: boolean;
 }

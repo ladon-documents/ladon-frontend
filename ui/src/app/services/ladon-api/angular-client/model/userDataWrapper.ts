@@ -10,8 +10,8 @@
  */
 
 export interface UserDataWrapper {
-	name?: string;
-	email?: string;
-	status?: boolean;
-	imageUrl?: string;
+  name?: string;
+  email?: string;
+  status?: boolean;
+  imageUrl?: string;
 }

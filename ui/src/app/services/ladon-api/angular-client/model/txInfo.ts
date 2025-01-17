@@ -10,5 +10,5 @@
  */
 
 export interface TxInfo {
-	txId: string;
+  txId: string;
 }

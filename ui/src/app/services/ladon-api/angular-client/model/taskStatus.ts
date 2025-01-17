@@ -10,11 +10,11 @@
  */
 
 export interface TaskStatus {
-	id: string;
-	name: string;
-	running: boolean;
-	percent: number;
-	result: string;
-	success?: boolean;
-	exception?: string;
+  id: string;
+  name: string;
+  running: boolean;
+  percent: number;
+  result: string;
+  success?: boolean;
+  exception?: string;
 }

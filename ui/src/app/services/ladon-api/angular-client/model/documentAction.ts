@@ -10,10 +10,10 @@
  */
 
 export interface DocumentAction {
-	i18nName?: string;
-	label?: string;
-	actionId?: string;
-	icon?: string;
-	input?: Array<string>;
-	target?: string;
+  i18nName?: string;
+  label?: string;
+  actionId?: string;
+  icon?: string;
+  input?: Array<string>;
+  target?: string;
 }

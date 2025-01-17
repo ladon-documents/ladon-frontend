@@ -1,5 +1,4 @@
-
-  /*
+/*
 export const assetUrl = (url: string): string => {
   // @ts-ignore
   const publicPath = __webpack_public_path__;
@@ -10,11 +9,11 @@ export const assetUrl = (url: string): string => {
 }
    */
 
-const fetchNavigation = fetch("/assets/navigation.json");
+const fetchNavigation = fetch('/mocks/navigation.json');
 
 export let navigationConfig: Array<any> = [];
 
 fetchNavigation
-    .then((res) => res.json())
-    .then((nav) => (navigationConfig = nav))
-    .then(() => import("./bootstrap").catch((err) => console.error(err)));
+  .then((res) => res.json())
+  .then((nav) => (navigationConfig = nav))
+  .then(() => import('./bootstrap').catch((err) => console.error(err)));

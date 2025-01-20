@@ -59,12 +59,12 @@ In your Angular project:
 
 ```typescript
 // without configuring providers
-import { ApiModule } from '';
+import { LadonApiModule } from '';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
     imports: [
-        ApiModule,
+        LadonApiModule,
         // make sure to import the HttpClientModule in the AppModule only,
         // see https://github.com/angular/angular/issues/20575
         HttpClientModule
@@ -78,7 +78,7 @@ export class AppModule {}
 
 ```typescript
 // configuring providers
-import { ApiModule, Configuration, ConfigurationParameters } from '';
+import { LadonApiModule, Configuration, ConfigurationParameters } from '';
 
 export function apiConfigFactory (): Configuration {
   const params: ConfigurationParameters = {
@@ -88,7 +88,7 @@ export function apiConfigFactory (): Configuration {
 }
 
 @NgModule({
-    imports: [ ApiModule.forRoot(apiConfigFactory) ],
+    imports: [ LadonApiModule.forRoot(apiConfigFactory) ],
     declarations: [ AppComponent ],
     providers: [],
     bootstrap: [ AppComponent ]
@@ -98,10 +98,10 @@ export class AppModule {}
 
 ```typescript
 // configuring providers with an authentication service that manages your access tokens
-import { ApiModule, Configuration } from '';
+import { LadonApiModule, Configuration } from '';
 
 @NgModule({
-    imports: [ ApiModule ],
+    imports: [ LadonApiModule ],
     declarations: [ AppComponent ],
     providers: [
       {
@@ -129,23 +129,23 @@ export class AppComponent {
 }
 ```
 
-Note: The ApiModule is restricted to being instantiated once app wide.
+Note: The LadonApiModule is restricted to being instantiated once app wide.
 This is to ensure that all services are treated as singletons.
 
-### Using multiple OpenAPI files / APIs / ApiModules
+### Using multiple OpenAPI files / APIs / LadonApiModules
 
-In order to use multiple `ApiModules` generated from different OpenAPI files,
+In order to use multiple `LadonApiModules` generated from different OpenAPI files,
 you can create an alias name when importing the modules
 in order to avoid naming conflicts:
 
 ```typescript
-import { ApiModule } from 'my-api-path';
-import { ApiModule as OtherApiModule } from 'my-other-api-path';
+import { LadonApiModule } from 'my-api-path';
+import { LadonApiModule as OtherApiModule } from 'my-other-api-path';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
-    ApiModule,
+    LadonApiModule,
     OtherApiModule,
     // make sure to import the HttpClientModule in the AppModule only,
     // see https://github.com/angular/angular/issues/20575

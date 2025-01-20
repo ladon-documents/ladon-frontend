@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "generate:client:ts": "rm -rf generated-sources/fetch-client; openapi-generator-cli generate -i ladon.yml -g typescript-fetch -o generated-sources/fetch-client --additional-properties=supportsES6=true --additional-properties=disallowAdditionalPropertiesIfNotPresent=false",
-    "generate:client:ng": "rm -rf generated-sources/angular-client; openapi-generator-cli generate -i  ladon.yml -g typescript-angular -o generated-sources/angular-client",
+    "test": "ts-node node_modules/jasmine/bin/jasmine.js",
+    "generate:client:ts": "rm -rf fetch-client; openapi-generator-cli generate -i ../spec/ladon.yml -g typescript-fetch -o fetch-client --additional-properties=supportsES6=true --additional-properties=disallowAdditionalPropertiesIfNotPresent=false",
+    "generate:client:ng": "rm -rf angular-client; openapi-generator-cli generate -i  ../spec/ladon.yml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19",
     "generate:apis": "npm run generate:client:ts & npm run generate:client:ng",
-    "build:fetch": "esbuild generated-sources/fetch-client/index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api-fetch-client.mjs",
-    "build:ng": "esbuild generated-sources/angular-client/index.ts --bundle  --outfile=dist/ladon-api-angular-client.js"
-
+    "copy-ng": "node -e \"require('fs').cpSync('angular-client/', '../ui/src/api', {recursive: true});\"",
+    "build:fetch": "esbuild fetch-client/index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api-fetch-client.mjs",
+    "build:utility": "esbuild index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api-utility.mjs"
   },
   "author": "",
   "license": "ISC",
@@ -22,7 +22,13 @@
   ],
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.15.3",
-    "esbuild": "0.24.2"
+    "@types/jasmine": "^5.1.5",
+    "esbuild": "0.24.2",
+    "jasmine": "^5.5.0",
+    "jasmine-core": "^5.5.0",
+    "ts-node": "~8.3.0",
+    "tslint": "~6.1.0",
+    "typescript": "5.7.3"
   },
   "publishConfig": {
     "registry": "https://nexus.mind-consulting.de/repository/npm-private/"

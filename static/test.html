@@ -6,7 +6,7 @@
   <script type="importmap">
     {
       "imports": {
-        "api": "../api/dist/fetch-client.mjs"
+        "api": "../api/dist/ladon-api-utility.mjs"
       }
     }
   </script>
@@ -14,8 +14,9 @@
       import  * as foo from  "api";
       if (HTMLScriptElement.supports?.("importmap")) {
           console.log("Browser supports import maps.");
-          console.log(foo)
-          console.log(foo.BASE_PATH)
+          console.log(foo.utility)
+          console.log(foo.fetchClient)
+
       }
 
   </script>

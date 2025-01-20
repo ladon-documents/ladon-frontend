@@ -1,6 +1,5 @@
 import {Component, effect, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {IPDFViewerApplication, PDFNotificationService} from 'ngx-extended-pdf-viewer';
-import {UpdateUIStateEvent} from 'ngx-extended-pdf-viewer/lib/events/update-ui-state-event';
 
 @Component({
   standalone:true,
@@ -43,7 +42,7 @@ export class LadonPdfRotateComponent implements OnInit {
     PDFViewerApplication.eventBus.on('updateuistate', (event) => this.updateUIState(event));
   }
 
-  public updateUIState(event: UpdateUIStateEvent): void {
+  public updateUIState(event: any): void {
     this.disableRotate = event.pagesCount === 0;
     if (this.button1) {
       this.button1.nativeElement.disabled = this.disableRotate;

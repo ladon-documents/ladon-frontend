@@ -1,7 +1,6 @@
 {
   "name": "ladon-frontend",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "generate:client:ts": "rm -rf ladon-api/generated-sources/fetch-client; openapi-generator-cli generate -i ladon-api/ladon.yml -g typescript-fetch -o ladon-api/generated-sources/fetch-client --additional-properties=supportsES6=true --additional-properties=disallowAdditionalPropertiesIfNotPresent=false",
     "generate:client:ng": "rm -rf ladon-api/generated-sources/angular-client; openapi-generator-cli generate -i  ladon-api/ladon.yml -g typescript-angular -o ladon-api/generated-sources/angular-client",

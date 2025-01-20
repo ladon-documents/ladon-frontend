@@ -13,9 +13,9 @@ import {NgxExtendedPdfViewerModule, pdfDefaultOptions, PdfDownloadedEvent} from 
 import {WcLadonPdfviewerEvents} from "./events/wc-ladon-pdfviewer-events";
 
 @Component({
-  selector: "lib-pdfviewer",
+  selector: "ladon-pdfviewer",
   standalone: true,
-  imports: [CommonModule, LadonPdfDownloadComponent, LadonPdfPagingComponent, LadonPdfPresentationModeComponent, LadonPdfPrintComponent, LadonPdfRotateComponent, LadonPdfToggleSidebarComponent, LadonPdfZoomToolbarComponent, NgxExtendedPdfViewerModule],
+  imports: [ CommonModule, LadonPdfDownloadComponent, LadonPdfPagingComponent, LadonPdfPresentationModeComponent, LadonPdfPrintComponent, LadonPdfRotateComponent, LadonPdfToggleSidebarComponent, LadonPdfZoomToolbarComponent, NgxExtendedPdfViewerModule],
   templateUrl: "./pdfviewer.component.html",
   styleUrl: "./pdfviewer.component.css",
 })

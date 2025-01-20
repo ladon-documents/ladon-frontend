@@ -1,6 +1,5 @@
 import {Component, effect, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {IPDFViewerApplication, PDFNotificationService} from 'ngx-extended-pdf-viewer';
-import {UpdateUIStateEvent} from 'ngx-extended-pdf-viewer/lib/events/update-ui-state-event';
 
 @Component({
   standalone: true,
@@ -38,7 +37,7 @@ export class LadonPdfPagingComponent {
     PDFViewerApplication.eventBus.on('updateuistate', event => this.updateUIState(event));
   }
 
-  public updateUIState(event: UpdateUIStateEvent): void {
+  public updateUIState(event: any): void {
     this.disableLastPage = event.pageNumber === event.pagesCount;
     this.disableFirstPage = event.pageNumber <= 1;
     if (this.buttonFirst) {

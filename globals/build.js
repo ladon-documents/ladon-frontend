@@ -1,15 +1,19 @@
-const esBuild = require('esbuild');
+const esBuild = require("esbuild");
+
+async function generateJS() {
+  await esBuild.build({
+    entryPoints: ["./main.js"],
+    bundle: true,
+    minify: true,
+    sourcemap: true,
+    outfile: "./dist/ladon-globals.js",
+    platform: "browser",
+    target: ["es2015"],
+  });
+}
 
 try {
-    esBuild.build({
-        entryPoints: ['./main.js'],
-        bundle: true,
-        minify: true,
-        sourcemap: true,
-        outfile: './dist/ladon-globals.js',
-        platform: 'browser',
-        target: ['es2015'],
-    });
+  generateJS();
 } catch (e) {
-    process.exit(1)
+  process.exit(1);
 }

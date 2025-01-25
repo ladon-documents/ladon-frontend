@@ -6,14 +6,13 @@ Following librarys are installed as a plugin and should be availablie in `window
 - [`moment`](https://github.com/moment/momentjs.com)
 - [`petite-vue]`(https://github.com/vuejs/petite-vue)
 - [`rxjs`](https://github.com/ReactiveX/rxjs)
-- [`systemjs`](https://github.com/systemjs/systemjs)
 
-## Usage
+## Importmap
 
-Install the plugin and embed
+You can use the generated [importmap](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap#import_map_json_representation) with `src`
 
 ```javascript
-<script src="${deployTarget}/dist/ladon-globals.js">
+<script type="importmap" src="path/to/importmap.json">
 ```
 
 ---

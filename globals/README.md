@@ -7,6 +7,12 @@ Following librarys are installed as a plugin and should be availablie in `window
 - [`petite-vue]`(https://github.com/vuejs/petite-vue)
 - [`rxjs`](https://github.com/ReactiveX/rxjs)
 
+## Build
+
+```bash
+npm run build
+```
+
 ## Importmap
 
 You can use the generated [importmap](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap#import_map_json_representation) with `src`

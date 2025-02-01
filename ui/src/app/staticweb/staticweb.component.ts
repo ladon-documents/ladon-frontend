@@ -4,7 +4,7 @@ import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
-import {DocumentsService} from "../services/ladon-api/";
+import {DocumentsService} from "../../api";
 
 @Component({
 	selector: "lib-static-web",
@@ -57,12 +57,9 @@ export class StaticwebComponent implements OnInit, OnDestroy {
 				path = path.slice(0, path.indexOf("&"));
 			}
 			const bucket = url.slice(0, url.indexOf("/"));
-			console.log(bucket);
-			console.log(path);
 			this.documentService.getDocument( bucket, path).subscribe(response => {
 				console.log(response);
 				//this.staticHMTL =  this.sanitizer.bypassSecurityTrustHtml(response);
-
 			});
 
 		} else {

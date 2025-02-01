@@ -10,18 +10,16 @@
       }
     }
   </script>
+
   <script type="module">
-      import  * as foo from  "api";
+      import * as api from "api";
+
       if (HTMLScriptElement.supports?.("importmap")) {
           console.log("Browser supports import maps.");
-          console.log(foo.utility)
-          console.log(foo.fetchClient)
-
+          api.utility.Initalizer().initLadonStyles();
       }
-
   </script>
 </head>
 <body>
-
 </body>
 </html>

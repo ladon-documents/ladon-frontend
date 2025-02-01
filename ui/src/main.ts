@@ -1,16 +1,17 @@
 
-  /*
+
 export const assetUrl = (url: string): string => {
   // @ts-ignore
-  const publicPath = __webpack_public_path__;
-  const publicPathSuffix = publicPath.endsWith('/') ? '' : '/';
+  const publicPath = location.pathname;
+    const updatedPath = publicPath.replace("index.html", "");
+  const publicPathSuffix = updatedPath.endsWith('/') ? '' : '/';
   const urlPrefix = url.startsWith('/') ? '' : '/';
 
-  return `${publicPath}${publicPathSuffix}assets${urlPrefix}${url}`;
+  return `${updatedPath}${publicPathSuffix}assets${urlPrefix}${url}`;
 }
-   */
 
-const fetchNavigation = fetch("/assets/navigation.json");
+
+const fetchNavigation = fetch("/ui/draco/ladon-core/public/navigation.json");
 
 export let navigationConfig: Array<any> = [];
 

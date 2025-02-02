@@ -1,0 +1,148 @@
+{
+	"$schema": "./schema/search-group.json",
+	"data": [
+		{
+			"label": "Files",
+			"groupType": "files",
+			"items": [
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "file",
+					"key": "File 1",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				},
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "file",
+					"key": "File 2",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234
+				},
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "file",
+					"key": "File 3",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				},
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "file",
+					"key": "File 4",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				}
+			]
+		},
+		{
+			"label": "Buckets",
+			"groupType": "buckets",
+			"items": [
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "folder",
+					"key": "Bucket 1",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				},
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "folder",
+					"key": "Bucket 2",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				}
+			]
+		},
+		{
+			"label": "Users",
+			"groupType": "users",
+			"items": [
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "user",
+					"key": "User 1",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				},
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "user",
+					"key": "User 2",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				}
+			]
+		},
+		{
+			"label": "Plugins",
+			"groupType": "plugins",
+			"items": [
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "plugin",
+					"key": "Plugin 1",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				},
+				{
+					"contentType": "",
+					"created": "2024-12-11",
+					"createdBy": "admin",
+					"favourite": true,
+					"itemType": "plugin",
+					"key": "Plugin 2",
+					"lastModified": "2024-12-11",
+					"path": "test/test/test",
+					"size": 10234,
+					"version": 1
+				}
+			]
+		}
+	]
+}

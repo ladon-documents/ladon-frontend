@@ -7,9 +7,14 @@
     "build": "ng build --output-hashing none",
     "prebuild": "npm  --prefix ../style run build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "prettier:format": "prettier --write src tests"
   },
   "private": true,
+  "prettier": {
+    "printWidth": 120,
+    "bracketSameLine": true
+  },
   "dependencies": {
     "@angular/animations": "^18.2.0",
     "@angular/common": "^18.2.0",
@@ -39,6 +44,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
     "prettier": "^3.4.2",
     "typescript": "~5.5.2"
   },

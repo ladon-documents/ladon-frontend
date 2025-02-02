@@ -10,9 +10,8 @@ import {User} from "../../api";
   selector: "login",
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: "./login.component.html",
-  styleUrl: "./login.component.css",
-
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   public config: { [key: string]: string } | undefined;
@@ -21,16 +20,15 @@ export class LoginComponent {
   public loginAsset: string | undefined;
   public loginForm: FormGroup;
 
-
-  constructor(private formBuilder: FormBuilder,
-              private authService: AuthService,
-              private router: Router,
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
     });
-
   }
 
   ngOnInit(): void {
@@ -39,21 +37,18 @@ export class LoginComponent {
 
   login() {
     if (this.loginForm.valid) {
-      const {password, email} = this.loginForm.value;
-      this.authService.login({password, email})
-          .subscribe((user: User) => {
-            if (user) {
-              this.router.navigateByUrl(`${environment.baseHref}/buckets`);
-            }
-          })
+      const { password, email } = this.loginForm.value;
+      this.authService.login({ password, email }).subscribe((user: User) => {
+        if (user) {
+          this.router.navigateByUrl(`${environment.baseHref}/buckets`);
+        }
+      });
     }
   }
 
   private checkAuthentificationStatus() {
-    this.authService.getCurrentUser()
-        .subscribe((user: User) => {
-          if (user) this.router.navigateByUrl(`${environment.baseHref}/buckets`);
-        })
+    this.authService.getCurrentUser().subscribe((user: User) => {
+      if (user) this.router.navigateByUrl(`${environment.baseHref}/buckets`);
+    });
   }
-
 }

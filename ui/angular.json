@@ -33,7 +33,8 @@
               {
                 "glob": "**/*",
                 "input": "public",
-                "output": "public"
+                "output": "public",
+                "ignore": ["mock/**"]
               }
             ],
             "styles": [

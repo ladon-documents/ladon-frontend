@@ -1,27 +1,27 @@
-import { Injectable } from "@angular/core";
-import { BucketItem } from "../interfaces/bucket-item";
-import { BehaviorSubject, Observable, Subject, mergeMap, of } from "rxjs";
-import { BucketStats } from "../interfaces/bucket-stats";
-import {Bucket, BucketsService as BucketsServiceApi} from "../../api";
+import { Injectable } from '@angular/core';
+import { BucketItem } from '../interfaces/bucket-item';
+import { BehaviorSubject, Observable, Subject, mergeMap, of } from 'rxjs';
+import { BucketStats } from '../interfaces/bucket-stats';
+import { Bucket, BucketsService as BucketsServiceApi } from '../../api';
 
 @Injectable({
-	providedIn: "root",
+  providedIn: 'root',
 })
 export class BucketsService {
-	bucketsListBehaviorSubject = new BehaviorSubject<Bucket[] | undefined>(this.fetchBuckets());
-	selectedBucketSubject = new Subject<Bucket>();
+  bucketsListBehaviorSubject = new BehaviorSubject<Bucket[] | undefined>(this.fetchBuckets());
+  selectedBucketSubject = new Subject<Bucket>();
 
-	constructor( private bucketServiceApi: BucketsServiceApi) {}
+  constructor(private bucketServiceApi: BucketsServiceApi) {}
 
-	fetchBuckets(): Bucket[] {
-		return []//  this.bucketServiceApi.listBuckets();
-	}
+  fetchBuckets(): Bucket[] {
+    return []; //  this.bucketServiceApi.listBuckets();
+  }
 
-	retrieveBucketsList(): Observable<Bucket[]> {
-		return this.bucketServiceApi.listBuckets() //this.bucketsListBehaviorSubject.asObservable();
-	}
+  retrieveBucketsList(): Observable<Bucket[]> {
+    return this.bucketServiceApi.listBuckets(); //this.bucketsListBehaviorSubject.asObservable();
+  }
 
-	/*
+  /*
 	retrieveBucketStats(): Observable<any> {
 		return this.selectedBucketSubject.asObservable().pipe(
 			mergeMap((payload: BucketItem) => {

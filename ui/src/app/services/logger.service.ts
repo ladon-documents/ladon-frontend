@@ -11,16 +11,15 @@ export enum LogLevel {
 type LogLevelStrings = keyof typeof LogLevel;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoggerService {
   private logLevel: LogLevel = LogLevel.ALL;
   logWithDate: boolean = true;
 
   constructor() {
-    this.logLevel= LogLevel.OFF
+    this.logLevel = LogLevel.OFF;
   }
-
 
   clear() {
     console.clear();
@@ -29,7 +28,7 @@ export class LoggerService {
   public setLevel(key: LogLevel): void {
     const level = Number(LogLevel[key]);
     if (!(LogLevel.ALL <= level && level <= LogLevel.OFF)) {
-      throw new Error("Invalid log level");
+      throw new Error('Invalid log level');
     }
     this.logLevel = level;
   }
@@ -66,10 +65,7 @@ export class LoggerService {
   }
 
   private shouldLog(level: LogLevel) {
-    if (
-        (level >= this.logLevel && level !== LogLevel.OFF) ||
-        this.logLevel === LogLevel.ALL
-    ) {
+    if ((level >= this.logLevel && level !== LogLevel.OFF) || this.logLevel === LogLevel.ALL) {
       return true;
     }
     return false;
@@ -77,33 +73,33 @@ export class LoggerService {
 }
 
 class LogEntry {
-  message: string = "";
+  message: string = '';
   level: LogLevel = LogLevel.DEBUG;
   extraInfo: unknown[] = [];
   logWithDate: boolean = true;
 
   createLog(): string {
-    let log: string = "";
+    let log: string = '';
     if (this.logWithDate) {
-      log = new Date() + " - ";
+      log = new Date() + ' - ';
     }
-    log += "Level: " + LogLevel[this.level];
-    log += " - Message: " + this.message;
+    log += 'Level: ' + LogLevel[this.level];
+    log += ' - Message: ' + this.message;
 
     if (this.extraInfo.length) {
-      log += " Info: " + this.formatParams(this.extraInfo);
+      log += ' Info: ' + this.formatParams(this.extraInfo);
     }
     return log;
   }
 
   formatParams(params: unknown[]): string {
-    let log = params.join(",");
+    let log = params.join(',');
 
-    if (params.some((p) => typeof p == "object")) {
-      log = "";
+    if (params.some((p) => typeof p == 'object')) {
+      log = '';
     }
     for (let item of params) {
-      log += JSON.stringify(item) + ",";
+      log += JSON.stringify(item) + ',';
     }
 
     return log;

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx @tailwindcss/cli -i src/styles.css -o ./dist/ladon-global.css --postcss"
+    "build": "npx @tailwindcss/cli -i src/styles.css -o ./dist/styles/global.css --postcss"
   },
   "keywords": [],
   "author": "",
@@ -19,5 +19,8 @@
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.0.3"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
   }
 }

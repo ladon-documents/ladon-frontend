@@ -2,7 +2,7 @@ import {filesizePipeTransform} from "./filesize.pipe";
 import {aliasPipeTransform} from "./alias.pipe";
 import {fileiconPipeTransform} from "./fileicon.pipe";
 import {filenamePipeTransform} from "./filename.pipe";
-import {Initalizer} from "./Initalizer";
+import {Initalizer} from "./initalizer";
 
 export const utility = {
   filesizePipeTransform,

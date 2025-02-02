@@ -67,21 +67,6 @@ export class StaticwebComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	addScripts() {
-		let b = document.createElement("div");
-		b.innerHTML = "<h3>Returned html<h3>";
-
-		let s = document.createElement("script");
-		s.type = "text/javascript";
-		s.innerHTML = "console.log('done');"; //inline script
-		// s.src = "https://somesite.com/script.js"; // src script
-
-		b.appendChild(s);
-
-		this.elementRef.nativeElement.appendChild(b);
-	}
-
-
 	setInnerHTML (elm: any, html: any) {
 		elm.innerHTML = html;
 		Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {

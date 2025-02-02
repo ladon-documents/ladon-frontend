@@ -13,7 +13,7 @@
 		"label": "Our Team",
 		"target": "static",
 		"component": "Staticweb",
-		"path": "/public/html/test.html",
+		"path": "./public/html/test.html",
 		"icon": "heroFolder",
 		"type": "main",
 		"index": 32

@@ -14,7 +14,7 @@ import {Observable} from "rxjs";
 @Component({
   standalone: true,
   imports: [CommonModule, RouterModule, NavigationComponent, AsideComponent, UsermanagerComponent, BucketsComponent, LoginComponent, AsyncPipe],
-  selector: "ldn-mf-root",
+  selector: "ldn-ui",
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
   schemas:[CUSTOM_ELEMENTS_SCHEMA]
@@ -22,12 +22,10 @@ import {Observable} from "rxjs";
 export class AppComponent {
   public navigationEntries: Array<NavigationEntry> = [];
   isAuthenticated$:Observable<any>;
-  title = "ladon-core";
 
   constructor(private readonly as: AuthService) {
     this.navigationEntries = environment.navigation;
     this.isAuthenticated$ = this.as.user$;
-
   }
 }
 

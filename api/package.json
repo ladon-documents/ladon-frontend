@@ -8,9 +8,10 @@
     "generate:client:ng": "rm -rf angular-client; openapi-generator-cli generate -i  ../spec/ladon.yml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19",
     "generate:apis": "npm run generate:client:ts & npm run generate:client:ng",
     "copy-ng": "node -e \"require('fs').cpSync('angular-client/', '../ui/src/api', {recursive: true});\"",
-    "build:fetch": "esbuild fetch-client/index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api-fetch-client.mjs",
-    "build:utility": "esbuild index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api-utility.mjs",
-    "build:all": "npm run generate:apis && npm run copy-ng && npm run build:utility"
+    "build:fetch": "esbuild fetch-client/index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api/ladon-api-fetch-client.mjs",
+    "build:utility": "esbuild index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api/ladon-api.mjs",
+    "build:all": "npm run generate:apis && npm run copy-ng && npm run build:utility",
+    "serve": "esbuild index.ts --outdir=www/ --bundle --servedir=www --platform=neutral"
   },
   "author": "",
   "license": "ISC",

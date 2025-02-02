@@ -1,5 +1,2 @@
 /* You can add global styles to this file, and also import other style files */
-//@import url("../../style/dist/ladon-global.css");
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url("../../style/dist/styles/global.css");

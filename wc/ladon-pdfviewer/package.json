@@ -4,14 +4,20 @@
   "type": "module",
   "scripts": {
     "ng": "ng",
-    "dist:merge": "bash -c \"cat dist/{polyfills,main}.js > dist/ladon-pdfviewer.js\"",
-    "dist:clear": "bash rm -rf dist/{polyfills,main}.js",
+    "dist:merge": "bash -c \"cat dist/ladon-pdfviewer/{polyfills,main}.js > dist/ladon-pdfviewer/ladon-pdfviewer.js\"",
+    "dist:clear": "bash rm -rf dist/ladon-pdfviewer/{polyfills,main}.js",
     "start": "ng serve",
     "build": "ng build --output-hashing none",
     "postbuild": "npm run dist:merge",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
+  "files": [
+    "dist/",
+    "ladon-plugin.json",
+    "ladon-plugin.md",
+    "releasenotes.md"
+  ],
   "private": true,
   "dependencies": {
     "@angular/animations": "^19.0.0",

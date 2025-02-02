@@ -30,7 +30,7 @@ export class PdfviewerComponent {
 
   private readonly path: string = "/admin/api/filemanager";
   private pdfSrc: string = "";
-  private readonly deployTarget = "/wc/ladon-pdfviewer/dist/assets"
+  private readonly deployTarget = "./core-wc/ladon-pdfviewer/assets"
   private readonly pdfVersion = "/pdf.worker-4.7.708.min.mjs";
 
   @Input()
@@ -103,7 +103,7 @@ export class PdfviewerComponent {
     try {
       const bucket = pdfSrc.split('/')[1];
       if (pdfSrc && bucket) {
-        this.pdfurl = "test.pdf"; //`${this.path}/${encodeURIComponent(bucket)}/direct?id=${encodeURIComponent(pdfSrc)}${""}`
+        this.pdfurl = `${this.path}/${encodeURIComponent(bucket)}/direct?id=${encodeURIComponent(pdfSrc)}${""}`
       } else {
         this.error = true;
       }

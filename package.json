@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build:api": "npm  --prefix ./api run build:all",
+    "serve:api": "npm  --prefix ./api run serve",
     "build:styles": "npm  --prefix ./style run build",
     "build:ui": "npm  --prefix ./ui run build",
     "serve:ui": "npm  --prefix ./ui run start",

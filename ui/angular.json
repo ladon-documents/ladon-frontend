@@ -17,8 +17,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "baseHref": "/ui/draco/apps/ladon-core/",
-            "outputPath": "dist/ladon-core",
+            "baseHref": "/ui/draco/ladon-core/",
+            "outputPath": {
+              "base": "dist/ladon-core",
+              "browser": ""
+            },
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -30,13 +33,17 @@
               {
                 "glob": "**/*",
                 "input": "public",
+                "output": "public",
                 "ignore": ["mock/**"]
               }
             ],
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "lodash"
+            ]
           },
           "configurations": {
             "production": {

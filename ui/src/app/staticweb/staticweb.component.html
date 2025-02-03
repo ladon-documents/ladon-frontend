@@ -1,1 +1,3 @@
-<div id="static-page-content" [innerHTML]="staticHMTL" *ngIf="staticHMTL"></div>
+@if (staticHMTL) {
+  <div id="static-page-content" [innerHTML]="staticHMTL"></div>
+}

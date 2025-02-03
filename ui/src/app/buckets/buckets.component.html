@@ -1,4 +1,4 @@
-<div class="flex items-center gap-4 p-4 justify-between border-b sticky top-0 z-10 bg-white/95 backdrop-blur-sm">
+<div class="flex items-center gap-4 p-4 justify-between border-b sticky top-0 z-10 bg-white/95 backdrop-blur-xs">
   <div class="flex gap-4">
     <lib-searchbar></lib-searchbar>
 
@@ -26,18 +26,18 @@
   <ul role="list" class="divide-y divide-gray-100 gap-x-6 py-4 grow">
     @for (bucket of bucketsList$ | async; track $index) {
       <li
-        [ngClass]="{ active: selectedBucket && selectedBucket.id === bucket.id }"
+        [ngClass]="{ active: selectedBucket && selectedBucket.indexed === bucket.indexed }"
         class="flex justify-between p-4 cursor-pointer"
         (click)="selectBucket(bucket)">
         <div class="flex min-w-0 gap-x-4">
           <ng-icon name="heroFolderSolid" size="1.5em" class="shrink-0"></ng-icon>
           <div class="min-w-0 flex-auto">
-            <p class="text-sm/6 font-semibold">{{ bucket.id }}</p>
-            <p class="truncate text-xs text-gray-500">{{ bucket.createdBy }}</p>
+            <p class="text-sm/6 font-semibold">{{ bucket.name }}</p>
+            <p class="truncate text-xs text-gray-500">{{ bucket.created }}</p>
           </div>
         </div>
         <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-          @if (bucket.favourite) {
+          @if (bucket.name === "nope") {
             <span
               class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
               >Favorit</span
@@ -55,7 +55,7 @@
 
   <div class="border-l">
     <div>
-      <img src="png/1.png" alt="" />
+      <img src="public/png/1.png" alt="" />
     </div>
     <div class="grid grid-cols-[1fr_2fr] gap-2 p-4">
       <div class="text-sm text-gray-500">Name</div>

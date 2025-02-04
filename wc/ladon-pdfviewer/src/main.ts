@@ -3,9 +3,6 @@ import { appConfig } from './app/app.config';
 import { PdfviewerComponent } from './app/pdfviewer.component';
 import {createCustomElement} from "@angular/elements";
 
-/*bootstrapApplication(PdfviewerComponent, appConfig)
-  .catch((err) => console.error(err));*/
-
 (async () => {
 
   const app = await createApplication(appConfig);

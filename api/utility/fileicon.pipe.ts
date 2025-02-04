@@ -1,12 +1,15 @@
-const extractFileType = (value: string): string  => {
+const extractFileType = (value: string): string | null => {
   const lastPathElement = value.split("/").pop();
-  const dotIndex = lastPathElement.lastIndexOf(".");
+  if (lastPathElement) {
+    const dotIndex = lastPathElement.lastIndexOf(".");
 
-  if (dotIndex === -1) {
-    return null;
+    if (dotIndex === -1) {
+      return null;
+    }
+
+    return lastPathElement.slice(dotIndex + 1);
   }
-
-  return lastPathElement.slice(dotIndex + 1);
+  return null;
 }
 
 export const fileiconPipeTransform = (payload: string): string => {

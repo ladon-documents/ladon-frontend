@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, mergeMap, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthenticationService, LoginRequest, User, UsersService } from './ladon-api';
+import { AuthenticationService, LoginRequest, User, UsersService } from '../../api';
 
 @Injectable({
   providedIn: 'root',

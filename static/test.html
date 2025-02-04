@@ -6,18 +6,18 @@
   <script type="importmap">
     {
       "imports": {
-        "api": "../api/dist/fetch-client.mjs"
+        "api": "../api/dist/ladon-api/ladon-api.mjs"
       }
     }
   </script>
+
   <script type="module">
-      import  * as foo from  "api";
+      import * as api from "api";
+
       if (HTMLScriptElement.supports?.("importmap")) {
           console.log("Browser supports import maps.");
-          console.log(foo)
-          console.log(foo.BASE_PATH)
+          api.utility.Initalizer().initLadonStyles();
       }
-
   </script>
 </head>
 <body>

@@ -1,38 +1,42 @@
 {
-  "name": "@ladon/pdfviewer",
+  "name": "@ladon/clipboard",
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "ng": "ng",
-    "dist:merge": "bash -c \"cat dist/{polyfills,main}.js > dist/ladon-pdfviewer.js\"",
-    "dist:clear": "bash rm -rf dist/{polyfills,main}.js",
     "start": "ng serve",
-    "build": "ng build --output-hashing none",
+    "dist:merge": "bash -c \"cat dist/{runtime,polyfills,main}.js > dist/ladon-clipboard.js\"",
+    "dist:clear": "bash rm -rf dist/{runtime,polyfills,main}.js",
+    "build": "ng build  --output-hashing none",
     "postbuild": "npm run dist:merge",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "prettier:format": "prettier --write src"
+
   },
+  "private": true,
   "files": [
     "dist/",
     "ladon-plugin.json",
     "ladon-plugin.md",
     "releasenotes.md"
   ],
-  "private": true,
+  "prettier": {
+    "printWidth": 120,
+    "bracketSameLine": true
+  },
   "dependencies": {
     "@angular/animations": "^19.0.0",
     "@angular/common": "^19.0.0",
     "@angular/compiler": "^19.0.0",
     "@angular/core": "^19.0.0",
-    "@angular/elements": "^19.0.6",
+    "@angular/elements": "^19.1.4",
     "@angular/forms": "^19.0.0",
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0",
-    "ngx-extended-pdf-viewer": "22.1.0"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.0.7",
@@ -45,9 +49,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.6.2"
-  },
-  "publishConfig": {
-    "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
+    "typescript": "~5.6.2",
+    "prettier": "^3.4.2"
+
   }
 }

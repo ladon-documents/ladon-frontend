@@ -1,0 +1,88 @@
+<div class="overflow-x-auto">
+  <div (drop)="dropHandler($event)" (dragover)="allowDrop($event)">
+    <div class="clipboard__header">Auswahl: {{ count }}</div>
+
+    <table class="table">
+      <tbody>
+        @for (doc of documents$ | async; track doc.key) {
+          <tr [ngClass]="{ active: doc === selectedItem }" (click)="select(doc)">
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="avatar">
+                  <div class="mask mask-squircle h-12 w-12">
+                    <img slot="left" [src]="doc.key | fileicon" alt="Asset Icon" />
+                  </div>
+                </div>
+                <div>
+                  <div class="font-bold">{{ doc.name }}</div>
+                  <div class="text-sm opacity-50">{{ doc.path }}</div>
+                  <div class="text-sm opacity-50">Bucket: {{ doc.bucket }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="document__meta__item"><span>Größe:</span> {{ doc.size | filesize }}</div>
+              <div class="document__meta__item"><span>Erstellt am:</span> {{ doc.created | date: dateFormat }}</div>
+            </td>
+            <th>
+              <button class="btn btn-ghost btn-xs" (click)="remove(doc)">entfernen</button>
+            </th>
+          </tr>
+        }
+      </tbody>
+      <!-- foot -->
+      <tfoot></tfoot>
+    </table>
+    <div class="flex items-center gap-4 p-4 justify-between border-b sticky top-0 z-10 backdrop-blur-xs">
+      <button [disabled]="!buttonStates.pdf" (click)="action('pdf')" class="btn btn-outline btn-primary">
+        PDF erstellen
+      </button>
+      <button [disabled]="!buttonStates.download" (click)="action('zip')" class="btn btn-outline btn-primary">
+        Auswahl runterladen
+      </button>
+      <button (click)="reset()" [disabled]="!buttonStates.reset" class="btn btn-outline btn-primary">
+        Auswahl zurücksetzten
+      </button>
+    </div>
+  </div>
+</div>
+
+<!--
+<div class="container" (drop)="dropHandler($event)" (dragover)="allowDrop($event)">
+  <div class="notification" [ngClass]="{ 'notification--shown': notificator$ | async }">
+    Fehler beim Verarbeiten der Aktion. Bitte versuchen Sie es erneut
+  </div>
+  <div class="clipboard__header">Auswahl: {{ count }}</div>
+
+  <ul *ngIf="(isLoading$ | async) === false; else loader">
+    <li *ngFor="let doc of documents$ | async" [ngClass]="{ active: doc === selectedItem }" (click)="select(doc)">
+      <img slot="left" [src]="doc.key | fileicon " alt="Asset Icon"/>
+      <div>
+        {{ doc.name }}
+        <div class="document__meta">
+          <div class="document__meta__item">
+            <code>{{ doc.path }}</code>
+          </div>
+          <div class="document__meta__item"><span>Bucket:</span> {{ doc.bucket }}</div>
+          <div class="document__meta__item"><span>Größe:</span> {{ doc.size | filesize }}</div>
+          <div class="document__meta__item"><span>Erstellt am:</span> {{ doc.created | date: dateFormat }}</div>
+        </div>
+      </div>
+      <button (click)="remove(doc)" class="transparent">
+        <span class="webix_icon wxi-trash"></span>
+      </button>
+    </li>
+  </ul>
+  <div class="clipboard__controls clipboard__controls--footer">
+    <button [disabled]="!buttonStates.pdf" (click)="action('pdf')">PDF erstellen</button>
+    <button [disabled]="!buttonStates.download" (click)="action('zip')">Auswahl runterladen</button>
+    <button (click)="reset()" class="outline" [disabled]="!buttonStates.reset">Auswahl zurücksetzten</button>
+  </div>
+</div>
+
+<ng-template #loader>
+  <div class="ladon-spinner-backdrop">
+    <div id="ladon-spinner"></div>
+  </div>
+</ng-template>
+-->

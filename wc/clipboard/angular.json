@@ -3,8 +3,8 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "wc-ladon-pdfviewer": {
-      "projectType": "library",
+    "clipboard": {
+      "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
@@ -22,14 +22,6 @@
               "browser": ""
             },
             "index": "src/index.html",
-            "optimization": {
-              "scripts": false,
-              "styles": {
-                "minify": true,
-                "inlineCritical": true
-              }
-            },
-            "outputHashing": "none",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -40,11 +32,6 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
-                "output": "/assets/"
               }
             ],
             "styles": [
@@ -54,13 +41,11 @@
           },
           "configurations": {
             "production": {
-              "outputHashing": "none",
-              "optimization": true,
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "3MB"
+                  "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -68,7 +53,7 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "none"
+              "outputHashing": "all"
             },
             "development": {
               "optimization": false,
@@ -82,10 +67,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "wc-ladon-pdfviewer:build:production"
+              "buildTarget": "clipboard:build:production"
             },
             "development": {
-              "buildTarget": "wc-ladon-pdfviewer:build:development"
+              "buildTarget": "clipboard:build:development"
             }
           },
           "defaultConfiguration": "development"

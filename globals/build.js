@@ -40,7 +40,10 @@ async function generateImportMap() {
 
     json["imports"] = {
       ...imports,
-      [key]: `${pluginJson["deployTarget"]}dist/${key}/${moduleVersion}/`,
+      [`${key}/`]: `${pluginJson["deployTarget"].replaceAll(
+        "_",
+        ""
+      )}dist/${key}/${moduleVersion}/`,
     };
   }
 

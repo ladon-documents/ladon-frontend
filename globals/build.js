@@ -52,6 +52,7 @@ async function generateImportMap() {
 
 iterateAndCopyModules()
   .then(() => generateImportMap())
-  .catch(() => {
+  .catch((error) => {
+    console.error(error);
     process.exit(1);
   });

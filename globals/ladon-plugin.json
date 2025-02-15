@@ -1,7 +1,7 @@
 {
   "$schema": "https://plugins.mind-consulting.de/plugin-def-1.1.0.schema.json",
-  "id": "draco/ladon-global-dependencies",
-  "name": "Ladon Managed Global Dependencies",
+  "id": "ladon/draco-global-dependencies",
+  "name": "Draco Global Dependencies",
   "shortText": "",
   "deployTarget": "/_ui/draco/globals/cdn/",
   "targetVersion" : "4.7.0",

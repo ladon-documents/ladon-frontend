@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globals Static</title>
+    <script type="importmap">
+        {
+            "imports": {
+                "lodash": "https://cluster.mind-consulting.de/ui/root/globals/cdn/dist/lodash/4.17.21/lodash.js",
+                "moment/": "https://cluster.mind-consulting.de/ui/root/globals/cdn/dist/moment/2.30.1/",
+                "petite-vue/": "https://cluster.mind-consulting.de/ui/root/globals/cdn/dist/petite-vue/0.4.1/",
+                "rxjs/": "https://cluster.mind-consulting.de/ui/root/globals/cdn/dist/rxjs/7.8.1/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div v-scope>
+        <p>{{ count }}</p>
+        <p>{{ date }}</p>
+    </div>
+    
+</body>
+
+<script type="module">
+    import * as _ from "lodash";
+    import moment from "moment/dist/moment.js";
+    import { createApp } from "petite-vue/dist/petite-vue.es.js";
+
+    createApp({
+        count: 12,
+        date: moment().format("[Today is] dddd HH:mm")
+     }).mount();
+</script>
+</html>

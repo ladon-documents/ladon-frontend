@@ -1,0 +1,21 @@
+{
+  "name": "@ladon/globals",
+  "version": "2.1.1",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "files": [
+    "dist",
+    "ladon-plugin.json",
+    "ladon-plugin.md"
+  ],
+  "publishConfig": {
+    "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
+    "petite-vue": "^0.4.1",
+    "rxjs": "^7.8.1"
+  }
+}

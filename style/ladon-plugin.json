@@ -1,7 +1,7 @@
 {
   "$schema": "https://plugins.mind-consulting.de/plugin-def-1.1.0.schema.json",
   "channel": ["beta"],
-  "id": "@ladon/style",
+  "id": "@draco/style",
   "name": "Ladon Default Theme",
   "shortText": "Standard Style Sheet for Ladon",
   "deployTarget": "/_ui/draco/styles/",

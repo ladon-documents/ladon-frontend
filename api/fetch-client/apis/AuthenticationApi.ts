@@ -22,18 +22,64 @@ import {
     LoginRequestToJSON,
 } from '../models/index';
 
-export interface AuthenticateUserRequest {
+export interface AuthenticationApiAuthenticateUserRequest {
     loginRequest: LoginRequest;
+}
+
+/**
+ * AuthenticationApi - interface
+ * 
+ * @export
+ * @interface AuthenticationApiInterface
+ */
+export interface AuthenticationApiInterface {
+    /**
+     * 
+     * @param {LoginRequest} loginRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApiInterface
+     */
+    authenticateUserRaw(requestParameters: AuthenticationApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+
+    /**
+     */
+    authenticateUser(requestParameters: AuthenticationApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApiInterface
+     */
+    logoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+
+    /**
+     */
+    logout(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApiInterface
+     */
+    logoutGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+
+    /**
+     */
+    logoutGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+
 }
 
 /**
  * 
  */
-export class AuthenticationApi extends runtime.BaseAPI {
+export class AuthenticationApi extends runtime.BaseAPI implements AuthenticationApiInterface {
 
     /**
      */
-    async authenticateUserRaw(requestParameters: AuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async authenticateUserRaw(requestParameters: AuthenticationApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['loginRequest'] == null) {
             throw new runtime.RequiredError(
                 'loginRequest',
@@ -60,7 +106,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
 
     /**
      */
-    async authenticateUser(requestParameters: AuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async authenticateUser(requestParameters: AuthenticationApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.authenticateUserRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -4,11 +4,10 @@
   "type": "module",
   "scripts": {
     "ng": "ng",
-    "dist:merge": "bash -c \"cat dist/{polyfills,main}.js > dist/ladon-pdfviewer.js\"",
-    "dist:clear": "bash rm -rf dist/{polyfills,main}.js",
     "start": "ng serve",
+    "dist:clear": "rimraf ./dist/{polyfills,main}.js",
     "build": "ng build --output-hashing none",
-    "postbuild": "npm run dist:merge",
+    "postbuild": "webpack",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -29,10 +28,10 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "ngx-extended-pdf-viewer": "22.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0",
-    "ngx-extended-pdf-viewer": "22.1.0"
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.0.7",
@@ -45,7 +44,10 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.6.2"
+    "rimraf": "^6.0.1",
+    "typescript": "~5.6.2",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1"
   },
   "publishConfig": {
     "registry": "https://nexus.mind-consulting.de/repository/npm-private/"

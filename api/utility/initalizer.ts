@@ -1,3 +1,5 @@
+import {webComponentLoader} from "./webcomponent-loader";
+
 export const Initalizer = () => {
   const cssDeployPath = '/ui/draco/styles/global.css';
   const HEAD = 'head';
@@ -23,16 +25,13 @@ export const Initalizer = () => {
     document.getElementsByTagName(HEAD)[0].appendChild(cssLinkElement);
   }
 
-  const addPdfViewerComponent = () => {
-    const polyfills = createScriptElement('/ui/draco/core-wc/ladon-pdfviewer/polyfills.js');
-    const scriptElement = createScriptElement('/ui/draco/core-wc/ladon-pdfviewer/main.js');
-    document.getElementsByTagName(HEAD)[0].appendChild(polyfills);
-    document.getElementsByTagName(HEAD)[0].appendChild(scriptElement);
+  const initWebComponents = async () => {
+      return await webComponentLoader.initWebComponents();
   }
 
   return {
     initLadonStyles,
-    addPdfViewerComponent
+    initWebComponents
   };
 }
 

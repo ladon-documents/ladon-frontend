@@ -4,6 +4,7 @@
   "scripts": {
     "build:api": "npm  --prefix ./api run build:all",
     "serve:api": "npm  --prefix ./api run serve",
+    "build:globals": "npm  --prefix ./globals run build",
     "build:styles": "npm  --prefix ./style run build",
     "build:ui": "npm  --prefix ./ui run build",
     "serve:ui": "npm  --prefix ./ui run start",

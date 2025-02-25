@@ -25,24 +25,61 @@ import {
     ResponseSuccessToJSON,
 } from '../models/index';
 
-export interface AcceptDocumentActionsRequest {
+export interface ActionsApiAcceptDocumentActionsRequest {
     context: string;
     documentAction: DocumentAction;
 }
 
-export interface GetDocumentActionsRequest {
+export interface ActionsApiGetDocumentActionsRequest {
     context: string;
     paths: Array<string>;
 }
 
 /**
+ * ActionsApi - interface
  * 
+ * @export
+ * @interface ActionsApiInterface
  */
-export class ActionsApi extends runtime.BaseAPI {
+export interface ActionsApiInterface {
+    /**
+     * 
+     * @param {string} context 
+     * @param {DocumentAction} documentAction 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ActionsApiInterface
+     */
+    acceptDocumentActionsRaw(requestParameters: ActionsApiAcceptDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
 
     /**
      */
-    async acceptDocumentActionsRaw(requestParameters: AcceptDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
+    acceptDocumentActions(requestParameters: ActionsApiAcceptDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
+    /**
+     * 
+     * @param {string} context 
+     * @param {Array<string>} paths 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ActionsApiInterface
+     */
+    getDocumentActionsRaw(requestParameters: ActionsApiGetDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DocumentAction>>>;
+
+    /**
+     */
+    getDocumentActions(requestParameters: ActionsApiGetDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<DocumentAction>>;
+
+}
+
+/**
+ * 
+ */
+export class ActionsApi extends runtime.BaseAPI implements ActionsApiInterface {
+
+    /**
+     */
+    async acceptDocumentActionsRaw(requestParameters: ActionsApiAcceptDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
         if (requestParameters['context'] == null) {
             throw new runtime.RequiredError(
                 'context',
@@ -80,14 +117,14 @@ export class ActionsApi extends runtime.BaseAPI {
 
     /**
      */
-    async acceptDocumentActions(requestParameters: AcceptDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
+    async acceptDocumentActions(requestParameters: ActionsApiAcceptDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
         const response = await this.acceptDocumentActionsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getDocumentActionsRaw(requestParameters: GetDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DocumentAction>>> {
+    async getDocumentActionsRaw(requestParameters: ActionsApiGetDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DocumentAction>>> {
         if (requestParameters['context'] == null) {
             throw new runtime.RequiredError(
                 'context',
@@ -126,7 +163,7 @@ export class ActionsApi extends runtime.BaseAPI {
 
     /**
      */
-    async getDocumentActions(requestParameters: GetDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<DocumentAction>> {
+    async getDocumentActions(requestParameters: ActionsApiGetDocumentActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<DocumentAction>> {
         const response = await this.getDocumentActionsRaw(requestParameters, initOverrides);
         return await response.value();
     }

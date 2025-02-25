@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "ts-node node_modules/jasmine/bin/jasmine.js",
-    "generate:client:ts": "rm -rf fetch-client; openapi-generator-cli generate -i ../spec/ladon.yml -g typescript-fetch -o fetch-client --additional-properties=supportsES6=true --additional-properties=disallowAdditionalPropertiesIfNotPresent=false",
-    "generate:client:ng": "rm -rf angular-client; openapi-generator-cli generate -i  ../spec/ladon.yml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19",
+    "clean": "rimraf ./fetch-client",
+    "generate:client:ts": "rimraf ./fetch-client; openapi-generator-cli generate -i ../spec/ladon.yml -g typescript-fetch -o fetch-client --additional-properties=supportsES6=false,disallowAdditionalPropertiesIfNotPresent=false,withSeparateModelsAndApi=false,prefixParameterInterfaces=true,withInterfaces=true",
+    "generate:client:ng": "rimraf ./angular-client; openapi-generator-cli generate -i  ../spec/ladon.yml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
     "generate:apis": "npm run generate:client:ts & npm run generate:client:ng",
     "copy-ng": "node -e \"require('fs').cpSync('angular-client/', '../ui/src/api', {recursive: true});\"",
     "build:fetch": "esbuild fetch-client/index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api/ladon-api-fetch-client.mjs",
@@ -28,6 +29,7 @@
     "esbuild": "0.24.2",
     "jasmine": "^5.5.0",
     "jasmine-core": "^5.5.0",
+    "rimraf": "^6.0.1",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "5.7.3"

@@ -22,14 +22,60 @@ import {
     UserToJSON,
 } from '../models/index';
 
-export interface GetPictureRequest {
+export interface UsersApiGetPictureRequest {
     userId: string;
+}
+
+/**
+ * UsersApi - interface
+ * 
+ * @export
+ * @interface UsersApiInterface
+ */
+export interface UsersApiInterface {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    getAllowableActionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: object; }>>;
+
+    /**
+     */
+    getAllowableActions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: object; }>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    getCurrentUserRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>>;
+
+    /**
+     */
+    getCurrentUser(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<User>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsersApiInterface
+     */
+    getPictureRaw(requestParameters: UsersApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    getPicture(requestParameters: UsersApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
 }
 
 /**
  * 
  */
-export class UsersApi extends runtime.BaseAPI {
+export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
     /**
      */
@@ -81,7 +127,7 @@ export class UsersApi extends runtime.BaseAPI {
 
     /**
      */
-    async getPictureRaw(requestParameters: GetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+    async getPictureRaw(requestParameters: UsersApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -105,7 +151,7 @@ export class UsersApi extends runtime.BaseAPI {
 
     /**
      */
-    async getPicture(requestParameters: GetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+    async getPicture(requestParameters: UsersApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
         const response = await this.getPictureRaw(requestParameters, initOverrides);
         return await response.value();
     }

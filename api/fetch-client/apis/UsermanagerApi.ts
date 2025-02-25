@@ -46,113 +46,455 @@ import {
     UserWrapperToJSON,
 } from '../models/index';
 
-export interface AddAvatarRequest {
+export interface UsermanagerApiAddAvatarRequest {
     userId: string;
     uploadFullpath: string;
     upload: Blob;
 }
 
-export interface AddPermissionForRoleRequest {
+export interface UsermanagerApiAddPermissionForRoleRequest {
     roleId: string;
     permissionId: string;
 }
 
-export interface AddPermissionForUserRequest {
+export interface UsermanagerApiAddPermissionForUserRequest {
     userId: string;
     permissionId: string;
 }
 
-export interface AddRoleForUserRequest {
+export interface UsermanagerApiAddRoleForUserRequest {
     userId: string;
     roleId: string;
 }
 
-export interface AddUserRequest {
+export interface UsermanagerApiAddUserRequest {
     userWrapper: UserWrapper;
 }
 
-export interface CreatePermissionsRequest {
+export interface UsermanagerApiCreatePermissionsRequest {
     ladonPermission: LadonPermission;
 }
 
-export interface CreateRoleRequest {
+export interface UsermanagerApiCreateRoleRequest {
     roleWrapper: RoleWrapper;
 }
 
-export interface DeleteRoleRequest {
+export interface UsermanagerApiDeleteRoleRequest {
     roleId: string;
 }
 
-export interface DeleteRoleForUserRequest {
+export interface UsermanagerApiDeleteRoleForUserRequest {
     userId: string;
     roleId: string;
 }
 
-export interface DeleteUserRequest {
+export interface UsermanagerApiDeleteUserRequest {
     userId: string;
 }
 
-export interface GetLoginLogsRequest {
+export interface UsermanagerApiGetLoginLogsRequest {
     userId: string;
 }
 
-export interface GetPermissionsForRoleRequest {
+export interface UsermanagerApiGetPermissionsForRoleRequest {
     roleId: string;
 }
 
-export interface GetPermissionsForUserRequest {
+export interface UsermanagerApiGetPermissionsForUserRequest {
     userId: string;
 }
 
-export interface GetRoleForUserRequest {
+export interface UsermanagerApiGetRoleForUserRequest {
     userId: string;
 }
 
-export interface GetUserDataRequest {
+export interface UsermanagerApiGetUserDataRequest {
     userId: string;
 }
 
-export interface GetUsersForRoleRequest {
+export interface UsermanagerApiGetUsersForRoleRequest {
     roleId: string;
 }
 
-export interface RemovePermissionRequest {
+export interface UsermanagerApiRemovePermissionRequest {
     permissionId: string;
 }
 
-export interface RemovePermissionFromRoleRequest {
+export interface UsermanagerApiRemovePermissionFromRoleRequest {
     roleId: string;
     permissionId: string;
 }
 
-export interface RemovePermissionFromUserRequest {
+export interface UsermanagerApiRemovePermissionFromUserRequest {
     userId: string;
     permissionId: string;
 }
 
-export interface SetCredentialsRequest {
+export interface UsermanagerApiSetCredentialsRequest {
     userId: string;
     body: string;
 }
 
-export interface UpdateCredentialsRequest {
+export interface UsermanagerApiUpdateCredentialsRequest {
     userId: string;
     credentialsWrapper: CredentialsWrapper;
 }
 
-export interface UpdateUserRequest {
+export interface UsermanagerApiUpdateUserRequest {
     userId: string;
     userDataWrapper: UserDataWrapper;
 }
 
 /**
+ * UsermanagerApi - interface
  * 
+ * @export
+ * @interface UsermanagerApiInterface
  */
-export class UsermanagerApi extends runtime.BaseAPI {
+export interface UsermanagerApiInterface {
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} uploadFullpath 
+     * @param {Blob} upload 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    addAvatarRaw(requestParameters: UsermanagerApiAddAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
 
     /**
      */
-    async addAvatarRaw(requestParameters: AddAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    addAvatar(requestParameters: UsermanagerApiAddAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} roleId 
+     * @param {string} permissionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    addPermissionForRoleRaw(requestParameters: UsermanagerApiAddPermissionForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    addPermissionForRole(requestParameters: UsermanagerApiAddPermissionForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} permissionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    addPermissionForUserRaw(requestParameters: UsermanagerApiAddPermissionForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    addPermissionForUser(requestParameters: UsermanagerApiAddPermissionForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} roleId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    addRoleForUserRaw(requestParameters: UsermanagerApiAddRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    addRoleForUser(requestParameters: UsermanagerApiAddRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {UserWrapper} userWrapper 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    addUserRaw(requestParameters: UsermanagerApiAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>>;
+
+    /**
+     */
+    addUser(requestParameters: UsermanagerApiAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }>;
+
+    /**
+     * 
+     * @param {LadonPermission} ladonPermission 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    createPermissionsRaw(requestParameters: UsermanagerApiCreatePermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+
+    /**
+     */
+    createPermissions(requestParameters: UsermanagerApiCreatePermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+
+    /**
+     * 
+     * @param {RoleWrapper} roleWrapper 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    createRoleRaw(requestParameters: UsermanagerApiCreateRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    createRole(requestParameters: UsermanagerApiCreateRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} roleId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    deleteRoleRaw(requestParameters: UsermanagerApiDeleteRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    deleteRole(requestParameters: UsermanagerApiDeleteRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} roleId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    deleteRoleForUserRaw(requestParameters: UsermanagerApiDeleteRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    deleteRoleForUser(requestParameters: UsermanagerApiDeleteRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    deleteUserRaw(requestParameters: UsermanagerApiDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    deleteUser(requestParameters: UsermanagerApiDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getAllPermissionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Permission>>>;
+
+    /**
+     */
+    getAllPermissions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Permission>>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getLoginLogsRaw(requestParameters: UsermanagerApiGetLoginLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UserLogins>>>;
+
+    /**
+     */
+    getLoginLogs(requestParameters: UsermanagerApiGetLoginLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UserLogins>>;
+
+    /**
+     * 
+     * @param {string} roleId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getPermissionsForRoleRaw(requestParameters: UsermanagerApiGetPermissionsForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Permission>>>;
+
+    /**
+     */
+    getPermissionsForRole(requestParameters: UsermanagerApiGetPermissionsForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Permission>>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getPermissionsForUserRaw(requestParameters: UsermanagerApiGetPermissionsForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Permission>>>;
+
+    /**
+     */
+    getPermissionsForUser(requestParameters: UsermanagerApiGetPermissionsForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Permission>>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getRoleForUserRaw(requestParameters: UsermanagerApiGetRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    getRoleForUser(requestParameters: UsermanagerApiGetRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getRolesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<RoleEntry>>>;
+
+    /**
+     */
+    getRoles(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<RoleEntry>>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getUserDataRaw(requestParameters: UsermanagerApiGetUserDataRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDataWrapper>>;
+
+    /**
+     */
+    getUserData(requestParameters: UsermanagerApiGetUserDataRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDataWrapper>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getUsersRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UserEntry>>>;
+
+    /**
+     */
+    getUsers(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UserEntry>>;
+
+    /**
+     * 
+     * @param {string} roleId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    getUsersForRoleRaw(requestParameters: UsermanagerApiGetUsersForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    getUsersForRole(requestParameters: UsermanagerApiGetUsersForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
+    /**
+     * 
+     * @param {string} permissionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    removePermissionRaw(requestParameters: UsermanagerApiRemovePermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+
+    /**
+     */
+    removePermission(requestParameters: UsermanagerApiRemovePermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+
+    /**
+     * 
+     * @param {string} roleId 
+     * @param {string} permissionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    removePermissionFromRoleRaw(requestParameters: UsermanagerApiRemovePermissionFromRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    removePermissionFromRole(requestParameters: UsermanagerApiRemovePermissionFromRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} permissionId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    removePermissionFromUserRaw(requestParameters: UsermanagerApiRemovePermissionFromUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    removePermissionFromUser(requestParameters: UsermanagerApiRemovePermissionFromUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {string} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    setCredentialsRaw(requestParameters: UsermanagerApiSetCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    setCredentials(requestParameters: UsermanagerApiSetCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {CredentialsWrapper} credentialsWrapper 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    updateCredentialsRaw(requestParameters: UsermanagerApiUpdateCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    updateCredentials(requestParameters: UsermanagerApiUpdateCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+    /**
+     * 
+     * @param {string} userId 
+     * @param {UserDataWrapper} userDataWrapper 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UsermanagerApiInterface
+     */
+    updateUserRaw(requestParameters: UsermanagerApiUpdateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    updateUser(requestParameters: UsermanagerApiUpdateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
+}
+
+/**
+ * 
+ */
+export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInterface {
+
+    /**
+     */
+    async addAvatarRaw(requestParameters: UsermanagerApiAddAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -215,13 +557,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async addAvatar(requestParameters: AddAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async addAvatar(requestParameters: UsermanagerApiAddAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.addAvatarRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async addPermissionForRoleRaw(requestParameters: AddPermissionForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async addPermissionForRoleRaw(requestParameters: UsermanagerApiAddPermissionForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['roleId'] == null) {
             throw new runtime.RequiredError(
                 'roleId',
@@ -256,13 +598,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async addPermissionForRole(requestParameters: AddPermissionForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async addPermissionForRole(requestParameters: UsermanagerApiAddPermissionForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.addPermissionForRoleRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async addPermissionForUserRaw(requestParameters: AddPermissionForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async addPermissionForUserRaw(requestParameters: UsermanagerApiAddPermissionForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -297,13 +639,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async addPermissionForUser(requestParameters: AddPermissionForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async addPermissionForUser(requestParameters: UsermanagerApiAddPermissionForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.addPermissionForUserRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async addRoleForUserRaw(requestParameters: AddRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async addRoleForUserRaw(requestParameters: UsermanagerApiAddRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -338,13 +680,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async addRoleForUser(requestParameters: AddRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async addRoleForUser(requestParameters: UsermanagerApiAddRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.addRoleForUserRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async addUserRaw(requestParameters: AddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
+    async addUserRaw(requestParameters: UsermanagerApiAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
         if (requestParameters['userWrapper'] == null) {
             throw new runtime.RequiredError(
                 'userWrapper',
@@ -371,14 +713,14 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async addUser(requestParameters: AddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
+    async addUser(requestParameters: UsermanagerApiAddUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
         const response = await this.addUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async createPermissionsRaw(requestParameters: CreatePermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async createPermissionsRaw(requestParameters: UsermanagerApiCreatePermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['ladonPermission'] == null) {
             throw new runtime.RequiredError(
                 'ladonPermission',
@@ -405,14 +747,14 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async createPermissions(requestParameters: CreatePermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async createPermissions(requestParameters: UsermanagerApiCreatePermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.createPermissionsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async createRoleRaw(requestParameters: CreateRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async createRoleRaw(requestParameters: UsermanagerApiCreateRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['roleWrapper'] == null) {
             throw new runtime.RequiredError(
                 'roleWrapper',
@@ -439,13 +781,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async createRole(requestParameters: CreateRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async createRole(requestParameters: UsermanagerApiCreateRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.createRoleRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async deleteRoleRaw(requestParameters: DeleteRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async deleteRoleRaw(requestParameters: UsermanagerApiDeleteRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['roleId'] == null) {
             throw new runtime.RequiredError(
                 'roleId',
@@ -469,13 +811,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async deleteRole(requestParameters: DeleteRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async deleteRole(requestParameters: UsermanagerApiDeleteRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.deleteRoleRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async deleteRoleForUserRaw(requestParameters: DeleteRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async deleteRoleForUserRaw(requestParameters: UsermanagerApiDeleteRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -510,13 +852,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async deleteRoleForUser(requestParameters: DeleteRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async deleteRoleForUser(requestParameters: UsermanagerApiDeleteRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.deleteRoleForUserRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async deleteUserRaw(requestParameters: DeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async deleteUserRaw(requestParameters: UsermanagerApiDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -540,7 +882,7 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async deleteUser(requestParameters: DeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async deleteUser(requestParameters: UsermanagerApiDeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.deleteUserRaw(requestParameters, initOverrides);
     }
 
@@ -570,7 +912,7 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getLoginLogsRaw(requestParameters: GetLoginLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UserLogins>>> {
+    async getLoginLogsRaw(requestParameters: UsermanagerApiGetLoginLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<UserLogins>>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -594,14 +936,14 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getLoginLogs(requestParameters: GetLoginLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UserLogins>> {
+    async getLoginLogs(requestParameters: UsermanagerApiGetLoginLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<UserLogins>> {
         const response = await this.getLoginLogsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getPermissionsForRoleRaw(requestParameters: GetPermissionsForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Permission>>> {
+    async getPermissionsForRoleRaw(requestParameters: UsermanagerApiGetPermissionsForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Permission>>> {
         if (requestParameters['roleId'] == null) {
             throw new runtime.RequiredError(
                 'roleId',
@@ -625,14 +967,14 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getPermissionsForRole(requestParameters: GetPermissionsForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Permission>> {
+    async getPermissionsForRole(requestParameters: UsermanagerApiGetPermissionsForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Permission>> {
         const response = await this.getPermissionsForRoleRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getPermissionsForUserRaw(requestParameters: GetPermissionsForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Permission>>> {
+    async getPermissionsForUserRaw(requestParameters: UsermanagerApiGetPermissionsForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Permission>>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -656,14 +998,14 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getPermissionsForUser(requestParameters: GetPermissionsForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Permission>> {
+    async getPermissionsForUser(requestParameters: UsermanagerApiGetPermissionsForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Permission>> {
         const response = await this.getPermissionsForUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getRoleForUserRaw(requestParameters: GetRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+    async getRoleForUserRaw(requestParameters: UsermanagerApiGetRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -687,7 +1029,7 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getRoleForUser(requestParameters: GetRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+    async getRoleForUser(requestParameters: UsermanagerApiGetRoleForUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
         const response = await this.getRoleForUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -718,7 +1060,7 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getUserDataRaw(requestParameters: GetUserDataRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDataWrapper>> {
+    async getUserDataRaw(requestParameters: UsermanagerApiGetUserDataRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDataWrapper>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -742,7 +1084,7 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getUserData(requestParameters: GetUserDataRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDataWrapper> {
+    async getUserData(requestParameters: UsermanagerApiGetUserDataRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDataWrapper> {
         const response = await this.getUserDataRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -773,7 +1115,7 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getUsersForRoleRaw(requestParameters: GetUsersForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+    async getUsersForRoleRaw(requestParameters: UsermanagerApiGetUsersForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['roleId'] == null) {
             throw new runtime.RequiredError(
                 'roleId',
@@ -797,14 +1139,14 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getUsersForRole(requestParameters: GetUsersForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+    async getUsersForRole(requestParameters: UsermanagerApiGetUsersForRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
         const response = await this.getUsersForRoleRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async removePermissionRaw(requestParameters: RemovePermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async removePermissionRaw(requestParameters: UsermanagerApiRemovePermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['permissionId'] == null) {
             throw new runtime.RequiredError(
                 'permissionId',
@@ -828,14 +1170,14 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async removePermission(requestParameters: RemovePermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async removePermission(requestParameters: UsermanagerApiRemovePermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.removePermissionRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async removePermissionFromRoleRaw(requestParameters: RemovePermissionFromRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async removePermissionFromRoleRaw(requestParameters: UsermanagerApiRemovePermissionFromRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['roleId'] == null) {
             throw new runtime.RequiredError(
                 'roleId',
@@ -870,13 +1212,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async removePermissionFromRole(requestParameters: RemovePermissionFromRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async removePermissionFromRole(requestParameters: UsermanagerApiRemovePermissionFromRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.removePermissionFromRoleRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async removePermissionFromUserRaw(requestParameters: RemovePermissionFromUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async removePermissionFromUserRaw(requestParameters: UsermanagerApiRemovePermissionFromUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -911,13 +1253,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async removePermissionFromUser(requestParameters: RemovePermissionFromUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async removePermissionFromUser(requestParameters: UsermanagerApiRemovePermissionFromUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.removePermissionFromUserRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async setCredentialsRaw(requestParameters: SetCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async setCredentialsRaw(requestParameters: UsermanagerApiSetCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -951,13 +1293,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async setCredentials(requestParameters: SetCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async setCredentials(requestParameters: UsermanagerApiSetCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.setCredentialsRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async updateCredentialsRaw(requestParameters: UpdateCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async updateCredentialsRaw(requestParameters: UsermanagerApiUpdateCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -991,13 +1333,13 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async updateCredentials(requestParameters: UpdateCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async updateCredentials(requestParameters: UsermanagerApiUpdateCredentialsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.updateCredentialsRaw(requestParameters, initOverrides);
     }
 
     /**
      */
-    async updateUserRaw(requestParameters: UpdateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async updateUserRaw(requestParameters: UsermanagerApiUpdateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -1031,7 +1373,7 @@ export class UsermanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async updateUser(requestParameters: UpdateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async updateUser(requestParameters: UsermanagerApiUpdateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.updateUserRaw(requestParameters, initOverrides);
     }
 

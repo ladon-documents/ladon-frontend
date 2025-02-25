@@ -23,9 +23,30 @@ import {
 } from '../models/index';
 
 /**
+ * StreamApi - interface
+ * 
+ * @export
+ * @interface StreamApiInterface
+ */
+export interface StreamApiInterface {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StreamApiInterface
+     */
+    retrieveStreamOpsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
+
+    /**
+     */
+    retrieveStreamOps(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
+}
+
+/**
  * 
  */
-export class StreamApi extends runtime.BaseAPI {
+export class StreamApi extends runtime.BaseAPI implements StreamApiInterface {
 
     /**
      */

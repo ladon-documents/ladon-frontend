@@ -25,22 +25,81 @@ import {
     TxInfoToJSON,
 } from '../models/index';
 
-export interface CommitTransactionRequest {
+export interface TransactionApiCommitTransactionRequest {
     txId: string;
 }
 
-export interface RollbackTransactionRequest {
+export interface TransactionApiRollbackTransactionRequest {
     txId: string;
+}
+
+/**
+ * TransactionApi - interface
+ * 
+ * @export
+ * @interface TransactionApiInterface
+ */
+export interface TransactionApiInterface {
+    /**
+     * 
+     * @param {string} txId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TransactionApiInterface
+     */
+    commitTransactionRaw(requestParameters: TransactionApiCommitTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
+
+    /**
+     */
+    commitTransaction(requestParameters: TransactionApiCommitTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TransactionApiInterface
+     */
+    isTxActiveRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>>;
+
+    /**
+     */
+    isTxActive(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean>;
+
+    /**
+     * 
+     * @param {string} txId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TransactionApiInterface
+     */
+    rollbackTransactionRaw(requestParameters: TransactionApiRollbackTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
+
+    /**
+     */
+    rollbackTransaction(requestParameters: TransactionApiRollbackTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TransactionApiInterface
+     */
+    startTransactionRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TxInfo>>;
+
+    /**
+     */
+    startTransaction(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TxInfo>;
+
 }
 
 /**
  * 
  */
-export class TransactionApi extends runtime.BaseAPI {
+export class TransactionApi extends runtime.BaseAPI implements TransactionApiInterface {
 
     /**
      */
-    async commitTransactionRaw(requestParameters: CommitTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
+    async commitTransactionRaw(requestParameters: TransactionApiCommitTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
         if (requestParameters['txId'] == null) {
             throw new runtime.RequiredError(
                 'txId',
@@ -68,7 +127,7 @@ export class TransactionApi extends runtime.BaseAPI {
 
     /**
      */
-    async commitTransaction(requestParameters: CommitTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
+    async commitTransaction(requestParameters: TransactionApiCommitTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
         const response = await this.commitTransactionRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -103,7 +162,7 @@ export class TransactionApi extends runtime.BaseAPI {
 
     /**
      */
-    async rollbackTransactionRaw(requestParameters: RollbackTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
+    async rollbackTransactionRaw(requestParameters: TransactionApiRollbackTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
         if (requestParameters['txId'] == null) {
             throw new runtime.RequiredError(
                 'txId',
@@ -131,7 +190,7 @@ export class TransactionApi extends runtime.BaseAPI {
 
     /**
      */
-    async rollbackTransaction(requestParameters: RollbackTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
+    async rollbackTransaction(requestParameters: TransactionApiRollbackTransactionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
         const response = await this.rollbackTransactionRaw(requestParameters, initOverrides);
         return await response.value();
     }

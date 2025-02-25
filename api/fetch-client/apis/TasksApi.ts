@@ -22,23 +22,96 @@ import {
     TaskStatusToJSON,
 } from '../models/index';
 
-export interface StartTaskRequest {
+export interface TasksApiStartTaskRequest {
     name: string;
     requestBody: { [key: string]: string; };
 }
 
-export interface StatusTaskRequest {
+export interface TasksApiStatusTaskRequest {
     id: string;
 }
 
-export interface StopTaskRequest {
+export interface TasksApiStopTaskRequest {
     id: string;
+}
+
+/**
+ * TasksApi - interface
+ * 
+ * @export
+ * @interface TasksApiInterface
+ */
+export interface TasksApiInterface {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApiInterface
+     */
+    getActiveTasksRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<TaskStatus>>>;
+
+    /**
+     */
+    getActiveTasks(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<TaskStatus>>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApiInterface
+     */
+    getAvailableTasksRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    getAvailableTasks(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
+    /**
+     * 
+     * @param {string} name 
+     * @param {{ [key: string]: string; }} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApiInterface
+     */
+    startTaskRaw(requestParameters: TasksApiStartTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>>;
+
+    /**
+     */
+    startTask(requestParameters: TasksApiStartTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }>;
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApiInterface
+     */
+    statusTaskRaw(requestParameters: TasksApiStatusTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TaskStatus>>;
+
+    /**
+     */
+    statusTask(requestParameters: TasksApiStatusTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TaskStatus>;
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TasksApiInterface
+     */
+    stopTaskRaw(requestParameters: TasksApiStopTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>>;
+
+    /**
+     */
+    stopTask(requestParameters: TasksApiStopTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
+
 }
 
 /**
  * 
  */
-export class TasksApi extends runtime.BaseAPI {
+export class TasksApi extends runtime.BaseAPI implements TasksApiInterface {
 
     /**
      */
@@ -90,7 +163,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async startTaskRaw(requestParameters: StartTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
+    async startTaskRaw(requestParameters: TasksApiStartTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
         if (requestParameters['name'] == null) {
             throw new runtime.RequiredError(
                 'name',
@@ -128,14 +201,14 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async startTask(requestParameters: StartTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
+    async startTask(requestParameters: TasksApiStartTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
         const response = await this.startTaskRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async statusTaskRaw(requestParameters: StatusTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TaskStatus>> {
+    async statusTaskRaw(requestParameters: TasksApiStatusTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TaskStatus>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -163,14 +236,14 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async statusTask(requestParameters: StatusTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TaskStatus> {
+    async statusTask(requestParameters: TasksApiStatusTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TaskStatus> {
         const response = await this.statusTaskRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async stopTaskRaw(requestParameters: StopTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async stopTaskRaw(requestParameters: TasksApiStopTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -202,7 +275,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async stopTask(requestParameters: StopTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+    async stopTask(requestParameters: TasksApiStopTaskRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.stopTaskRaw(requestParameters, initOverrides);
         return await response.value();
     }

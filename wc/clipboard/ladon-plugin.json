@@ -1,6 +1,6 @@
 {
   "$schema": "https://plugins.mind-consulting.de/plugin-def-1.1.0.schema.json",
-  "id": "@ladon/clipboard",
+  "id": "@draco/clipboard",
   "name": "Ladon Clipboard WebComponent",
   "shortText": "This WebComponent allows the user to view PDf Files",
   "deployTarget": "/_ui/draco/core-wc/ladon-clipboard/",

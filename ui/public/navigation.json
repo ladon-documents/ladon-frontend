@@ -5,9 +5,17 @@
 		"component": "buckets",
 		"path": "buckets",
 		"icon": "heroFolder",
-		"id": "@mind/mf-ladon-docmanager",
 		"type": "main",
 		"index": 31
+	},
+	{
+		"label": "Filemanager",
+		"target": "internal",
+		"component": "filemanager",
+		"path": "filemanager",
+		"icon": "heroFolder",
+		"type": "main",
+		"index": 32
 	},
 	{
 		"label": "Our Team",
@@ -16,7 +24,7 @@
 		"path": "./public/html/test.html",
 		"icon": "heroFolder",
 		"type": "main",
-		"index": 32
+		"index": 35
 	},
 	{
 		"label": "USER_MANAGER.NAVITEM",

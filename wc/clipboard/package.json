@@ -4,14 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "dist:merge": "bash -c \"cat dist/{runtime,polyfills,main}.js > dist/ladon-clipboard.js\"",
-    "dist:clear": "bash rm -rf dist/{runtime,polyfills,main}.js",
+    "dist:clear": "rimraf ./dist/{polyfills,main}.js",
     "build": "ng build  --output-hashing none",
-    "postbuild": "npm run dist:merge",
+    "postbuild": "webpack",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "prettier:format": "prettier --write src"
-
   },
   "private": true,
   "files": [
@@ -49,8 +47,12 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.4.2",
     "typescript": "~5.6.2",
-    "prettier": "^3.4.2"
-
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
   }
 }

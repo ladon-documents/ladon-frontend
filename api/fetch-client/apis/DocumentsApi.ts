@@ -31,7 +31,7 @@ import {
     ZipUploadRequestToJSON,
 } from '../models/index';
 
-export interface DatepathsearchRequest {
+export interface DocumentsApiDatepathsearchRequest {
     bucket: string;
     from: string;
     to: string;
@@ -39,30 +39,30 @@ export interface DatepathsearchRequest {
     term?: string;
 }
 
-export interface DeleteDocumentRequest {
+export interface DocumentsApiDeleteDocumentRequest {
     bucket: string;
     key: string;
     version?: string;
 }
 
-export interface FindDocumentPathRequest {
+export interface DocumentsApiFindDocumentPathRequest {
     bucket: string;
     term: string;
     limit?: number;
 }
 
-export interface GetDocumentRequest {
+export interface DocumentsApiGetDocumentRequest {
     bucket: string;
     key: string;
     version?: string;
 }
 
-export interface GetDocumentMetaRequest {
+export interface DocumentsApiGetDocumentMetaRequest {
     bucket: string;
     key: string;
 }
 
-export interface ListDocumentJsonRequest {
+export interface DocumentsApiListDocumentJsonRequest {
     bucket: string;
     prefix?: string;
     orderby?: string;
@@ -70,12 +70,12 @@ export interface ListDocumentJsonRequest {
     asMap?: boolean;
 }
 
-export interface ListDocumentMetaVersionsRequest {
+export interface DocumentsApiListDocumentMetaVersionsRequest {
     bucket: string;
     key: string;
 }
 
-export interface ListDocumentsRequest {
+export interface DocumentsApiListDocumentsRequest {
     bucket: string;
     limit?: number;
     page?: number;
@@ -85,33 +85,214 @@ export interface ListDocumentsRequest {
     currentFolder?: boolean;
 }
 
-export interface PutDocumentRequest {
+export interface DocumentsApiPutDocumentRequest {
     bucket: string;
     key: string;
     version?: string;
     zipUploadRequest?: ZipUploadRequest;
 }
 
-export interface PutDocumentMetaRequest {
+export interface DocumentsApiPutDocumentMetaRequest {
     bucket: string;
     key: string;
     metadata: Metadata;
     version?: string;
 }
 
-export interface PutFolderRequest {
+export interface DocumentsApiPutFolderRequest {
     bucket: string;
     key: string;
 }
 
 /**
+ * DocumentsApi - interface
  * 
+ * @export
+ * @interface DocumentsApiInterface
  */
-export class DocumentsApi extends runtime.BaseAPI {
+export interface DocumentsApiInterface {
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} from 
+     * @param {string} to 
+     * @param {number} [limit] 
+     * @param {string} [term] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    datepathsearchRaw(requestParameters: DocumentsApiDatepathsearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>>;
 
     /**
      */
-    async datepathsearchRaw(requestParameters: DatepathsearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>> {
+    datepathsearch(requestParameters: DocumentsApiDatepathsearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
+     * @param {string} [version] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    deleteDocumentRaw(requestParameters: DocumentsApiDeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
+
+    /**
+     */
+    deleteDocument(requestParameters: DocumentsApiDeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} term 
+     * @param {number} [limit] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    findDocumentPathRaw(requestParameters: DocumentsApiFindDocumentPathRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    findDocumentPath(requestParameters: DocumentsApiFindDocumentPathRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
+     * @param {string} [version] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    getDocumentRaw(requestParameters: DocumentsApiGetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+
+    /**
+     */
+    getDocument(requestParameters: DocumentsApiGetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    getDocumentMetaRaw(requestParameters: DocumentsApiGetDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>>;
+
+    /**
+     */
+    getDocumentMeta(requestParameters: DocumentsApiGetDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} [prefix] 
+     * @param {string} [orderby] 
+     * @param {string} [filter] 
+     * @param {boolean} [asMap] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    listDocumentJsonRaw(requestParameters: DocumentsApiListDocumentJsonRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>>;
+
+    /**
+     */
+    listDocumentJson(requestParameters: DocumentsApiListDocumentJsonRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    listDocumentMetaVersionsRaw(requestParameters: DocumentsApiListDocumentMetaVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>>;
+
+    /**
+     */
+    listDocumentMetaVersions(requestParameters: DocumentsApiListDocumentMetaVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {number} [limit] 
+     * @param {number} [page] 
+     * @param {string} [prefix] 
+     * @param {string} [orderby] 
+     * @param {boolean} [showAllVersions] 
+     * @param {boolean} [currentFolder] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    listDocumentsRaw(requestParameters: DocumentsApiListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>>;
+
+    /**
+     */
+    listDocuments(requestParameters: DocumentsApiListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
+     * @param {string} [version] 
+     * @param {ZipUploadRequest} [zipUploadRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    putDocumentRaw(requestParameters: DocumentsApiPutDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>>;
+
+    /**
+     */
+    putDocument(requestParameters: DocumentsApiPutDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
+     * @param {Metadata} metadata 
+     * @param {string} [version] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    putDocumentMetaRaw(requestParameters: DocumentsApiPutDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>>;
+
+    /**
+     */
+    putDocumentMeta(requestParameters: DocumentsApiPutDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    putFolderRaw(requestParameters: DocumentsApiPutFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>>;
+
+    /**
+     */
+    putFolder(requestParameters: DocumentsApiPutFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document>;
+
+}
+
+/**
+ * 
+ */
+export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterface {
+
+    /**
+     */
+    async datepathsearchRaw(requestParameters: DocumentsApiDatepathsearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -165,14 +346,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async datepathsearch(requestParameters: DatepathsearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>> {
+    async datepathsearch(requestParameters: DocumentsApiDatepathsearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>> {
         const response = await this.datepathsearchRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async deleteDocumentRaw(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
+    async deleteDocumentRaw(requestParameters: DocumentsApiDeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -211,14 +392,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async deleteDocument(requestParameters: DeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
+    async deleteDocument(requestParameters: DocumentsApiDeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
         const response = await this.deleteDocumentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async findDocumentPathRaw(requestParameters: FindDocumentPathRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+    async findDocumentPathRaw(requestParameters: DocumentsApiFindDocumentPathRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -257,14 +438,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async findDocumentPath(requestParameters: FindDocumentPathRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+    async findDocumentPath(requestParameters: DocumentsApiFindDocumentPathRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
         const response = await this.findDocumentPathRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getDocumentRaw(requestParameters: GetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+    async getDocumentRaw(requestParameters: DocumentsApiGetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -303,14 +484,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async getDocument(requestParameters: GetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+    async getDocument(requestParameters: DocumentsApiGetDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
         const response = await this.getDocumentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getDocumentMetaRaw(requestParameters: GetDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
+    async getDocumentMetaRaw(requestParameters: DocumentsApiGetDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -345,14 +526,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async getDocumentMeta(requestParameters: GetDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
+    async getDocumentMeta(requestParameters: DocumentsApiGetDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
         const response = await this.getDocumentMetaRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async listDocumentJsonRaw(requestParameters: ListDocumentJsonRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async listDocumentJsonRaw(requestParameters: DocumentsApiListDocumentJsonRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -396,14 +577,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async listDocumentJson(requestParameters: ListDocumentJsonRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+    async listDocumentJson(requestParameters: DocumentsApiListDocumentJsonRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.listDocumentJsonRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async listDocumentMetaVersionsRaw(requestParameters: ListDocumentMetaVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>> {
+    async listDocumentMetaVersionsRaw(requestParameters: DocumentsApiListDocumentMetaVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -438,14 +619,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async listDocumentMetaVersions(requestParameters: ListDocumentMetaVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>> {
+    async listDocumentMetaVersions(requestParameters: DocumentsApiListDocumentMetaVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>> {
         const response = await this.listDocumentMetaVersionsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async listDocumentsRaw(requestParameters: ListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>> {
+    async listDocumentsRaw(requestParameters: DocumentsApiListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Document>>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -493,14 +674,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async listDocuments(requestParameters: ListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>> {
+    async listDocuments(requestParameters: DocumentsApiListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>> {
         const response = await this.listDocumentsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async putDocumentRaw(requestParameters: PutDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
+    async putDocumentRaw(requestParameters: DocumentsApiPutDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -542,14 +723,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async putDocument(requestParameters: PutDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
+    async putDocument(requestParameters: DocumentsApiPutDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
         const response = await this.putDocumentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async putDocumentMetaRaw(requestParameters: PutDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
+    async putDocumentMetaRaw(requestParameters: DocumentsApiPutDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -598,14 +779,14 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async putDocumentMeta(requestParameters: PutDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
+    async putDocumentMeta(requestParameters: DocumentsApiPutDocumentMetaRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
         const response = await this.putDocumentMetaRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async putFolderRaw(requestParameters: PutFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
+    async putFolderRaw(requestParameters: DocumentsApiPutFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -640,7 +821,7 @@ export class DocumentsApi extends runtime.BaseAPI {
 
     /**
      */
-    async putFolder(requestParameters: PutFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
+    async putFolder(requestParameters: DocumentsApiPutFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
         const response = await this.putFolderRaw(requestParameters, initOverrides);
         return await response.value();
     }

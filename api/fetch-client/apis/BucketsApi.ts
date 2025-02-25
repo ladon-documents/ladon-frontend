@@ -31,40 +31,129 @@ import {
     ResponseSuccessToJSON,
 } from '../models/index';
 
-export interface ApplyBucketActionRequest {
+export interface BucketsApiApplyBucketActionRequest {
     bucket: string;
     bucketAction: BucketAction;
 }
 
-export interface CreateBucketOperationRequest {
+export interface BucketsApiCreateBucketOperationRequest {
     createBucketRequest: CreateBucketRequest;
 }
 
-export interface DeleteBucketRequest {
+export interface BucketsApiDeleteBucketRequest {
     bucket: string;
 }
 
-export interface GetBucketRequest {
+export interface BucketsApiGetBucketRequest {
     bucket: string;
 }
 
-export interface GetBucketActionsRequest {
+export interface BucketsApiGetBucketActionsRequest {
     bucket: string;
 }
 
-export interface ListBucketsRequest {
+export interface BucketsApiListBucketsRequest {
     limit?: number;
     search?: string;
 }
 
 /**
+ * BucketsApi - interface
  * 
+ * @export
+ * @interface BucketsApiInterface
  */
-export class BucketsApi extends runtime.BaseAPI {
+export interface BucketsApiInterface {
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {BucketAction} bucketAction 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BucketsApiInterface
+     */
+    applyBucketActionRaw(requestParameters: BucketsApiApplyBucketActionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
 
     /**
      */
-    async applyBucketActionRaw(requestParameters: ApplyBucketActionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
+    applyBucketAction(requestParameters: BucketsApiApplyBucketActionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
+    /**
+     * 
+     * @param {CreateBucketRequest} createBucketRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BucketsApiInterface
+     */
+    createBucketRaw(requestParameters: BucketsApiCreateBucketOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Bucket>>;
+
+    /**
+     */
+    createBucket(requestParameters: BucketsApiCreateBucketOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Bucket>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BucketsApiInterface
+     */
+    deleteBucketRaw(requestParameters: BucketsApiDeleteBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
+
+    /**
+     */
+    deleteBucket(requestParameters: BucketsApiDeleteBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BucketsApiInterface
+     */
+    getBucketRaw(requestParameters: BucketsApiGetBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Bucket>>;
+
+    /**
+     */
+    getBucket(requestParameters: BucketsApiGetBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Bucket>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BucketsApiInterface
+     */
+    getBucketActionsRaw(requestParameters: BucketsApiGetBucketActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<BucketAction>>>;
+
+    /**
+     */
+    getBucketActions(requestParameters: BucketsApiGetBucketActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<BucketAction>>;
+
+    /**
+     * 
+     * @param {number} [limit] 
+     * @param {string} [search] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BucketsApiInterface
+     */
+    listBucketsRaw(requestParameters: BucketsApiListBucketsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Bucket>>>;
+
+    /**
+     */
+    listBuckets(requestParameters: BucketsApiListBucketsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Bucket>>;
+
+}
+
+/**
+ * 
+ */
+export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
+
+    /**
+     */
+    async applyBucketActionRaw(requestParameters: BucketsApiApplyBucketActionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -98,14 +187,14 @@ export class BucketsApi extends runtime.BaseAPI {
 
     /**
      */
-    async applyBucketAction(requestParameters: ApplyBucketActionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
+    async applyBucketAction(requestParameters: BucketsApiApplyBucketActionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
         const response = await this.applyBucketActionRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async createBucketRaw(requestParameters: CreateBucketOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Bucket>> {
+    async createBucketRaw(requestParameters: BucketsApiCreateBucketOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Bucket>> {
         if (requestParameters['createBucketRequest'] == null) {
             throw new runtime.RequiredError(
                 'createBucketRequest',
@@ -132,14 +221,14 @@ export class BucketsApi extends runtime.BaseAPI {
 
     /**
      */
-    async createBucket(requestParameters: CreateBucketOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Bucket> {
+    async createBucket(requestParameters: BucketsApiCreateBucketOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Bucket> {
         const response = await this.createBucketRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async deleteBucketRaw(requestParameters: DeleteBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
+    async deleteBucketRaw(requestParameters: BucketsApiDeleteBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -163,14 +252,14 @@ export class BucketsApi extends runtime.BaseAPI {
 
     /**
      */
-    async deleteBucket(requestParameters: DeleteBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
+    async deleteBucket(requestParameters: BucketsApiDeleteBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
         const response = await this.deleteBucketRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getBucketRaw(requestParameters: GetBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Bucket>> {
+    async getBucketRaw(requestParameters: BucketsApiGetBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Bucket>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -194,14 +283,14 @@ export class BucketsApi extends runtime.BaseAPI {
 
     /**
      */
-    async getBucket(requestParameters: GetBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Bucket> {
+    async getBucket(requestParameters: BucketsApiGetBucketRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Bucket> {
         const response = await this.getBucketRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getBucketActionsRaw(requestParameters: GetBucketActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<BucketAction>>> {
+    async getBucketActionsRaw(requestParameters: BucketsApiGetBucketActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<BucketAction>>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
                 'bucket',
@@ -225,14 +314,14 @@ export class BucketsApi extends runtime.BaseAPI {
 
     /**
      */
-    async getBucketActions(requestParameters: GetBucketActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<BucketAction>> {
+    async getBucketActions(requestParameters: BucketsApiGetBucketActionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<BucketAction>> {
         const response = await this.getBucketActionsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async listBucketsRaw(requestParameters: ListBucketsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Bucket>>> {
+    async listBucketsRaw(requestParameters: BucketsApiListBucketsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Bucket>>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -257,7 +346,7 @@ export class BucketsApi extends runtime.BaseAPI {
 
     /**
      */
-    async listBuckets(requestParameters: ListBucketsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Bucket>> {
+    async listBuckets(requestParameters: BucketsApiListBucketsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Bucket>> {
         const response = await this.listBucketsRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -16,9 +16,30 @@
 import * as runtime from '../runtime';
 
 /**
+ * NodeInfoApi - interface
+ * 
+ * @export
+ * @interface NodeInfoApiInterface
+ */
+export interface NodeInfoApiInterface {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NodeInfoApiInterface
+     */
+    getNodeInfoRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: object; }>>;
+
+    /**
+     */
+    getNodeInfo(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: object; }>;
+
+}
+
+/**
  * 
  */
-export class NodeInfoApi extends runtime.BaseAPI {
+export class NodeInfoApi extends runtime.BaseAPI implements NodeInfoApiInterface {
 
     /**
      */

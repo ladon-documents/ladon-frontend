@@ -10,6 +10,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './login/login.component';
 import { Observable } from 'rxjs';
+import { FilemanagerComponent } from './filemanager/filemanager.component';
 
 @Component({
   standalone: true,
@@ -21,6 +22,7 @@ import { Observable } from 'rxjs';
     UsermanagerComponent,
     BucketsComponent,
     LoginComponent,
+    FilemanagerComponent,
     AsyncPipe,
   ],
   selector: 'ldn-ui',

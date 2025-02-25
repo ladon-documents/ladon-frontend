@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   ConverterInfo,
   ConverterJob,
+  MultiValueMapStringString,
 } from '../models/index';
 import {
     ConverterInfoFromJSON,
@@ -25,26 +26,86 @@ import {
     ConverterJobToJSON,
 } from '../models/index';
 
-export interface ApplyAndDownloadRequest {
+export interface ConverterApiApplyAndDownloadRequest {
     converterJob: ConverterJob;
 }
 
-export interface ApplyAndDownloadGetRequest {
+export interface ConverterApiApplyAndDownloadGetRequest {
     queryMap: MultiValueMapStringString;
 }
 
-export interface ApplyConverterAndStoreRequest {
+export interface ConverterApiApplyConverterAndStoreRequest {
     converterJob: ConverterJob;
+}
+
+/**
+ * ConverterApi - interface
+ * 
+ * @export
+ * @interface ConverterApiInterface
+ */
+export interface ConverterApiInterface {
+    /**
+     * 
+     * @param {ConverterJob} converterJob 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConverterApiInterface
+     */
+    applyAndDownloadRaw(requestParameters: ConverterApiApplyAndDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+
+    /**
+     */
+    applyAndDownload(requestParameters: ConverterApiApplyAndDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+
+    /**
+     * 
+     * @param {MultiValueMapStringString} queryMap 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConverterApiInterface
+     */
+    applyAndDownloadGetRaw(requestParameters: ConverterApiApplyAndDownloadGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>>;
+
+    /**
+     */
+    applyAndDownloadGet(requestParameters: ConverterApiApplyAndDownloadGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+
+    /**
+     * 
+     * @param {ConverterJob} converterJob 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConverterApiInterface
+     */
+    applyConverterAndStoreRaw(requestParameters: ConverterApiApplyConverterAndStoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    applyConverterAndStore(requestParameters: ConverterApiApplyConverterAndStoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConverterApiInterface
+     */
+    listConverterInfoRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ConverterInfo>>>;
+
+    /**
+     */
+    listConverterInfo(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ConverterInfo>>;
+
 }
 
 /**
  * 
  */
-export class ConverterApi extends runtime.BaseAPI {
+export class ConverterApi extends runtime.BaseAPI implements ConverterApiInterface {
 
     /**
      */
-    async applyAndDownloadRaw(requestParameters: ApplyAndDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+    async applyAndDownloadRaw(requestParameters: ConverterApiApplyAndDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
         if (requestParameters['converterJob'] == null) {
             throw new runtime.RequiredError(
                 'converterJob',
@@ -71,14 +132,14 @@ export class ConverterApi extends runtime.BaseAPI {
 
     /**
      */
-    async applyAndDownload(requestParameters: ApplyAndDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+    async applyAndDownload(requestParameters: ConverterApiApplyAndDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
         const response = await this.applyAndDownloadRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async applyAndDownloadGetRaw(requestParameters: ApplyAndDownloadGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+    async applyAndDownloadGetRaw(requestParameters: ConverterApiApplyAndDownloadGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
         if (requestParameters['queryMap'] == null) {
             throw new runtime.RequiredError(
                 'queryMap',
@@ -106,14 +167,14 @@ export class ConverterApi extends runtime.BaseAPI {
 
     /**
      */
-    async applyAndDownloadGet(requestParameters: ApplyAndDownloadGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+    async applyAndDownloadGet(requestParameters: ConverterApiApplyAndDownloadGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
         const response = await this.applyAndDownloadGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async applyConverterAndStoreRaw(requestParameters: ApplyConverterAndStoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+    async applyConverterAndStoreRaw(requestParameters: ConverterApiApplyConverterAndStoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['converterJob'] == null) {
             throw new runtime.RequiredError(
                 'converterJob',
@@ -140,7 +201,7 @@ export class ConverterApi extends runtime.BaseAPI {
 
     /**
      */
-    async applyConverterAndStore(requestParameters: ApplyConverterAndStoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+    async applyConverterAndStore(requestParameters: ConverterApiApplyConverterAndStoreRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
         const response = await this.applyConverterAndStoreRaw(requestParameters, initOverrides);
         return await response.value();
     }

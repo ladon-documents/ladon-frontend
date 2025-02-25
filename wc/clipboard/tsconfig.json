@@ -20,7 +20,6 @@
     "paths": {
       "@api": ["../../api/utility/index"],
       "@style": ["../../style/dist/styles/global.css"]
-
     }
   },
   "angularCompilerOptions": {

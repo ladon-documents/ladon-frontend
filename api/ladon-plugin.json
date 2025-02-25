@@ -1,6 +1,6 @@
 {
   "$schema": "https://plugins.mind-consulting.de/plugin-def-1.1.0.schema.json",
-  "id": "mind/ladon-api",
+  "id": "@draco/api",
   "name": "Ladon Rest Api",
   "shortText": "",
   "deployTarget": "/_ui/draco/api/",

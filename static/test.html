@@ -10,13 +10,14 @@
       }
     }
   </script>
-
+<script src="../wc/pdfviewer/dist/wc-ladon-pdfviewer.js" type="module"></script>
   <script type="module">
       import * as api from "api";
 
       if (HTMLScriptElement.supports?.("importmap")) {
           console.log("Browser supports import maps.");
-          api.utility.Initalizer().initLadonStyles();
+          //api.utility.Initalizer().initLadonStyles();
+          //api.utility.Initalizer().initWebComponents();
       }
   </script>
 </head>

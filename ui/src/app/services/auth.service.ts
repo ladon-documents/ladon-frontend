@@ -48,6 +48,12 @@ export class AuthService {
     );
   }
 
+  public logout() {
+    this.as.logout().subscribe( response => {
+      console.log(response);
+    })
+  }
+
   public getCurrentUser() {
     return this.us.getCurrentUser().pipe(
       tap((user: User) => {
@@ -58,6 +64,6 @@ export class AuthService {
 
   private isDevelopmentEnironment() {
     // TODO: implement check for devlopment environment
-    return true;
+    return false;
   }
 }

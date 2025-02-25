@@ -15,14 +15,48 @@
 
 import * as runtime from '../runtime';
 
-export interface UninstallPluginRequest {
+export interface PluginmanagerApiUninstallPluginRequest {
     puginId: string;
+}
+
+/**
+ * PluginmanagerApi - interface
+ * 
+ * @export
+ * @interface PluginmanagerApiInterface
+ */
+export interface PluginmanagerApiInterface {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PluginmanagerApiInterface
+     */
+    installedPluginsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>>;
+
+    /**
+     */
+    installedPlugins(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }>;
+
+    /**
+     * 
+     * @param {string} puginId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PluginmanagerApiInterface
+     */
+    uninstallPluginRaw(requestParameters: PluginmanagerApiUninstallPluginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+
+    /**
+     */
+    uninstallPlugin(requestParameters: PluginmanagerApiUninstallPluginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+
 }
 
 /**
  * 
  */
-export class PluginmanagerApi extends runtime.BaseAPI {
+export class PluginmanagerApi extends runtime.BaseAPI implements PluginmanagerApiInterface {
 
     /**
      */
@@ -50,7 +84,7 @@ export class PluginmanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async uninstallPluginRaw(requestParameters: UninstallPluginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async uninstallPluginRaw(requestParameters: PluginmanagerApiUninstallPluginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['puginId'] == null) {
             throw new runtime.RequiredError(
                 'puginId',
@@ -78,7 +112,7 @@ export class PluginmanagerApi extends runtime.BaseAPI {
 
     /**
      */
-    async uninstallPlugin(requestParameters: UninstallPluginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+    async uninstallPlugin(requestParameters: PluginmanagerApiUninstallPluginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.uninstallPluginRaw(requestParameters, initOverrides);
     }
 

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FilemanagerComponent } from './filemanager.component';
+import { TaskmanagerComponent } from './taskmanager.component';
 
-describe('FilemanagerComponent', () => {
-  let component: FilemanagerComponent;
-  let fixture: ComponentFixture<FilemanagerComponent>;
+describe('TaskmanagerComponent', () => {
+  let component: TaskmanagerComponent;
+  let fixture: ComponentFixture<TaskmanagerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FilemanagerComponent],
+      imports: [TaskmanagerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FilemanagerComponent);
+    fixture = TestBed.createComponent(TaskmanagerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

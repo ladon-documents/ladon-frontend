@@ -18,6 +18,15 @@
 		"index": 32
 	},
 	{
+		"label": "Task-Manager",
+		"target": "internal",
+		"component": "taskmanager",
+		"path": "taskmanager",
+		"icon": "heroRectangleStack",
+		"type": "main",
+		"index": 33
+	},
+	{
 		"label": "Our Team",
 		"target": "static",
 		"component": "Staticweb",

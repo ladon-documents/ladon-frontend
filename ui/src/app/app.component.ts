@@ -11,6 +11,7 @@ import { AuthService } from './services/auth.service';
 import { LoginComponent } from './login/login.component';
 import { Observable } from 'rxjs';
 import { FilemanagerComponent } from './filemanager/filemanager.component';
+import { TaskmanagerComponent } from './taskmanager/taskmanager.component';
 
 @Component({
   standalone: true,
@@ -23,6 +24,7 @@ import { FilemanagerComponent } from './filemanager/filemanager.component';
     BucketsComponent,
     LoginComponent,
     FilemanagerComponent,
+    TaskmanagerComponent,
     AsyncPipe,
   ],
   selector: 'ldn-ui',

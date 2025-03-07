@@ -49,9 +49,9 @@ export class AuthService {
   }
 
   public logout() {
-    this.as.logout().subscribe( response => {
+    this.as.logout().subscribe((response) => {
       console.log(response);
-    })
+    });
   }
 
   public getCurrentUser() {

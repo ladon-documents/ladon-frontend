@@ -30,7 +30,7 @@ import { ConverterJob } from '../model/converterJob';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { Configuration } from '../configuration';
-import {MultiValueMapStringString} from "../model/multiValueMapStringString";
+import { MultiValueMapStringString } from '../model/multiValueMapStringString';
 
 @Injectable({
   providedIn: 'root',

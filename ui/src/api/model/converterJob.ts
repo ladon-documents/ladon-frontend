@@ -7,9 +7,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ConverterConfig } from './converterConfig';
+import { ConverterConfigModel } from './converterConfig';
 
-export interface ConverterJob {
+export interface ConverterJobModel {
   inputPaths: Array<string>;
-  converters: Array<ConverterConfig>;
+  converters: Array<ConverterConfigModel>;
 }

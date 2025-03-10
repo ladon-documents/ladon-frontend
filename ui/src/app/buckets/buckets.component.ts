@@ -7,7 +7,7 @@ import { BucketsService } from './buckets.service';
 import { Observable } from 'rxjs';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
 import { BucketsTestObject } from '@ladon/tests/buckets-test-object';
-import { Bucket } from '../../api';
+import { BucketModel } from '../../api';
 
 @Component({
   selector: 'buckets',
@@ -19,11 +19,11 @@ import { Bucket } from '../../api';
 })
 export class BucketsComponent implements OnInit {
   dateFormat = 'dd.MM.yyyy';
-  bucketsList$: Observable<Bucket[]> | undefined;
-  selectedBucket: Bucket | undefined;
+  bucketsList$: Observable<BucketModel[]> | undefined;
+  selectedBucket: BucketModel | undefined;
   bucketStats$: Observable<any> | undefined;
 
-  private _bucketsList: Bucket[] | undefined;
+  private _bucketsList: BucketModel[] | undefined;
 
   constructor(public bucketsService: BucketsService) {}
 
@@ -34,7 +34,7 @@ export class BucketsComponent implements OnInit {
     this._bucketsList = this.bucketsService.bucketsListBehaviorSubject.getValue();
   }
 
-  selectBucket(bucket: Bucket) {
+  selectBucket(bucket: BucketModel) {
     this.selectedBucket = bucket;
     this.bucketsService.selectedBucketSubject.next(bucket);
   }

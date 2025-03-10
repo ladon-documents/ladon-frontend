@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface RoleWrapper {
+export interface RoleWrapperModel {
   id?: string;
   name?: string;
   description?: string;

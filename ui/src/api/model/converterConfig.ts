@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface ConverterConfig {
+export interface ConverterConfigModel {
   id: string;
   config: { [key: string]: string };
 }

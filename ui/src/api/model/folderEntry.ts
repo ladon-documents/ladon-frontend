@@ -8,11 +8,11 @@
  * Do not edit the class manually.
  */
 
-export interface FolderEntry {
+export interface FolderEntryModel {
   value: string;
   id: string;
   size: number;
   date: number;
   type: string;
-  data: Array<FolderEntry>;
+  data: Array<FolderEntryModel>;
 }

@@ -7,10 +7,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { DocumentMetadata } from './documentMetadata';
+import { DocumentMetadataModel } from './documentMetadata';
 
 
-export interface Document { 
+export interface DocumentModel { 
     'content-type'?: string;
     created?: string;
     'last-modified'?: string;
@@ -18,7 +18,7 @@ export interface Document {
     key?: string;
     path?: string;
     etag?: string;
-    metadata?: DocumentMetadata;
+    metadata?: DocumentMetadataModel;
     owner?: string;
     size?: number;
     version?: string;

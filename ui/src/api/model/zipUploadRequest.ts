@@ -8,6 +8,6 @@
  * Do not edit the class manually.
  */
 
-export interface ZipUploadRequest {
+export interface ZipUploadRequestModel {
   content?: Blob;
 }

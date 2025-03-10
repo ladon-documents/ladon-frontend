@@ -1,7 +1,7 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { BehaviorSubject, mergeMap, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthenticationService, LoginRequest, User, UsersService } from '../../api';
+import { AuthenticationService, LoginRequestModel, UserModel, UsersService } from '../../api';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class AuthService {
     bucket: '_system',
   };
   private userSubject$ = new BehaviorSubject<any>(null);
-  private readonly devUser: User = {
+  private readonly devUser: UserModel = {
     userId: 'admin',
     fullName: 'Armin Strator',
     email: 'info@mind-consulting.de',
@@ -32,7 +32,7 @@ export class AuthService {
     //  this.getCurrentUser();
   }
 
-  public login(Login: LoginRequest) {
+  public login(Login: LoginRequestModel) {
     if (this.isDevelopmentEnironment()) {
       this.userSubject$.next(this.devUser);
       return of(this.devUser);
@@ -41,7 +41,7 @@ export class AuthService {
       mergeMap((res) => {
         return this.us.getCurrentUser();
       }),
-      map((user: User) => {
+      map((user: UserModel) => {
         this.userSubject$.next(user);
         return user;
       }),
@@ -56,7 +56,7 @@ export class AuthService {
 
   public getCurrentUser() {
     return this.us.getCurrentUser().pipe(
-      tap((user: User) => {
+      tap((user: UserModel) => {
         this.userSubject$.next(user);
       }),
     );

@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface CredentialsWrapper {
+export interface CredentialsWrapperModel {
   oldPW?: string;
   newPW?: string;
 }

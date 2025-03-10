@@ -18,6 +18,16 @@
 		"index": 32
 	},
 	{
+		"label": "Plugins",
+		"target": "internal",
+		"component": "pluginmanager",
+		"path": "pluginmanager",
+		"icon": "heroFolder",
+		"hasChildren": 	true,
+		"type": "main",
+		"index": 32
+	},
+	{
 		"label": "Our Team",
 		"target": "static",
 		"component": "Staticweb",

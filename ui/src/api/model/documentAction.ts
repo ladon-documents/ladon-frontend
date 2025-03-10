@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface DocumentAction {
+export interface DocumentActionModel {
   i18nName?: string;
   label?: string;
   actionId?: string;

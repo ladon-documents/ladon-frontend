@@ -9,7 +9,7 @@
  */
 
 
-export interface TxInfo { 
+export interface TxInfoModel { 
     txId: string;
 }
 

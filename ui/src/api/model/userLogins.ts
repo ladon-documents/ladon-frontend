@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface UserLogins {
+export interface UserLoginsModel {
   date: string;
   details: string;
 }

@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface MultiValueMapStringString {
+export interface MultiValueMapStringStringModel {
   [key: string]: Array<string> | any;
 
   all?: { [key: string]: string };

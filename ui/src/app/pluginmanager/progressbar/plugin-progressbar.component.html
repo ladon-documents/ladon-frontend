@@ -1,0 +1,44 @@
+<div class="progress-wrapper">
+  <div class="progress-wrapper__infos">
+    <ng-container *ngIf="plugin?.current === plugin?.version; else differences">
+      <div *ngIf="plugin?.current" [attr.datacaption]="'PLUGIN.VERSION' | translate">{{ plugin?.current }}</div>
+    </ng-container>
+
+    <ng-template #differences>
+      <div *ngIf="plugin?.current" [attr.datacaption]="'PLUGIN.VERSION' | translate">{{ plugin?.current }}</div>
+
+      <ng-container *ngIf="isProgressVisible">
+        <progress id="file" value="{{ pluginInstalState?.progress }}" max="100">
+          {{ pluginInstalState?.progress }}
+        </progress>
+      </ng-container>
+
+      <div
+        [attr.data-style]="plugin?.canUpdate ? 'tertiary' : 'default'"
+        [attr.datacaption]="'PLUGIN.AVAILABLE' | translate">
+        {{ plugin?.version }}
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="progress-wrapper__controls">
+    <ng-container *ngIf="plugin?.canDeinstall && !isProgressVisible">
+      <button
+        (click)="onDeinstall()"
+        size="small"
+        class="outline outline--danger"
+        [disabled]="pluginInstalState && pluginInstalState.state === 'IN_PROGRESS'">
+        {{ "PLUGIN.PROGRESSBAR.DEINSTALL" | translate }}
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="plugin?.canUpdate || plugin?.canInstall">
+      <button
+        size="small"
+        (click)="onUpdate()"
+        [disabled]="pluginInstalState && pluginInstalState.state === 'IN_PROGRESS'">
+        {{ buttonLabel }}
+      </button>
+    </ng-container>
+  </div>
+</div>

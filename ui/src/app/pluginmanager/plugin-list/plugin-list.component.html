@@ -1,0 +1,27 @@
+<ul class="list bg-base-100 rounded-box shadow-md">
+  @for (item of pluginList$() | searchfilter: filterText; track $index) {
+    <li (click)="onSelect(item)" class="list-row" [ngClass]="{ active: item === selectedItem }">
+      <div>
+        <div>{{ item.name }}</div>
+        <div class="text-xs uppercase font-semibold opacity-60"></div>
+        @if (item.current === item.version) {
+          <code *ngIf="item.current" [attr.datacaption]="'PLUGIN.VERSION' | translate">{{ item.current }}</code>
+        } @else {
+          <code *ngIf="item.current" [attr.datacaption]="'PLUGIN.AVAILABLE' | translate">{{ item.current }}</code>
+          <code
+            [attr.data-style]="item.canUpdate ? 'tertiary' : 'default'"
+            [attr.datacaption]="'PLUGIN.AVAILABLE' | translate"
+            >{{ item.version }}</code
+          >
+        }
+      </div>
+      <p class="list-col-wrap text-xs">
+        @if (!item.canInstall && !item.canUpdate) {
+          <div class="webix_icon_btn wxi-check"><span></span></div>
+        } @else {
+          <div class="webix_icon_btn wxi-angle-right"><span></span></div>
+        }
+      </p>
+    </li>
+  }
+</ul>

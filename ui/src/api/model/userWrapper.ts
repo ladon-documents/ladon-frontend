@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface UserWrapper {
+export interface UserWrapperModel {
   id?: string;
   name?: string;
   email?: string;

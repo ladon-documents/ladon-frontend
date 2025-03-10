@@ -23,7 +23,7 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
-import { ResponseSuccess } from '../model/responseSuccess';
+import { ResponseSuccessModel } from '../model/responseSuccess';
 // @ts-ignore
 import { TxInfo } from '../model/txInfo';
 
@@ -109,19 +109,19 @@ export class TransactionService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<ResponseSuccess>;
+  ): Observable<ResponseSuccessModel>;
   public commitTransaction(
     txId: string,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<ResponseSuccess>>;
+  ): Observable<HttpResponse<ResponseSuccessModel>>;
   public commitTransaction(
     txId: string,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<ResponseSuccess>>;
+  ): Observable<HttpEvent<ResponseSuccessModel>>;
   public commitTransaction(
     txId: string,
     observe: any = 'body',
@@ -171,7 +171,7 @@ export class TransactionService {
     }
 
     let localVarPath = `/api/rest/v1/transaction/commit`;
-    return this.httpClient.request<ResponseSuccess>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<ResponseSuccessModel>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
@@ -262,19 +262,19 @@ export class TransactionService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<ResponseSuccess>;
+  ): Observable<ResponseSuccessModel>;
   public rollbackTransaction(
     txId: string,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<ResponseSuccess>>;
+  ): Observable<HttpResponse<ResponseSuccessModel>>;
   public rollbackTransaction(
     txId: string,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<ResponseSuccess>>;
+  ): Observable<HttpEvent<ResponseSuccessModel>>;
   public rollbackTransaction(
     txId: string,
     observe: any = 'body',
@@ -324,7 +324,7 @@ export class TransactionService {
     }
 
     let localVarPath = `/api/rest/v1/transaction/rollback`;
-    return this.httpClient.request<ResponseSuccess>('delete', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<ResponseSuccessModel>('delete', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,

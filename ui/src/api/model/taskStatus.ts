@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface TaskStatus {
+export interface TaskStatusModel {
   id: string;
   name: string;
   running: boolean;

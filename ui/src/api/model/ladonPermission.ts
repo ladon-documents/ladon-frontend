@@ -8,15 +8,15 @@
  * Do not edit the class manually.
  */
 
-export interface LadonPermission {
+export interface LadonPermissionModel {
   permissionId: string;
-  operation: LadonPermission.OperationEnum;
-  type: LadonPermission.TypeEnum;
+  operation: LadonPermissionModel.OperationEnum;
+  type: LadonPermissionModel.TypeEnum;
   value: string;
   allowed: boolean;
   description: string;
 }
-export namespace LadonPermission {
+export namespace LadonPermissionModel {
   export type OperationEnum =
     | 'CREATE_OBJECT'
     | 'READ_OBJECT'

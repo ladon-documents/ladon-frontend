@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface User {
+export interface UserModel {
   userId: string;
   fullName: string;
   email: string;

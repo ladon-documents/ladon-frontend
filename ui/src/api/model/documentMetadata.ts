@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface DocumentMetadata {
+export interface DocumentMetadataModel {
   [key: string]: string | any;
 
   empty?: boolean;

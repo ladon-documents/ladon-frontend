@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface BucketAction {
+export interface BucketActionModel {
   i18nName?: string;
   label?: string;
   actionId?: string;

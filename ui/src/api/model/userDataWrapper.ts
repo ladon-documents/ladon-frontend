@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface UserDataWrapper {
+export interface UserDataWrapperModel {
   name?: string;
   email?: string;
   status?: boolean;

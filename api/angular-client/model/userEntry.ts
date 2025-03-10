@@ -9,7 +9,7 @@
  */
 
 
-export interface UserEntry { 
+export interface UserEntryModel { 
     id: string;
     name?: string;
     email?: string;

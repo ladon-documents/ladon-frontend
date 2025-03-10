@@ -7,11 +7,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Bucket } from './bucket';
+import { BucketModel } from './bucket';
 
 
-export interface CreateBucketRequest { 
+export interface CreateBucketRequestModel { 
     storageId?: string;
-    body?: Bucket;
+    body?: BucketModel;
 }
 

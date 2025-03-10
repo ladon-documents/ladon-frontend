@@ -30,7 +30,7 @@ import { ConverterJob } from '../model/converterJob';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { Configuration } from '../configuration';
-import {MultiValueMapStringString} from "../model/multiValueMapStringString";
+import {MultiValueMapStringStringModel} from "../model/multiValueMapStringString";
 
 @Injectable({
   providedIn: 'root',
@@ -181,25 +181,25 @@ export class ConverterService {
    * @param reportProgress flag to report request and response progress.
    */
   public applyAndDownloadGet(
-    queryMap: MultiValueMapStringString,
+    queryMap: MultiValueMapStringStringModel,
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
   ): Observable<Blob>;
   public applyAndDownloadGet(
-    queryMap: MultiValueMapStringString,
+    queryMap: MultiValueMapStringStringModel,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<Blob>>;
   public applyAndDownloadGet(
-    queryMap: MultiValueMapStringString,
+    queryMap: MultiValueMapStringStringModel,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<Blob>>;
   public applyAndDownloadGet(
-    queryMap: MultiValueMapStringString,
+    queryMap: MultiValueMapStringStringModel,
     observe: any = 'body',
     reportProgress: boolean = false,
     options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },

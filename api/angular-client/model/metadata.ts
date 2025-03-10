@@ -9,7 +9,7 @@
  */
 
 
-export interface Metadata { 
+export interface MetadataModel { 
   [key: string]: string | any;
 
 

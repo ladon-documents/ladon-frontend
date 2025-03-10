@@ -9,7 +9,7 @@
  */
 
 
-export interface CredentialsWrapper { 
+export interface CredentialsWrapperModel { 
     oldPW?: string;
     newPW?: string;
 }

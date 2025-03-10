@@ -9,7 +9,7 @@
  */
 
 
-export interface MultiValueMapStringString { 
+export interface MultiValueMapStringStringModel { 
   [key: string]: Array<string> | any;
 
 

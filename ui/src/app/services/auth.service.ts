@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { BehaviorSubject, mergeMap, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthenticationService, LoginRequest, User, UsersService } from '../../api';
@@ -49,9 +49,9 @@ export class AuthService {
   }
 
   public logout() {
-    this.as.logout().subscribe( response => {
+    this.as.logout().subscribe((response) => {
       console.log(response);
-    })
+    });
   }
 
   public getCurrentUser() {
@@ -62,8 +62,7 @@ export class AuthService {
     );
   }
 
-  private isDevelopmentEnironment() {
-    // TODO: implement check for devlopment environment
-    return false;
+  private isDevelopmentEnironment(): boolean {
+    return isDevMode();
   }
 }

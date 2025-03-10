@@ -1,13 +1,13 @@
 import { Component, Input, OnInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { PluginInstallState, PluginWithVersionStatus } from '../services/plugin.service';
 import { PluginModel } from '../../../plugin';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {CommonModule} from "@angular/common";
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'plugin-progressbar',
   templateUrl: './plugin-progressbar.component.html',
-  imports:[CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule],
   styleUrls: ['./plugin-progressbar.component.scss'],
   standalone: true,
 })

@@ -8,9 +8,8 @@ describe('PluginmanagerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PluginmanagerComponent]
-    })
-    .compileComponents();
+      imports: [PluginmanagerComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PluginmanagerComponent);
     component = fixture.componentInstance;

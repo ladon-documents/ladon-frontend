@@ -49,9 +49,9 @@ export class AuthService {
   }
 
   public logout() {
-    this.as.logout().subscribe( response => {
+    this.as.logout().subscribe((response) => {
       console.log(response);
-    })
+    });
   }
 
   public getCurrentUser() {
@@ -64,6 +64,6 @@ export class AuthService {
 
   private isDevelopmentEnironment() {
     // TODO: implement check for devlopment environment
-    return true;
+    return false;
   }
 }

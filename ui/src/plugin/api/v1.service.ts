@@ -9,430 +9,547 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec, HttpContext 
-        }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpParams,
+  HttpResponse,
+  HttpEvent,
+  HttpParameterCodec,
+  HttpContext,
+} from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 // @ts-ignore
 import { PluginModel } from '../model/plugin';
 
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { Configuration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { Configuration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class V1Service {
+  protected basePath = 'https://plugins.mind-consulting.de';
+  public defaultHeaders = new HttpHeaders();
+  public configuration = new Configuration();
+  public encoder: HttpParameterCodec;
 
-    protected basePath = 'https://plugins.mind-consulting.de';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new Configuration();
-    public encoder: HttpParameterCodec;
+  constructor(
+    protected httpClient: HttpClient,
+    @Optional() @Inject(BASE_PATH) basePath: string | string[],
+    @Optional() configuration: Configuration,
+  ) {
+    if (configuration) {
+      this.configuration = configuration;
+    }
+    if (typeof this.configuration.basePath !== 'string') {
+      const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
+      if (firstBasePath != undefined) {
+        basePath = firstBasePath;
+      }
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string|string[], @Optional() configuration: Configuration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-            if (firstBasePath != undefined) {
-                basePath = firstBasePath;
-            }
+      if (typeof basePath !== 'string') {
+        basePath = this.basePath;
+      }
+      this.configuration.basePath = basePath;
+    }
+    this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+  }
 
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+  // @ts-ignore
+  private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+    if (typeof value === 'object' && value instanceof Date === false) {
+      httpParams = this.addToHttpParamsRecursive(httpParams, value);
+    } else {
+      httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+    }
+    return httpParams;
+  }
+
+  private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+    if (value == null) {
+      return httpParams;
     }
 
-
-    // @ts-ignore
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) {
+        (value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+      } else if (value instanceof Date) {
+        if (key != null) {
+          httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
         } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+          throw Error('key may not be null if value is Date');
         }
-        return httpParams;
-    }
-
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
-
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
-
-    /**
-     * get bundle content
-     * @param product product to filter matching plugins
-     * @param channel channel of the plugin stream
-     * @param id id of the plugin
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public bundleContent(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<PluginModel>>;
-    public bundleContent(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<PluginModel>>>;
-    public bundleContent(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<PluginModel>>>;
-    public bundleContent(product: 'ladon', channel: 'beta' | 'stable', id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (product === null || product === undefined) {
-            throw new Error('Required parameter product was null or undefined when calling bundleContent.');
-        }
-        if (channel === null || channel === undefined) {
-            throw new Error('Required parameter channel was null or undefined when calling bundleContent.');
-        }
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling bundleContent.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({name: "product", value: product, in: "path", style: "simple", explode: false, dataType: "'ladon'", dataFormat: undefined})}/${this.configuration.encodeParam({name: "channel", value: channel, in: "path", style: "simple", explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined})}/bundle/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Array<PluginModel>>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
+      } else {
+        Object.keys(value).forEach(
+          (k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)),
         );
+      }
+    } else if (key != null) {
+      httpParams = httpParams.append(key, value);
+    } else {
+      throw Error('key may not be null if value is not object or array');
+    }
+    return httpParams;
+  }
+
+  /**
+   * get bundle content
+   * @param product product to filter matching plugins
+   * @param channel channel of the plugin stream
+   * @param id id of the plugin
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   */
+  public bundleContent(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'body',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<Array<PluginModel>>;
+  public bundleContent(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'response',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<Array<PluginModel>>>;
+  public bundleContent(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'events',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<Array<PluginModel>>>;
+  public bundleContent(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe: any = 'body',
+    reportProgress: boolean = false,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<any> {
+    if (product === null || product === undefined) {
+      throw new Error('Required parameter product was null or undefined when calling bundleContent.');
+    }
+    if (channel === null || channel === undefined) {
+      throw new Error('Required parameter channel was null or undefined when calling bundleContent.');
+    }
+    if (id === null || id === undefined) {
+      throw new Error('Required parameter id was null or undefined when calling bundleContent.');
     }
 
-    /**
-     * get a single spec of a plugin
-     * @param product product to filter matching plugins
-     * @param channel channel of the plugin stream
-     * @param id id of the plugin
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public getSpec(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PluginModel>;
-    public getSpec(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PluginModel>>;
-    public getSpec(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PluginModel>>;
-    public getSpec(product: 'ladon', channel: 'beta' | 'stable', id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (product === null || product === undefined) {
-            throw new Error('Required parameter product was null or undefined when calling getSpec.');
-        }
-        if (channel === null || channel === undefined) {
-            throw new Error('Required parameter channel was null or undefined when calling getSpec.');
-        }
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling getSpec.');
-        }
+    let localVarHeaders = this.defaultHeaders;
 
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({name: "product", value: product, in: "path", style: "simple", explode: false, dataType: "'ladon'", dataFormat: undefined})}/${this.configuration.encodeParam({name: "channel", value: channel, in: "path", style: "simple", explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined})}/spec/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<PluginModel>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
+    let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+    if (localVarHttpHeaderAcceptSelected === undefined) {
+      // to determine the Accept header
+      const httpHeaderAccepts: string[] = ['application/json'];
+      localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+    }
+    if (localVarHttpHeaderAcceptSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
     }
 
-    /**
-     * get plugin binary content
-     * @param product product to filter matching plugins
-     * @param channel channel of the plugin stream
-     * @param id id of the plugin
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public pluginContent(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octed-stream', context?: HttpContext, transferCache?: boolean}): Observable<Blob>;
-    public pluginContent(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octed-stream', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Blob>>;
-    public pluginContent(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octed-stream', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Blob>>;
-    public pluginContent(product: 'ladon', channel: 'beta' | 'stable', id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/octed-stream', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (product === null || product === undefined) {
-            throw new Error('Required parameter product was null or undefined when calling pluginContent.');
-        }
-        if (channel === null || channel === undefined) {
-            throw new Error('Required parameter channel was null or undefined when calling pluginContent.');
-        }
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling pluginContent.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/octed-stream'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({name: "product", value: product, in: "path", style: "simple", explode: false, dataType: "'ladon'", dataFormat: undefined})}/${this.configuration.encodeParam({name: "channel", value: channel, in: "path", style: "simple", explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined})}/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                responseType: "blob",
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
+    let localVarHttpContext: HttpContext | undefined = options && options.context;
+    if (localVarHttpContext === undefined) {
+      localVarHttpContext = new HttpContext();
     }
 
-    /**
-     * get plugin description page
-     * @param product product to filter matching plugins
-     * @param channel channel of the plugin stream
-     * @param id id of the plugin
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public pluginReadme(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/html', context?: HttpContext, transferCache?: boolean}): Observable<string>;
-    public pluginReadme(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/html', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<string>>;
-    public pluginReadme(product: 'ladon', channel: 'beta' | 'stable', id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/html', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<string>>;
-    public pluginReadme(product: 'ladon', channel: 'beta' | 'stable', id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/html', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (product === null || product === undefined) {
-            throw new Error('Required parameter product was null or undefined when calling pluginReadme.');
-        }
-        if (channel === null || channel === undefined) {
-            throw new Error('Required parameter channel was null or undefined when calling pluginReadme.');
-        }
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling pluginReadme.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'text/html'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({name: "product", value: product, in: "path", style: "simple", explode: false, dataType: "'ladon'", dataFormat: undefined})}/${this.configuration.encodeParam({name: "channel", value: channel, in: "path", style: "simple", explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined})}/readme/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<string>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
+    let localVarTransferCache: boolean | undefined = options && options.transferCache;
+    if (localVarTransferCache === undefined) {
+      localVarTransferCache = true;
     }
 
-    /**
-     * get plugin listing
-     * @param product product to filter matching plugins
-     * @param channel channel of the plugin stream
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public plugins(product: 'ladon', channel: 'beta' | 'stable', observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<PluginModel>>;
-    public plugins(product: 'ladon', channel: 'beta' | 'stable', observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<PluginModel>>>;
-    public plugins(product: 'ladon', channel: 'beta' | 'stable', observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<PluginModel>>>;
-    public plugins(product: 'ladon', channel: 'beta' | 'stable', observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (product === null || product === undefined) {
-            throw new Error('Required parameter product was null or undefined when calling plugins.');
-        }
-        if (channel === null || channel === undefined) {
-            throw new Error('Required parameter channel was null or undefined when calling plugins.');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({name: "product", value: product, in: "path", style: "simple", explode: false, dataType: "'ladon'", dataFormat: undefined})}/${this.configuration.encodeParam({name: "channel", value: channel, in: "path", style: "simple", explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined})}/`;
-        return this.httpClient.request<Array<PluginModel>>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
+    let responseType_: 'text' | 'json' | 'blob' = 'json';
+    if (localVarHttpHeaderAcceptSelected) {
+      if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+        responseType_ = 'text';
+      } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+        responseType_ = 'json';
+      } else {
+        responseType_ = 'blob';
+      }
     }
 
+    let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({ name: 'product', value: product, in: 'path', style: 'simple', explode: false, dataType: "'ladon'", dataFormat: undefined })}/${this.configuration.encodeParam({ name: 'channel', value: channel, in: 'path', style: 'simple', explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined })}/bundle/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+    return this.httpClient.request<Array<PluginModel>>('get', `${this.configuration.basePath}${localVarPath}`, {
+      context: localVarHttpContext,
+      responseType: <any>responseType_,
+      withCredentials: this.configuration.withCredentials,
+      headers: localVarHeaders,
+      observe: observe,
+      transferCache: localVarTransferCache,
+      reportProgress: reportProgress,
+    });
+  }
+
+  /**
+   * get a single spec of a plugin
+   * @param product product to filter matching plugins
+   * @param channel channel of the plugin stream
+   * @param id id of the plugin
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   */
+  public getSpec(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'body',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<PluginModel>;
+  public getSpec(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'response',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<PluginModel>>;
+  public getSpec(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'events',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<PluginModel>>;
+  public getSpec(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe: any = 'body',
+    reportProgress: boolean = false,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<any> {
+    if (product === null || product === undefined) {
+      throw new Error('Required parameter product was null or undefined when calling getSpec.');
+    }
+    if (channel === null || channel === undefined) {
+      throw new Error('Required parameter channel was null or undefined when calling getSpec.');
+    }
+    if (id === null || id === undefined) {
+      throw new Error('Required parameter id was null or undefined when calling getSpec.');
+    }
+
+    let localVarHeaders = this.defaultHeaders;
+
+    let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+    if (localVarHttpHeaderAcceptSelected === undefined) {
+      // to determine the Accept header
+      const httpHeaderAccepts: string[] = ['application/json'];
+      localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+    }
+    if (localVarHttpHeaderAcceptSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+    }
+
+    let localVarHttpContext: HttpContext | undefined = options && options.context;
+    if (localVarHttpContext === undefined) {
+      localVarHttpContext = new HttpContext();
+    }
+
+    let localVarTransferCache: boolean | undefined = options && options.transferCache;
+    if (localVarTransferCache === undefined) {
+      localVarTransferCache = true;
+    }
+
+    let responseType_: 'text' | 'json' | 'blob' = 'json';
+    if (localVarHttpHeaderAcceptSelected) {
+      if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+        responseType_ = 'text';
+      } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+        responseType_ = 'json';
+      } else {
+        responseType_ = 'blob';
+      }
+    }
+
+    let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({ name: 'product', value: product, in: 'path', style: 'simple', explode: false, dataType: "'ladon'", dataFormat: undefined })}/${this.configuration.encodeParam({ name: 'channel', value: channel, in: 'path', style: 'simple', explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined })}/spec/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+    return this.httpClient.request<PluginModel>('get', `${this.configuration.basePath}${localVarPath}`, {
+      context: localVarHttpContext,
+      responseType: <any>responseType_,
+      withCredentials: this.configuration.withCredentials,
+      headers: localVarHeaders,
+      observe: observe,
+      transferCache: localVarTransferCache,
+      reportProgress: reportProgress,
+    });
+  }
+
+  /**
+   * get plugin binary content
+   * @param product product to filter matching plugins
+   * @param channel channel of the plugin stream
+   * @param id id of the plugin
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   */
+  public pluginContent(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'body',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/octed-stream'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<Blob>;
+  public pluginContent(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'response',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/octed-stream'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<Blob>>;
+  public pluginContent(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'events',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/octed-stream'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<Blob>>;
+  public pluginContent(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe: any = 'body',
+    reportProgress: boolean = false,
+    options?: { httpHeaderAccept?: 'application/octed-stream'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<any> {
+    if (product === null || product === undefined) {
+      throw new Error('Required parameter product was null or undefined when calling pluginContent.');
+    }
+    if (channel === null || channel === undefined) {
+      throw new Error('Required parameter channel was null or undefined when calling pluginContent.');
+    }
+    if (id === null || id === undefined) {
+      throw new Error('Required parameter id was null or undefined when calling pluginContent.');
+    }
+
+    let localVarHeaders = this.defaultHeaders;
+
+    let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+    if (localVarHttpHeaderAcceptSelected === undefined) {
+      // to determine the Accept header
+      const httpHeaderAccepts: string[] = ['application/octed-stream'];
+      localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+    }
+    if (localVarHttpHeaderAcceptSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+    }
+
+    let localVarHttpContext: HttpContext | undefined = options && options.context;
+    if (localVarHttpContext === undefined) {
+      localVarHttpContext = new HttpContext();
+    }
+
+    let localVarTransferCache: boolean | undefined = options && options.transferCache;
+    if (localVarTransferCache === undefined) {
+      localVarTransferCache = true;
+    }
+
+    let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({ name: 'product', value: product, in: 'path', style: 'simple', explode: false, dataType: "'ladon'", dataFormat: undefined })}/${this.configuration.encodeParam({ name: 'channel', value: channel, in: 'path', style: 'simple', explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined })}/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+    return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`, {
+      context: localVarHttpContext,
+      responseType: 'blob',
+      withCredentials: this.configuration.withCredentials,
+      headers: localVarHeaders,
+      observe: observe,
+      transferCache: localVarTransferCache,
+      reportProgress: reportProgress,
+    });
+  }
+
+  /**
+   * get plugin description page
+   * @param product product to filter matching plugins
+   * @param channel channel of the plugin stream
+   * @param id id of the plugin
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   */
+  public pluginReadme(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'body',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'text/html'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<string>;
+  public pluginReadme(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'response',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'text/html'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<string>>;
+  public pluginReadme(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe?: 'events',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'text/html'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<string>>;
+  public pluginReadme(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    id: string,
+    observe: any = 'body',
+    reportProgress: boolean = false,
+    options?: { httpHeaderAccept?: 'text/html'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<any> {
+    if (product === null || product === undefined) {
+      throw new Error('Required parameter product was null or undefined when calling pluginReadme.');
+    }
+    if (channel === null || channel === undefined) {
+      throw new Error('Required parameter channel was null or undefined when calling pluginReadme.');
+    }
+    if (id === null || id === undefined) {
+      throw new Error('Required parameter id was null or undefined when calling pluginReadme.');
+    }
+
+    let localVarHeaders = this.defaultHeaders;
+
+    let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+    if (localVarHttpHeaderAcceptSelected === undefined) {
+      // to determine the Accept header
+      const httpHeaderAccepts: string[] = ['text/html'];
+      localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+    }
+    if (localVarHttpHeaderAcceptSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+    }
+
+    let localVarHttpContext: HttpContext | undefined = options && options.context;
+    if (localVarHttpContext === undefined) {
+      localVarHttpContext = new HttpContext();
+    }
+
+    let localVarTransferCache: boolean | undefined = options && options.transferCache;
+    if (localVarTransferCache === undefined) {
+      localVarTransferCache = true;
+    }
+
+    let responseType_: 'text' | 'json' | 'blob' = 'json';
+    if (localVarHttpHeaderAcceptSelected) {
+      if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+        responseType_ = 'text';
+      } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+        responseType_ = 'json';
+      } else {
+        responseType_ = 'blob';
+      }
+    }
+
+    let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({ name: 'product', value: product, in: 'path', style: 'simple', explode: false, dataType: "'ladon'", dataFormat: undefined })}/${this.configuration.encodeParam({ name: 'channel', value: channel, in: 'path', style: 'simple', explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined })}/readme/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+    return this.httpClient.request<string>('get', `${this.configuration.basePath}${localVarPath}`, {
+      context: localVarHttpContext,
+      responseType: <any>responseType_,
+      withCredentials: this.configuration.withCredentials,
+      headers: localVarHeaders,
+      observe: observe,
+      transferCache: localVarTransferCache,
+      reportProgress: reportProgress,
+    });
+  }
+
+  /**
+   * get plugin listing
+   * @param product product to filter matching plugins
+   * @param channel channel of the plugin stream
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   */
+  public plugins(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    observe?: 'body',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<Array<PluginModel>>;
+  public plugins(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    observe?: 'response',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<Array<PluginModel>>>;
+  public plugins(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    observe?: 'events',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<Array<PluginModel>>>;
+  public plugins(
+    product: 'ladon',
+    channel: 'beta' | 'stable',
+    observe: any = 'body',
+    reportProgress: boolean = false,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<any> {
+    if (product === null || product === undefined) {
+      throw new Error('Required parameter product was null or undefined when calling plugins.');
+    }
+    if (channel === null || channel === undefined) {
+      throw new Error('Required parameter channel was null or undefined when calling plugins.');
+    }
+
+    let localVarHeaders = this.defaultHeaders;
+
+    let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+    if (localVarHttpHeaderAcceptSelected === undefined) {
+      // to determine the Accept header
+      const httpHeaderAccepts: string[] = ['application/json'];
+      localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+    }
+    if (localVarHttpHeaderAcceptSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+    }
+
+    let localVarHttpContext: HttpContext | undefined = options && options.context;
+    if (localVarHttpContext === undefined) {
+      localVarHttpContext = new HttpContext();
+    }
+
+    let localVarTransferCache: boolean | undefined = options && options.transferCache;
+    if (localVarTransferCache === undefined) {
+      localVarTransferCache = true;
+    }
+
+    let responseType_: 'text' | 'json' | 'blob' = 'json';
+    if (localVarHttpHeaderAcceptSelected) {
+      if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+        responseType_ = 'text';
+      } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+        responseType_ = 'json';
+      } else {
+        responseType_ = 'blob';
+      }
+    }
+
+    let localVarPath = `/plugins/mind/channel/${this.configuration.encodeParam({ name: 'product', value: product, in: 'path', style: 'simple', explode: false, dataType: "'ladon'", dataFormat: undefined })}/${this.configuration.encodeParam({ name: 'channel', value: channel, in: 'path', style: 'simple', explode: false, dataType: "'beta' | 'stable'", dataFormat: undefined })}/`;
+    return this.httpClient.request<Array<PluginModel>>('get', `${this.configuration.basePath}${localVarPath}`, {
+      context: localVarHttpContext,
+      responseType: <any>responseType_,
+      withCredentials: this.configuration.withCredentials,
+      headers: localVarHeaders,
+      observe: observe,
+      transferCache: localVarTransferCache,
+      reportProgress: reportProgress,
+    });
+  }
 }

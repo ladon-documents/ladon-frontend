@@ -15,7 +15,7 @@ import {
   throwError,
 } from 'rxjs';
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders } from '@angular/common/http';
-import { DocumentsService, TransactionService , ResponseSuccessModel} from '../../../api';
+import { DocumentsService, TransactionService, ResponseSuccessModel } from '../../../api';
 import { sortChannels } from '../helper/helper';
 import { V1Service, PluginModel } from '../../../plugin';
 import { PluginMetaService } from './plugin-meta.service';
@@ -281,7 +281,7 @@ export class PluginService {
           const newestVersion = result[0];
           const key = newestVersion.changetoken;
           payload.key = `etc/plugins/static-web/${plugin.pluginId}/${key}.json`;
-          return this.documentService.deleteDocument(payload.bucket,  payload.key).pipe(
+          return this.documentService.deleteDocument(payload.bucket, payload.key).pipe(
             tap((v) => {
               this.currentInstallations[pluginName] = {
                 ...initialState,

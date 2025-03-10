@@ -16,7 +16,6 @@ interface NavigationData {
   loadComponent?: () => Promise<any>;
 }
 
-
 const loginRoutes: Routes = [
   { path: `${environment.baseHref}/login`, component: LoginComponent },
   { path: environment.baseHref, redirectTo: `${environment.baseHref}/login`, pathMatch: 'full' },
@@ -43,12 +42,13 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
       canActivate: [AuthGuard],
     };
     if (navItem.hasChildren) {
-      data.loadChildren =  () =>
-          import('./' + navItem.component + '/' + navItem.component + '.routes.ts').then(m => m[navItem.component + 'Routes'])
-              .catch(error => {
-                console.error(`Error loading module for ${navItem.component}:`, error);
-                return null;
-              });
+      data.loadChildren = () =>
+        import('./' + navItem.component + '/' + navItem.component + '.routes.ts')
+          .then((m) => m[navItem.component + 'Routes'])
+          .catch((error) => {
+            console.error(`Error loading module for ${navItem.component}:`, error);
+            return null;
+          });
     } else {
       const compName = (navItem.component.charAt(0).toUpperCase() +
         navItem.component.slice(1) +

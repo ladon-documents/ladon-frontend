@@ -2,13 +2,13 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { appRoutes } from './app.routes';
 
-import {HttpClient, provideHttpClient} from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { provideNgIconsConfig } from '@ng-icons/core';
 import { APP_BASE_HREF } from '@angular/common';
 import { LadonApiModule, Configuration, ConfigurationParameters } from '../api/';
-import {LadonApiModule  as PluginApiModule} from "../plugin";
-import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { LadonApiModule as PluginApiModule } from '../plugin';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 export function apiConfigFactory(): Configuration {
   const params: ConfigurationParameters = {
@@ -33,14 +33,14 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes, withComponentInputBinding()),
     importProvidersFrom(LadonApiModule.forRoot(apiConfigFactory)),
     importProvidersFrom(PluginApiModule),
-      importProvidersFrom(
-          TranslateModule.forRoot({
-            loader: {
-              provide: TranslateLoader,
-              useFactory: HttpLoaderFactory,
-              deps: [HttpClient],
-            },
-          })
-      )
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient],
+        },
+      }),
+    ),
   ],
 };

@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { finalize, mergeMap, Observable, of, Subscription, tap } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ChannelList, PluginInstallState, PluginService, PluginWithVersionStatus } from './services/plugin.service';
@@ -9,19 +9,22 @@ import { FormsModule } from '@angular/forms';
 import { SearchfilterPipe } from './pipe/searchfilter.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 import { PluginProgressbarComponent } from './progressbar/plugin-progressbar.component';
-import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { pluginmanagerRoutes } from './pluginmanager.routes';
-import {PluginListComponent} from "./plugin-list/plugin-list.component";
+import { PluginListComponent } from './plugin-list/plugin-list.component';
 
 @Component({
   selector: 'pluginmanager',
   standalone: true,
-  imports: [CommonModule, RouterModule,
+  imports: [
+    CommonModule,
+    RouterModule,
     PluginProgressbarComponent,
     PluginListComponent,
     FormsModule,
     SearchfilterPipe,
-    TranslateModule],
+    TranslateModule,
+  ],
   templateUrl: './pluginmanager.component.html',
   styleUrl: './pluginmanager.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -31,7 +34,7 @@ export class PluginmanagerComponent implements OnInit {
     private pluginService: PluginService,
     public sanitizer: DomSanitizer,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     this.channels$ = this.pluginService.getPluginChannels().pipe(
       tap((channels) => {
@@ -40,7 +43,7 @@ export class PluginmanagerComponent implements OnInit {
         } else {
           this.isLoading = false;
         }
-      })
+      }),
     );
   }
 
@@ -72,7 +75,6 @@ export class PluginmanagerComponent implements OnInit {
     this.iFrameSrc = this.sanitizer.bypassSecurityTrustResourceUrl('https://ladon.org');
     this.getInstalling();
   }
-
 
   private findCurrentSelectedItemFromPayload(
     payload: PluginWithVersionStatus[],
@@ -141,7 +143,6 @@ export class PluginmanagerComponent implements OnInit {
       this.pluginService.changeChannel(channel);
     }
     this.router.navigate([channel], { relativeTo: this.route });
-
   }
 
   showBundle(bundle: any): void {

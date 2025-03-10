@@ -11,7 +11,7 @@ import { AuthService } from './services/auth.service';
 import { LoginComponent } from './login/login.component';
 import { Observable } from 'rxjs';
 import { FilemanagerComponent } from './filemanager/filemanager.component';
-import {PluginmanagerComponent} from "./pluginmanager/pluginmanager.component";
+import { PluginmanagerComponent } from './pluginmanager/pluginmanager.component';
 
 @Component({
   standalone: true,
@@ -19,7 +19,7 @@ import {PluginmanagerComponent} from "./pluginmanager/pluginmanager.component";
     CommonModule,
     RouterModule,
     NavigationComponent,
-      PluginmanagerComponent,
+    PluginmanagerComponent,
     AsideComponent,
     UsermanagerComponent,
     BucketsComponent,

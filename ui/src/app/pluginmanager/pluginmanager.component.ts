@@ -1,4 +1,13 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
+  HostListener,
+  OnInit,
+  Signal,
+  ViewChild
+} from '@angular/core';
 import { finalize, mergeMap, Observable, of, Subscription, tap } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ChannelList, PluginInstallState, PluginService, PluginWithVersionStatus } from './services/plugin.service';
@@ -6,7 +15,6 @@ import { PluginModel } from '../../plugin';
 import { CommonModule } from '@angular/common';
 import { isEmpty } from 'lodash';
 import { FormsModule } from '@angular/forms';
-import { SearchfilterPipe } from './pipe/searchfilter.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 import { PluginProgressbarComponent } from './progressbar/plugin-progressbar.component';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -16,51 +24,24 @@ import { PluginListComponent } from './plugin-list/plugin-list.component';
 @Component({
   selector: 'pluginmanager',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    PluginProgressbarComponent,
-    PluginListComponent,
-    FormsModule,
-    SearchfilterPipe,
-    TranslateModule,
-  ],
+  imports: [CommonModule, RouterModule, PluginProgressbarComponent, FormsModule, TranslateModule],
   templateUrl: './pluginmanager.component.html',
   styleUrl: './pluginmanager.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PluginmanagerComponent implements OnInit {
-  constructor(
-    private pluginService: PluginService,
-    public sanitizer: DomSanitizer,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {
-    this.channels$ = this.pluginService.getPluginChannels().pipe(
-      tap((channels) => {
-        if (channels) {
-          this.selectedChannel = channels[0].channel;
-        } else {
-          this.isLoading = false;
-        }
-      }),
-    );
-  }
-
   @ViewChild('search') search!: ElementRef;
   @ViewChild('dialog') dialog!: ElementRef;
 
   public pluginInstallList: { [key: string]: PluginInstallState } = {};
-  public isEmpty = true;
   public isLoading = true;
-  public pluginlist: Array<PluginWithVersionStatus> = [];
   public channels$: Observable<Array<ChannelList>>;
   public selectedChannel: string = '';
+  public pluginInfoUrl$!: Signal<SafeResourceUrl>;
 
-  iFrameSrc!: SafeResourceUrl;
   isInstalling = false;
-  selectedItem: PluginWithVersionStatus | undefined;
-  filterText = '';
+  selectedItem$: Observable<PluginWithVersionStatus | undefined>;
+  filterText: string = '';
 
   private sub$: Subscription = new Subscription();
 
@@ -71,8 +52,28 @@ export class PluginmanagerComponent implements OnInit {
     }
   }
 
+  constructor(
+    private pluginService: PluginService,
+    public sanitizer: DomSanitizer,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
+    this.selectedItem$ = this.pluginService.selectedPlugin;
+    this.filterText = '';
+
+    this.channels$ = this.pluginService.getPluginChannels().pipe(
+      tap((channels) => {
+        if (channels && Array.isArray(channels) && channels.length > 0) {
+          this.changeChannel(channels[0].channel);
+        } else {
+          this.isLoading = false;
+        }
+      }),
+    );
+  }
+
   ngOnInit(): void {
-    this.iFrameSrc = this.sanitizer.bypassSecurityTrustResourceUrl('https://ladon.org');
+    this.pluginInfoUrl$ = computed( () => this.sanitizer.bypassSecurityTrustResourceUrl(this.pluginService.pluginInfoUrl()));
     this.getInstalling();
   }
 
@@ -96,44 +97,27 @@ export class PluginmanagerComponent implements OnInit {
           this.pluginInstallList = data;
           if (isEmpty(this.pluginInstallList)) {
             this.isInstalling = false;
-            //this.loader.show();
-            return this.pluginService.reloadPlugin();
+            return this.pluginService.plugins();
           }
           return of(undefined);
         }),
       )
       .subscribe((plugins) => {
-        if (plugins) {
-          if (this.selectedItem?.id) {
-            this.onSelect(this.findCurrentSelectedItemFromPayload(plugins, this.selectedItem.id));
-          }
-        }
+        /*        if (plugins) {
+                    if (this.selectedItem?.id) {
+                      this.onSelect(this.findCurrentSelectedItemFromPayload(plugins, this.selectedItem.id));
+                    }
+                  }*/
       });
   }
 
   ngOnDestroy(): void {
-    this.pluginlist = [];
     //   this.webbundle = undefined;
     //   this.bundleContent = undefined;
   }
 
   private get checkForOpenDialog(): boolean {
     return this.dialog.nativeElement.hasAttribute('open');
-  }
-
-  onSelect(item: PluginWithVersionStatus | undefined): void {
-    if (!item) {
-      return;
-    }
-    this.selectedItem = item;
-    this.iFrameSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.pluginService.getDocsUrl(item.id));
-    if (this.isMinWidth(780)) {
-      return;
-    }
-
-    if (!this.checkForOpenDialog) {
-      this.dialog.nativeElement.showModal();
-    }
   }
 
   changeChannel(channel: string): void {
@@ -151,8 +135,8 @@ export class PluginmanagerComponent implements OnInit {
     }
     this.pluginService.getPluginDescription(bundle.id).subscribe((result) => {
       if (result) {
-        this.selectedItem = bundle;
-        this.iFrameSrc = this.sanitizer.bypassSecurityTrustResourceUrl(result);
+        //  this.selectedItem = bundle;
+        //    this.iFrameSrc = this.sanitizer.bypassSecurityTrustResourceUrl(result);
       }
     });
   }
@@ -170,7 +154,6 @@ export class PluginmanagerComponent implements OnInit {
             .installPlugin(plugin)
             .pipe(
               finalize(() => {
-                //this.loader.hide();
                 this.isInstalling = false;
               }),
             )
@@ -187,7 +170,6 @@ export class PluginmanagerComponent implements OnInit {
           .deintallPlugin(plugin)
           .pipe(
             finalize(() => {
-              //this.loader.hide();
               this.isInstalling = false;
             }),
           )
@@ -226,7 +208,6 @@ export class PluginmanagerComponent implements OnInit {
     if (this.sub$) {
       this.sub$.unsubscribe();
     }
-    //this.loader.show();
     return true;
   }
 }

@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import {
+  BehaviorSubject,
   catchError,
   delay,
   EMPTY,
@@ -54,7 +55,16 @@ export interface PluginInstallState {
   providedIn: 'root',
 })
 export class PluginService {
-  private plugins$ = new Subject<Array<PluginWithVersionStatus>>();
+  private readonly PluginUploadApi = '/admin/api/filemanager/_plugin/upload?id=%2Fupload%2F';
+  private readonly INITIAL_SELECTED_PLUGIN: PluginWithVersionStatus | undefined = undefined;
+  private readonly PLUGIN_DEFAULT_README_PAGE = 'https://ladon.org';
+  private readonly SPEC_TYPE_WEB_BUNDLE = 'web-bundle';
+
+  private pluginsSignal$: WritableSignal<Array<PluginWithVersionStatus>> = signal<Array<PluginWithVersionStatus>>([]);
+  private filteredText$: WritableSignal<string> = signal<string>('');
+  private isLoadingPlugins$: WritableSignal<boolean> = signal<boolean>(true);
+  private pluginInfoUrl$: WritableSignal<string> = signal<string>(this.PLUGIN_DEFAULT_README_PAGE);
+
   private currentInstallations$ = new Subject<any>();
   private product: string | any = 'ladon';
   private channel: string | any = 'stable';
@@ -69,9 +79,12 @@ export class PluginService {
     transactionID: undefined,
   };
 
-  private readonly PluginConfigJsonListApi = '/admin/api/rest/v1/content/buckets/_system/jsonlist?';
-  private readonly PluginConfigDeleteApi = '/admin/api/rest/v1/content/buckets/_system/documents?';
-  private readonly PluginUploadApi = '/admin/api/filemanager/_plugin/upload?id=%2Fupload%2F';
+
+  private selectedPlugin$: BehaviorSubject<PluginWithVersionStatus | undefined> = new BehaviorSubject(
+    this.INITIAL_SELECTED_PLUGIN,
+  );
+
+  private iFrameSubject$: BehaviorSubject<string> = new BehaviorSubject(this.PLUGIN_DEFAULT_README_PAGE);
 
   constructor(
     private httpClient: HttpClient,
@@ -81,8 +94,28 @@ export class PluginService {
     private documentService: DocumentsService,
   ) {}
 
-  getPlugins(): Observable<Array<PluginWithVersionStatus>> {
-    return this.plugins$.asObservable();
+  readonly iFrameUrl = this.iFrameSubject$.asObservable();
+  readonly selectedPlugin = this.selectedPlugin$.asObservable();
+
+
+  setSelectedItem(selectedItem: PluginWithVersionStatus) {
+    this.selectedPlugin$.next(selectedItem);
+    this.pluginInfoUrl$.set(this.getDocsUrl(selectedItem.id))
+  }
+
+  get plugins() {
+    return this.pluginsSignal$.asReadonly();
+  }
+  get pluginInfoUrl() {
+    return this.pluginInfoUrl$.asReadonly();
+  }
+
+  get filteredText() {
+    return this.filteredText$.asReadonly();
+  }
+
+  get isLoadingPlugins() {
+    return this.isLoadingPlugins$.asReadonly();
   }
 
   getPluginChannels(): Observable<Array<ChannelList>> {
@@ -93,7 +126,6 @@ export class PluginService {
           config = sortChannels(config);
           this.product = config[0].product || this.product;
           this.channel = config[0].channel || this.channel;
-          this._getPlugins().pipe(take(1)).subscribe();
           return config;
         }
         return null;
@@ -109,11 +141,11 @@ export class PluginService {
     if (channel) {
       this.channel = channel;
     }
-    this.reloadPlugin().subscribe();
+    this._getPlugins();
   }
 
-  reloadPlugin(): Observable<any> {
-    return this._getPlugins().pipe(take(1));
+  reloadPlugin(): void {
+    this._getPlugins();
   }
 
   private getWebBundle(): Observable<PluginWithVersionStatus | undefined> {
@@ -125,7 +157,7 @@ export class PluginService {
     return this.pluginmanagerService.plugins(this.product, this.channel).pipe(
       mergeMap((plugins: Array<PluginModel>) => {
         const webbundlePlugin: any = plugins.find((item: PluginModel) => {
-          return item.spec?.type === 'web-bundle';
+          return item.spec?.type === this.SPEC_TYPE_WEB_BUNDLE;
         });
         if (webbundlePlugin) {
           webbundlePlugin.canUpdate = false;
@@ -154,68 +186,75 @@ export class PluginService {
     );
   }
 
-  private _getPlugins(): Observable<Array<PluginWithVersionStatus>> {
-    return this.getWebBundle().pipe(
-      mergeMap((bundleResults: PluginWithVersionStatus | undefined) => {
-        return this.pluginmanagerService.plugins(this.product, this.channel).pipe(
-          map((plugins: Array<PluginModel>) => {
-            return {
-              plugins,
-              webbundle: bundleResults,
-            };
-          }),
-        );
-      }),
-      mergeMap((result: { plugins: Array<PluginModel>; webbundle: PluginWithVersionStatus | undefined }) => {
-        if (result.plugins && Array.isArray(result.plugins)) {
-          const filtered = result.plugins.filter((plugin: PluginModel) => {
-            return plugin.spec?.type !== 'web-bundle';
-          });
-          return this.pluginMetaService.setVersions(filtered).pipe(
-            map((versionedPlugins) => {
+  private _getPlugins(): void {
+    this.isLoadingPlugins$.set(true);
+    this.getWebBundle()
+      .pipe(
+        (take(1)),
+        mergeMap((bundleResults: PluginWithVersionStatus | undefined) => {
+          return this.pluginmanagerService.plugins(this.product, this.channel).pipe(
+            map((plugins: Array<PluginModel>) => {
               return {
-                versionedPlugins,
-                webbundle: result.webbundle,
+                plugins,
+                webbundle: bundleResults,
               };
             }),
           );
-        }
-        return of({
-          versionedPlugins: [],
-          webbundle: result.webbundle,
-        });
-      }),
-      catchError((e) => {
-        // Emit Subject to make spinner disapear
-        this.plugins$.next([]);
-        return throwError(e);
-      }),
-      map((result: { versionedPlugins: Array<any>; webbundle: PluginWithVersionStatus | undefined }) => {
-        if (
-          result &&
-          result.versionedPlugins &&
-          Array.isArray(result.versionedPlugins) &&
-          result.versionedPlugins.length > 0
-        ) {
-          if (result.webbundle) {
-            result.versionedPlugins.unshift(result.webbundle);
+        }),
+        mergeMap((result: { plugins: Array<PluginModel>; webbundle: PluginWithVersionStatus | undefined }) => {
+          if (result.plugins && Array.isArray(result.plugins)) {
+            const filtered = result.plugins.filter((plugin: PluginModel) => {
+              return plugin.spec?.type !== this.SPEC_TYPE_WEB_BUNDLE;
+            });
+            return this.pluginMetaService.setVersions(filtered).pipe(
+              map((versionedPlugins) => {
+                return {
+                  versionedPlugins,
+                  webbundle: result.webbundle,
+                };
+              }),
+            );
           }
-        }
-        this.plugins$.next(result.versionedPlugins);
-        return result.versionedPlugins;
-      }),
-    );
+          return of({
+            versionedPlugins: [],
+            webbundle: result.webbundle,
+          });
+        }),
+        catchError((e) => {
+          // Emit Subject to make spinner disapear
+          this.pluginsSignal$.set([]);
+          return throwError(e);
+        }),
+        map((result: { versionedPlugins: Array<any>; webbundle: PluginWithVersionStatus | undefined }) => {
+          if (
+            result &&
+            result.versionedPlugins &&
+            Array.isArray(result.versionedPlugins) &&
+            result.versionedPlugins.length > 0
+          ) {
+            if (result.webbundle) {
+              result.versionedPlugins.unshift(result.webbundle);
+            }
+          }
+          return result.versionedPlugins;
+        }),
+      )
+      .subscribe((versionedPlugins) => {
+        this.pluginsSignal$.set(versionedPlugins);
+        this.isLoadingPlugins$.set(false);
+      });
   }
 
   public getPluginDescription(pluginId: string): Observable<string> {
     return this.pluginmanagerService.pluginReadme(this.product, this.channel, pluginId);
   }
 
-  public getDocsUrl(id?: string): string {
+  private getDocsUrl(id?: string):string {
     if (id) {
+      //return this.pluginmanagerService.pluginReadme(this.product, this.channel, id);
       return `https://plugins.mind-consulting.de/plugins/mind/channel/${this.product}/${this.channel}/readme/${id}`;
     } else {
-      return 'https://ladon.org';
+      return this.PLUGIN_DEFAULT_README_PAGE;
     }
   }
 
@@ -295,7 +334,7 @@ export class PluginService {
       }),
       tap(() => {
         this.pluginInstallFinished(pluginName);
-        this.reloadPlugin().subscribe();
+        this.reloadPlugin();
       }),
       catchError((err) => {
         return throwError(err);

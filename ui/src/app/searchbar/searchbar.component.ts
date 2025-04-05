@@ -5,6 +5,7 @@ import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounce, forkJoin, interval, mergeMap, of, Subject } from 'rxjs';
 import { SearchGroup } from '../interfaces/search-group';
+import {TranslatePipe} from "@ngx-translate/core";
 
 type SearchTypes = 'buckets' | 'files' | 'plugins' | 'users' | 'permissions' | 'roles';
 
@@ -12,7 +13,7 @@ type SearchTypes = 'buckets' | 'files' | 'plugins' | 'users' | 'permissions' | '
   selector: 'lib-searchbar',
   standalone: true,
   providers: [provideIcons({ heroMagnifyingGlass })],
-  imports: [CommonModule, NgIconComponent, ReactiveFormsModule],
+  imports: [CommonModule, NgIconComponent, ReactiveFormsModule, TranslatePipe],
   templateUrl: './searchbar.component.html',
 })
 export class SearchbarComponent {

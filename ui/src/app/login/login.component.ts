@@ -35,6 +35,21 @@ export class LoginComponent {
     this.checkAuthentificationStatus();
   }
 
+  async loginAsPromise() {
+    if (this.loginForm.valid) {
+
+      const { password, email } = this.loginForm.value;
+      const result = await this.authService.initLadonAuthentication({ password, email });
+      const tokenResponse = result as { accessToken: string; tokenType: string };
+      localStorage.setItem('accessToken', tokenResponse.accessToken)
+      if (tokenResponse) {
+        this.authService.getCurrentUser().subscribe((user: UserModel) => {
+          this.router.navigateByUrl(`${environment.baseHref}/buckets`);
+
+        })
+      }
+    }
+  }
   login() {
     if (this.loginForm.valid) {
       const { password, email } = this.loginForm.value;

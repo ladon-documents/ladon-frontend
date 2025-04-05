@@ -3,11 +3,13 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { PluginmanagerService } from '../../../api';
+import {pluginTestMock} from "@ladon/tests/plugin-test-object";
 
 @Injectable({
   providedIn: 'root',
 })
 export class PluginMetaService {
+  private readonly PluginConfigJsonListApiLocal = '/admin/api/rest/v1/content/buckets/_system/jsonlist?';
   private readonly PluginConfigJsonListApi = '/admin/api/rest/v1/content/buckets/_system/jsonlist?';
   private readonly requiredPluginList = [
     'mind/mf-ladon-config',

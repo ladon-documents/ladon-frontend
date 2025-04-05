@@ -3,22 +3,11 @@
   position: sticky;
   top: 0;
   padding: var(--ladon-progressbar-padding, 1rem 0.5rem 0.5rem);
-  background: var(--ladon-theme-white);
+  background: white;
   border-bottom: 2px solid var(--ladon-progressbar-bbc, #ebeff4);
   z-index: 19;
 }
 
-code {
-  &::before {
-    font-family: var(--ladon-font-stack);
-    color: var(--ladon-theme-black-120);
-    position: absolute;
-    font-size: smaller;
-    content: attr(data-caption);
-    left: 0;
-    top: -1rem;
-  }
-}
 
 .progress-indicator {
   width: 100%;

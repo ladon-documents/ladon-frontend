@@ -12,11 +12,12 @@ externalDocs:
 servers:
   - url: https://plugins.mind-consulting.de/
   - url: http://localhost:8088
+  - url: /plugins
 tags:
   - name: v2
     description: Update for version support
 paths:
-  /plugins/mind/v2/{product}/{version}/{channel}/:
+  /mind/v2/{product}/{version}/{channel}/:
     get:
       tags:
         - v2
@@ -52,7 +53,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Plugin'
-  /plugins/mind/v2/{product}/{version}/{channel}/{id}:
+  /mind/v2/{product}/{version}/{channel}/{id}:
     get:
       tags:
         - v2
@@ -93,7 +94,7 @@ paths:
               schema:
                 type: string
                 format: binary
-  /plugins/mind/v2/{product}/{version}/{channel}/readme/{id}:
+  /mind/v2/{product}/{version}/{channel}/readme/{id}:
     get:
       tags:
         - v2
@@ -133,7 +134,7 @@ paths:
             text/html:
               schema:
                 type: string
-  /plugins/mind/v2/{product}/{version}/{channel}/bundle/{id}:
+  /mind/v2/{product}/{version}/{channel}/bundle/{id}:
     get:
       tags:
         - v2
@@ -175,7 +176,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Plugin'
-  /plugins/mind/v2/{product}/{version}/{channel}/spec/{id}:
+  /mind/v2/{product}/{version}/{channel}/spec/{id}:
     get:
       tags:
         - v2

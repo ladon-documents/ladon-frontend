@@ -1,28 +1,40 @@
-import { Component, input, InputSignal, signal, Signal, WritableSignal } from '@angular/core';
+import {Component, computed, input, InputSignal, OnInit, output, signal, Signal, WritableSignal} from '@angular/core';
 import { PluginService, PluginWithVersionStatus } from '../services/plugin.service';
 import { SearchfilterPipe } from '../pipe/searchfilter.pipe';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import {heroCheck, heroChevronRight} from "@ng-icons/heroicons/outline";
+import {NgIcon, provideIcons} from "@ng-icons/core";
 
 @Component({
   selector: 'app-plugin-list',
   standalone: true,
-  imports: [CommonModule, SearchfilterPipe, TranslatePipe],
+  imports: [CommonModule, SearchfilterPipe, TranslatePipe, NgIcon],
+  providers: [provideIcons({ heroCheck, heroChevronRight })],
   templateUrl: './plugin-list.component.html',
   styleUrl: './plugin-list.component.scss',
 })
-export class PluginListComponent {
-  pluginList$: WritableSignal<Array<PluginWithVersionStatus>> = signal([]);
-  isLoading$: WritableSignal<boolean> = signal(false);
-
+export class PluginListComponent implements OnInit {
+  pluginList$: Signal<Array<PluginWithVersionStatus>> = signal([]);
+  isLoading$: Signal<boolean> = signal(true);
+  filterText$: Signal<string> = signal('');
   selectedItem: PluginWithVersionStatus | undefined;
-  filterText = '';
-  onSelect(item: PluginWithVersionStatus | undefined): void {}
+
+  onSelect(item: PluginWithVersionStatus | undefined): void {
+    if (!item) {
+      return;
+    }
+    this.selectedItem = item;
+    this.pluginService.setSelectedItem(item);
+  }
 
   constructor(private pluginService: PluginService) {
-    this.pluginService.getPlugins().subscribe((data) => {
-      this.isLoading$.set(false);
-      this.pluginList$.set(data);
-    });
+    this.pluginList$ = computed(() => this.pluginService.plugins());
+    this.filterText$ = computed(() => this.pluginService.filteredText());
+    this.isLoading$ = computed(() => this.pluginService.isLoadingPlugins());
+  }
+
+  ngOnInit() {
+    console.log('on init')
   }
 }

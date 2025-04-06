@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "npm run prebuild",
     "start": "ng serve",
-    "build": "ng build --output-hashing none",
     "prebuild": "npm  --prefix ../style run build",
+    "build": "ng build --output-hashing none",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "prettier:format": "prettier --write src tests"

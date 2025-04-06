@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { TasksService, DocumentsService } from '../../api';
+import { TasksService, DocumentsService, Document, TaskStatus } from '../../api';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class TaskmanagerService {
     private tasksService: TasksService,
   ) {}
 
-  filterAvailableTasks(filterQuery?: string) {
+  filterAvailableTasks(filterQuery?: string): Observable<string[]> {
     return this.tasksService.getAvailableTasks().pipe(
       map((tasks: string[]) => {
         if (filterQuery) {
@@ -22,19 +23,23 @@ export class TaskmanagerService {
     );
   }
 
-  retrieveActiveTasks() {
+  retrieveActiveTasks(): Observable<TaskStatus[]> {
     return this.tasksService.getActiveTasks();
   }
 
-  taskStart(name: string) {
+  taskStart(name: string): Observable<{ [key: string]: string }> {
     return this.tasksService.startTask(name, {});
   }
 
-  stopTask(name: string) {
-    return this.tasksService.stopTask(name);
+  stopTask(id: string): Observable<string> {
+    return this.tasksService.stopTask(id);
   }
 
-  retrieveLogs(name: string) {
+  retrieveLogs(name: string): Observable<Document[]> {
     return this.documentsService.listDocuments('_system', undefined, undefined, `tasks/${name}/`);
+  }
+
+  retrieveLog(bucket: string, key: string): Observable<Blob> {
+    return this.documentsService.getDocument(bucket, key);
   }
 }

@@ -1,13 +1,59 @@
 <div>
-  <div class="flex">Verfügbar</div>
+  <div class="flex justify-between">
+    Verfügbar
+    <label for="toggle" class="flex items-center cursor-pointer ml-4">
+      <div class="flex items-center relative">
+        <input id="toggle" type="checkbox" class="sr-only" (change)="toggleAvailableTasks($event)" />
+        <div class="block bg-gray-600 w-9 h-4 rounded-full"></div>
+        <div
+          class="dot absolute ring bg-white top-0 w-4 h-4 rounded-full duration-300 transform-translate"
+          [ngClass]="{ 'translate-x-full': toggleChecked }"></div>
+      </div>
+      <div class="ml-2 text-gray-500 text-sm font-medium">Alle anzeigen</div>
+    </label>
+  </div>
+  <div>
+    <ul>
+      @for (task of availableTasks$ | async; track $index) {
+        <li class="flex justify-between items-center" (click)="selectTask(task)">
+          {{ task }}
+          <button class="flex p-2 leading-none" (click)="playTask(task)">
+            <ng-icon name="heroPlayCircle"></ng-icon>
+          </button>
+        </li>
+      }
+    </ul>
+  </div>
 </div>
 
 <div>
   <div class="flex">Aktiv</div>
+  <ul>
+    @for (task of activeTasks$ | async; track task.percent) {
+      <li class="flex items-center">
+        {{ task.name }}
+        <progress [value]="task.percent" max="100"></progress>
+        <button class="flex p-2 leading-none" (click)="stopTask(task.id)">
+          <ng-icon name="heroStopCircle"></ng-icon>
+        </button>
+      </li>
+    }
+  </ul>
 </div>
 
 <div>
   <div class="flex">Ausgaben-Log</div>
+  <div>
+    <ul>
+      @for (log of availableLogs; track $index) {
+        <li class="flex justify-between items-center">
+          {{ log }}
+        </li>
+      } @empty {
+        <li class="flex justify-between items-center">Keine Ausgaben</li>
+      }
+    </ul>
+  </div>
 </div>
 
 <div>

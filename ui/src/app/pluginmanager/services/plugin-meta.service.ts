@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { PluginmanagerService } from '../../../api';
-import {pluginTestMock} from "@ladon/tests/plugin-test-object";
+import { pluginTestMock } from '@ladon/tests/plugin-test-object';
 
 @Injectable({
   providedIn: 'root',

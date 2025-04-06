@@ -5,7 +5,7 @@ import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounce, forkJoin, interval, mergeMap, of, Subject } from 'rxjs';
 import { SearchGroup } from '../interfaces/search-group';
-import {TranslatePipe} from "@ngx-translate/core";
+import { TranslatePipe } from '@ngx-translate/core';
 
 type SearchTypes = 'buckets' | 'files' | 'plugins' | 'users' | 'permissions' | 'roles';
 

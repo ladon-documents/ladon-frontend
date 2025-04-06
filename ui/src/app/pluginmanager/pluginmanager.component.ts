@@ -6,7 +6,7 @@ import {
   HostListener,
   OnInit,
   Signal,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { finalize, mergeMap, Observable, of, Subscription, tap } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -73,7 +73,9 @@ export class PluginmanagerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pluginInfoUrl$ = computed( () => this.sanitizer.bypassSecurityTrustResourceUrl(this.pluginService.pluginInfoUrl()));
+    this.pluginInfoUrl$ = computed(() =>
+      this.sanitizer.bypassSecurityTrustResourceUrl(this.pluginService.pluginInfoUrl()),
+    );
     this.getInstalling();
   }
 

@@ -79,7 +79,6 @@ export class PluginService {
     transactionID: undefined,
   };
 
-
   private selectedPlugin$: BehaviorSubject<PluginWithVersionStatus | undefined> = new BehaviorSubject(
     this.INITIAL_SELECTED_PLUGIN,
   );
@@ -97,10 +96,9 @@ export class PluginService {
   readonly iFrameUrl = this.iFrameSubject$.asObservable();
   readonly selectedPlugin = this.selectedPlugin$.asObservable();
 
-
   setSelectedItem(selectedItem: PluginWithVersionStatus) {
     this.selectedPlugin$.next(selectedItem);
-    this.pluginInfoUrl$.set(this.getDocsUrl(selectedItem.id))
+    this.pluginInfoUrl$.set(this.getDocsUrl(selectedItem.id));
   }
 
   get plugins() {
@@ -190,7 +188,7 @@ export class PluginService {
     this.isLoadingPlugins$.set(true);
     this.getWebBundle()
       .pipe(
-        (take(1)),
+        take(1),
         mergeMap((bundleResults: PluginWithVersionStatus | undefined) => {
           return this.pluginmanagerService.plugins(this.product, this.channel).pipe(
             map((plugins: Array<PluginModel>) => {
@@ -249,7 +247,7 @@ export class PluginService {
     return this.pluginmanagerService.pluginReadme(this.product, this.channel, pluginId);
   }
 
-  private getDocsUrl(id?: string):string {
+  private getDocsUrl(id?: string): string {
     if (id) {
       //return this.pluginmanagerService.pluginReadme(this.product, this.channel, id);
       return `https://plugins.mind-consulting.de/plugins/mind/channel/${this.product}/${this.channel}/readme/${id}`;

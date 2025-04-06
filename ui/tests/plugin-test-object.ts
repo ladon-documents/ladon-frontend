@@ -23,7 +23,7 @@ const installedPlugins = {
   'mind/wc-ladon-form': '0.6.1',
 };
 
- const channelList = [
+const channelList = [
   {
     product: 'ladon',
     channel: 'beta',
@@ -34,7 +34,7 @@ const installedPlugins = {
   },
 ];
 
- const pluginList: any = [
+const pluginList: any = [
   {
     name: 'Ladon Global Dependencies',
     version: '2.1.0',
@@ -438,5 +438,5 @@ const installedPlugins = {
 export const pluginTestMock = {
   installedPlugins: installedPlugins,
   channelList: channelList,
-  pluginList: pluginList
+  pluginList: pluginList,
 };

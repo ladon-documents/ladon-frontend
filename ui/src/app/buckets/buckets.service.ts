@@ -1,11 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, mergeMap, of, take } from 'rxjs';
-import { BucketStatsExtended} from '../interfaces/bucket-stats';
+import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import {
   BucketModel,
   BucketsService as BucketsServiceApi,
-  BucketUiItemModel, DocumentsService,
-  UIService
+  BucketUiItemModel,
+  DocumentsService,
+  UIService,
 } from '../../api';
 
 @Injectable({
@@ -33,10 +34,11 @@ export class BucketsService {
 
   toggleFavoriteBuckets(isFavorite: boolean) {
     if (isFavorite) {
-      const filteredBucketList = this._bucketList()?.filter((bucket: BucketUiItemModel) => bucket.favourite === isFavorite) as BucketUiItemModel[]
+      const filteredBucketList = this._bucketList()?.filter(
+        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite,
+      ) as BucketUiItemModel[];
       this.bucketsListSignal.set(filteredBucketList);
     } else {
-
       this.bucketsListSignal.set(this._bucketList() as BucketUiItemModel[]);
     }
   }
@@ -64,9 +66,6 @@ export class BucketsService {
   }
 
   private getStats(bucketId: string) {
-    return this.documentsService.getDocument(
-        '_proc',
-        `bucket-stats/${bucketId}/stats.json`
-    )
+    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
   }
 }

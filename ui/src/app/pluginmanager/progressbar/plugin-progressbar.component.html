@@ -1,41 +1,50 @@
 <div class="progress-wrapper">
   <div class="progress-wrapper__infos">
     @if (plugin?.current === plugin?.version) {
-      <div *ngIf="plugin?.current" [attr.datacaption]="'PLUGIN.VERSION' | translate" class="badge badge-soft badge-neutral">{{ plugin?.current }}</div>
+      <div
+        *ngIf="plugin?.current"
+        [attr.datacaption]="'PLUGIN.VERSION' | translate"
+        class="badge badge-soft badge-neutral">
+        {{ plugin?.current }}
+      </div>
     } @else {
       @if (plugin?.current) {
-        <div [attr.datacaption]="'PLUGIN.VERSION' | translate" class="badge badge-soft badge-neutral">{{ plugin?.current }}</div>
+        <div [attr.datacaption]="'PLUGIN.VERSION' | translate" class="badge badge-soft badge-neutral">
+          {{ plugin?.current }}
+        </div>
       }
       @if (isProgressVisible) {
         <progress id="file" class="progress progress-success w-56" value="{{ pluginInstalState?.progress }}" max="100">
           {{ pluginInstalState?.progress }}
         </progress>
       }
-      <div class="badge badge-soft"
-           [ngClass]="plugin?.canUpdate? 'badge-secondary' : 'badge-neutral'"
-           [attr.datacaption]="'PLUGIN.AVAILABLE' | translate"
-      >{{ plugin?.version }}</div>
+      <div
+        class="badge badge-soft"
+        [ngClass]="plugin?.canUpdate ? 'badge-secondary' : 'badge-neutral'"
+        [attr.datacaption]="'PLUGIN.AVAILABLE' | translate">
+        {{ plugin?.version }}
+      </div>
     }
   </div>
 
   <div class="progress-wrapper__controls">
     @if (plugin?.canDeinstall && !isProgressVisible) {
-      <button (click)="onDeinstall()"
-              size="small"
-              class="btn btn-soft btn-error"
-              [disabled]="pluginInstalState && pluginInstalState.state === 'IN_PROGRESS'">
+      <button
+        (click)="onDeinstall()"
+        size="small"
+        class="btn btn-soft btn-error"
+        [disabled]="pluginInstalState && pluginInstalState.state === 'IN_PROGRESS'">
         {{ "PLUGIN.PROGRESSBAR.DEINSTALL" | translate }}
       </button>
     }
 
     @if (plugin?.canUpdate || plugin?.canInstall) {
       <button
-                                                                                          class="btn btn-soft"
-                                                                                          (click)="onUpdate()"
-                                                                                          [disabled]="pluginInstalState && pluginInstalState.state === 'IN_PROGRESS'">
+        class="btn btn-soft"
+        (click)="onUpdate()"
+        [disabled]="pluginInstalState && pluginInstalState.state === 'IN_PROGRESS'">
         {{ buttonLabel }}
       </button>
     }
-
   </div>
 </div>

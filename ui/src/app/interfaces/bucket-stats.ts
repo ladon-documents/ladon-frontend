@@ -1,6 +1,6 @@
-import {StatisticsModel} from "../../api";
+import { StatisticsModel } from '../../api';
 
-export interface BucketStatsExtended  extends StatisticsModel{
+export interface BucketStatsExtended extends StatisticsModel {
   name: string;
   objects: number;
   favourite?: boolean;

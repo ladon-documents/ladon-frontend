@@ -1,10 +1,10 @@
-import {Component, computed, input, InputSignal, OnInit, output, signal, Signal, WritableSignal} from '@angular/core';
+import { Component, computed, input, InputSignal, OnInit, output, signal, Signal, WritableSignal } from '@angular/core';
 import { PluginService, PluginWithVersionStatus } from '../services/plugin.service';
 import { SearchfilterPipe } from '../pipe/searchfilter.pipe';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import {heroCheck, heroChevronRight} from "@ng-icons/heroicons/outline";
-import {NgIcon, provideIcons} from "@ng-icons/core";
+import { heroCheck, heroChevronRight } from '@ng-icons/heroicons/outline';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 
 @Component({
   selector: 'app-plugin-list',
@@ -35,6 +35,6 @@ export class PluginListComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('on init')
+    console.log('on init');
   }
 }

@@ -1,0 +1,231 @@
+openapi: 3.0.1
+info:
+  title: Mind Plugin Store
+  description: 'Endpoint to retrieve plugins for Mind products like Ladon Document Cloud Storage.'
+  termsOfService: https://mind-consulting.de/
+  contact:
+    email: info@mind-consulting.de
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Ladon
+  url: https://ladon.org
+servers:
+  - url: https://plugins.mind-consulting.de/
+  - url: http://localhost:8088
+tags:
+  - name: v1
+    description: Original plugin api
+paths:
+  /plugins/mind/channel/{product}/{channel}/:
+    get:
+      tags:
+        - v1
+      summary: get plugin listing
+      operationId: plugins
+      parameters:
+        - name: product
+          in: path
+          required: true
+          description: product to filter matching plugins
+          schema:
+            type: string
+            enum: [ladon]
+        - name: channel
+          in: path
+          required: true
+          description: channel of the plugin stream
+          schema:
+            type: string
+            enum: [beta, stable]
+      responses:
+        200:
+          description: 'Plugin metadata'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plugin'
+  /plugins/mind/channel/{product}/{channel}/{id}:
+    get:
+      tags:
+        - v1
+      summary: get plugin binary content
+      operationId: pluginContent
+      parameters:
+        - name: product
+          in: path
+          required: true
+          description: product to filter matching plugins
+          schema:
+            type: string
+            enum: [ladon]
+        - name: channel
+          in: path
+          required: true
+          description: channel of the plugin stream
+          schema:
+            type: string
+            enum: [beta, stable]
+        - name: id
+          in: path
+          required: true
+          description: id of the plugin
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Plugin content'
+          content:
+            application/octed-stream:
+              schema:
+                type: string
+                format: binary
+  /plugins/mind/channel/{product}/{channel}/readme/{id}:
+    get:
+      tags:
+        - v1
+      summary: get plugin description page
+      operationId: pluginReadme
+      parameters:
+        - name: product
+          in: path
+          required: true
+          description: product to filter matching plugins
+          schema:
+            type: string
+            enum: [ladon]
+        - name: channel
+          in: path
+          required: true
+          description: channel of the plugin stream
+          schema:
+            type: string
+            enum: [beta, stable]
+        - name: id
+          in: path
+          required: true
+          description: id of the plugin
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Plugin readme content'
+          content:
+            text/html:
+              schema:
+                type: string
+  /plugins/mind/channel/{product}/{channel}/bundle/{id}:
+    get:
+      tags:
+        - v1
+      summary: get bundle content
+      operationId: bundleContent
+      parameters:
+        - name: product
+          in: path
+          required: true
+          description: product to filter matching plugins
+          schema:
+            type: string
+            enum: [ladon]
+        - name: channel
+          in: path
+          required: true
+          description: channel of the plugin stream
+          schema:
+            type: string
+            enum: [beta, stable]
+        - name: id
+          in: path
+          required: true
+          description: id of the plugin
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Bundle content'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plugin'
+  /plugins/mind/channel/{product}/{channel}/spec/{id}:
+    get:
+      tags:
+        - v1
+      summary: get a single spec of a plugin
+      operationId: getSpec
+      parameters:
+        - name: product
+          in: path
+          required: true
+          description: product to filter matching plugins
+          schema:
+            type: string
+            enum: [ladon]
+        - name: channel
+          in: path
+          required: true
+          description: channel of the plugin stream
+          schema:
+            type: string
+            enum: [beta, stable]
+        - name: id
+          in: path
+          required: true
+          description: id of the plugin
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'Bundle content'
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Plugin'
+components:
+  schemas:
+    Plugin:
+      type: object
+      properties:
+        id:
+          type: string
+        file:
+          type: string
+        name:
+          type: string
+        pluginId:
+          type: string
+        spec:
+          $ref: '#/components/schemas/Spec'
+    Spec:
+      type: object
+      properties:
+        category:
+          type: string
+        deployTarget:
+          type: string
+        descriptionFile:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        shortText:
+          type: string
+        type:
+          type: string
+        vendor:
+          $ref: '#/components/schemas/Vendor'
+        version:
+          type: string
+    Vendor:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+

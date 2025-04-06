@@ -9,7 +9,7 @@
  */
 
 
-export interface UserLogins { 
+export interface UserLoginsModel { 
     date: string;
     details: string;
 }

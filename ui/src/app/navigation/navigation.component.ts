@@ -11,14 +11,13 @@ import {
 import { Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
 import { environment } from '../../environments/environment';
+import {TranslateModule, TranslatePipe} from "@ngx-translate/core";
 
 @Component({
   selector: 'lib-navigation',
   standalone: true,
-  imports: [CommonModule, NgIconComponent],
-  providers: [
-    provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle, heroRectangleStack }),
-  ],
+  imports: [CommonModule, NgIconComponent, TranslatePipe],
+  providers: [provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle, heroRectangleStack })],
   templateUrl: './navigation.component.html',
   styles: `
     :host {

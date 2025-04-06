@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../services/auth.service';
-import { User } from '../../api';
+import { UserModel } from '../../api';
 
 @Component({
   selector: 'login',
@@ -35,10 +35,25 @@ export class LoginComponent {
     this.checkAuthentificationStatus();
   }
 
+  async loginAsPromise() {
+    if (this.loginForm.valid) {
+
+      const { password, email } = this.loginForm.value;
+      const result = await this.authService.initLadonAuthentication({ password, email });
+      const tokenResponse = result as { accessToken: string; tokenType: string };
+      localStorage.setItem('accessToken', tokenResponse.accessToken)
+      if (tokenResponse) {
+        this.authService.getCurrentUser().subscribe((user: UserModel) => {
+          this.router.navigateByUrl(`${environment.baseHref}/buckets`);
+
+        })
+      }
+    }
+  }
   login() {
     if (this.loginForm.valid) {
       const { password, email } = this.loginForm.value;
-      this.authService.login({ password, email }).subscribe((user: User) => {
+      this.authService.login({ password, email }).subscribe((user: UserModel) => {
         if (user) {
           this.router.navigateByUrl(`${environment.baseHref}/buckets`);
         }
@@ -47,7 +62,7 @@ export class LoginComponent {
   }
 
   private checkAuthentificationStatus() {
-    this.authService.getCurrentUser().subscribe((user: User) => {
+    this.authService.getCurrentUser().subscribe((user: UserModel) => {
       if (user) this.router.navigateByUrl(`${environment.baseHref}/buckets`);
     });
   }

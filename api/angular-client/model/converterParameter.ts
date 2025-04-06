@@ -9,7 +9,7 @@
  */
 
 
-export interface ConverterParameter { 
+export interface ConverterParameterModel { 
     name: string;
     description: string;
     optional: boolean;

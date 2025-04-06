@@ -1,5 +1,5 @@
 import { BucketItem } from '../src/app/interfaces/bucket-item';
-import { BucketStats } from '../src/app/interfaces/bucket-stats';
+import { BucketStatsExtended } from '../src/app/interfaces/bucket-stats';
 
 export class BucketsTestObject {
   getBucketsMock(): BucketItem[] {
@@ -106,7 +106,7 @@ export class BucketsTestObject {
     ];
   }
 
-  getBucketStats(): BucketStats {
+  getBucketStats(): BucketStatsExtended {
     return {
       size: 3014479,
       versions: 17,
@@ -115,6 +115,7 @@ export class BucketsTestObject {
       lastModified: '2024-06-24T17:48:18.926Z',
       folderCount: 4,
       fileCount: 11,
+      favourite: false,
     };
   }
 }

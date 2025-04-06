@@ -1,19 +1,18 @@
-import { Injectable, isDevMode } from '@angular/core';
+import {Injectable, isDevMode, signal, WritableSignal} from '@angular/core';
 import { BehaviorSubject, mergeMap, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthenticationService, LoginRequest, User, UsersService } from '../../api';
+import {
+  AuthenticationService,
+  LoginRequestModel,
+  UserModel,
+  UsersService,
+} from '../../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly authConfig = {
-    filter: 'etc/ui/mind/mf-ladon-auth-api/config/auth.json',
-    prefix: 'etc/',
-    bucket: '_system',
-  };
-  private userSubject$ = new BehaviorSubject<any>(null);
-  private readonly devUser: User = {
+  private readonly devUser: UserModel = {
     userId: 'admin',
     fullName: 'Armin Strator',
     email: 'info@mind-consulting.de',
@@ -23,7 +22,7 @@ export class AuthService {
     emailVerified: 'true',
     homeBucket: 'admin',
   };
-  user$ = this.userSubject$.asObservable();
+  private userSignal$: WritableSignal<UserModel | undefined> = signal<UserModel | undefined>(undefined);
 
   constructor(
     private as: AuthenticationService,
@@ -32,37 +31,69 @@ export class AuthService {
     //  this.getCurrentUser();
   }
 
-  public login(Login: LoginRequest) {
+  get currentUser() {
+    return this.userSignal$.asReadonly();
+  }
+
+  public async initLadonAuthentication(loginRequest: any): Promise<any> {
+    const path =
+        this.as.configuration.basePath  +'/auth/login';
+    const opts = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginRequest),
+    };
+
+    const response = await fetch(path, opts);
+
+    if (response.ok) {
+      return response.json();
+    }
+
+    throw response;
+  }
+  public login(Login: LoginRequestModel) {
     if (this.isDevelopmentEnironment()) {
-      this.userSubject$.next(this.devUser);
+      this.userSignal$.set(this.devUser);
       return of(this.devUser);
     }
+
     return this.as.authenticateUser(Login).pipe(
-      mergeMap((res) => {
+      map((response) => {
+        const tokenResponse = response as {
+          accessToken: string;
+          tokenType: string;
+        };
+        localStorage.setItem('accessToken', tokenResponse.accessToken);
+        return response;
+      }),
+      mergeMap((res: any) => {
         return this.us.getCurrentUser();
       }),
-      map((user: User) => {
-        this.userSubject$.next(user);
+      map((user: UserModel) => {
+        this.userSignal$.set(user);
         return user;
       }),
     );
   }
 
   public logout() {
-    this.as.logout().subscribe((response) => {
+    return this.as.logout().subscribe((response) => {
       console.log(response);
     });
   }
 
   public getCurrentUser() {
     return this.us.getCurrentUser().pipe(
-      tap((user: User) => {
-        this.userSubject$.next(user);
+      tap((user: UserModel) => {
+        this.userSignal$.set(user);
       }),
     );
   }
 
   private isDevelopmentEnironment(): boolean {
-    return isDevMode();
+    return false; // isDevMode();
   }
 }

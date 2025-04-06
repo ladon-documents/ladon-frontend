@@ -9,15 +9,15 @@
  */
 
 
-export interface LadonPermission { 
+export interface LadonPermissionModel { 
     permissionId: string;
-    operation: LadonPermission.OperationEnum;
-    type: LadonPermission.TypeEnum;
+    operation: LadonPermissionModel.OperationEnum;
+    type: LadonPermissionModel.TypeEnum;
     value: string;
     allowed: boolean;
     description: string;
 }
-export namespace LadonPermission {
+export namespace LadonPermissionModel {
     export type OperationEnum = 'CREATE_OBJECT' | 'READ_OBJECT' | 'WRITE_OBJECT' | 'DELETE_OBJECT' | 'WIPE_OUT_OBJECT' | 'CREATE_BUCKET' | 'READ_BUCKET' | 'WRITE_BUCKET' | 'DELETE_BUCKET' | 'LADON_UI' | 'ADD_USER' | 'LIST_USER' | 'DELETE_USER' | 'EDIT_PERMISSIONS' | 'SHOW_PERMISSIONS';
     export const OperationEnum = {
         CreateObject: 'CREATE_OBJECT' as OperationEnum,

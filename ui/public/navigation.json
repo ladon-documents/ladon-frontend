@@ -1,62 +1,72 @@
 [
-	{
-		"label": "BUCKETS.NAVITEM",
-		"target": "internal",
-		"component": "buckets",
-		"path": "buckets",
-		"icon": "heroFolder",
-		"type": "main",
-		"index": 31
-	},
-	{
-		"label": "Filemanager",
-		"target": "internal",
-		"component": "filemanager",
-		"path": "filemanager",
-		"icon": "heroFolder",
-		"type": "main",
-		"index": 32
-	},
-	{
-		"label": "Task-Manager",
-		"target": "internal",
-		"component": "taskmanager",
-		"path": "taskmanager",
-		"icon": "heroRectangleStack",
-		"type": "main",
-		"index": 33
-	},
-	{
-		"label": "Our Team",
-		"target": "static",
-		"component": "Staticweb",
-		"path": "./public/html/test.html",
-		"icon": "heroFolder",
-		"type": "main",
-		"index": 35
-	},
-	{
-		"label": "USER_MANAGER.NAVITEM",
-		"target": "internal",
-		"component": "usermanager",
-		"path": "usermanager",
-		"id": "@mind/mf-ladon-user-manager",
-		"type": "menu",
-		"index": 10
-	},
-	{
-		"label": "NAVIGATION.SUBNAV.LOGOUT",
-		"icon": "heroArrowRightStartOnRectangle",
-		"id": "ladon:logout",
-		"target": "action",
-		"type": "menu",
-		"index": 50
-	},
-	{
-		"label": "Documentation",
-		"target": "external",
-		"path": "https://ladon.org/doc",
-		"type": "menu",
-		"index": 40
-	}
+  {
+    "label": "BUCKETS.NAVITEM",
+    "target": "internal",
+    "component": "buckets",
+    "path": "buckets",
+    "icon": "heroFolder",
+    "type": "main",
+    "index": 31
+  },
+  {
+    "label": "Filemanager",
+    "target": "internal",
+    "component": "filemanager",
+    "path": "filemanager",
+    "icon": "heroFolder",
+    "type": "main",
+    "index": 32
+  },
+  {
+    "label": "Task-Manager",
+    "target": "internal",
+    "component": "taskmanager",
+    "path": "taskmanager",
+    "icon": "heroRectangleStack",
+    "type": "main",
+    "index": 33
+  },
+  {
+    "label": "Plugins",
+    "target": "internal",
+    "component": "pluginmanager",
+    "path": "pluginmanager",
+    "icon": "heroFolder",
+    "hasChildren": true,
+    "type": "main",
+    "index": 32
+  },
+  {
+    "label": "Our Team",
+    "target": "static",
+    "component": "Staticweb",
+    "path": "./public/html/test.html",
+    "icon": "heroFolder",
+    "type": "main",
+    "index": 35
+  },
+  {
+    "label": "USER_MANAGER.NAVITEM",
+    "target": "internal",
+    "component": "usermanager",
+    "path": "usermanager",
+    "id": "@mind/mf-ladon-user-manager",
+    "type": "menu",
+    "index": 10
+  },
+  {
+    "label": "NAVIGATION.SUBNAV.LOGOUT",
+    "icon": "heroArrowRightStartOnRectangle",
+    "id": "ladon:logout",
+    "target": "action",
+    "type": "menu",
+    "index": 50
+  },
+  {
+    "label": "Documentation",
+    "target": "external",
+    "path": "https://ladon.org/doc",
+    "type": "menu",
+    "index": 40
+  }
 ]

@@ -1,0 +1,52 @@
+{
+  "BUCKETS": {
+    "NAVITEM": "Verzeichnisse",
+    "INFO": "Info",
+    "CREATE_BUCKET": "Neues Verzeichnis erstellen",
+    "SHOW_BUCKET": "Verzeichnis anzeigen",
+    "DELETE_BUCKET": "Verzeichnis löschen",
+    "NO_RESULTS": "Keine Ergebnisse gefunden",
+    "TOOLBAR": {
+      "PLACEHOLDER_SEARCH": "Verzeichnis suchen …",
+      "PLACEHOLDER_CREATE": "Verzeichnis-Name",
+      "FAVORITES": "Favorit"
+    },
+    "CONFIRM": {
+      "CONFIRM_DELETE": "Wollen Sie {replace} wirklich löschen?"
+    },
+    "ALERT": {
+      "BUCKET_REQUIREMENT": "Stellen Sie sicher, dass ihr Name nur aus Kleinbuchstaben, Ziffern sowie Punkt, Doppelpunkt, Binde- oder Unterstrich besteht",
+      "EMPTY_ERROR": "Nur leere Verzeichnisse können gelöscht werden"
+    },
+    "GENERAL": {
+      "FAVORITE": "Favorit",
+      "SAVE": "Speichern",
+      "TABLES": {
+        "CHANGED": "Geändert",
+        "CREATED_BY": "Erstellt von",
+        "CREATED_AT": "Erstellt am",
+        "FILES": "Dateien",
+        "FOLDER": "Ordner",
+        "GRID": "Raster",
+        "LIST": "Liste",
+        "NAME": "Name",
+        "SIZE": "Größe"
+      },
+      "ERRORS": {
+        "GENERAL": "Entschuldigung, das hätte nicht passieren dürfen"
+      }
+    }
+  },
+  "PLUGIN": {
+    "NAVITEM": "Plugins",
+    "TITLE": "Plugins",
+    "SEARCH_PLACEHOLDER": "Filtern",
+    "VERSION": "Version",
+    "AVAILABLE": "Verfügbar",
+    "PROGRESSBAR": {
+      "DEINSTALL": "Deinstallieren",
+      "REFRESH": "Aktualisieren",
+      "INSTALL": "Installieren"
+    }
+  }
+}

@@ -9,7 +9,7 @@
  */
 
 
-export interface ZipUploadRequest { 
+export interface ZipUploadRequestModel { 
     content?: Blob;
 }
 

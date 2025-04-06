@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, Signal} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
@@ -9,16 +9,20 @@ import { environment } from '../environments/environment';
 import { NavigationComponent } from './navigation/navigation.component';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './login/login.component';
-import { Observable } from 'rxjs';
 import { FilemanagerComponent } from './filemanager/filemanager.component';
 import { TaskmanagerComponent } from './taskmanager/taskmanager.component';
+import { PluginmanagerComponent } from './pluginmanager/pluginmanager.component';
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {UserModel} from "../api";
 
 @Component({
   standalone: true,
   imports: [
     CommonModule,
     RouterModule,
+    TranslateModule,
     NavigationComponent,
+    PluginmanagerComponent,
     AsideComponent,
     UsermanagerComponent,
     BucketsComponent,
@@ -34,11 +38,14 @@ import { TaskmanagerComponent } from './taskmanager/taskmanager.component';
 })
 export class AppComponent {
   public navigationEntries: Array<NavigationEntry> = [];
-  isAuthenticated$: Observable<any>;
+  isAuthenticated$: Signal<UserModel | undefined>
 
-  constructor(private readonly as: AuthService) {
+  constructor(private readonly as: AuthService,private translate: TranslateService) {
     this.navigationEntries = environment.navigation;
-    this.isAuthenticated$ = this.as.user$;
+    this.isAuthenticated$ = computed(() => this.as.currentUser());
+    this.translate.addLangs(["de", "en"]);
+    this.translate.setDefaultLang('de');
+    this.translate.use('de');
   }
 }
 

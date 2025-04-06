@@ -1,0 +1,17 @@
+{
+  "/admin": {
+    "target": "https://cluster.mind-consulting.de",
+    "secure": true,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+  "/plugins": {
+    "target": "https://plugins.mind-consulting.de",
+    "secure": true,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/plugins": ""
+    }
+  }
+}

@@ -9,6 +9,13 @@ import { setNavigation } from './app.navconfig';
 import { StaticwebComponent } from './staticweb/staticweb.component';
 import { AuthGuard } from './shared/guards/auth/auth.guard';
 
+interface NavigationData {
+  path: string;
+  canActivate: any[];
+  loadChildren?: () => Promise<any>;
+  loadComponent?: () => Promise<any>;
+}
+
 const loginRoutes: Routes = [
   { path: `${environment.baseHref}/login`, component: LoginComponent },
   { path: environment.baseHref, redirectTo: `${environment.baseHref}/login`, pathMatch: 'full' },
@@ -30,15 +37,26 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
   navigation.forEach((navItem) => {
     if (NO_ROUTING_TARGETS.includes(navItem.target)) return;
     const navPath = `${environment.baseHref}/${navItem.path}`;
-    const data: any = {
+    const data: NavigationData = {
       path: navPath,
       canActivate: [AuthGuard],
     };
-    const compName = (navItem.component.charAt(0).toUpperCase() +
-      navItem.component.slice(1) +
-      'Component') as keyof typeof Component;
-    data.loadComponent = () =>
-      import('./' + navItem.component + '/' + navItem.component + '.component.ts').then((m) => m[compName]);
+    if (navItem.hasChildren) {
+      data.loadChildren = () =>
+        import('./' + navItem.component + '/' + navItem.component + '.routes.ts')
+          .then((m) => m[navItem.component + 'Routes'])
+          .catch((error) => {
+            console.error(`Error loading module for ${navItem.component}:`, error);
+            return null;
+          });
+    } else {
+      const compName = (navItem.component.charAt(0).toUpperCase() +
+        navItem.component.slice(1) +
+        'Component') as keyof typeof Component;
+      data.loadComponent = () =>
+        import('./' + navItem.component + '/' + navItem.component + '.component.ts').then((m) => m[compName]);
+    }
+
     if (navItem.target !== 'static') {
       _appRoutes.push(data);
     }

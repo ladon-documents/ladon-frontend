@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { TaskmanagerService } from './taskmanager.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroPlayCircle, heroStopCircle } from '@ng-icons/heroicons/outline';
-import { Document, TaskStatus } from '../../api';
 import { Observable, switchMap, tap, interval, takeUntil, Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { DocumentModel, TaskStatusModel } from '../../api';
 
 @Component({
   selector: 'app-taskmanager',
@@ -16,8 +16,8 @@ import { CommonModule } from '@angular/common';
 })
 export class TaskmanagerComponent implements OnInit {
   availableTasks$: Observable<string[]> | undefined;
-  activeTasks$: Observable<TaskStatus[]> | undefined;
-  availableLogs: Document[] | undefined;
+  activeTasks$: Observable<TaskStatusModel[]> | undefined;
+  availableLogs: DocumentModel[] | undefined;
   toggleChecked: boolean | undefined;
 
   private readonly taskFilterQuery = 'Demo';

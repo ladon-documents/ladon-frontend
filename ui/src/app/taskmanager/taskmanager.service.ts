@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TasksService, DocumentsService, Document, TaskStatus } from '../../api';
+import { TasksService, DocumentsService, DocumentModel, TaskStatusModel } from '../../api';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class TaskmanagerService {
     );
   }
 
-  retrieveActiveTasks(): Observable<TaskStatus[]> {
+  retrieveActiveTasks(): Observable<TaskStatusModel[]> {
     return this.tasksService.getActiveTasks();
   }
 
@@ -35,7 +35,7 @@ export class TaskmanagerService {
     return this.tasksService.stopTask(id);
   }
 
-  retrieveLogs(name: string): Observable<Document[]> {
+  retrieveLogs(name: string): Observable<DocumentModel[]> {
     return this.documentsService.listDocuments('_system', undefined, undefined, `tasks/${name}/`);
   }
 

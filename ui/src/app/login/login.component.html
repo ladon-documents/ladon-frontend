@@ -38,7 +38,12 @@
           </label>
         </div>
         <div class="form-control mt-6">
-          <button class="btn bg-blue-900  text-white rounded-md hover:bg-blue-950" [disabled]="loginForm.invalid" (click)="loginAsPromise()">Login</button>
+          <button
+            class="btn bg-blue-900 text-white rounded-md hover:bg-blue-950"
+            [disabled]="loginForm.invalid"
+            (click)="loginAsPromise()">
+            Login
+          </button>
         </div>
       </div>
       <div class="divider">OR</div>

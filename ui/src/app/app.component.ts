@@ -1,4 +1,4 @@
-import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, Signal} from '@angular/core';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
@@ -11,8 +11,8 @@ import { AuthService } from './services/auth.service';
 import { LoginComponent } from './login/login.component';
 import { FilemanagerComponent } from './filemanager/filemanager.component';
 import { PluginmanagerComponent } from './pluginmanager/pluginmanager.component';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {UserModel} from "../api";
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { UserModel } from '../api';
 
 @Component({
   standalone: true,
@@ -36,12 +36,15 @@ import {UserModel} from "../api";
 })
 export class AppComponent {
   public navigationEntries: Array<NavigationEntry> = [];
-  isAuthenticated$: Signal<UserModel | undefined>
+  isAuthenticated$: Signal<UserModel | undefined>;
 
-  constructor(private readonly as: AuthService,private translate: TranslateService) {
+  constructor(
+    private readonly as: AuthService,
+    private translate: TranslateService,
+  ) {
     this.navigationEntries = environment.navigation;
     this.isAuthenticated$ = computed(() => this.as.currentUser());
-    this.translate.addLangs(["de", "en"]);
+    this.translate.addLangs(['de', 'en']);
     this.translate.setDefaultLang('de');
     this.translate.use('de');
   }

@@ -1,12 +1,7 @@
-import {Injectable, isDevMode, signal, WritableSignal} from '@angular/core';
+import { Injectable, isDevMode, signal, WritableSignal } from '@angular/core';
 import { BehaviorSubject, mergeMap, of, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {
-  AuthenticationService,
-  LoginRequestModel,
-  UserModel,
-  UsersService,
-} from '../../api';
+import { AuthenticationService, LoginRequestModel, UserModel, UsersService } from '../../api';
 
 @Injectable({
   providedIn: 'root',
@@ -36,12 +31,11 @@ export class AuthService {
   }
 
   public async initLadonAuthentication(loginRequest: any): Promise<any> {
-    const path =
-        this.as.configuration.basePath  +'/auth/login';
+    const path = this.as.configuration.basePath + '/auth/login';
     const opts = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(loginRequest),
     };

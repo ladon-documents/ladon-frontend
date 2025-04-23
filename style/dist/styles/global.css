@@ -2288,6 +2288,9 @@
   .w-56 {
     width: calc(var(--spacing) * 56);
   }
+  .w-70 {
+    width: calc(var(--spacing) * 70);
+  }
   .w-full {
     width: 100%;
   }
@@ -2611,8 +2614,8 @@
   .fill-warning {
     fill: var(--color-warning);
   }
-  .object-cover {
-    object-fit: cover;
+  .object-contain {
+    object-fit: contain;
   }
   .p-0\.5 {
     padding: calc(var(--spacing) * 0.5);

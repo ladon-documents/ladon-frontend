@@ -21,18 +21,5 @@ export class AuthGuard implements CanActivate {
     }
     this.router.navigateByUrl(`${environment.baseHref}/login`);
     return of(false);
-    /*
-    return this.authService.user$.pipe(
-      map((user) => {
-        if (user) {
-          return true;
-        } else {
-          this.router.navigateByUrl(`${environment.baseHref}/login`);
-          return false;
-        }
-      }),
-    );
-    
-     */
   }
 }

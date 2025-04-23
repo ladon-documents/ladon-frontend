@@ -23,7 +23,7 @@ export class AuthService {
     private as: AuthenticationService,
     private us: UsersService,
   ) {
-    //  this.getCurrentUser();
+     this.getCurrentUser();
   }
 
   get currentUser() {
@@ -31,11 +31,12 @@ export class AuthService {
   }
 
   public async initLadonAuthentication(loginRequest: any): Promise<any> {
-    const path = this.as.configuration.basePath + '/auth/login';
+    const path =
+        this.as.configuration.basePath  +'/auth/login';
     const opts = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(loginRequest),
     };
@@ -75,7 +76,8 @@ export class AuthService {
 
   public logout() {
     return this.as.logout().subscribe((response) => {
-      console.log(response);
+      localStorage.removeItem('accessToken');
+      this.userSignal$.set(undefined);
     });
   }
 
@@ -88,6 +90,6 @@ export class AuthService {
   }
 
   private isDevelopmentEnironment(): boolean {
-    return false; // isDevMode();
+    return isDevMode();
   }
 }

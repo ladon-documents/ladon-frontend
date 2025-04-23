@@ -48,7 +48,14 @@ export class AppComponent {
     this.translate.setDefaultLang('de');
     this.translate.use('de');
   }
+  onNavigationAction($event: NavigationEntry) {
+      if ($event?.id === 'ladon:logout') {
+        this.as.logout();
+      }
+  }
+
 }
+
 
 @Component({
   standalone: true,

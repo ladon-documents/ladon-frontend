@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { TasksService, DocumentsService, DocumentModel, TaskStatusModel } from '../../api';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -8,6 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class TaskmanagerService {
   constructor(
+    private http: HttpClient,
     private documentsService: DocumentsService,
     private tasksService: TasksService,
   ) {}
@@ -36,10 +38,12 @@ export class TaskmanagerService {
   }
 
   retrieveLogs(name: string): Observable<DocumentModel[]> {
-    return this.documentsService.listDocuments('_system', undefined, undefined, `tasks/${name}/`);
+    return this.http.get<DocumentModel[]>('public/mocks/ausgaben_liste.json');
+    // return this.documentsService.listDocuments('_system', undefined, undefined, `tasks/${name}/`);
   }
 
-  retrieveLog(bucket: string, key: string): Observable<Blob> {
-    return this.documentsService.getDocument(bucket, key);
+  retrieveLog(bucket: string, key: string): Observable<string> {
+    return this.http.get(`public/mocks/ausgabe_inhalt.txt`, { responseType: 'text' as 'text' });
+    // return this.documentsService.getDocument(bucket, key);
   }
 }

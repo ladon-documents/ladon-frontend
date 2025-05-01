@@ -17,7 +17,9 @@ import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
   selector: 'lib-navigation',
   standalone: true,
   imports: [CommonModule, NgIconComponent, TranslatePipe],
-  providers: [provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle, heroRectangleStack })],
+  providers: [
+    provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle, heroRectangleStack }),
+  ],
   templateUrl: './navigation.component.html',
   styles: `
     :host {

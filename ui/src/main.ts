@@ -13,7 +13,7 @@ fetchNavigation
 
 /**
  * Set the Tailwind CDN script in development mode
- * @returns
+ * @returns {Promise<boolean>}
  */
 async function setTailwindCDN(): Promise<boolean> {
   if (isDevMode()) {

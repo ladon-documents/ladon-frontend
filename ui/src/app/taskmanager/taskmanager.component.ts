@@ -112,8 +112,8 @@ export class TaskmanagerComponent implements OnInit {
   invokeLog(log: DocumentModel): void {
     const { bucket, key } = log;
     this.activeLog = key;
-    this.taskmanagerService.retrieveLog(bucket!, key!).subscribe((log) => {
-      this.activeLog$.next(log);
+    this.taskmanagerService.retrieveLog(bucket!, key!).subscribe(async (log: Blob) => {
+      this.activeLog$.next(await log.text());
     });
   }
 

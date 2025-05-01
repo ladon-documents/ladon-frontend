@@ -10,7 +10,7 @@
 }
 
 li:has(> span.active) {
-  background-color: color-mix(in oklch, var(--color-blue-700), transparent 95%);
+  background-color: color-mix(in oklch, var(--color-blue-700), transparent 90%);
 }
 
 progress {
@@ -43,5 +43,11 @@ progress {
   :host {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
+  }
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :host {
+    background-color: var(--color-stone-800);
   }
 }

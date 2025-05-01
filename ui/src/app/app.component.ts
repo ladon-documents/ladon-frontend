@@ -10,6 +10,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './login/login.component';
 import { FilemanagerComponent } from './filemanager/filemanager.component';
+import { TaskmanagerComponent } from './taskmanager/taskmanager.component';
 import { PluginmanagerComponent } from './pluginmanager/pluginmanager.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserModel } from '../api';
@@ -27,6 +28,7 @@ import { UserModel } from '../api';
     BucketsComponent,
     LoginComponent,
     FilemanagerComponent,
+    TaskmanagerComponent,
     AsyncPipe,
   ],
   selector: 'ldn-ui',

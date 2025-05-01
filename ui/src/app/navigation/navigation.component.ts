@@ -6,6 +6,7 @@ import {
   heroDocumentText,
   heroListBullet,
   heroArrowRightStartOnRectangle,
+  heroRectangleStack,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
@@ -16,7 +17,9 @@ import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
   selector: 'lib-navigation',
   standalone: true,
   imports: [CommonModule, NgIconComponent, TranslatePipe],
-  providers: [provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle })],
+  providers: [
+    provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle, heroRectangleStack }),
+  ],
   templateUrl: './navigation.component.html',
   styles: `
     :host {

@@ -1,8 +1,8 @@
 <div class="bg-base-200 min-h-screen flex items-center justify-center">
   <div class="card lg:card-side bg-base-100 shadow-xl max-w-4xl w-full">
-    <figure class="lg:w-1/2">
-      <img src="public/svg/login-mask-illustration.svg" alt="Login Illustration" class="object-cover w-full h-full" />
-    </figure>
+    <div class="lg:w-1/2 flex items-center justify-center">
+      <img src="public/img/ladon-mascot.webp" alt="Ladon Mascot" class="object-contain w-70 h-full" />
+    </div>
     <div class="card-body lg:w-1/2 bg-slate-50 bg-white">
       <h2 class="card-title text-2xl font-bold mb-6">Login</h2>
       <div [formGroup]="loginForm">
@@ -10,7 +10,7 @@
           <label class="label">
             <span class="label-text">Email</span>
           </label>
-          <label class="input input-bordered flex items-center gap-2">
+          <label class="input input-bordered flex items-center gap-2 w-full">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
               <path
                 d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
@@ -24,7 +24,7 @@
           <label class="label">
             <span class="label-text">Password</span>
           </label>
-          <label class="input input-bordered flex items-center gap-2">
+          <label class="input input-bordered flex items-center gap-2 w-full">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
               <path
                 fill-rule="evenodd"
@@ -39,9 +39,9 @@
         </div>
         <div class="form-control mt-6">
           <button
-            class="btn bg-blue-900 text-white rounded-md hover:bg-blue-950"
+            class="btn bg-blue-900 text-white rounded-md hover:bg-blue-950 w-full"
             [disabled]="loginForm.invalid"
-            (click)="loginAsPromise()">
+            (click)="login()">
             Login
           </button>
         </div>

@@ -11,7 +11,6 @@ type SearchTypes = 'buckets' | 'files' | 'plugins' | 'users' | 'permissions' | '
 
 @Component({
   selector: 'lib-searchbar',
-  standalone: true,
   providers: [provideIcons({ heroMagnifyingGlass })],
   imports: [CommonModule, NgIconComponent, ReactiveFormsModule, TranslatePipe],
   templateUrl: './searchbar.component.html',

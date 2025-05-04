@@ -12,7 +12,6 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
 
 @Component({
   selector: 'buckets',
-  standalone: true,
   imports: [CommonModule, NgIconComponent, SearchbarComponent, TranslateModule],
   providers: [provideIcons({ heroFolder, heroPlusCircle, heroFolderSolid }), BucketsService, BucketsTestObject],
   templateUrl: './buckets.component.html',

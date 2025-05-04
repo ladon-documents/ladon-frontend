@@ -9,7 +9,6 @@ import { CommonModule } from '@angular/common';
   templateUrl: './plugin-progressbar.component.html',
   imports: [CommonModule, TranslateModule],
   styleUrls: ['./plugin-progressbar.component.scss'],
-  standalone: true,
 })
 export class PluginProgressbarComponent implements OnInit {
   public buttonLabel = '';

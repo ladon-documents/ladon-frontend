@@ -8,11 +8,9 @@ import { DocumentsService } from '../../api';
 
 @Component({
   selector: 'lib-static-web',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './staticweb.component.html',
   styleUrl: './staticweb.component.css',
-  //changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StaticwebComponent implements OnInit, OnDestroy {
   private subscription!: Subscription;

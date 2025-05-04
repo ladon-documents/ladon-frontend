@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'ldn-mf-aside',
-  standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './aside.component.html',
   styleUrl: './aside.component.css',

@@ -1,4 +1,4 @@
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, output, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -11,10 +11,10 @@ import { Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
 import { environment } from '../../environments/environment';
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
+import { AppStore } from '../store/app.store';
 
 @Component({
   selector: 'lib-navigation',
-  standalone: true,
   imports: [CommonModule, NgIconComponent, TranslatePipe],
   providers: [provideIcons({ heroFolder, heroDocumentText, heroListBullet, heroArrowRightStartOnRectangle })],
   templateUrl: './navigation.component.html',
@@ -41,6 +41,7 @@ export class NavigationComponent {
   subMenu = computed(() => this.navigation().filter(({ type }) => type === 'menu'));
   navigationEntryAction = output<NavigationEntry>();
 
+  readonly #store = inject(AppStore);
   constructor(private router: Router) {}
 
   invokeItem(item: NavigationEntry) {
@@ -53,11 +54,19 @@ export class NavigationComponent {
         this.router.navigate([`${environment.baseHref}/static`], { queryParams: { page: item.path } });
         break;
       case 'action':
-        this.navigationEntryAction.emit(item);
+        this.dispatchNavigationEvent(item);
         break;
       case 'external':
         window.open(item.path, '_blank');
         break;
     }
+  }
+
+  private dispatchNavigationEvent(item: NavigationEntry) {
+    if (item.id === 'ladon:logout') {
+      this.#store.logout();
+      return;
+    }
+    window.dispatchEvent(new CustomEvent('ladon:navigation:item', { detail: item }));
   }
 }

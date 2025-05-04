@@ -1,92 +1,57 @@
-import { Injectable, isDevMode, signal, WritableSignal } from '@angular/core';
-import { BehaviorSubject, mergeMap, of, tap } from 'rxjs';
+import { Inject, Injectable, isDevMode } from '@angular/core';
+import { mergeMap, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthenticationService, LoginRequestModel, UserModel, UsersService } from '../../api';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthStorageService } from './auth.storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly devUser: UserModel = {
-    userId: 'admin',
-    fullName: 'Armin Strator',
-    email: 'info@mind-consulting.de',
-    roles: ['admin', 'user'],
-    imageUrl: undefined,
-    provider: 'ladon',
-    emailVerified: 'true',
-    homeBucket: 'admin',
-  };
-  private userSignal$: WritableSignal<UserModel | undefined> = signal<UserModel | undefined>(undefined);
-
   constructor(
     private as: AuthenticationService,
     private us: UsersService,
-  ) {
-     this.getCurrentUser();
-  }
+    private httpClient: HttpClient,
+    private authStorage: AuthStorageService,
+  ) {}
 
-  get currentUser() {
-    return this.userSignal$.asReadonly();
-  }
-
-  public async initLadonAuthentication(loginRequest: any): Promise<any> {
-    const path =
-        this.as.configuration.basePath  +'/auth/login';
-    const opts = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginRequest),
-    };
-
-    const response = await fetch(path, opts);
-
-    if (response.ok) {
-      return response.json();
-    }
-
-    throw response;
-  }
   public login(Login: LoginRequestModel) {
-    if (this.isDevelopmentEnironment()) {
-      this.userSignal$.set(this.devUser);
-      return of(this.devUser);
-    }
-
-    return this.as.authenticateUser(Login).pipe(
-      map((response) => {
-        const tokenResponse = response as {
-          accessToken: string;
-          tokenType: string;
-        };
-        localStorage.setItem('accessToken', tokenResponse.accessToken);
-        return response;
-      }),
-      mergeMap((res: any) => {
-        return this.us.getCurrentUser();
-      }),
-      map((user: UserModel) => {
-        this.userSignal$.set(user);
-        return user;
-      }),
-    );
+    const headers = new HttpHeaders().set('Content-Type', 'application/json;  charset=utf-8');
+    const httpOptions = {
+      headers,
+      responseType: 'json' as 'json',
+    };
+    return this.httpClient
+      .post<{
+        accessToken: string;
+        tokenType: string;
+      }>(this.as.configuration.basePath + '/auth/login', JSON.stringify(Login), httpOptions)
+      .pipe(
+        map((response) => {
+          const tokenResponse = response;
+          this.authStorage.setData({ accessToken: tokenResponse.accessToken });
+          return response;
+        }),
+        mergeMap((res: any) => {
+          return this.us.getCurrentUser();
+        }),
+        map((user: UserModel) => {
+          return user;
+        }),
+      );
   }
 
   public logout() {
-    return this.as.logout().subscribe((response) => {
-      localStorage.removeItem('accessToken');
-      this.userSignal$.set(undefined);
-    });
+    return this.as.logout().pipe(
+      tap(() => {
+        this.authStorage.removeData();
+      }),
+    );
   }
 
   public getCurrentUser() {
-    return this.us.getCurrentUser().pipe(
-      tap((user: UserModel) => {
-        this.userSignal$.set(user);
-      }),
-    );
+    return this.us.getCurrentUser();
   }
 
   private isDevelopmentEnironment(): boolean {

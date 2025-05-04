@@ -23,7 +23,6 @@ import { PluginListComponent } from './plugin-list/plugin-list.component';
 
 @Component({
   selector: 'pluginmanager',
-  standalone: true,
   imports: [CommonModule, RouterModule, PluginProgressbarComponent, FormsModule, TranslateModule],
   templateUrl: './pluginmanager.component.html',
   styleUrl: './pluginmanager.component.scss',

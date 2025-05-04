@@ -8,7 +8,6 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 
 @Component({
   selector: 'app-plugin-list',
-  standalone: true,
   imports: [CommonModule, SearchfilterPipe, TranslatePipe, NgIcon],
   providers: [provideIcons({ heroCheck, heroChevronRight })],
   templateUrl: './plugin-list.component.html',

@@ -1,6 +1,10 @@
 <header>
-  <lib-navigation [navigation]="navigationEntries" *ngIf="isAuthenticated$()" (navigationEntryAction)="onNavigationAction($event)"></lib-navigation>
+  <lib-navigation [navigation]="navigationEntries" *ngIf="isAuthenticated()"></lib-navigation>
 </header>
-<main role="main" class="w-full h-screen overflow-y-auto grow">
-  <router-outlet></router-outlet>
-</main>
+@if (isAuthenticating()) {
+  <span class="loading loading-ring loading-xl"></span>
+} @else {
+  <main role="main" class="w-full h-screen overflow-y-auto grow">
+    <router-outlet></router-outlet>
+  </main>
+}

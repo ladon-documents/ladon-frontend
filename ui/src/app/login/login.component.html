@@ -5,7 +5,7 @@
     </div>
     <div class="card-body lg:w-1/2 bg-slate-50 bg-white">
       <h2 class="card-title text-2xl font-bold mb-6">Login</h2>
-      <div [formGroup]="loginForm">
+      <div [formGroup]="loginForm" (keyup.enter)="login()">
         <div class="form-control">
           <label class="label">
             <span class="label-text">Email</span>

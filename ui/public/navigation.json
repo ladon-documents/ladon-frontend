@@ -46,11 +46,11 @@
     "index": 35
   },
   {
-    "label": "USER_MANAGER.NAVITEM",
+    "label": "User manager",
     "target": "internal",
     "component": "usermanager",
     "path": "usermanager",
-    "id": "@mind/mf-ladon-user-manager",
+    "hasChildren": true,
     "type": "menu",
     "index": 10
   },

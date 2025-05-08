@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { provideRouter, RouterOutlet } from '@angular/router';
-import { routes } from './usermanager.routes';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'ldn-mf-usermanager',
   standalone: true,
   imports: [CommonModule, RouterOutlet],
-  providers: [provideRouter(routes)],
   templateUrl: './usermanager.component.html',
   styleUrl: './usermanager.component.scss',
 })

@@ -1,29 +1,22 @@
-import { Injectable } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AuthService } from '../../../services/auth.service';
+import { Observable, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { AppStore } from '../../../store/app.store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-  ) {}
+  readonly #store = inject(AppStore);
+  constructor(private router: Router) {}
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.authService.user$.pipe(
-      map((user) => {
-        if (user) {
-          return true;
-        } else {
-          this.router.navigateByUrl(`${environment.baseHref}/login`);
-          return false;
-        }
-      }),
-    );
+    const currentUser = this.#store.auth.user;
+    if (currentUser()) {
+      return of(true);
+    }
+    this.router.navigateByUrl(`${environment.baseHref}/login`);
+    return of(false);
   }
 }

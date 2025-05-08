@@ -23,7 +23,7 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
-import { ResponseSuccess } from '../model/responseSuccess';
+import { ResponseSuccessModel } from '../model/responseSuccess';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -104,29 +104,29 @@ export class StreamService {
   public retrieveStreamOps(
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<ResponseSuccess>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<ResponseSuccessModel>;
   public retrieveStreamOps(
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<ResponseSuccess>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<ResponseSuccessModel>>;
   public retrieveStreamOps(
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<ResponseSuccess>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<ResponseSuccessModel>>;
   public retrieveStreamOps(
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     let localVarHeaders = this.defaultHeaders;
 
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -155,7 +155,7 @@ export class StreamService {
     }
 
     let localVarPath = `/api/rest/v1/stream/put`;
-    return this.httpClient.request<ResponseSuccess>('put', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<ResponseSuccessModel>('put', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       responseType: <any>responseType_,
       withCredentials: this.configuration.withCredentials,

@@ -9,7 +9,7 @@
  */
 
 
-export interface UserDataWrapper { 
+export interface UserDataWrapperModel { 
     name?: string;
     email?: string;
     status?: boolean;

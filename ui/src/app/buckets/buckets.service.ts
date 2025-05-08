@@ -1,35 +1,71 @@
-import { Injectable } from '@angular/core';
-import { BucketItem } from '../interfaces/bucket-item';
-import { BehaviorSubject, Observable, Subject, mergeMap, of } from 'rxjs';
-import { BucketStats } from '../interfaces/bucket-stats';
-import { Bucket, BucketsService as BucketsServiceApi } from '../../api';
+import { Injectable, signal } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, mergeMap, of, take } from 'rxjs';
+import { BucketStatsExtended } from '../interfaces/bucket-stats';
+import {
+  BucketModel,
+  BucketsService as BucketsServiceApi,
+  BucketUiItemModel,
+  DocumentsService,
+  UIService,
+} from '../../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BucketsService {
-  bucketsListBehaviorSubject = new BehaviorSubject<Bucket[] | undefined>(this.fetchBuckets());
-  selectedBucketSubject = new Subject<Bucket>();
-
-  constructor(private bucketServiceApi: BucketsServiceApi) {}
-
-  fetchBuckets(): Bucket[] {
-    return []; //  this.bucketServiceApi.listBuckets();
+  private bucketsListSignal = signal<BucketUiItemModel[]>([]);
+  private bucketStatsSignal = signal<BucketStatsExtended | undefined>(undefined);
+  private _bucketList = signal<BucketUiItemModel[]>([]);
+  constructor(
+    private bucketServiceApi: BucketsServiceApi,
+    private documentsService: DocumentsService,
+    private uiServiceApi: UIService,
+  ) {
+    this.retrieveBucketsList();
   }
 
-  retrieveBucketsList(): Observable<Bucket[]> {
-    return this.bucketServiceApi.listBuckets(); //this.bucketsListBehaviorSubject.asObservable();
+  get bucketList() {
+    return this.bucketsListSignal.asReadonly();
   }
 
-  /*
-	retrieveBucketStats(): Observable<any> {
-		return this.selectedBucketSubject.asObservable().pipe(
-			mergeMap((payload: BucketItem) => {
-				const stats: BucketStats = this.bucketsTO.getBucketStats();
-				return of({ ...payload, ...stats });
-			})
-		);
-	}
+  get bucketStats() {
+    return this.bucketStatsSignal.asReadonly();
+  }
 
-	 */
+  toggleFavoriteBuckets(isFavorite: boolean) {
+    if (isFavorite) {
+      const filteredBucketList = this._bucketList()?.filter(
+        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite,
+      ) as BucketUiItemModel[];
+      this.bucketsListSignal.set(filteredBucketList);
+    } else {
+      this.bucketsListSignal.set(this._bucketList() as BucketUiItemModel[]);
+    }
+  }
+
+  set bucket(bucket: BucketUiItemModel) {
+    if (!bucket?.id) return;
+    this.getStats(bucket.id)
+      .pipe(take(1))
+      .subscribe(async (stats) => {
+        const response = JSON.parse(await stats.text());
+        response.favourite = bucket.favourite;
+        this.bucketStatsSignal.set(response);
+        console.log(response);
+      });
+  }
+
+  private retrieveBucketsList(): void {
+    this.uiServiceApi
+      .listBuckets()
+      .pipe(take(1))
+      .subscribe((buckets) => {
+        this._bucketList.set(buckets);
+        this.bucketsListSignal.set(buckets);
+      });
+  }
+
+  private getStats(bucketId: string) {
+    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
+  }
 }

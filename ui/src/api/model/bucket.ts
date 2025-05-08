@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface Bucket {
+export interface BucketModel {
   created?: string;
   name?: string;
   owner?: string;

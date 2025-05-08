@@ -17,23 +17,23 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { CredentialsWrapper } from '../model/credentialsWrapper';
+import { CredentialsWrapperModel } from '../model/credentialsWrapper';
 // @ts-ignore
-import { LadonPermission } from '../model/ladonPermission';
+import { LadonPermissionModel } from '../model/ladonPermission';
 // @ts-ignore
-import { Permission } from '../model/permission';
+import { PermissionModel } from '../model/permission';
 // @ts-ignore
-import { RoleEntry } from '../model/roleEntry';
+import { RoleEntryModel } from '../model/roleEntry';
 // @ts-ignore
-import { RoleWrapper } from '../model/roleWrapper';
+import { RoleWrapperModel } from '../model/roleWrapper';
 // @ts-ignore
-import { UserDataWrapper } from '../model/userDataWrapper';
+import { UserDataWrapperModel } from '../model/userDataWrapper';
 // @ts-ignore
-import { UserEntry } from '../model/userEntry';
+import { UserEntryModel } from '../model/userEntry';
 // @ts-ignore
-import { UserLogins } from '../model/userLogins';
+import { UserLoginsModel } from '../model/userLogins';
 // @ts-ignore
-import { UserWrapper } from '../model/userWrapper';
+import { UserWrapperModel } from '../model/userWrapper';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -439,16 +439,16 @@ export class UsermanagerService {
     }
 
     /**
-     * @param userWrapper 
+     * @param userWrapperModel 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addUser(userWrapper: UserWrapper, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: string; }>;
-    public addUser(userWrapper: UserWrapper, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: string; }>>;
-    public addUser(userWrapper: UserWrapper, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: string; }>>;
-    public addUser(userWrapper: UserWrapper, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (userWrapper === null || userWrapper === undefined) {
-            throw new Error('Required parameter userWrapper was null or undefined when calling addUser.');
+    public addUser(userWrapperModel: UserWrapperModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<{ [key: string]: string; }>;
+    public addUser(userWrapperModel: UserWrapperModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<{ [key: string]: string; }>>;
+    public addUser(userWrapperModel: UserWrapperModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<{ [key: string]: string; }>>;
+    public addUser(userWrapperModel: UserWrapperModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (userWrapperModel === null || userWrapperModel === undefined) {
+            throw new Error('Required parameter userWrapperModel was null or undefined when calling addUser.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -457,7 +457,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -500,7 +500,7 @@ export class UsermanagerService {
         return this.httpClient.request<{ [key: string]: string; }>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: userWrapper,
+                body: userWrapperModel,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -512,16 +512,16 @@ export class UsermanagerService {
     }
 
     /**
-     * @param ladonPermission 
+     * @param ladonPermissionModel 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createPermissions(ladonPermission: LadonPermission, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public createPermissions(ladonPermission: LadonPermission, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public createPermissions(ladonPermission: LadonPermission, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
-    public createPermissions(ladonPermission: LadonPermission, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (ladonPermission === null || ladonPermission === undefined) {
-            throw new Error('Required parameter ladonPermission was null or undefined when calling createPermissions.');
+    public createPermissions(ladonPermissionModel: LadonPermissionModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
+    public createPermissions(ladonPermissionModel: LadonPermissionModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
+    public createPermissions(ladonPermissionModel: LadonPermissionModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public createPermissions(ladonPermissionModel: LadonPermissionModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (ladonPermissionModel === null || ladonPermissionModel === undefined) {
+            throw new Error('Required parameter ladonPermissionModel was null or undefined when calling createPermissions.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -530,7 +530,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -573,7 +573,7 @@ export class UsermanagerService {
         return this.httpClient.request<object>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: ladonPermission,
+                body: ladonPermissionModel,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -585,16 +585,16 @@ export class UsermanagerService {
     }
 
     /**
-     * @param roleWrapper 
+     * @param roleWrapperModel 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createRole(roleWrapper: RoleWrapper, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public createRole(roleWrapper: RoleWrapper, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public createRole(roleWrapper: RoleWrapper, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public createRole(roleWrapper: RoleWrapper, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (roleWrapper === null || roleWrapper === undefined) {
-            throw new Error('Required parameter roleWrapper was null or undefined when calling createRole.');
+    public createRole(roleWrapperModel: RoleWrapperModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public createRole(roleWrapperModel: RoleWrapperModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public createRole(roleWrapperModel: RoleWrapperModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public createRole(roleWrapperModel: RoleWrapperModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (roleWrapperModel === null || roleWrapperModel === undefined) {
+            throw new Error('Required parameter roleWrapperModel was null or undefined when calling createRole.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -645,7 +645,7 @@ export class UsermanagerService {
         return this.httpClient.request<any>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: roleWrapper,
+                body: roleWrapperModel,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -857,10 +857,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAllPermissions(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<Permission>>;
-    public getAllPermissions(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<Permission>>>;
-    public getAllPermissions(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<Permission>>>;
-    public getAllPermissions(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getAllPermissions(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<PermissionModel>>;
+    public getAllPermissions(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<PermissionModel>>>;
+    public getAllPermissions(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<PermissionModel>>>;
+    public getAllPermissions(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -868,7 +868,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -899,7 +899,7 @@ export class UsermanagerService {
         }
 
         let localVarPath = `/api/usermanager/permissions`;
-        return this.httpClient.request<Array<Permission>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<PermissionModel>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -917,10 +917,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getLoginLogs(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<UserLogins>>;
-    public getLoginLogs(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UserLogins>>>;
-    public getLoginLogs(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UserLogins>>>;
-    public getLoginLogs(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getLoginLogs(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<UserLoginsModel>>;
+    public getLoginLogs(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UserLoginsModel>>>;
+    public getLoginLogs(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UserLoginsModel>>>;
+    public getLoginLogs(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling getLoginLogs.');
         }
@@ -931,7 +931,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -962,7 +962,7 @@ export class UsermanagerService {
         }
 
         let localVarPath = `/api/usermanager/logs/login/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Array<UserLogins>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<UserLoginsModel>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -980,10 +980,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPermissionsForRole(roleId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<Permission>>;
-    public getPermissionsForRole(roleId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<Permission>>>;
-    public getPermissionsForRole(roleId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<Permission>>>;
-    public getPermissionsForRole(roleId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getPermissionsForRole(roleId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<PermissionModel>>;
+    public getPermissionsForRole(roleId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<PermissionModel>>>;
+    public getPermissionsForRole(roleId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<PermissionModel>>>;
+    public getPermissionsForRole(roleId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (roleId === null || roleId === undefined) {
             throw new Error('Required parameter roleId was null or undefined when calling getPermissionsForRole.');
         }
@@ -994,7 +994,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1025,7 +1025,7 @@ export class UsermanagerService {
         }
 
         let localVarPath = `/api/usermanager/permissions/role/${this.configuration.encodeParam({name: "roleId", value: roleId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Array<Permission>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<PermissionModel>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -1043,10 +1043,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getPermissionsForUser(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<Permission>>;
-    public getPermissionsForUser(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<Permission>>>;
-    public getPermissionsForUser(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<Permission>>>;
-    public getPermissionsForUser(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getPermissionsForUser(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<PermissionModel>>;
+    public getPermissionsForUser(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<PermissionModel>>>;
+    public getPermissionsForUser(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<PermissionModel>>>;
+    public getPermissionsForUser(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling getPermissionsForUser.');
         }
@@ -1057,7 +1057,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1088,7 +1088,7 @@ export class UsermanagerService {
         }
 
         let localVarPath = `/api/usermanager/permissions/user/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Array<Permission>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<PermissionModel>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -1106,10 +1106,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getRoleForUser(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<string>>;
-    public getRoleForUser(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<string>>>;
-    public getRoleForUser(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<string>>>;
-    public getRoleForUser(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getRoleForUser(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<string>>;
+    public getRoleForUser(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<string>>>;
+    public getRoleForUser(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<string>>>;
+    public getRoleForUser(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling getRoleForUser.');
         }
@@ -1120,7 +1120,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1168,10 +1168,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getRoles(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<RoleEntry>>;
-    public getRoles(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RoleEntry>>>;
-    public getRoles(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RoleEntry>>>;
-    public getRoles(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getRoles(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<RoleEntryModel>>;
+    public getRoles(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<RoleEntryModel>>>;
+    public getRoles(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<RoleEntryModel>>>;
+    public getRoles(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -1179,7 +1179,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1210,7 +1210,7 @@ export class UsermanagerService {
         }
 
         let localVarPath = `/api/usermanager/roles`;
-        return this.httpClient.request<Array<RoleEntry>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<RoleEntryModel>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -1228,10 +1228,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getUserData(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<UserDataWrapper>;
-    public getUserData(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserDataWrapper>>;
-    public getUserData(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserDataWrapper>>;
-    public getUserData(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getUserData(userId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<UserDataWrapperModel>;
+    public getUserData(userId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<UserDataWrapperModel>>;
+    public getUserData(userId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<UserDataWrapperModel>>;
+    public getUserData(userId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling getUserData.');
         }
@@ -1242,7 +1242,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1273,7 +1273,7 @@ export class UsermanagerService {
         }
 
         let localVarPath = `/api/usermanager/users/${this.configuration.encodeParam({name: "userId", value: userId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<UserDataWrapper>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<UserDataWrapperModel>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -1290,10 +1290,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getUsers(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<UserEntry>>;
-    public getUsers(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UserEntry>>>;
-    public getUsers(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UserEntry>>>;
-    public getUsers(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getUsers(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<UserEntryModel>>;
+    public getUsers(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<UserEntryModel>>>;
+    public getUsers(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<UserEntryModel>>>;
+    public getUsers(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -1301,7 +1301,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1332,7 +1332,7 @@ export class UsermanagerService {
         }
 
         let localVarPath = `/api/usermanager/users`;
-        return this.httpClient.request<Array<UserEntry>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<UserEntryModel>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -1350,10 +1350,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getUsersForRole(roleId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<Array<string>>;
-    public getUsersForRole(roleId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<string>>>;
-    public getUsersForRole(roleId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<string>>>;
-    public getUsersForRole(roleId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getUsersForRole(roleId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<string>>;
+    public getUsersForRole(roleId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<string>>>;
+    public getUsersForRole(roleId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<string>>>;
+    public getUsersForRole(roleId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (roleId === null || roleId === undefined) {
             throw new Error('Required parameter roleId was null or undefined when calling getUsersForRole.');
         }
@@ -1364,7 +1364,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1413,10 +1413,10 @@ export class UsermanagerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public removePermission(permissionId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<object>;
-    public removePermission(permissionId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
-    public removePermission(permissionId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
-    public removePermission(permissionId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: '*/*', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public removePermission(permissionId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<object>;
+    public removePermission(permissionId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<object>>;
+    public removePermission(permissionId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<object>>;
+    public removePermission(permissionId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (permissionId === null || permissionId === undefined) {
             throw new Error('Required parameter permissionId was null or undefined when calling removePermission.');
         }
@@ -1427,7 +1427,7 @@ export class UsermanagerService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                '*/*'
+                'application/json'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -1695,19 +1695,19 @@ export class UsermanagerService {
 
     /**
      * @param userId 
-     * @param credentialsWrapper 
+     * @param credentialsWrapperModel 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateCredentials(userId: string, credentialsWrapper: CredentialsWrapper, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public updateCredentials(userId: string, credentialsWrapper: CredentialsWrapper, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public updateCredentials(userId: string, credentialsWrapper: CredentialsWrapper, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public updateCredentials(userId: string, credentialsWrapper: CredentialsWrapper, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateCredentials(userId: string, credentialsWrapperModel: CredentialsWrapperModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public updateCredentials(userId: string, credentialsWrapperModel: CredentialsWrapperModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public updateCredentials(userId: string, credentialsWrapperModel: CredentialsWrapperModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public updateCredentials(userId: string, credentialsWrapperModel: CredentialsWrapperModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling updateCredentials.');
         }
-        if (credentialsWrapper === null || credentialsWrapper === undefined) {
-            throw new Error('Required parameter credentialsWrapper was null or undefined when calling updateCredentials.');
+        if (credentialsWrapperModel === null || credentialsWrapperModel === undefined) {
+            throw new Error('Required parameter credentialsWrapperModel was null or undefined when calling updateCredentials.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1758,7 +1758,7 @@ export class UsermanagerService {
         return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: credentialsWrapper,
+                body: credentialsWrapperModel,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -1771,19 +1771,19 @@ export class UsermanagerService {
 
     /**
      * @param userId 
-     * @param userDataWrapper 
+     * @param userDataWrapperModel 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateUser(userId: string, userDataWrapper: UserDataWrapper, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public updateUser(userId: string, userDataWrapper: UserDataWrapper, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public updateUser(userId: string, userDataWrapper: UserDataWrapper, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
-    public updateUser(userId: string, userDataWrapper: UserDataWrapper, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public updateUser(userId: string, userDataWrapperModel: UserDataWrapperModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public updateUser(userId: string, userDataWrapperModel: UserDataWrapperModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public updateUser(userId: string, userDataWrapperModel: UserDataWrapperModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public updateUser(userId: string, userDataWrapperModel: UserDataWrapperModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (userId === null || userId === undefined) {
             throw new Error('Required parameter userId was null or undefined when calling updateUser.');
         }
-        if (userDataWrapper === null || userDataWrapper === undefined) {
-            throw new Error('Required parameter userDataWrapper was null or undefined when calling updateUser.');
+        if (userDataWrapperModel === null || userDataWrapperModel === undefined) {
+            throw new Error('Required parameter userDataWrapperModel was null or undefined when calling updateUser.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -1834,7 +1834,7 @@ export class UsermanagerService {
         return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: userDataWrapper,
+                body: userDataWrapperModel,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

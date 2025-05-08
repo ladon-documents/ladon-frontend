@@ -1,0 +1,50 @@
+@if (isLoading$()) {
+  <div class="relative bg-white p-6 w-3/4 mx-auto mt-10">
+    <span class="loading loading-dots loading-sm"></span>
+  </div>
+} @else {
+  <ul class="list bg-base-100 mt-10">
+    @for (item of pluginList$() | searchfilter: filterText$(); track item.id) {
+      <li
+        (click)="onSelect(item)"
+        class="list-row cursor-pointer hover:bg-sky-700"
+        [ngClass]="{ active: item === selectedItem }">
+        <div>
+          <div>{{ item.name }}</div>
+          <div class="text-xs uppercase font-semibold opacity-60"></div>
+          @if (item.current === item.version) {
+            <div
+              class="badge badge-soft badge-neutral"
+              *ngIf="item.current"
+              [attr.datacaption]="'PLUGIN.VERSION' | translate">
+              {{ item.current }}
+            </div>
+          } @else {
+            <div
+              class="badge badge-soft badge-neutral"
+              *ngIf="item.current"
+              [attr.datacaption]="'PLUGIN.AVAILABLE' | translate">
+              {{ item.current }}
+            </div>
+            <div
+              class="badge badge-soft"
+              [ngClass]="item.canUpdate ? 'badge-secondary' : 'badge-neutral'"
+              [attr.datacaption]="'PLUGIN.AVAILABLE' | translate">
+              {{ item.version }}
+            </div>
+          }
+        </div>
+        <div></div>
+        @if (!item.canInstall && !item.canUpdate) {
+          <div>
+            <ng-icon name="heroCheck" size="1rem" color="green"></ng-icon>
+          </div>
+        } @else {
+          <div>
+            <ng-icon name="heroChevronRight" size="1rem"></ng-icon>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+}

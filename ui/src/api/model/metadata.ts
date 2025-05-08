@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface Metadata {
+export interface MetadataModel {
   [key: string]: string | any;
 
   empty?: boolean;

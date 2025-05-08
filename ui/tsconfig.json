@@ -16,7 +16,6 @@
     "declaration": false,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",

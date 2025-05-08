@@ -9,7 +9,7 @@
  */
 
 
-export interface DocumentAction { 
+export interface DocumentActionModel { 
     i18nName?: string;
     label?: string;
     actionId?: string;

@@ -17,13 +17,13 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { Bucket } from '../model/bucket';
+import { BucketActionModel } from '../model/bucketAction';
 // @ts-ignore
-import { BucketAction } from '../model/bucketAction';
+import { BucketModel } from '../model/bucket';
 // @ts-ignore
-import { CreateBucketRequest } from '../model/createBucketRequest';
+import { CreateBucketRequestModel } from '../model/createBucketRequest';
 // @ts-ignore
-import { ResponseSuccess } from '../model/responseSuccess';
+import { ResponseSuccessModel } from '../model/responseSuccess';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -98,19 +98,19 @@ export class BucketsService {
 
     /**
      * @param bucket 
-     * @param bucketAction 
+     * @param bucketActionModel 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public applyBucketAction(bucket: string, bucketAction: BucketAction, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ResponseSuccess>;
-    public applyBucketAction(bucket: string, bucketAction: BucketAction, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ResponseSuccess>>;
-    public applyBucketAction(bucket: string, bucketAction: BucketAction, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ResponseSuccess>>;
-    public applyBucketAction(bucket: string, bucketAction: BucketAction, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public applyBucketAction(bucket: string, bucketActionModel: BucketActionModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ResponseSuccessModel>;
+    public applyBucketAction(bucket: string, bucketActionModel: BucketActionModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ResponseSuccessModel>>;
+    public applyBucketAction(bucket: string, bucketActionModel: BucketActionModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ResponseSuccessModel>>;
+    public applyBucketAction(bucket: string, bucketActionModel: BucketActionModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (bucket === null || bucket === undefined) {
             throw new Error('Required parameter bucket was null or undefined when calling applyBucketAction.');
         }
-        if (bucketAction === null || bucketAction === undefined) {
-            throw new Error('Required parameter bucketAction was null or undefined when calling applyBucketAction.');
+        if (bucketActionModel === null || bucketActionModel === undefined) {
+            throw new Error('Required parameter bucketActionModel was null or undefined when calling applyBucketAction.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -159,10 +159,10 @@ export class BucketsService {
         }
 
         let localVarPath = `/api/rest/v1/actions/bucket/${this.configuration.encodeParam({name: "bucket", value: bucket, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<ResponseSuccess>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ResponseSuccessModel>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: bucketAction,
+                body: bucketActionModel,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -174,16 +174,16 @@ export class BucketsService {
     }
 
     /**
-     * @param createBucketRequest 
+     * @param createBucketRequestModel 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createBucket(createBucketRequest: CreateBucketRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Bucket>;
-    public createBucket(createBucketRequest: CreateBucketRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Bucket>>;
-    public createBucket(createBucketRequest: CreateBucketRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Bucket>>;
-    public createBucket(createBucketRequest: CreateBucketRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-        if (createBucketRequest === null || createBucketRequest === undefined) {
-            throw new Error('Required parameter createBucketRequest was null or undefined when calling createBucket.');
+    public createBucket(createBucketRequestModel: CreateBucketRequestModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BucketModel>;
+    public createBucket(createBucketRequestModel: CreateBucketRequestModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BucketModel>>;
+    public createBucket(createBucketRequestModel: CreateBucketRequestModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BucketModel>>;
+    public createBucket(createBucketRequestModel: CreateBucketRequestModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (createBucketRequestModel === null || createBucketRequestModel === undefined) {
+            throw new Error('Required parameter createBucketRequestModel was null or undefined when calling createBucket.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -232,10 +232,10 @@ export class BucketsService {
         }
 
         let localVarPath = `/api/rest/v1/meta/buckets`;
-        return this.httpClient.request<Bucket>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<BucketModel>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: createBucketRequest,
+                body: createBucketRequestModel,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -251,9 +251,9 @@ export class BucketsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteBucket(bucket: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ResponseSuccess>;
-    public deleteBucket(bucket: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ResponseSuccess>>;
-    public deleteBucket(bucket: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ResponseSuccess>>;
+    public deleteBucket(bucket: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ResponseSuccessModel>;
+    public deleteBucket(bucket: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ResponseSuccessModel>>;
+    public deleteBucket(bucket: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ResponseSuccessModel>>;
     public deleteBucket(bucket: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (bucket === null || bucket === undefined) {
             throw new Error('Required parameter bucket was null or undefined when calling deleteBucket.');
@@ -296,7 +296,7 @@ export class BucketsService {
         }
 
         let localVarPath = `/api/rest/v1/meta/buckets/${this.configuration.encodeParam({name: "bucket", value: bucket, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<ResponseSuccess>('delete', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ResponseSuccessModel>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -314,9 +314,9 @@ export class BucketsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getBucket(bucket: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Bucket>;
-    public getBucket(bucket: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Bucket>>;
-    public getBucket(bucket: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Bucket>>;
+    public getBucket(bucket: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<BucketModel>;
+    public getBucket(bucket: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<BucketModel>>;
+    public getBucket(bucket: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<BucketModel>>;
     public getBucket(bucket: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (bucket === null || bucket === undefined) {
             throw new Error('Required parameter bucket was null or undefined when calling getBucket.');
@@ -359,7 +359,7 @@ export class BucketsService {
         }
 
         let localVarPath = `/api/rest/v1/meta/buckets/${this.configuration.encodeParam({name: "bucket", value: bucket, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Bucket>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<BucketModel>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -377,9 +377,9 @@ export class BucketsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getBucketActions(bucket: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<BucketAction>>;
-    public getBucketActions(bucket: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<BucketAction>>>;
-    public getBucketActions(bucket: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<BucketAction>>>;
+    public getBucketActions(bucket: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<BucketActionModel>>;
+    public getBucketActions(bucket: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<BucketActionModel>>>;
+    public getBucketActions(bucket: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<BucketActionModel>>>;
     public getBucketActions(bucket: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (bucket === null || bucket === undefined) {
             throw new Error('Required parameter bucket was null or undefined when calling getBucketActions.');
@@ -422,81 +422,9 @@ export class BucketsService {
         }
 
         let localVarPath = `/api/rest/v1/actions/bucket/${this.configuration.encodeParam({name: "bucket", value: bucket, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Array<BucketAction>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<BucketActionModel>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: localVarHeaders,
-                observe: observe,
-                transferCache: localVarTransferCache,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param limit 
-     * @param search 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public listBuckets(limit?: number, search?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<Bucket>>;
-    public listBuckets(limit?: number, search?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<Bucket>>>;
-    public listBuckets(limit?: number, search?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<Bucket>>>;
-    public listBuckets(limit?: number, search?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (limit !== undefined && limit !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>limit, 'limit');
-        }
-        if (search !== undefined && search !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>search, 'search');
-        }
-
-        let localVarHeaders = this.defaultHeaders;
-
-        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (localVarHttpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (localVarHttpHeaderAcceptSelected !== undefined) {
-            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-        }
-
-        let localVarHttpContext: HttpContext | undefined = options && options.context;
-        if (localVarHttpContext === undefined) {
-            localVarHttpContext = new HttpContext();
-        }
-
-        let localVarTransferCache: boolean | undefined = options && options.transferCache;
-        if (localVarTransferCache === undefined) {
-            localVarTransferCache = true;
-        }
-
-
-        let responseType_: 'text' | 'json' | 'blob' = 'json';
-        if (localVarHttpHeaderAcceptSelected) {
-            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-                responseType_ = 'text';
-            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-                responseType_ = 'json';
-            } else {
-                responseType_ = 'blob';
-            }
-        }
-
-        let localVarPath = `/api/rest/v1/meta/bucketlist`;
-        return this.httpClient.request<Array<Bucket>>('get', `${this.configuration.basePath}${localVarPath}`,
-            {
-                context: localVarHttpContext,
-                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

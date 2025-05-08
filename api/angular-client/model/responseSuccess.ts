@@ -9,7 +9,7 @@
  */
 
 
-export interface ResponseSuccess { 
+export interface ResponseSuccessModel { 
     success: boolean;
     reason?: string;
 }

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
@@ -9,20 +9,25 @@ import { environment } from '../environments/environment';
 import { NavigationComponent } from './navigation/navigation.component';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './login/login.component';
-import { Observable } from 'rxjs';
 import { FilemanagerComponent } from './filemanager/filemanager.component';
+import { TaskmanagerComponent } from './taskmanager/taskmanager.component';
+import { PluginmanagerComponent } from './pluginmanager/pluginmanager.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AppStore } from './store/app.store';
 
 @Component({
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
+    TranslateModule,
     NavigationComponent,
+    PluginmanagerComponent,
     AsideComponent,
     UsermanagerComponent,
     BucketsComponent,
     LoginComponent,
     FilemanagerComponent,
+    TaskmanagerComponent,
     AsyncPipe,
   ],
   selector: 'ldn-ui',
@@ -31,12 +36,20 @@ import { FilemanagerComponent } from './filemanager/filemanager.component';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent {
-  public navigationEntries: Array<NavigationEntry> = [];
-  isAuthenticated$: Observable<any>;
+  readonly #store = inject(AppStore);
+  isAuthenticated = this.#store.auth.isAuthenticated;
+  isAuthenticating = this.#store.auth.isAuthenticating;
 
-  constructor(private readonly as: AuthService) {
+  public navigationEntries: Array<NavigationEntry> = [];
+
+  constructor(
+    private readonly as: AuthService,
+    private translate: TranslateService,
+  ) {
     this.navigationEntries = environment.navigation;
-    this.isAuthenticated$ = this.as.user$;
+    this.translate.addLangs(['de', 'en']);
+    this.translate.setDefaultLang('de');
+    this.translate.use('de');
   }
 }
 

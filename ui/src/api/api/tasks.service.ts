@@ -23,7 +23,7 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
-import { TaskStatus } from '../model/taskStatus';
+import { TaskStatusModel } from '../model/taskStatus';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -105,17 +105,17 @@ export class TasksService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Array<TaskStatus>>;
+  ): Observable<Array<TaskStatusModel>>;
   public getActiveTasks(
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Array<TaskStatus>>>;
+  ): Observable<HttpResponse<Array<TaskStatusModel>>>;
   public getActiveTasks(
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Array<TaskStatus>>>;
+  ): Observable<HttpEvent<Array<TaskStatusModel>>>;
   public getActiveTasks(
     observe: any = 'body',
     reportProgress: boolean = false,
@@ -155,7 +155,7 @@ export class TasksService {
     }
 
     let localVarPath = `/api/rest/v1/taskmanager/active`;
-    return this.httpClient.request<Array<TaskStatus>>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<Array<TaskStatusModel>>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       responseType: <any>responseType_,
       withCredentials: this.configuration.withCredentials,
@@ -345,19 +345,19 @@ export class TasksService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<TaskStatus>;
+  ): Observable<TaskStatusModel>;
   public statusTask(
     id: string,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<TaskStatus>>;
+  ): Observable<HttpResponse<TaskStatusModel>>;
   public statusTask(
     id: string,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<TaskStatus>>;
+  ): Observable<HttpEvent<TaskStatusModel>>;
   public statusTask(
     id: string,
     observe: any = 'body',
@@ -407,7 +407,7 @@ export class TasksService {
     }
 
     let localVarPath = `/api/rest/v1/taskmanager/status`;
-    return this.httpClient.request<TaskStatus>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<TaskStatusModel>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,

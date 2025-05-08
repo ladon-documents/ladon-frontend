@@ -23,14 +23,14 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
-import { ConverterInfo } from '../model/converterInfo';
+import { ConverterInfoModel } from '../model/converterInfo';
 // @ts-ignore
-import { ConverterJob } from '../model/converterJob';
+import { ConverterJobModel } from '../model/converterJob';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { Configuration } from '../configuration';
-import { MultiValueMapStringString } from '../model/multiValueMapStringString';
+import { MultiValueMapStringStringModel } from '../model/multiValueMapStringString';
 
 @Injectable({
   providedIn: 'root',
@@ -101,36 +101,36 @@ export class ConverterService {
   }
 
   /**
-   * @param converterJob
+   * @param converterJobModel
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
    */
   public applyAndDownload(
-    converterJob: ConverterJob,
+    converterJobModel: ConverterJobModel,
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
   ): Observable<Blob>;
   public applyAndDownload(
-    converterJob: ConverterJob,
+    converterJobModel: ConverterJobModel,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<Blob>>;
   public applyAndDownload(
-    converterJob: ConverterJob,
+    converterJobModel: ConverterJobModel,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<Blob>>;
   public applyAndDownload(
-    converterJob: ConverterJob,
+    converterJobModel: ConverterJobModel,
     observe: any = 'body',
     reportProgress: boolean = false,
     options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
-    if (converterJob === null || converterJob === undefined) {
-      throw new Error('Required parameter converterJob was null or undefined when calling applyAndDownload.');
+    if (converterJobModel === null || converterJobModel === undefined) {
+      throw new Error('Required parameter converterJobModel was null or undefined when calling applyAndDownload.');
     }
 
     let localVarHeaders = this.defaultHeaders;
@@ -165,7 +165,7 @@ export class ConverterService {
     let localVarPath = `/api/rest/v1/converters/applyanddownload`;
     return this.httpClient.request('post', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
-      body: converterJob,
+      body: converterJobModel,
       responseType: 'blob',
       withCredentials: this.configuration.withCredentials,
       headers: localVarHeaders,
@@ -181,28 +181,28 @@ export class ConverterService {
    * @param reportProgress flag to report request and response progress.
    */
   public applyAndDownloadGet(
-    queryMap: MultiValueMapStringString,
+    queryMap: MultiValueMapStringStringModel,
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<Blob>;
   public applyAndDownloadGet(
-    queryMap: MultiValueMapStringString,
+    queryMap: MultiValueMapStringStringModel,
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<Blob>>;
   public applyAndDownloadGet(
-    queryMap: MultiValueMapStringString,
+    queryMap: MultiValueMapStringStringModel,
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<Blob>>;
   public applyAndDownloadGet(
-    queryMap: MultiValueMapStringString,
+    queryMap: MultiValueMapStringStringModel,
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     if (queryMap === null || queryMap === undefined) {
       throw new Error('Required parameter queryMap was null or undefined when calling applyAndDownloadGet.');
@@ -218,7 +218,7 @@ export class ConverterService {
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -249,36 +249,38 @@ export class ConverterService {
   }
 
   /**
-   * @param converterJob
+   * @param converterJobModel
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
    */
   public applyConverterAndStore(
-    converterJob: ConverterJob,
+    converterJobModel: ConverterJobModel,
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<Array<string>>;
   public applyConverterAndStore(
-    converterJob: ConverterJob,
+    converterJobModel: ConverterJobModel,
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<Array<string>>>;
   public applyConverterAndStore(
-    converterJob: ConverterJob,
+    converterJobModel: ConverterJobModel,
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<Array<string>>>;
   public applyConverterAndStore(
-    converterJob: ConverterJob,
+    converterJobModel: ConverterJobModel,
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
-    if (converterJob === null || converterJob === undefined) {
-      throw new Error('Required parameter converterJob was null or undefined when calling applyConverterAndStore.');
+    if (converterJobModel === null || converterJobModel === undefined) {
+      throw new Error(
+        'Required parameter converterJobModel was null or undefined when calling applyConverterAndStore.',
+      );
     }
 
     let localVarHeaders = this.defaultHeaders;
@@ -286,7 +288,7 @@ export class ConverterService {
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -324,7 +326,7 @@ export class ConverterService {
     let localVarPath = `/api/rest/v1/converters/applyandstore`;
     return this.httpClient.request<Array<string>>('post', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
-      body: converterJob,
+      body: converterJobModel,
       responseType: <any>responseType_,
       withCredentials: this.configuration.withCredentials,
       headers: localVarHeaders,
@@ -341,29 +343,29 @@ export class ConverterService {
   public listConverterInfo(
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Array<ConverterInfo>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<Array<ConverterInfoModel>>;
   public listConverterInfo(
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Array<ConverterInfo>>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<Array<ConverterInfoModel>>>;
   public listConverterInfo(
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Array<ConverterInfo>>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<Array<ConverterInfoModel>>>;
   public listConverterInfo(
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     let localVarHeaders = this.defaultHeaders;
 
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -392,7 +394,7 @@ export class ConverterService {
     }
 
     let localVarPath = `/api/rest/v1/converters/meta`;
-    return this.httpClient.request<Array<ConverterInfo>>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<Array<ConverterInfoModel>>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       responseType: <any>responseType_,
       withCredentials: this.configuration.withCredentials,

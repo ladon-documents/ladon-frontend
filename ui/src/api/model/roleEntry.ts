@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface RoleEntry {
+export interface RoleEntryModel {
   id: string;
   name: string;
   details: string;

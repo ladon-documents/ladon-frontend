@@ -1,0 +1,60 @@
+<div class="grid grid-cols-[minmax(200px,400px)_1fr] gap-4 h-full">
+  <div class="overflow-y-auto h-full">
+    <div class="tabs tabs-lift">
+      @for (channelItem of channels$ | async; track channelItem.channel) {
+        <input
+          (click)="changeChannel(channelItem.channel)"
+          type="radio"
+          name="channel_tab"
+          class="tab"
+          [class.tab-active]="selectedChannel === channelItem.channel"
+          [attr.aria-label]="channelItem.channel" />
+
+        <div class="tab-content bg-base-100 border-base-300 p-6">
+          <label class="input">
+            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </g>
+            </svg>
+            <input
+              type="search"
+              required
+              [(ngModel)]="filterText"
+              placeholder="{{ 'PLUGIN.SEARCH_PLACEHOLDER' | translate }}" />
+            <kbd class="kbd kbd-sm">Ctrl F</kbd>
+          </label>
+          <router-outlet></router-outlet>
+        </div>
+      }
+    </div>
+  </div>
+  <div>
+    <div id="iframe" slot="right" class="min-h-full h-full">
+      <ng-container *ngTemplateOutlet="iframeWithControls"></ng-container>
+    </div>
+    <dialog #dialog>
+      <div class="dialog__header">
+        <button class="close" (click)="dialog.close()"><span></span></button>
+      </div>
+      <div class="dialog__content">
+        <ng-container *ngTemplateOutlet="iframeWithControls"></ng-container>
+      </div>
+    </dialog>
+
+    <ng-template #iframeWithControls>
+      @if (selectedItem$ | async; as selectedItem) {
+        @if (selectedItem && selectedItem.name) {
+          <plugin-progressbar
+            [pluginInstalState]="pluginInstallList[selectedItem.name]"
+            [plugin]="selectedItem"
+            (update)="install($event)"
+            (deinstall)="deinstall($event)">
+          </plugin-progressbar>
+        }
+      }
+      <iframe width="100%" height="100%" [src]="pluginInfoUrl$()" class="h-full"></iframe>
+    </ng-template>
+  </div>
+</div>

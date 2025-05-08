@@ -101,29 +101,29 @@ export class PluginmanagerService {
   public installedPlugins(
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<{ [key: string]: string }>;
   public installedPlugins(
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<{ [key: string]: string }>>;
   public installedPlugins(
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<{ [key: string]: string }>>;
   public installedPlugins(
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     let localVarHeaders = this.defaultHeaders;
 
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {

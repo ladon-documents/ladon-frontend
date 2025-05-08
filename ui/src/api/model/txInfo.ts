@@ -8,6 +8,6 @@
  * Do not edit the class manually.
  */
 
-export interface TxInfo {
+export interface TxInfoModel {
   txId: string;
 }

@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  padding: var(--ladon-progressbar-padding, 1rem 0.5rem 0.5rem);
+  background: white;
+  border-bottom: 2px solid var(--ladon-progressbar-bbc, #ebeff4);
+  z-index: 19;
+}
+
+.progress-indicator {
+  width: 100%;
+  height: 4px;
+  background: var(--ladon-theme-gray);
+}
+
+.progress-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: flex-end;
+
+  &__infos {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+
+    button {
+      display: flex;
+      align-items: center;
+
+      *[class*="webix_icon_btn"] {
+        font-size: inherit;
+        color: currentColor;
+        margin: 0;
+        width: initial;
+        padding: 0 0.25em 0;
+      }
+    }
+  }
+}

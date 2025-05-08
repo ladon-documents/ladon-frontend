@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface LoginRequest {
+export interface LoginRequestModel {
   email?: string;
   password?: string;
 }

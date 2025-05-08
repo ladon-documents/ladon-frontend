@@ -23,7 +23,7 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
-import { User } from '../model/user';
+import { UserModel } from '../model/user';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -104,29 +104,29 @@ export class UsersService {
   public getAllowableActions(
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<{ [key: string]: object }>;
   public getAllowableActions(
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<{ [key: string]: object }>>;
   public getAllowableActions(
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<{ [key: string]: object }>>;
   public getAllowableActions(
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     let localVarHeaders = this.defaultHeaders;
 
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -173,29 +173,29 @@ export class UsersService {
   public getCurrentUser(
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<User>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<UserModel>;
   public getCurrentUser(
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<User>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<UserModel>>;
   public getCurrentUser(
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<User>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<UserModel>>;
   public getCurrentUser(
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     let localVarHeaders = this.defaultHeaders;
 
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -224,7 +224,7 @@ export class UsersService {
     }
 
     let localVarPath = `/user/me`;
-    return this.httpClient.request<User>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<UserModel>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       responseType: <any>responseType_,
       withCredentials: this.configuration.withCredentials,
@@ -244,25 +244,25 @@ export class UsersService {
     userId: string,
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<Array<string>>;
   public getPicture(
     userId: string,
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<Array<string>>>;
   public getPicture(
     userId: string,
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<Array<string>>>;
   public getPicture(
     userId: string,
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     if (userId === null || userId === undefined) {
       throw new Error('Required parameter userId was null or undefined when calling getPicture.');
@@ -273,7 +273,7 @@ export class UsersService {
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {

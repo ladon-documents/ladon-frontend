@@ -7,15 +7,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ConverterParameter } from './converterParameter';
+import { ConverterParameterModel } from './converterParameter';
 
-export interface ConverterInfo {
+export interface ConverterInfoModel {
   id: string;
   description: string;
-  parameters: Array<ConverterParameter>;
-  cardinality: ConverterInfo.CardinalityEnum;
+  parameters: Array<ConverterParameterModel>;
+  cardinality: ConverterInfoModel.CardinalityEnum;
 }
-export namespace ConverterInfo {
+export namespace ConverterInfoModel {
   export type CardinalityEnum = 'ONE_TO_ONE' | 'ONE_TO_MANY' | 'MANY_TO_ONE' | 'MANY_TO_MANY';
   export const CardinalityEnum = {
     OneToOne: 'ONE_TO_ONE' as CardinalityEnum,

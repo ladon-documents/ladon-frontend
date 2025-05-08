@@ -1,9 +1,7 @@
-export interface BucketStats {
-  size: number;
-  versions: number;
-  objects: number;
+import { StatisticsModel } from '../../api';
+
+export interface BucketStatsExtended extends StatisticsModel {
   name: string;
-  lastModified: string;
-  folderCount: number;
-  fileCount: number;
+  objects: number;
+  favourite?: boolean;
 }

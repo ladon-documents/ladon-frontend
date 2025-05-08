@@ -23,9 +23,9 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
-import { DocumentAction } from '../model/documentAction';
+import { DocumentActionModel } from '../model/documentAction';
 // @ts-ignore
-import { ResponseSuccess } from '../model/responseSuccess';
+import { ResponseSuccessModel } from '../model/responseSuccess';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -101,34 +101,34 @@ export class ActionsService {
 
   /**
    * @param context
-   * @param documentAction
+   * @param documentActionModel
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
    */
   public acceptDocumentActions(
     context: string,
-    documentAction: DocumentAction,
+    documentActionModel: DocumentActionModel,
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<ResponseSuccess>;
+  ): Observable<ResponseSuccessModel>;
   public acceptDocumentActions(
     context: string,
-    documentAction: DocumentAction,
+    documentActionModel: DocumentActionModel,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<ResponseSuccess>>;
+  ): Observable<HttpResponse<ResponseSuccessModel>>;
   public acceptDocumentActions(
     context: string,
-    documentAction: DocumentAction,
+    documentActionModel: DocumentActionModel,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<ResponseSuccess>>;
+  ): Observable<HttpEvent<ResponseSuccessModel>>;
   public acceptDocumentActions(
     context: string,
-    documentAction: DocumentAction,
+    documentActionModel: DocumentActionModel,
     observe: any = 'body',
     reportProgress: boolean = false,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
@@ -136,8 +136,10 @@ export class ActionsService {
     if (context === null || context === undefined) {
       throw new Error('Required parameter context was null or undefined when calling acceptDocumentActions.');
     }
-    if (documentAction === null || documentAction === undefined) {
-      throw new Error('Required parameter documentAction was null or undefined when calling acceptDocumentActions.');
+    if (documentActionModel === null || documentActionModel === undefined) {
+      throw new Error(
+        'Required parameter documentActionModel was null or undefined when calling acceptDocumentActions.',
+      );
     }
 
     let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
@@ -186,9 +188,9 @@ export class ActionsService {
     }
 
     let localVarPath = `/api/rest/v1/meta/actions`;
-    return this.httpClient.request<ResponseSuccess>('post', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<ResponseSuccessModel>('post', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
-      body: documentAction,
+      body: documentActionModel,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
       withCredentials: this.configuration.withCredentials,
@@ -211,21 +213,21 @@ export class ActionsService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Array<DocumentAction>>;
+  ): Observable<Array<DocumentActionModel>>;
   public getDocumentActions(
     context: string,
     paths: Array<string>,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Array<DocumentAction>>>;
+  ): Observable<HttpResponse<Array<DocumentActionModel>>>;
   public getDocumentActions(
     context: string,
     paths: Array<string>,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Array<DocumentAction>>>;
+  ): Observable<HttpEvent<Array<DocumentActionModel>>>;
   public getDocumentActions(
     context: string,
     paths: Array<string>,
@@ -284,7 +286,7 @@ export class ActionsService {
     }
 
     let localVarPath = `/api/rest/v1/meta/actions`;
-    return this.httpClient.request<Array<DocumentAction>>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<Array<DocumentActionModel>>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,

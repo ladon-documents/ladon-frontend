@@ -11,4 +11,5 @@ export const environment = {
     acceptedFiles: ['jpg', 'jpeg', 'png', 'pdf'],
   },
   storage: 'sessionStorage',
+  production: false,
 };

@@ -20,6 +20,8 @@ export * from './tasks.service';
 import { TasksService } from './tasks.service';
 export * from './transaction.service';
 import { TransactionService } from './transaction.service';
+export * from './uI.service';
+import { UIService } from './uI.service';
 export * from './usermanager.service';
 import { UsermanagerService } from './usermanager.service';
 export * from './users.service';
@@ -36,6 +38,7 @@ export const APIS = [
   StreamService,
   TasksService,
   TransactionService,
+  UIService,
   UsermanagerService,
   UsersService,
 ];

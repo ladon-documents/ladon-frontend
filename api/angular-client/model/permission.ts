@@ -9,15 +9,15 @@
  */
 
 
-export interface Permission { 
+export interface PermissionModel { 
     value: string;
-    type: Permission.TypeEnum;
+    type: PermissionModel.TypeEnum;
     permissionId: string;
-    operation: Permission.OperationEnum;
+    operation: PermissionModel.OperationEnum;
     allowed: boolean;
     description: string;
 }
-export namespace Permission {
+export namespace PermissionModel {
     export type TypeEnum = 'ANT' | 'REGEX' | 'EQUALS' | 'SPEL' | 'GLOB';
     export const TypeEnum = {
         Ant: 'ANT' as TypeEnum,

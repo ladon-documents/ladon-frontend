@@ -23,13 +23,13 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
-import { Document } from '../model/document';
+import { DocumentModel } from '../model/document';
 // @ts-ignore
-import { Metadata } from '../model/metadata';
+import { MetadataModel } from '../model/metadata';
 // @ts-ignore
-import { ResponseSuccess } from '../model/responseSuccess';
+import { ResponseSuccessModel } from '../model/responseSuccess';
 // @ts-ignore
-import { ZipUploadRequest } from '../model/zipUploadRequest';
+import { ZipUploadRequestModel } from '../model/zipUploadRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -120,8 +120,8 @@ export class DocumentsService {
     term?: string,
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Array<Document>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<Array<DocumentModel>>;
   public datepathsearch(
     bucket: string,
     from: string,
@@ -130,8 +130,8 @@ export class DocumentsService {
     term?: string,
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Array<Document>>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<Array<DocumentModel>>>;
   public datepathsearch(
     bucket: string,
     from: string,
@@ -140,8 +140,8 @@ export class DocumentsService {
     term?: string,
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Array<Document>>>;
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<Array<DocumentModel>>>;
   public datepathsearch(
     bucket: string,
     from: string,
@@ -150,7 +150,7 @@ export class DocumentsService {
     term?: string,
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     if (bucket === null || bucket === undefined) {
       throw new Error('Required parameter bucket was null or undefined when calling datepathsearch.');
@@ -181,7 +181,7 @@ export class DocumentsService {
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -210,7 +210,7 @@ export class DocumentsService {
     }
 
     let localVarPath = `/api/rest/v1/meta/buckets/${this.configuration.encodeParam({ name: 'bucket', value: bucket, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/datepathsearch`;
-    return this.httpClient.request<Array<Document>>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<Array<DocumentModel>>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
@@ -236,7 +236,7 @@ export class DocumentsService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<ResponseSuccess>;
+  ): Observable<ResponseSuccessModel>;
   public deleteDocument(
     bucket: string,
     key: string,
@@ -244,7 +244,7 @@ export class DocumentsService {
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<ResponseSuccess>>;
+  ): Observable<HttpResponse<ResponseSuccessModel>>;
   public deleteDocument(
     bucket: string,
     key: string,
@@ -252,7 +252,7 @@ export class DocumentsService {
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<ResponseSuccess>>;
+  ): Observable<HttpEvent<ResponseSuccessModel>>;
   public deleteDocument(
     bucket: string,
     key: string,
@@ -310,7 +310,7 @@ export class DocumentsService {
     }
 
     let localVarPath = `/api/rest/v1/content/buckets/${this.configuration.encodeParam({ name: 'bucket', value: bucket, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/documents`;
-    return this.httpClient.request<ResponseSuccess>('delete', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<ResponseSuccessModel>('delete', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
@@ -335,7 +335,7 @@ export class DocumentsService {
     limit?: number,
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<Array<string>>;
   public findDocumentPath(
     bucket: string,
@@ -343,7 +343,7 @@ export class DocumentsService {
     limit?: number,
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<Array<string>>>;
   public findDocumentPath(
     bucket: string,
@@ -351,7 +351,7 @@ export class DocumentsService {
     limit?: number,
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<Array<string>>>;
   public findDocumentPath(
     bucket: string,
@@ -359,7 +359,7 @@ export class DocumentsService {
     limit?: number,
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     if (bucket === null || bucket === undefined) {
       throw new Error('Required parameter bucket was null or undefined when calling findDocumentPath.');
@@ -381,7 +381,7 @@ export class DocumentsService {
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -435,7 +435,7 @@ export class DocumentsService {
     version?: string,
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<Blob>;
   public getDocument(
     bucket: string,
@@ -443,7 +443,7 @@ export class DocumentsService {
     version?: string,
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<Blob>>;
   public getDocument(
     bucket: string,
@@ -451,7 +451,7 @@ export class DocumentsService {
     version?: string,
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<Blob>>;
   public getDocument(
     bucket: string,
@@ -459,7 +459,7 @@ export class DocumentsService {
     version?: string,
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     if (bucket === null || bucket === undefined) {
       throw new Error('Required parameter bucket was null or undefined when calling getDocument.');
@@ -481,7 +481,7 @@ export class DocumentsService {
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['*/*'];
+      const httpHeaderAccepts: string[] = ['application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {
@@ -523,21 +523,21 @@ export class DocumentsService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Document>;
+  ): Observable<DocumentModel>;
   public getDocumentMeta(
     bucket: string,
     key: string,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Document>>;
+  ): Observable<HttpResponse<DocumentModel>>;
   public getDocumentMeta(
     bucket: string,
     key: string,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Document>>;
+  ): Observable<HttpEvent<DocumentModel>>;
   public getDocumentMeta(
     bucket: string,
     key: string,
@@ -591,7 +591,7 @@ export class DocumentsService {
     }
 
     let localVarPath = `/api/rest/v1/meta/buckets/${this.configuration.encodeParam({ name: 'bucket', value: bucket, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/documents`;
-    return this.httpClient.request<Document>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<DocumentModel>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
@@ -728,21 +728,21 @@ export class DocumentsService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Array<Document>>;
+  ): Observable<Array<DocumentModel>>;
   public listDocumentMetaVersions(
     bucket: string,
     key: string,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Array<Document>>>;
+  ): Observable<HttpResponse<Array<DocumentModel>>>;
   public listDocumentMetaVersions(
     bucket: string,
     key: string,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Array<Document>>>;
+  ): Observable<HttpEvent<Array<DocumentModel>>>;
   public listDocumentMetaVersions(
     bucket: string,
     key: string,
@@ -796,7 +796,7 @@ export class DocumentsService {
     }
 
     let localVarPath = `/api/rest/v1/meta/buckets/${this.configuration.encodeParam({ name: 'bucket', value: bucket, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/documentversions`;
-    return this.httpClient.request<Array<Document>>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<Array<DocumentModel>>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
@@ -830,7 +830,7 @@ export class DocumentsService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Array<Document>>;
+  ): Observable<Array<DocumentModel>>;
   public listDocuments(
     bucket: string,
     limit?: number,
@@ -842,7 +842,7 @@ export class DocumentsService {
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Array<Document>>>;
+  ): Observable<HttpResponse<Array<DocumentModel>>>;
   public listDocuments(
     bucket: string,
     limit?: number,
@@ -854,7 +854,7 @@ export class DocumentsService {
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Array<Document>>>;
+  ): Observable<HttpEvent<Array<DocumentModel>>>;
   public listDocuments(
     bucket: string,
     limit?: number,
@@ -925,7 +925,7 @@ export class DocumentsService {
     }
 
     let localVarPath = `/api/rest/v1/meta/buckets/${this.configuration.encodeParam({ name: 'bucket', value: bucket, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/documentlist`;
-    return this.httpClient.request<Array<Document>>('get', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<Array<DocumentModel>>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
@@ -941,7 +941,7 @@ export class DocumentsService {
    * @param bucket
    * @param key
    * @param version
-   * @param zipUploadRequest
+   * @param zipUploadRequestModel
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
    */
@@ -949,34 +949,34 @@ export class DocumentsService {
     bucket: string,
     key: string,
     version?: string,
-    zipUploadRequest?: ZipUploadRequest,
+    zipUploadRequestModel?: ZipUploadRequestModel,
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Document>;
+  ): Observable<DocumentModel>;
   public putDocument(
     bucket: string,
     key: string,
     version?: string,
-    zipUploadRequest?: ZipUploadRequest,
+    zipUploadRequestModel?: ZipUploadRequestModel,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Document>>;
+  ): Observable<HttpResponse<DocumentModel>>;
   public putDocument(
     bucket: string,
     key: string,
     version?: string,
-    zipUploadRequest?: ZipUploadRequest,
+    zipUploadRequestModel?: ZipUploadRequestModel,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Document>>;
+  ): Observable<HttpEvent<DocumentModel>>;
   public putDocument(
     bucket: string,
     key: string,
     version?: string,
-    zipUploadRequest?: ZipUploadRequest,
+    zipUploadRequestModel?: ZipUploadRequestModel,
     observe: any = 'body',
     reportProgress: boolean = false,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
@@ -1037,9 +1037,9 @@ export class DocumentsService {
     }
 
     let localVarPath = `/api/rest/v1/content/buckets/${this.configuration.encodeParam({ name: 'bucket', value: bucket, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/documents`;
-    return this.httpClient.request<Document>('put', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<DocumentModel>('put', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
-      body: zipUploadRequest,
+      body: zipUploadRequestModel,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
       withCredentials: this.configuration.withCredentials,
@@ -1053,7 +1053,7 @@ export class DocumentsService {
   /**
    * @param bucket
    * @param key
-   * @param metadata
+   * @param metadataModel
    * @param version
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
@@ -1061,34 +1061,34 @@ export class DocumentsService {
   public putDocumentMeta(
     bucket: string,
     key: string,
-    metadata: Metadata,
+    metadataModel: MetadataModel,
     version?: string,
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Document>;
+  ): Observable<DocumentModel>;
   public putDocumentMeta(
     bucket: string,
     key: string,
-    metadata: Metadata,
+    metadataModel: MetadataModel,
     version?: string,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Document>>;
+  ): Observable<HttpResponse<DocumentModel>>;
   public putDocumentMeta(
     bucket: string,
     key: string,
-    metadata: Metadata,
+    metadataModel: MetadataModel,
     version?: string,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Document>>;
+  ): Observable<HttpEvent<DocumentModel>>;
   public putDocumentMeta(
     bucket: string,
     key: string,
-    metadata: Metadata,
+    metadataModel: MetadataModel,
     version?: string,
     observe: any = 'body',
     reportProgress: boolean = false,
@@ -1100,8 +1100,8 @@ export class DocumentsService {
     if (key === null || key === undefined) {
       throw new Error('Required parameter key was null or undefined when calling putDocumentMeta.');
     }
-    if (metadata === null || metadata === undefined) {
-      throw new Error('Required parameter metadata was null or undefined when calling putDocumentMeta.');
+    if (metadataModel === null || metadataModel === undefined) {
+      throw new Error('Required parameter metadataModel was null or undefined when calling putDocumentMeta.');
     }
 
     let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
@@ -1153,9 +1153,9 @@ export class DocumentsService {
     }
 
     let localVarPath = `/api/rest/v1/meta/buckets/${this.configuration.encodeParam({ name: 'bucket', value: bucket, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/documents`;
-    return this.httpClient.request<Document>('put', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<DocumentModel>('put', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
-      body: metadata,
+      body: metadataModel,
       params: localVarQueryParameters,
       responseType: <any>responseType_,
       withCredentials: this.configuration.withCredentials,
@@ -1178,21 +1178,21 @@ export class DocumentsService {
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<Document>;
+  ): Observable<DocumentModel>;
   public putFolder(
     bucket: string,
     key: string,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpResponse<Document>>;
+  ): Observable<HttpResponse<DocumentModel>>;
   public putFolder(
     bucket: string,
     key: string,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
-  ): Observable<HttpEvent<Document>>;
+  ): Observable<HttpEvent<DocumentModel>>;
   public putFolder(
     bucket: string,
     key: string,
@@ -1246,7 +1246,7 @@ export class DocumentsService {
     }
 
     let localVarPath = `/api/rest/v1/content/buckets/${this.configuration.encodeParam({ name: 'bucket', value: bucket, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/folders`;
-    return this.httpClient.request<Document>('put', `${this.configuration.basePath}${localVarPath}`, {
+    return this.httpClient.request<DocumentModel>('put', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
       responseType: <any>responseType_,

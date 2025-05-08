@@ -36,7 +36,239 @@ tags:
     description: Ladon UserInfo API
   - name: Authentication
     description: Ladon Authentication API
+  - name: UI
+    description: Ladon UI API
 paths:
+  /api/ui/v1/meta/buckets/{name}:
+    put:
+      tags:
+        - UI
+      operationId: updateBucket
+      parameters:
+        - name: formParams
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/MultiValueMapStringString'
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+  /api/ui/v1/meta/buckets:
+    post:
+      tags:
+        - UI
+      operationId: createBucket_1
+      parameters:
+        - name: bucket
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/NewBucket'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /api/ui/v1/meta/buckets/favourite:
+    post:
+      tags:
+        - UI
+      operationId: tagFavouriteBucket
+      parameters:
+        - name: bucket
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: favourite
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+  /api/ui/v1/meta/bucketstats:
+    get:
+      tags:
+        - UI
+      operationId: getBucketStats
+      parameters:
+        - name: bucket
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BucketStatistics'
+  /api/ui/v1/meta/bucketsize:
+    get:
+      tags:
+        - UI
+      operationId: getSizeOfAllBuckets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllBucketStats'
+  /api/ui/v1/meta/bucketlist:
+    get:
+      tags:
+        - UI
+      operationId: listBuckets
+      parameters:
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: favourite
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BucketUiItem'
+  /api/ui/v1/dashboard/user/activity:
+    get:
+      tags:
+        - UI
+      operationId: getUserActivity
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+                  format: int32
+  /api/ui/v1/dashboard/documents/search:
+    get:
+      tags:
+        - UI
+      operationId: dashboardSearchDocuments
+      parameters:
+        - name: search
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+  /api/ui/v1/dashboard/documents/recent:
+    get:
+      tags:
+        - UI
+      operationId: dashboardRecentDocuments
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+  /api/ui/v1/dashboard/documents/favourite:
+    get:
+      tags:
+        - UI
+      operationId: dashboardFavDocuments
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+  /api/ui/v1/dashboard/changes/{yyyyMMdd}:
+    get:
+      tags:
+        - UI
+      operationId: foldersChangedThatDay
+      parameters:
+        - name: yyyyMMdd
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Change'
+  /api/ui/v1/dashboard/buckets/favourite:
+    get:
+      tags:
+        - UI
+      operationId: dashboardBuckets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BucketUiItem'
+  /api/ui/v1/dashboard/buckets/chart:
+    get:
+      tags:
+        - UI
+      operationId: dashboardBucketsChart
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChartData'
   /api/usermanager/users/{userId}:
     get:
       tags:
@@ -52,7 +284,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 $ref: "#/components/schemas/UserDataWrapper"
     put:
@@ -141,7 +373,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -197,7 +429,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -253,7 +485,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -303,7 +535,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 $ref: "#/components/schemas/ResponseSuccess"
   /api/rest/v1/meta/buckets:
@@ -464,7 +696,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: string
                 format: binary
@@ -583,7 +815,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: object
     post:
@@ -594,7 +826,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: object
   /auth/login:
@@ -612,7 +844,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: object
   /api/usermanager/users:
@@ -624,7 +856,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -643,7 +875,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -687,7 +919,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -714,7 +946,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -733,7 +965,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 $ref: "#/components/schemas/Unit"
   /api/rest/v1/taskmanager/stop:
@@ -849,7 +1081,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -976,7 +1208,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -991,7 +1223,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 $ref: "#/components/schemas/User"
   /user/allowableactions:
@@ -1003,7 +1235,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -1023,7 +1255,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1043,7 +1275,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1214,7 +1446,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1259,7 +1491,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1346,32 +1578,6 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Document"
-  /api/rest/v1/meta/bucketlist:
-    get:
-      tags:
-        - Buckets
-      operationId: listBuckets
-      parameters:
-        - name: limit
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-        - name: search
-          in: query
-          required: false
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Bucket"
   /api/rest/v1/converters/meta:
     get:
       tags:
@@ -1381,7 +1587,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1401,7 +1607,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: string
                 format: binary
@@ -1479,7 +1685,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -1513,7 +1719,7 @@ paths:
         "200":
           description: OK
           content:
-            "*/*":
+            "application/json":
               schema:
                 $ref: "#/components/schemas/Unit"
   /api/rest/v1/transaction/rollback:
@@ -1946,7 +2152,7 @@ components:
         success:
           type: boolean
         exception:
-          type: string
+          type: strings
     ConverterInfo:
       required:
         - cardinality
@@ -1983,3 +2189,163 @@ components:
           type: string
         optional:
           type: boolean
+    NewBucket:
+      type: object
+      properties:
+        bucketid:
+          type: string
+        versioned:
+          type: string
+        favourite:
+          type: string
+        storageId:
+          type: string
+        webix_operation:
+          type: string
+    DataResponse:
+      required:
+        - id
+        - newid
+        - status
+      type: object
+      properties:
+        id:
+          type: string
+        newid:
+          type: string
+        status:
+          type: string
+          enum:
+            - error
+            - success
+    AllBucketStats:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        versions:
+          type: integer
+          format: int64
+        files:
+          type: integer
+          format: int64
+        folders:
+          type: integer
+          format: int64
+    ChartData:
+      required:
+        - entries
+        - xlabels
+        - ylegend
+      type: object
+      properties:
+        yLegend:
+          type: string
+          writeOnly: true
+        xLabels:
+          type: array
+          writeOnly: true
+          items:
+            type: string
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChartEntry'
+        ylegend:
+          type: string
+        xlabels:
+          type: array
+          items:
+            type: string
+    ChartEntry:
+      required:
+        - data
+        - label
+      type: object
+      properties:
+        label:
+          type: string
+        data:
+          type: array
+          items:
+            type: integer
+            format: int64
+    BucketUiItem:
+      type: object
+      properties:
+        id:
+          type: string
+        createdBy:
+          type: string
+        size:
+          type: integer
+          format: int64
+        versioned:
+          type: boolean
+        favourite:
+          type: boolean
+        created:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+    Change:
+      required:
+        - bucket
+        - key
+        - op
+        - unixTimestamp
+        - userId
+        - version
+      type: object
+      properties:
+        bucket:
+          type: string
+        key:
+          type: string
+        version:
+          type: string
+        op:
+          type: string
+          enum:
+            - PUT
+            - DELETE
+        userId:
+          type: string
+        unixTimestamp:
+          type: integer
+          format: int64
+    BucketStatistics:
+      required:
+        - bucketid
+        - statistics
+      type: object
+      properties:
+        bucketid:
+          type: string
+        statistics:
+          $ref: '#/components/schemas/Statistics'
+    Statistics:
+      required:
+        - fileCount
+        - folderCount
+        - lastModified
+        - size
+        - versions
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        fileCount:
+          type: integer
+          format: int64
+        folderCount:
+          type: integer
+          format: int64
+        versions:
+          type: integer
+          format: int64
+        lastModified:
+          type: string

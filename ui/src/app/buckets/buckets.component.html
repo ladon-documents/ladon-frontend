@@ -28,7 +28,8 @@
       <li
         [ngClass]="{ active: selectedBucket && selectedBucket.id === bucket.id }"
         class="flex justify-between p-4 cursor-pointer"
-        (click)="selectBucket(bucket)">
+        (click)="selectBucket(bucket)"
+        (dblclick)="openBucket()">
         <div class="flex min-w-0 gap-x-4">
           <ng-icon name="heroFolderSolid" size="1.5em" class="shrink-0"></ng-icon>
           <div class="min-w-0 flex-auto">

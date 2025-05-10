@@ -10,9 +10,9 @@
           <li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target">
             <a (click)="invokeItem(item)">
               @if (item.icon) {
-                <ng-icon [name]="item.icon"></ng-icon>
+                <ng-icon [name]="item.icon" color="black"></ng-icon>
               }
-              <span>{{ item.label }}</span>
+              <span>{{ item.label | translate }}</span>
             </a>
           </li>
         }

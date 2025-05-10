@@ -1,4 +1,12 @@
-import { signalStore, withState } from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { Inject, inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
+import { DocumentModel, DocumentsService, LoginRequestModel } from '../../api';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { catchError, pipe, switchMap, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { FilemanagerService } from '../filemanager/filemanager.service';
 
 interface PaginationState {
   currentPage: number;
@@ -7,24 +15,8 @@ interface PaginationState {
 }
 
 interface SortConfig {
-  field: keyof Document;
+  field: keyof DocumentModel;
   direction: 'asc' | 'desc';
-}
-
-interface Document {
-  id: string;
-  title: string;
-  description?: string;
-  path: string;
-  mimeType: string;
-  size: number;
-  createdAt: string;
-  updatedAt: string;
-  createdBy: string;
-  lastModifiedBy: string;
-  tags: string[];
-  version: number;
-  permissions: DocumentPermissions;
 }
 
 interface DocumentPermissions {
@@ -63,8 +55,8 @@ interface NotificationState {
 }
 
 interface FilemanagerState {
-  documents: Document[];
-  selectedDocument: Document | null;
+  documents: DocumentModel[];
+  selectedDocument: DocumentModel | null;
   isLoading: boolean;
   error: string | null;
   sort: SortConfig;
@@ -80,7 +72,7 @@ const initialState: FilemanagerState = {
   isLoading: false,
   error: null,
   sort: {
-    field: 'updatedAt',
+    field: 'last-modified',
     direction: 'desc',
   },
   pagination: {
@@ -91,4 +83,72 @@ const initialState: FilemanagerState = {
   searchTerm: '',
 };
 
-export const FilemanagerStore = signalStore({ providedIn: 'root' }, withState(initialState));
+export const FilemanagerStore = signalStore(
+  { providedIn: 'root' },
+  withState(initialState),
+  withMethods((store, documentsService = inject(FilemanagerService)) => {
+    return {
+      updateSelectedBucket: (selectedBucket: string) => {
+        patchState(store, { selectedBucket });
+      },
+      loadBucket: rxMethod<any>(
+        pipe(
+          tap(() => {
+            patchState(store, (state) => ({
+              ...initialState,
+              isLoading: true,
+            }));
+          }),
+          switchMap((bucket) =>
+            documentsService.loadBucket(bucket).pipe(
+              tap((documents) => {
+                patchState(store, (state) => ({
+                  ...state,
+                  isLoading: false,
+                  documents,
+                }));
+              }),
+              catchError((error) => {
+                patchState(store, (state) => ({
+                  ...state,
+                  isLoading: false,
+                  error,
+                }));
+                throw error;
+              }),
+            ),
+          ),
+        ),
+      ),
+      loadDocumentList: rxMethod<any>(
+        pipe(
+          tap(() => {
+            patchState(store, (state) => ({
+              ...state,
+              isLoading: true,
+            }));
+          }),
+          switchMap((bucket) =>
+            documentsService.loadDocumentList(bucket).pipe(
+              tap((documents) => {
+                patchState(store, (state) => ({
+                  ...state,
+                  isLoading: false,
+                  documents,
+                }));
+              }),
+              catchError((error) => {
+                patchState(store, (state) => ({
+                  ...state,
+                  isLoading: false,
+                  error,
+                }));
+                throw error;
+              }),
+            ),
+          ),
+        ),
+      ),
+    };
+  }),
+);

@@ -9,6 +9,7 @@ import { BucketsTestObject } from '@ladon/tests/buckets-test-object';
 import { BucketStatisticsModel, BucketUiItemModel, StatisticsModel } from '../../api';
 import { TranslateModule } from '@ngx-translate/core';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'buckets',
@@ -23,7 +24,10 @@ export class BucketsComponent implements OnInit {
   bucketStats: Signal<BucketStatsExtended | undefined> = signal<BucketStatsExtended | undefined>(undefined);
   selectedBucket: BucketUiItemModel | undefined;
 
-  constructor(public bucketsService: BucketsService) {}
+  constructor(
+    public bucketsService: BucketsService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.bucketsList = computed(() => this.bucketsService.bucketList());
@@ -33,6 +37,11 @@ export class BucketsComponent implements OnInit {
   selectBucket(bucket: BucketUiItemModel) {
     this.selectedBucket = bucket;
     this.bucketsService.bucket = bucket;
+  }
+  openBucket() {
+    if (this.selectedBucket && this.selectedBucket.id) {
+      this.bucketsService.dispatchSelectedBucket(this.selectedBucket.id);
+    }
   }
 
   toggleFavorites(event: any) {

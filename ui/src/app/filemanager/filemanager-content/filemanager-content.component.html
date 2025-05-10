@@ -1,0 +1,191 @@
+<div class="h-full max-h-full">
+  <div class="breadcrumbs text-sm">
+    <ul>
+      @for (breadcrumbItem of breadcrumb; track breadcrumbItem) {
+        <li>{{ breadcrumbItem }}</li>
+      }
+    </ul>
+  </div>
+  <div class="pb-3 relative flex justify-between items-center">
+    <ul role="tablist" aria-orientation="horizontal" class="tab-nav flex items-center gap-4">
+      <li class="tab-item">
+        <button
+          id="headlessui-tabs-tab-v-14"
+          role="tab"
+          type="button"
+          aria-selected="true"
+          tabindex="0"
+          data-headlessui-state="selected"
+          class="tab-toggle flex items-center justify-center h-6 w-6 text-slate-400 ui-selected:text-primary-600 hover:text-slate-700 dark:text-white transition-all duration-300 outline-none"
+          aria-controls="headlessui-tabs-panel-v-17">
+          ...
+          <em class="text-2xl/none ni ni-view-grid3-wd"></em>
+        </button>
+      </li>
+      <li class="tab-item">
+        <button
+          id="headlessui-tabs-tab-v-15"
+          role="tab"
+          type="button"
+          aria-selected="false"
+          tabindex="-1"
+          data-headlessui-state=""
+          class="tab-toggle flex items-center justify-center h-6 w-6 text-slate-400 ui-selected:text-primary-600 hover:text-slate-700 dark:text-white transition-all duration-300 outline-none"
+          aria-controls="headlessui-tabs-panel-v-42">
+          .....
+          <em class="text-2xl/none ni ni-view-group-wd"></em>
+        </button>
+      </li>
+      <li class="tab-item">
+        <button
+          id="headlessui-tabs-tab-v-16"
+          role="tab"
+          type="button"
+          aria-selected="false"
+          tabindex="-1"
+          data-headlessui-state=""
+          class="tab-toggle flex items-center justify-center h-6 w-6 text-slate-400 ui-selected:text-primary-600 hover:text-slate-700 dark:text-white transition-all duration-300 outline-none"
+          aria-controls="headlessui-tabs-panel-v-43">
+          <em class="text-2xl/none ni ni-view-row-wd"></em>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="grid grid-flow-dense grid-cols-12 gap-4">
+    @for (document of documents(); track document.path; let i = $index) {
+      <div
+        class="group/fileitem relative border border-gray-300 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2">
+        <a href="#link" class="flex flex-col pt-6 pb-4">
+          @if (document.isFolder) {
+            <ng-container [ngTemplateOutlet]="folder"></ng-container>
+          } @else {
+            @if (document.key) {
+              <img src="{{ document.key | fileicon }}" class="h-18 [&>svg]:h-full [&>svg]:mx-auto" />
+            }
+          }
+
+          <div class="relative text-sm/snug text-center font-medium pt-4 px-5.5 mx-auto inline-flex justify-center">
+            <span class="line-clamp-1">{{ document.key }}</span>
+            <div
+              class="inline-flex absolute end-0 group/asterisk cursor-pointer opacity-0 group-hover/fileitem:opacity-100">
+              <em class="text-lg/none text-primary-600 ni ni-star"></em
+              ><em
+                class="text-lg/none text-primary-600 absolute top-0 opacity-0 group-hover/asterisk:opacity-100 group-[.active]/asterisk:opacity-100 ni ni-star-fill"></em>
+            </div>
+          </div>
+          <ul class="flex items-center justify-center pt-1 gap-3">
+            <li
+              class="text-xs/5 relative text-slate-400 first:before:hidden before:absolute before:rounded-full before:-start-1.5 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2 before:h-1 before:w-1 before:bg-slate-400 before:opacity-80">
+              {{ document.created | date: dateFormat }}
+            </li>
+            <li
+              class="text-xs/5 relative text-slate-400 first:before:hidden before:absolute before:rounded-full before:-start-1.5 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2 before:h-1 before:w-1 before:bg-slate-400 before:opacity-80">
+              {{ document.size | filesize }}
+            </li>
+          </ul>
+        </a>
+        <ng-container
+          [ngTemplateOutlet]="actions"
+          [ngTemplateOutletContext]="{
+            index: i,
+          }"></ng-container>
+      </div>
+    }
+  </div>
+</div>
+
+<ng-template #folder>
+  <div class="h-18 [&amp;>svg]:h-full [&amp;>svg]:mx-auto">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+      <g>
+        <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" style="fill: #f29611"></rect>
+        <path
+          d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
+          style="fill: #ffb32c"></path>
+        <path
+          d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
+          style="fill: #f2a222"></path>
+      </g>
+    </svg>
+  </div>
+</ng-template>
+
+<ng-template #actions let-index="index">
+  <div class="absolute top-2 end-2 transition-all duration-300 group-hover/fileitem:opacity-100">
+    <div data-headlessui-state="" class="inline-flex relative">
+      <div
+        disabled="false"
+        id="headlessui-menu-button-v-343"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        data-headlessui-state=""
+        class="inline-flex">
+        <div class="dropdown dropdown-start">
+          <div
+            tabindex="0"
+            role="button"
+            class="inline-flex items-center justify-center px-1.5 isolate relative before:content-[''] before:absolute before:-z-[1] before:rounded-full before:opacity-0 hover:before:opacity-100 [&amp;.active]:before:opacity-100 [.active>&amp;]:before:opacity-100 before:transition-all before:duration-300 before:-translate-x-1/2 before:-translate-y-1/2 before:top-1/2 before:left-1/2 focus-visible:outline-0 before:bg-gray-200 dark:before:bg-gray-900 text-slate-500 dark:text-slate-300 hover:text-slate-600 [&amp;.active]:text-slate-600 [.active>&amp;]:text-slate-600 [.active>&amp;]:dark:text-slate-200 h-8 w-8 before:h-5 before:w-5 hover:before:h-8 hover:before:w-8 [&amp;.active]:before:h-8 [&amp;.active]:before:w-8 [.active>&amp;]:before:h-8 [.active>&amp;]:before:w-8"
+            [attr.popovertarget]="'popover-actions' + index"
+            style="anchor-name: --anchor-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+            </svg>
+          </div>
+          <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+            <li>
+              <a>
+                <ng-icon name="heroDocumentDuplicate" size="1.0em" class="size-4"></ng-icon>
+                Kopieren</a
+              >
+            </li>
+            <li>
+              <a>
+                <ng-icon name="heroPencilSquare" size="1.0em" class="size-4"></ng-icon>
+                Rename</a
+              >
+            </li>
+            <li>
+              <a>
+                <ng-icon name="heroStar" size="1.0em" class="size-4"></ng-icon>
+                Als Favorit markieren</a
+              >
+            </li>
+            <li>
+              <a>
+                <ng-icon name="heroArrowDownTray" size="1.0em" class="size-4"></ng-icon>
+                Download</a
+              >
+            </li>
+            <li>
+              <a>
+                <ng-icon name="heroShare" size="1.0em" class="size-4"></ng-icon>
+                Teilen</a
+              >
+            </li>
+            <li></li>
+            <li>
+              <a>
+                <ng-icon name="heroTrash" size="1.0em" class="size-4" color="red"></ng-icon>
+                <span class="text-red-400">Delete</span></a
+              >
+            </li>
+
+            <li></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #gridView> </ng-template>

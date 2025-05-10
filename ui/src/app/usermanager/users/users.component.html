@@ -5,7 +5,7 @@
 </button>
 
 <ul>
-  @for (user of users$ | async; track user.id) {
+  @for (user of store.users(); track user.id) {
     <li [routerLink]="user.id">
       {{ user.name }}
       {{ user.email }}

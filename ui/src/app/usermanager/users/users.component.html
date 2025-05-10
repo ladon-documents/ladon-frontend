@@ -1,1 +1,17 @@
-<p>users works!</p>
+<lib-searchbar></lib-searchbar>
+<button class="flex gap-2 center px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-950 focus:outline-none">
+  <ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
+  <span class="hidden lg:block">Neues Verzeichnis erstellen</span>
+</button>
+
+<ul>
+  @for (user of users$ | async; track user.id) {
+    <li [routerLink]="user.id">
+      {{ user.name }}
+      {{ user.email }}
+      {{ user.status }}
+    </li>
+  }
+</ul>
+
+<router-outlet></router-outlet>

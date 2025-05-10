@@ -50,6 +50,7 @@
     "target": "internal",
     "component": "usermanager",
     "path": "usermanager",
+    "icon": "heroUsers",
     "hasChildren": true,
     "type": "menu",
     "index": 10

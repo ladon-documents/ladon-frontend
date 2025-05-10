@@ -1,5 +1,8 @@
-<div>Tabs</div>
-<div>Left Side</div>
+<div>
+  <button [routerLink]="['users']">Users</button>
+  <button [routerLink]="['roles']">Roles</button>
+  <button [routerLink]="['permissions']">Permissions</button>
+</div>
 <div>
   <router-outlet></router-outlet>
 </div>

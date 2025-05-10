@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, mergeMap, of, take } from 'rxjs';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import {
@@ -8,11 +8,14 @@ import {
   DocumentsService,
   UIService,
 } from '../../api';
+import { FilemanagerStore } from '../store/filemanager.store';
+import { LadonRouterService } from '../services/ladon-router.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BucketsService {
+  readonly #filemanagerStore = inject(FilemanagerStore);
   private bucketsListSignal = signal<BucketUiItemModel[]>([]);
   private bucketStatsSignal = signal<BucketStatsExtended | undefined>(undefined);
   private _bucketList = signal<BucketUiItemModel[]>([]);
@@ -20,6 +23,7 @@ export class BucketsService {
     private bucketServiceApi: BucketsServiceApi,
     private documentsService: DocumentsService,
     private uiServiceApi: UIService,
+    private ladonRouterService: LadonRouterService,
   ) {
     this.retrieveBucketsList();
   }
@@ -41,6 +45,11 @@ export class BucketsService {
     } else {
       this.bucketsListSignal.set(this._bucketList() as BucketUiItemModel[]);
     }
+  }
+
+  dispatchSelectedBucket(bucket: string) {
+    this.#filemanagerStore.updateSelectedBucket(bucket);
+    this.ladonRouterService.navigateToFilemanagerWithBucket(bucket);
   }
 
   set bucket(bucket: BucketUiItemModel) {

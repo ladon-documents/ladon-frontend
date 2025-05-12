@@ -6,7 +6,8 @@
 
 <ul>
   @for (user of store.users(); track user.id) {
-    <li [routerLink]="user.id">
+    <li [routerLink]="user.id" class="flex flex-row items-center gap-4 py-2 px-2">
+      <div class="avatar" [attr.data-alias]="user.name | alias"></div>
       {{ user.name }}
       {{ user.email }}
       {{ user.status }}
@@ -14,4 +15,7 @@
   }
 </ul>
 
-<router-outlet></router-outlet>
+<div>
+  <h2>Details</h2>
+  <router-outlet></router-outlet>
+</div>

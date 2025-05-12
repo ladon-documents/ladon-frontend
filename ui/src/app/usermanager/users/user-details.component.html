@@ -1,1 +1,43 @@
-<p>user-details works!</p>
+<div class="flex flex-col gap-4">
+  <div class="avatar" [attr.data-alias]="user?.name | alias"></div>
+
+  {{ user?.name }}
+  <code>{{ user?.id }}</code>
+  <button
+    (click)="changePassword(user?.id)"
+    class="px-4 py-2 border border-blue-900 text-blue-900 rounded hover:bg-blue-900 hover:text-white transition duration-300 cursor-pointer">
+    Passwort ändern
+  </button>
+</div>
+
+<form class="flex flex-col gap-4" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="name">Name</label>
+    <input id="name" type="text" formControlName="name" />
+  </div>
+
+  <div>
+    <label for="email">E-Mail</label>
+    <input id="email" type="email" formControlName="email" />
+  </div>
+
+  <input hidden readonly type="text" formControlName="id" />
+
+  <div class="flex items-center gap-2 text-sm sticky top-0">
+    <!-- TODO: Make shared component -->
+    Aktiv
+    <label class="relative inline-flex items-center cursor-pointer">
+      <input type="checkbox" class="sr-only peer" formControlName="status" />
+      <div
+        class="w-10 h-5 bg-stone-200 rounded-full peer-checked:bg-blue-900 peer-focus:ring-2 peer-focus:ring-indigo-300 transition-all duration-300 dark:bg-stone-800"></div>
+      <div
+        class="absolute left-1 w-3 h-3 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-5"></div>
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    class="px-4 py-2 rounded bg-blue-900 hover:bg-blue-950 text-white transition duration-300 cursor-pointer">
+    Speichern
+  </button>
+</form>

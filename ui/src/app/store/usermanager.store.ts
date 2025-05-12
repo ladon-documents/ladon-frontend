@@ -33,5 +33,9 @@ export const UsermanagerStore = signalStore(
           },
         });
     },
+
+    getUser(id: string): UserEntryModel | undefined {
+      return store.users().find((user) => user.id === id);
+    },
   })),
 );

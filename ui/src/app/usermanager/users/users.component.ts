@@ -5,14 +5,15 @@ import { RouterModule } from '@angular/router';
 import { heroPlusCircle } from '@ng-icons/heroicons/outline';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { UsermanagerStore } from '../../store/usermanager.store';
+import { AliasPipe } from '@ladon/shared';
 
 @Component({
   selector: 'app-users',
   standalone: true,
   providers: [provideIcons({ heroPlusCircle })],
-  imports: [NgIconComponent, SearchbarComponent, RouterModule],
+  imports: [NgIconComponent, SearchbarComponent, RouterModule, AliasPipe],
   templateUrl: './users.component.html',
-  styleUrl: './users.component.scss',
+  styleUrls: ['../usermanager.component.scss', './users.component.scss'],
 })
 export class UsersComponent implements OnInit {
   constructor(private usermanagerService: UsermanagerService) {}

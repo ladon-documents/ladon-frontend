@@ -28,7 +28,8 @@
       "@ladon/assets/*": ["./public/assets/*", "./src/assets/*"],
       "@ladon/mocks/*": ["./public/mocks/*", "./src/mocks/*"],
       "@ladon/tests/*": ["./tests/*"],
-      "@utility": ["../api/utility/index"]
+      "@ladon/shared": ["./src/app/shared/index"],
+      "@utility": ["../api/utility/index"],
     }
   },
   "angularCompilerOptions": {

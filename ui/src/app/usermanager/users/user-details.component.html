@@ -3,41 +3,26 @@
 
   {{ user?.name }}
   <code>{{ user?.id }}</code>
-  <button
-    (click)="changePassword(user?.id)"
-    class="px-4 py-2 border border-blue-900 text-blue-900 rounded hover:bg-blue-900 hover:text-white transition duration-300 cursor-pointer">
-    Passwort ändern
-  </button>
+  <button (click)="changePassword(user?.id)" class="btn btn-outline">Passwort ändern</button>
 </div>
 
 <form class="flex flex-col gap-4" [formGroup]="userForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="name">Name</label>
-    <input id="name" type="text" formControlName="name" />
-  </div>
+  <label class="input" for="name">
+    <span class="label">Name</span>
+    <input type="text" id="name" formControlName="name" />
+  </label>
 
-  <div>
-    <label for="email">E-Mail</label>
-    <input id="email" type="email" formControlName="email" />
-  </div>
+  <label class="input" for="email">
+    <span class="label">E-Mail</span>
+    <input type="text" id="email" formControlName="email" />
+  </label>
 
   <input hidden readonly type="text" formControlName="id" />
 
-  <div class="flex items-center gap-2 text-sm sticky top-0">
-    <!-- TODO: Make shared component -->
+  <label>
     Aktiv
-    <label class="relative inline-flex items-center cursor-pointer">
-      <input type="checkbox" class="sr-only peer" formControlName="status" />
-      <div
-        class="w-10 h-5 bg-stone-200 rounded-full peer-checked:bg-blue-900 peer-focus:ring-2 peer-focus:ring-indigo-300 transition-all duration-300 dark:bg-stone-800"></div>
-      <div
-        class="absolute left-1 w-3 h-3 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-5"></div>
-    </label>
-  </div>
+    <input type="checkbox" checked="checked" class="toggle toggle-primary" formControlName="status" />
+  </label>
 
-  <button
-    type="submit"
-    class="px-4 py-2 rounded bg-blue-900 hover:bg-blue-950 text-white transition duration-300 cursor-pointer">
-    Speichern
-  </button>
+  <button type="submit" class="btn btn-primary">Speichern</button>
 </form>

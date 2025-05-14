@@ -1,16 +1,25 @@
-<lib-searchbar></lib-searchbar>
-<button class="flex gap-2 center px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-950 focus:outline-none">
-  <ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
-  <span class="hidden lg:block">Neues Verzeichnis erstellen</span>
-</button>
+<div class="flex justify-between items-center">
+  <lib-searchbar></lib-searchbar>
+  <button class="btn btn-primary">
+    <ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
+    <span class="hidden lg:block">Neuen Nutzer erstellen</span>
+  </button>
+</div>
 
 <ul>
   @for (user of store.users(); track user.id) {
-    <li [routerLink]="user.id" class="flex flex-row items-center gap-4 py-2 px-2">
-      <div class="avatar" [attr.data-alias]="user.name | alias"></div>
-      {{ user.name }}
-      {{ user.email }}
-      {{ user.status }}
+    <li [routerLink]="user.id" class="flex flex-row items-center gap-4 py-2">
+      <div class="avatar shrink-0" [attr.data-alias]="user.name | alias"></div>
+      <span class="flex-grow">{{ user.name }}</span>
+      <span class="flex-grow">{{ user.email }}</span>
+      @if (user.status) {
+        <div aria-label="success" class="status status-success shrink-0"></div>
+      } @else {
+        <div aria-label="success" class="status status-neutral shrink-0"></div>
+      }
+      <button class="btn">
+        <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+      </button>
     </li>
   }
 </ul>

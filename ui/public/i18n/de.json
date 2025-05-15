@@ -48,5 +48,107 @@
       "REFRESH": "Aktualisieren",
       "INSTALL": "Installieren"
     }
+  },
+  "USER_MANAGER": {
+    "NAVITEM": "Benutzerverwaltung",
+    "TABS": {
+      "USERS": "Nutzer",
+      "ROLES": "Rollen",
+      "PERMISSIONS": "Rechte"
+    },
+
+    "PILLS": {
+      "ACTIVE": "Aktiv",
+      "INACTIVE": "Inaktiv"
+    },
+
+    "FILTERBAR": {
+      "PLACEHOLDER": "Filtern"
+    },
+
+    "ASIDE": {
+      "HEADER": "Details",
+      "CHANGE_PW_CTA": "Passwort ändern",
+      "USER_KEYS": {
+        "OF_KEY": "des Schlüssels",
+        "TITLE": "Nutzer-Schlüssel",
+        "ACCESS": "Access",
+        "SECRETE": "Secrete"
+      }
+    },
+
+    "ROLES": {
+      "OF_ROLE": "der Rolle",
+      "ROLES_SET": "Rechte erteilt",
+      "NO_ROLES_SET": "Keine Rechte vergeben",
+      "USERS_SET": "Nutzer erteilt",
+      "NO_USERS_SET": "Keine Nutzer vergeben",
+      "NAME": "Name",
+      "IDENTIFICATION": "Identifikation",
+      "DESCRIPTION": "Beschreibung"
+    },
+
+    "PERMISSIONS": {
+      "OPERATION": "Operation",
+      "ART": "Art",
+      "TYPE": "Typ",
+      "VALUE": "Wert",
+      "OF_PERMISSION": "der Berechtigung",
+      "POSITIVE": "Positiv",
+      "NEGATIVE": "Negativ",
+      "DESCRIPTION": "Beschreibung",
+      "IDENTIFICATION": "Identifikation"
+    },
+
+    "USERS": {
+      "OF_USER": "des Users",
+      "ADD": "Nutzer hinzufügen",
+      "ADD_PASSWORD_INFO": "Vergeben Sie mindestens 6 Zeichen in Ihrem Passwort"
+    },
+
+    "ALERT": {
+      "ADD_ERROR": "Hinzufügen zur Zeit nicht möglich",
+      "REFRESH_ERROR": "Aktualisieren zur Zeit nicht möglich",
+      "LOADING": "Laden der Nutzerdaten zur Zeit nicht möglich",
+      "DELETE_ERROR": "Löschen {replace} zur Zeit nicht möglich",
+      "DELETE_ADMIN": "Der Administrator kann nicht gelöscht werden!",
+      "SET_ERROR": "Setzen der {replace} zur Zeit nicht möglich",
+      "SET_PASSWORD": "Beim setzen des Passworts ist ein Fehler aufgetreten",
+      "SET_PROFILEIMAGE": "Anpassen den Profilbilds zur Zeit nicht möglich",
+      "SET_USERKEYS": "Beim Hinzufügen eines Schlüssels ist ein Fehler aufgetreten",
+      "CLIPBOARD_ERROR": "Beim Kopieren von {replace} in die Zwischenablage ist ein Fehler aufgetreten"
+    },
+
+    "CONFIRM": {
+      "DELETE": "Wollen Sie {replace} wirklich löschen?"
+    },
+
+    "GENERAL": {
+      "OK": "OK",
+      "CANCEL": "Abbrechen",
+      "EDIT": "Editieren",
+      "ADD": "Hinzufügen",
+      "DELETE": "Entfernen",
+      "COPY": "Kopieren",
+      "REFRESH": "Aktualisieren",
+
+      "FORMS": {
+        "NAME": "Name",
+        "FULLNAME": "Vor- und Nachname",
+        "STATUS": "Status",
+        "EMAIL": "E-Mail",
+        "PASSWORD": "Passwort",
+        "PASSWORD_CONFIRM": "Passwort bestätigen",
+        "REQUIRED": "Pflichtfelder"
+      }
+    }
+  },
+  "AUTH": {
+    "TITLE": "Login",
+    "USERNAME": "Benutzername",
+    "PASSWORD": "Passwort",
+    "SIGN_IN": "Einloggen",
+    "LOGOUT": "Ausloggen",
+    "QUICK_LOGIN": "Schnellzugriff"
   }
 }

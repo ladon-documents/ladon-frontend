@@ -1,0 +1,18 @@
+{
+  "name": "ladon-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build:api": "npm  --prefix ./api run build:all",
+    "serve:api": "npm  --prefix ./api run serve",
+    "build:globals": "npm  --prefix ./globals run build",
+    "build:styles": "npm  --prefix ./style run build",
+    "build:ui": "npm  --prefix ./ui run build",
+    "serve:ui": "npm  --prefix ./ui run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ladon-documents/ladon-frontend.git"
+  },
+  "private": true
+}

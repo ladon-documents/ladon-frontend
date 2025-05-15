@@ -14,6 +14,7 @@
     "component": "filemanager",
     "path": "filemanager",
     "icon": "heroFolder",
+    "hasChildren": true,
     "type": "main",
     "index": 32
   },
@@ -37,11 +38,11 @@
     "index": 32
   },
   {
-    "label": "Our Team",
+    "label": "Static Example",
     "target": "static",
     "component": "Staticweb",
     "path": "./public/html/test.html",
-    "icon": "heroFolder",
+    "icon": "heroUsers",
     "type": "main",
     "index": 35
   },
@@ -56,7 +57,7 @@
     "index": 10
   },
   {
-    "label": "NAVIGATION.SUBNAV.LOGOUT",
+    "label": "AUTH.LOGOUT",
     "icon": "heroArrowRightStartOnRectangle",
     "id": "ladon:logout",
     "target": "action",

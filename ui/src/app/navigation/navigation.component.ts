@@ -22,11 +22,11 @@ import { AppStore } from '../store/app.store';
   providers: [
     provideIcons({
       heroFolder,
+      heroUsers,
       heroDocumentText,
       heroListBullet,
       heroArrowRightStartOnRectangle,
       heroRectangleStack,
-      heroUsers,
     }),
   ],
   templateUrl: './navigation.component.html',

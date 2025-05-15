@@ -6,13 +6,14 @@ import { heroFolderSolid } from '@ng-icons/heroicons/solid';
 import { BucketsService } from './buckets.service';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
 import { BucketsTestObject } from '@ladon/tests/buckets-test-object';
-import { BucketStatisticsModel, BucketUiItemModel, StatisticsModel } from '../../api';
+import { BucketUiItemModel } from '../../api';
 import { TranslateModule } from '@ngx-translate/core';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'buckets',
+  standalone: true,
   imports: [CommonModule, NgIconComponent, SearchbarComponent, TranslateModule],
   providers: [provideIcons({ heroFolder, heroPlusCircle, heroFolderSolid }), BucketsService, BucketsTestObject],
   templateUrl: './buckets.component.html',

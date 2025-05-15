@@ -1,0 +1,12 @@
+.avatar {
+  --avatar-size: 1.2lh;
+}
+
+.status {
+  width: 1rem;
+  height: 1rem;
+
+  &-success {
+    --color-base-content: var(--color-success);
+  }
+}

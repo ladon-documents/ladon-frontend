@@ -12,11 +12,12 @@ import {
 import { Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
 import { environment } from '../../environments/environment';
-import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AppStore } from '../store/app.store';
 
 @Component({
   selector: 'lib-navigation',
+  standalone: true,
   imports: [CommonModule, NgIconComponent, TranslatePipe],
   providers: [
     provideIcons({

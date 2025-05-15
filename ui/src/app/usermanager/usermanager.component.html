@@ -1,1 +1,9 @@
-<p>usermanager works!</p>
+<div role="tablist" class="tabs tabs-border">
+  <a role="tab" class="tab" [routerLink]="['users']" [routerLinkActive]="['tab-active']">Nutzer</a>
+  <a role="tab" class="tab" [routerLink]="['roles']" [routerLinkActive]="['tab-active']">Rollen</a>
+  <a role="tab" class="tab" [routerLink]="['permissions']" [routerLinkActive]="['tab-active']">Rechte</a>
+</div>
+
+<div class="p-4">
+  <router-outlet></router-outlet>
+</div>

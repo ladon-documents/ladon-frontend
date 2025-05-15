@@ -10,6 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 type SearchTypes = 'buckets' | 'files' | 'plugins' | 'users' | 'permissions' | 'roles';
 
 @Component({
+  standalone: true,
   selector: 'lib-searchbar',
   providers: [provideIcons({ heroMagnifyingGlass })],
   imports: [CommonModule, NgIconComponent, ReactiveFormsModule, TranslatePipe],

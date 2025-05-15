@@ -1,6 +1,6 @@
 <div class="flex justify-between items-center">
   <lib-searchbar></lib-searchbar>
-  <button class="btn btn-primary">
+  <button class="btn btn-primary" (click)="createUser()">
     <ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
     <span class="hidden lg:block">Neuen Nutzer erstellen</span>
   </button>
@@ -28,3 +28,17 @@
   <h2>Details</h2>
   <router-outlet></router-outlet>
 </div>
+
+<dialog #userDialog class="modal">
+  <div class="modal-box">
+    <button (click)="userDialog?.close()" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+
+    <h3>Neuen Nutzer anlegen</h3>
+    <form [formGroup]="userAddGroup">
+      <div class="flex justify-around items-center gap-4">
+        <button class="btn-outline" type="reset" (click)="userDialog?.close()">Abbrechen</button>
+        <button class="btn" type="submit">Erstellen</button>
+      </div>
+    </form>
+  </div>
+</dialog>

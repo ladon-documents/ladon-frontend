@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UsermanagerService as UsermanagerApi } from '../../../api';
+import { UsermanagerService as UsermanagerApi, UserWrapperModel } from '../../../api';
 
 @Injectable({
   providedIn: 'root',
@@ -9,5 +9,9 @@ export class UsermanagerService {
 
   retrieveUsers() {
     return this.usermanagerApi.getUsers();
+  }
+
+  addUser(user: UserWrapperModel) {
+    return this.usermanagerApi.addUser(user);
   }
 }

@@ -1,5 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { UserEntryModel } from '../../api';
+import { UserEntryModel, UserWrapperModel } from '../../api';
 import { inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
 import { finalize } from 'rxjs';
@@ -36,6 +36,22 @@ export const UsermanagerStore = signalStore(
 
     getUser(id: string): UserEntryModel | undefined {
       return store.users().find((user) => user.id === id);
+    },
+
+    addUser(user: UserWrapperModel) {
+      patchState(store, { loading: true });
+      usermanagerService
+        .addUser(user)
+        .pipe(
+          finalize(() => {
+            patchState(store, { loading: false });
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.retrieveUsers();
+          },
+        });
     },
   })),
 );

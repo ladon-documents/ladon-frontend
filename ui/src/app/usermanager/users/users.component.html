@@ -8,16 +8,18 @@
 
 <ul>
   @for (user of store.users(); track user.id) {
-    <li [routerLink]="user.id" class="flex flex-row items-center gap-4 py-2">
-      <div class="avatar shrink-0" [attr.data-alias]="user.name | alias"></div>
-      <span class="flex-grow">{{ user.name }}</span>
-      <span class="flex-grow">{{ user.email }}</span>
+    <li class="flex flex-row items-center gap-4 py-2">
+      <div class="flex flex-grow gap-4 cursor-pointer" [routerLink]="user.id">
+        <div class="avatar shrink-0 transition-colors" [attr.data-alias]="user.name | alias"></div>
+        <span class="flex-grow">{{ user.name }}</span>
+        <span class="flex-grow">{{ user.email }}</span>
+      </div>
       @if (user.status) {
         <div aria-label="success" class="status status-success shrink-0"></div>
       } @else {
         <div aria-label="success" class="status status-neutral shrink-0"></div>
       }
-      <button class="btn">
+      <button class="btn" (click)="deleteUser(user.id)">
         <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
       </button>
     </li>
@@ -25,7 +27,6 @@
 </ul>
 
 <div>
-  <h2>Details</h2>
   <router-outlet></router-outlet>
 </div>
 

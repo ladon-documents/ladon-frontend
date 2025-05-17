@@ -53,5 +53,21 @@ export const UsermanagerStore = signalStore(
           },
         });
     },
+
+    deleteUser(userId: string) {
+      patchState(store, { loading: true });
+      usermanagerService
+        .deleteUser(userId)
+        .pipe(
+          finalize(() => {
+            patchState(store, { loading: false });
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.retrieveUsers();
+          },
+        });
+    },
   })),
 );

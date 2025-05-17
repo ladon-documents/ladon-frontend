@@ -14,4 +14,8 @@ export class UsermanagerService {
   addUser(user: UserWrapperModel) {
     return this.usermanagerApi.addUser(user);
   }
+
+  deleteUser(userId: string) {
+    return this.usermanagerApi.deleteUser(userId);
+  }
 }

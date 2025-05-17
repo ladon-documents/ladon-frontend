@@ -34,7 +34,22 @@
     <button (click)="userDialog?.close()" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
 
     <h3>Neuen Nutzer anlegen</h3>
-    <form [formGroup]="userAddGroup">
+    <form [formGroup]="userAddGroup" class="flex flex-col gap-4" (ngSubmit)="onAddUser()">
+      <label class="input" for="name">
+        <span class="label">Name*</span>
+        <input type="text" id="name" required formControlName="name" />
+      </label>
+
+      <label class="input" for="email">
+        <span class="label">E-Mail*</span>
+        <input type="email" id="email" required formControlName="email" />
+      </label>
+
+      <label class="input" for="password">
+        <span class="label">Passwort*</span>
+        <input type="password" id="password" required formControlName="password" />
+      </label>
+
       <div class="flex justify-around items-center gap-4">
         <button class="btn-outline" type="reset" (click)="userDialog?.close()">Abbrechen</button>
         <button class="btn" type="submit">Erstellen</button>

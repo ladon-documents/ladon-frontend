@@ -2,6 +2,11 @@
   --avatar-size: 1.2lh;
 }
 
+.input {
+  width: initial;
+  flex-grow: 1;
+}
+
 .status {
   width: 1rem;
   height: 1rem;

@@ -6,7 +6,7 @@ import { heroPlusCircle, heroTrash } from '@ng-icons/heroicons/outline';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { AliasPipe } from '@ladon/shared';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-users',
@@ -24,9 +24,26 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.retrieveUsers();
+    this.generateForm();
   }
 
   createUser(): void {
     this.userDialog?.nativeElement.showModal();
+  }
+
+  onAddUser(): void {
+    if (this.userAddGroup.invalid) {
+      this.userAddGroup.markAllAsTouched();
+      return;
+    }
+
+    this.store.addUser(this.userAddGroup.value);
+    this.userDialog?.nativeElement.close();
+  }
+
+  private generateForm(): void {
+    this.userAddGroup.addControl('name', new FormControl(undefined, Validators.required));
+    this.userAddGroup.addControl('email', new FormControl(undefined, Validators.required));
+    this.userAddGroup.addControl('password', new FormControl(undefined, Validators.required));
   }
 }

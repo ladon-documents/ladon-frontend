@@ -1,4 +1,6 @@
 .avatar {
+  --outer-border-color: CanvasText;
+
   container: avatar / inline-size;
   background: hsla(0deg, 0%, 0%, 10%);
   width: var(--avatar-size, 8rem);
@@ -6,7 +8,7 @@
   border-radius: 50%;
   box-shadow:
     inset 0 0 0 2px Canvas,
-    0 0 0 2px CanvasText;
+    0 0 0 2px var(--outer-border-color);
   overflow: hidden;
   display: flex;
   justify-content: center;

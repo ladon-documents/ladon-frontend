@@ -4,7 +4,6 @@
   root: ":root";
   logs: true;
 }
-@plugin "@tailwindcss/typography" ;
+@plugin "@tailwindcss/typography";
 @source "../../ui/src/app";
 @source "../../wc/clipboard/src/app";
-@source "@ladon/wc"

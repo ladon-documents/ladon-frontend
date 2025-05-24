@@ -22,4 +22,5 @@ export interface DocumentModel {
   size?: number;
   version?: string;
   isFolder?: boolean;
+  name?: string;
 }

@@ -1,11 +1,5 @@
 <div class="h-full max-h-full">
-  <div class="breadcrumbs text-sm">
-    <ul>
-      @for (breadcrumbItem of breadcrumb; track breadcrumbItem) {
-        <li>{{ breadcrumbItem }}</li>
-      }
-    </ul>
-  </div>
+<app-breadcrumb></app-breadcrumb>
   <div class="pb-3 relative flex justify-between items-center">
     <ul role="tablist" aria-orientation="horizontal" class="tab-nav flex items-center gap-4">
       <li class="tab-item">
@@ -56,7 +50,7 @@
     @for (document of documents(); track document.path; let i = $index) {
       <div
         class="group/fileitem relative border border-gray-300 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2">
-        <a href="#link" class="flex flex-col pt-6 pb-4">
+        <span  class="flex flex-col pt-6 pb-4" (dblclick)="navigateTo(document)">
           @if (document.isFolder) {
             <ng-container [ngTemplateOutlet]="folder"></ng-container>
           } @else {
@@ -64,9 +58,8 @@
               <img src="{{ document.key | fileicon }}" class="h-18 [&>svg]:h-full [&>svg]:mx-auto" />
             }
           }
-
           <div class="relative text-sm/snug text-center font-medium pt-4 px-5.5 mx-auto inline-flex justify-center">
-            <span class="line-clamp-1">{{ document.key }}</span>
+            <span class="line-clamp-1">{{ document.name }}</span>
             <div
               class="inline-flex absolute end-0 group/asterisk cursor-pointer opacity-0 group-hover/fileitem:opacity-100">
               <em class="text-lg/none text-primary-600 ni ni-star"></em
@@ -79,12 +72,14 @@
               class="text-xs/5 relative text-slate-400 first:before:hidden before:absolute before:rounded-full before:-start-1.5 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2 before:h-1 before:w-1 before:bg-slate-400 before:opacity-80">
               {{ document.created | date: dateFormat }}
             </li>
-            <li
+            @if (!document.isFolder) {
+              <li
               class="text-xs/5 relative text-slate-400 first:before:hidden before:absolute before:rounded-full before:-start-1.5 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2 before:h-1 before:w-1 before:bg-slate-400 before:opacity-80">
               {{ document.size | filesize }}
             </li>
+            }
           </ul>
-        </a>
+        </span>
         <ng-container
           [ngTemplateOutlet]="actions"
           [ngTemplateOutletContext]="{
@@ -96,7 +91,7 @@
 </div>
 
 <ng-template #folder>
-  <div class="h-18 [&amp;>svg]:h-full [&amp;>svg]:mx-auto">
+  <div class="h-18 [&>svg]:h-full [&>svg]:mx-auto">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
       <g>
         <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" style="fill: #f29611"></rect>
@@ -125,7 +120,7 @@
           <div
             tabindex="0"
             role="button"
-            class="inline-flex items-center justify-center px-1.5 isolate relative before:content-[''] before:absolute before:-z-[1] before:rounded-full before:opacity-0 hover:before:opacity-100 [&amp;.active]:before:opacity-100 [.active>&amp;]:before:opacity-100 before:transition-all before:duration-300 before:-translate-x-1/2 before:-translate-y-1/2 before:top-1/2 before:left-1/2 focus-visible:outline-0 before:bg-gray-200 dark:before:bg-gray-900 text-slate-500 dark:text-slate-300 hover:text-slate-600 [&amp;.active]:text-slate-600 [.active>&amp;]:text-slate-600 [.active>&amp;]:dark:text-slate-200 h-8 w-8 before:h-5 before:w-5 hover:before:h-8 hover:before:w-8 [&amp;.active]:before:h-8 [&amp;.active]:before:w-8 [.active>&amp;]:before:h-8 [.active>&amp;]:before:w-8"
+            class="inline-flex items-center justify-center px-1.5 isolate relative before:content-[''] before:absolute before:-z-[1] before:rounded-full before:opacity-0 hover:before:opacity-100 [&.active]:before:opacity-100 [.active>&]:before:opacity-100 before:transition-all before:duration-300 before:-translate-x-1/2 before:-translate-y-1/2 before:top-1/2 before:left-1/2 focus-visible:outline-0 before:bg-gray-200 dark:before:bg-gray-900 text-slate-500 dark:text-slate-300 hover:text-slate-600 [&.active]:text-slate-600 [.active>&]:text-slate-600 [.active>&]:dark:text-slate-200 h-8 w-8 before:h-5 before:w-5 hover:before:h-8 hover:before:w-8 [&.active]:before:h-8 [&.active]:before:w-8 [.active>&]:before:h-8 [.active>&]:before:w-8"
             [attr.popovertarget]="'popover-actions' + index"
             style="anchor-name: --anchor-1">
             <svg

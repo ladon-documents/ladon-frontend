@@ -1,0 +1,19 @@
+<div class="breadcrumbs text-sm">
+  <ul>
+    @for (breadcrumbItem of breadcrumbSignal(); track breadcrumbItem.key; let first = $first) {
+      <li [class.cursor-pointer]="first" (click)="first ? store.root() : null">{{ breadcrumbItem.name }}</li>
+    }
+  </ul>
+  <ul>
+    <li (click)="store.reset()" class="cursor-pointer">Meine Dateien</li>
+    @for (path of store.paths(); track path; let i = $index) {
+      <li
+                                                                                          [class.cursor-pointer]="true"
+                                                                                          (click)="store.navigateToIndex(i)"
+      >
+        {{ path }}
+      </li>
+    }
+  </ul>
+
+</div>

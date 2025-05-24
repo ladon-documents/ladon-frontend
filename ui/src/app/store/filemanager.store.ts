@@ -128,8 +128,8 @@ export const FilemanagerStore = signalStore(
               isLoading: true,
             }));
           }),
-          switchMap((bucket) =>
-            documentsService.loadDocumentList(bucket).pipe(
+          switchMap((document) =>
+            documentsService.loadDocumentList(document).pipe(
               tap((documents) => {
                 patchState(store, (state) => ({
                   ...state,

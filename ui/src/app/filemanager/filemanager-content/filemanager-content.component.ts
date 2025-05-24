@@ -1,8 +1,7 @@
 import { Component, inject, OnDestroy, Signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FilemanagerFacade } from '../filemanager.facade';
 import { FilemanagerStore } from '../../store/filemanager.store';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { DocumentModel } from '../../../api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -19,10 +18,12 @@ import {
 import { heroFolderSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
 import { FileiconPipe } from '../../shared/pipes/fileicon.pipe';
+import { LadonRouterService } from '../../services/ladon-router.service';
+import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'app-filemanager-content',
-  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe],
+  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe, NgOptimizedImage, BreadcrumbComponent],
   providers: [
     provideIcons({
       heroFolder,
@@ -43,27 +44,53 @@ import { FileiconPipe } from '../../shared/pipes/fileicon.pipe';
 })
 export class FilemanagerContentComponent implements OnDestroy {
   public dateFormat = 'dd.MM.yyyy';
-  public breadcrumb: Array<any> = [];
   readonly #store = inject(FilemanagerStore);
   documents: Signal<DocumentModel[]> = this.#store.documents;
   readonly #currentBucket: string | null;
+  #selectedDocument: DocumentModel | null = null;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private ladonRouterService: LadonRouterService,
   ) {
     this.#currentBucket = this.route.snapshot.paramMap.get('bucket');
-    this.breadcrumb.push(this.#currentBucket);
-    this.showRoot();
+    //  this.#selectedCurrentFolder = this.route.snapshot.paramMap.get('subfolders');
+
+    if (this.#currentBucket) {
+      this.showRoot();
+    }
   }
 
-  ngOnDestroy(): void {
-    this.breadcrumb = [];
+  ngOnInit() {
+    // Kombinierte Parameter-Beobachtung
+    this.route.params.subscribe((params) => {
+      console.log('Bucket:', params['bucket']);
+      console.log('Subfolders:', params['subfolders']);
+    });
   }
+
+  ngOnDestroy(): void {}
 
   public showRoot() {
     if (this.#currentBucket) {
       this.#store.loadBucket(this.#currentBucket);
+    }
+  }
+
+  private showFolders() {
+    if (this.#selectedDocument) {
+      this.#store.loadDocumentList(this.#selectedDocument);
+    }
+  }
+
+  async navigateTo(document: DocumentModel) {
+    if (!document) return;
+    if (document.isFolder && this.#currentBucket && document.key) {
+      console.log(document);
+      this.#selectedDocument = document;
+      this.#store.loadDocumentList(this.#selectedDocument);
+      //  await this.ladonRouterService.navigateToFolder(this.#currentBucket, document.key);
     }
   }
 }

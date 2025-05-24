@@ -11,6 +11,10 @@ export const filemanagerRoutes: Routes = [
         path: ':bucket',
         component: FilemanagerContentComponent,
       },
+      {
+        path: ':bucket/:subfolders',
+        component: FilemanagerContentComponent,
+      },
     ],
   },
 ];

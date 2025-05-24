@@ -21,7 +21,7 @@ export class FilemanagerService {
         document.key,
         undefined,
         undefined,
-        true,
+        false,
       );
     }
     return throwError(new Error('Not Found'));

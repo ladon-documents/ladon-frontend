@@ -1,6 +1,6 @@
 {
-  "name": "ladon-frontend",
-  "version": "1.0.0",
+  "name": "@mind/draco-ui",
+  "version": "0.0.1",
   "description": "",
   "scripts": {
     "build:api": "npm  --prefix ./api run build:all",
@@ -8,7 +8,11 @@
     "build:globals": "npm  --prefix ./globals run build",
     "build:styles": "npm  --prefix ./style run build",
     "build:ui": "npm  --prefix ./ui run build",
-    "serve:ui": "npm  --prefix ./ui run start"
+    "build:cpliboard": "npm  --prefix ./wc/clipboard run build",
+    "build:pdfviewer": "npm  --prefix ./wc/pdfviewer run build",
+    "serve:ui": "npm  --prefix ./ui run start",
+    "build:all": "npm run build:api && npm run build:globals && npm run build:styles && npm run build:ui",
+    "release": "./bundle.sh"
   },
   "repository": {
     "type": "git",

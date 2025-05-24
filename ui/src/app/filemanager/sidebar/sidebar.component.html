@@ -30,3 +30,45 @@
     </ul>
   </div>
 </div>
+<!--
+<div class="fixed left-0 top-0 h-screen w-64 bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
+  <div class="p-4">
+    <ng-container *ngFor="let item of fileStructure">
+      <div class="mb-1">
+        <div
+                                                                                            (click)="toggleFolder(item)"
+                                                                                            class="flex items-center px-2 py-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer group"
+        >
+          <ng-icon
+                                                                                              [name]="item.type === 'folder' ? (item.isOpen ? 'heroFolderOpen' : 'heroFolder') : 'heroDocument'"
+                                                                                              class="w-5 h-5 mr-2 text-blue-500"
+          ></ng-icon>
+          <span class="text-sm text-gray-700 dark:text-gray-200">{{ item.name }}</span>
+          <ng-icon
+                                                                                              *ngIf="item.type === 'folder' && item.children?.length"
+                                                                                              [name]="item.isOpen ? 'heroChevronDown' : 'heroChevronRight'"
+                                                                                              class="w-4 h-4 ml-auto text-gray-400"
+          ></ng-icon>
+        </div>
+
+        <div
+                                                                                            *ngIf="item.type === 'folder' && item.isOpen && item.children"
+                                                                                            class="ml-4"
+        >
+          <div
+                                                                                              *ngFor="let child of item.children"
+                                                                                              class="flex items-center px-2 py-1.5 mt-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                                                                              (click)="handleItemClick(child)"
+          >
+            <ng-icon
+                                                                                                [name]="child.type === 'folder' ? 'heroFolder' : 'heroDocument'"
+                                                                                                class="w-5 h-5 mr-2 text-blue-500"
+            ></ng-icon>
+            <span class="text-sm text-gray-700 dark:text-gray-200">{{ child.name }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+-->

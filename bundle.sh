@@ -8,6 +8,13 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+directories=(
+  "api"
+  "globals"
+  "style"
+  "ui"
+)
+
 log_message() {
   echo -e "${GREEN}[BUNDLE]${NC} $1"
 }
@@ -24,12 +31,19 @@ OUTPUT_DIR="dist"
 RELEASE_DIR="release"
 
 check_directories() {
-  local dirs=("api" "globals" "style" "ui")
-  
-  for dir in "${dirs[@]}"; do
+  for dir in "${directories[@]}"; do
     if [ ! -d "./$dir" ]; then
       log_error "Verzeichnis ./$dir nicht gefunden. Bitte überprüfen Sie Ihre Projektstruktur."
       exit 1
+    fi
+  done
+}
+
+check_for_node_modules() {
+  for dir in "${directories[@]}"; do
+    if [ ! -d "./$dir/node_modules" ]; then
+      log_message "Verzeichnis ./$dir/node_modules nicht gefunden. Module werden installiert …"
+      npm install --prefix "./$dir"
     fi
   done
 }
@@ -123,6 +137,7 @@ main() {
   log_message "Starte Bundling-Prozess für ladon-frontend..."
   
   check_directories
+  check_for_node_modules
   
   build_all
   

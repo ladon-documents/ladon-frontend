@@ -1,18 +1,18 @@
 pipeline {
-  agent {
-    label 'master'
-  }
+  agent any
 
   environment {
     NPM_USER_BASE64 = credentials('npm-user-base64')
     NODE_OPTIONS = '--openssl-legacy-provider'
   }
-
-  tools { 
-    nodejs "nodejs" 
-  }
   
   stages {
+    stage('Checkout') {
+      steps {
+        git 'https://github.com/ladon-documents/ladon-frontend.git'
+      }
+    }
+
     stage('Run release') {
       steps {
         sh 'npm run release'

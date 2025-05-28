@@ -15,7 +15,11 @@ pipeline {
       }
     }
 
+
     stage('Distribute to ladon') {
+      when {
+        expression { hasGitTag() }
+      }
       steps {
         sh 'npm publish'
       }
@@ -28,10 +32,16 @@ pipeline {
     }
 
     success {
-      slackSend(message: "If you can read this, you just dropped a new ladon-frontend 🚀")
+      if (hasGitTag()) {
+        slackSend(message: "If you can read this, you just dropped a new ladon-frontend 🚀")
+      }
     }
 
   }
+}
+
+private Boolean hasGitTag() {
+  return (env.GIT_TAG_NAME != null) ? true : false
 }
 
 private Boolean isMasterBranch() {

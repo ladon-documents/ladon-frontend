@@ -18,7 +18,9 @@ pipeline {
 
     stage('Distribute to ladon') {
       when {
-        expression { hasGitTag() }
+        expression { 
+          return env.GIT_TAG_NAME != null && env.GIT_TAG_NAME != '' 
+        }
       }
       steps {
         sh 'npm publish'

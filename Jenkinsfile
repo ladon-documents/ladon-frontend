@@ -9,6 +9,19 @@ pipeline {
   tools { nodejs "nodejs" }
   
   stages {
+    stage('Retrieve git tag') {
+      steps {
+        script {
+          def gitTag = sh(script: 'git describe --tags --exact-match || echo ""', returnStdout: true).trim()
+          if (gitTag) {
+            env.GIT_TAG_NAME = gitTag
+          } else {
+            env.GIT_TAG_NAME = null
+          }
+        }
+      }
+    }
+
     stage('Run release') {
       steps {
         sh 'npm run release'

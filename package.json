@@ -18,5 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/ladon-documents/ladon-frontend.git"
   },
-  "private": true
+  "publishConfig": {
+    "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
+  }
 }

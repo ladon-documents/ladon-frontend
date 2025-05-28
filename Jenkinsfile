@@ -9,12 +9,6 @@ pipeline {
   tools { nodejs "nodejs" }
   
   stages {
-    stage('list') {
-      steps {
-        sh 'ls -la'
-      }
-    }
-
     stage('Run release') {
       steps {
         sh 'npm run release'

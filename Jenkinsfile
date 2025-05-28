@@ -9,9 +9,9 @@ pipeline {
   tools { nodejs "nodejs" }
   
   stages {
-    stage('Checkout') {
+    stage('list') {
       steps {
-        git 'https://github.com/ladon-documents/ladon-frontend.git'
+        sh 'ls -la'
       }
     }
 

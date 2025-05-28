@@ -5,6 +5,8 @@ pipeline {
     NPM_USER_BASE64 = credentials('npm-user-base64')
     NODE_OPTIONS = '--openssl-legacy-provider'
   }
+
+  tools { nodejs "nodejs" }
   
   stages {
     stage('Checkout') {

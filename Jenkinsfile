@@ -32,8 +32,10 @@ pipeline {
     }
 
     success {
-      if (hasGitTag()) {
-        slackSend(message: "If you can read this, you just dropped a new ladon-frontend 🚀")
+      script {
+        if (hasGitTag()) {
+          slackSend(message: "If you can read this, you just dropped a new ladon-frontend 🚀")
+        }
       }
     }
 

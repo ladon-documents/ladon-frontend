@@ -131,7 +131,6 @@ package_release() {
 
 }
 
-
 main() {
   log_message "Starte Bundling-Prozess für ladon-frontend..."
   

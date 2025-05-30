@@ -31,7 +31,7 @@ pipeline {
 
     stage('Distribute to ladon') {
       when {
-        expression { hasGitTag() }
+        expression { env.GIT_TAG_NAME != null) }
       }
       steps {
         sh 'npm publish'
@@ -46,20 +46,11 @@ pipeline {
 
     success {
       script {
-        if (hasGitTag()) {
+        if (env.GIT_TAG_NAME != null) {
           slackSend(message: "If you can read this, you just dropped a new ladon-frontend 🚀")
         }
       }
     }
 
   }
-}
-
-private Boolean hasGitTag() {
-  echo "GIT_TAG_NAME: ${env.GIT_TAG_NAME}"
-  return (env.GIT_TAG_NAME != null) ? true : false
-}
-
-private Boolean isMasterBranch() {
-  return (env.BRANCH_NAME == 'master') ? true : false
 }

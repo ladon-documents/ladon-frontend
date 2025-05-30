@@ -30,6 +30,7 @@ pipeline {
 
     stage('Echo git tag') {
       steps {
+        echo "${env}"
         echo "Git tag: ${env.GIT_TAG_NAME}"
       }
     }

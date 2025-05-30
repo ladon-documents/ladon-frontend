@@ -12,7 +12,7 @@ pipeline {
     stage('Retrieve git tag') {
       steps {
         script {
-          def gitTag = sh(script: 'git describe --tags --exact-match || echo ""', returnStdout: true).trim()
+          def gitTag = sh(script: 'git describe --tags --exact-match', returnStdout: true).trim()
           if (gitTag && gitTag ==~ /^v\d+\.\d+\.\d+$/) {
             env.GIT_TAG_NAME = gitTag
           } else {
@@ -27,13 +27,6 @@ pipeline {
         sh 'npm run release'
       }
     }
-
-    stage('Echo git tag') {
-      steps {
-        echo "Git tag: ${env.GIT_TAG_NAME}"
-      }
-    }
-
 
     stage('Distribute to ladon') {
       when {

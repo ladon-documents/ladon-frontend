@@ -56,6 +56,7 @@ pipeline {
 }
 
 private Boolean hasGitTag() {
+  echo "GIT_TAG_NAME: ${env.GIT_TAG_NAME}"
   return (env.GIT_TAG_NAME != null) ? true : false
 }
 

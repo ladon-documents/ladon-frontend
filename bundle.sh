@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 set -e
 
 GREEN='\033[0;32m'
@@ -138,11 +137,8 @@ main() {
   
   check_directories
   check_for_node_modules
-  
   build_all
-  
   create_release_package
-
   package_release
 
   log_message "Bundling abgeschlossen! Release-Paket wurde erstellt."

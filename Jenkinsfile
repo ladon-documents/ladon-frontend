@@ -12,7 +12,7 @@ pipeline {
     stage('Retrieve git tag') {
       steps {
         script {
-          def gitTag = sh(script: 'git describe --tags --exact-match', returnStdout: true).trim()
+          def gitTag = sh(script: 'git describe --tags --exact-match || echo ""', returnStdout: true).trim()
           if (gitTag && gitTag ==~ /^v\d+\.\d+\.\d+$/) {
             env.GIT_TAG_NAME = gitTag
           } else {

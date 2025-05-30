@@ -30,7 +30,6 @@ pipeline {
 
     stage('Echo git tag') {
       steps {
-        echo "${env}"
         echo "Git tag: ${env.GIT_TAG_NAME}"
       }
     }
@@ -38,7 +37,7 @@ pipeline {
 
     stage('Distribute to ladon') {
       when {
-        expression { branch 'master' }
+        expression { hasGitTag() }
       }
       steps {
         sh 'npm publish'
@@ -53,11 +52,16 @@ pipeline {
 
     success {
       script {
-        if (env.GIT_TAG_NAME != null) {
+        if (hasGitTag()) {
           slackSend(message: "If you can read this, you just dropped a new ladon-frontend 🚀")
         }
       }
     }
 
   }
+}
+
+private Boolean hasGitTag() {
+  echo "Git tag: ${env.GIT_TAG_NAME}"
+  return (env.GIT_TAG_NAME != null) ? true : false
 }

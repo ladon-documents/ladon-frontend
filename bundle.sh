@@ -139,7 +139,7 @@ main() {
   check_for_node_modules
   build_all
   create_release_package
-  package_release
+  # package_release
 
   log_message "Bundling abgeschlossen! Release-Paket wurde erstellt."
 }

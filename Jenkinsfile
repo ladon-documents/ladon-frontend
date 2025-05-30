@@ -28,10 +28,16 @@ pipeline {
       }
     }
 
+    stage('Echo git tag') {
+      steps {
+        echo "Git tag: ${env.GIT_TAG_NAME}"
+      }
+    }
+
 
     stage('Distribute to ladon') {
       when {
-        expression { env.GIT_TAG_NAME != null }
+        expression { branch 'master' }
       }
       steps {
         sh 'npm publish'

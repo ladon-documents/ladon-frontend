@@ -22,6 +22,7 @@ import { pluginmanagerRoutes } from './pluginmanager.routes';
 import { PluginListComponent } from './plugin-list/plugin-list.component';
 
 @Component({
+  standalone: true,
   selector: 'pluginmanager',
   imports: [CommonModule, RouterModule, PluginProgressbarComponent, FormsModule, TranslateModule],
   templateUrl: './pluginmanager.component.html',

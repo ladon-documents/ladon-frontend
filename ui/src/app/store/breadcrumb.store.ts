@@ -9,7 +9,7 @@ export interface BreadcrumbState {
 
 const initialState: BreadcrumbState = {
   paths: [],
-  currentPath: null
+  currentPath: null,
 };
 
 export const BreadcrumbStore = signalStore(
@@ -19,14 +19,14 @@ export const BreadcrumbStore = signalStore(
     addPath(path: DocumentModel) {
       patchState(store, (state) => ({
         paths: [...state.paths, path],
-        currentPath: path
+        currentPath: path,
       }));
     },
 
     navigateToIndex(index: number) {
       patchState(store, (state) => ({
         paths: state.paths.slice(0, index + 1),
-        currentPath: state.paths[index]
+        currentPath: state.paths[index],
       }));
     },
     root() {
@@ -34,6 +34,6 @@ export const BreadcrumbStore = signalStore(
     },
     reset() {
       patchState(store, initialState);
-    }
-  }))
+    },
+  })),
 );

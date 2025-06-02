@@ -1,5 +1,5 @@
 <div class="h-full max-h-full">
-<app-breadcrumb></app-breadcrumb>
+  <app-breadcrumb></app-breadcrumb>
   <div class="pb-3 relative flex justify-between items-center">
     <ul role="tablist" aria-orientation="horizontal" class="tab-nav flex items-center gap-4">
       <li class="tab-item">
@@ -50,7 +50,7 @@
     @for (document of documents(); track document.path; let i = $index) {
       <div
         class="group/fileitem relative border border-gray-300 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2">
-        <span  class="flex flex-col pt-6 pb-4" (dblclick)="navigateTo(document)">
+        <span class="flex flex-col pt-6 pb-4" (dblclick)="navigateTo(document)">
           @if (document.isFolder) {
             <ng-container [ngTemplateOutlet]="folder"></ng-container>
           } @else {
@@ -74,9 +74,9 @@
             </li>
             @if (!document.isFolder) {
               <li
-              class="text-xs/5 relative text-slate-400 first:before:hidden before:absolute before:rounded-full before:-start-1.5 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2 before:h-1 before:w-1 before:bg-slate-400 before:opacity-80">
-              {{ document.size | filesize }}
-            </li>
+                class="text-xs/5 relative text-slate-400 first:before:hidden before:absolute before:rounded-full before:-start-1.5 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2 before:h-1 before:w-1 before:bg-slate-400 before:opacity-80">
+                {{ document.size | filesize }}
+              </li>
             }
           </ul>
         </span>

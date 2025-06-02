@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
+  standalone: true,
   selector: 'ldn-mf-aside',
   imports: [CommonModule, RouterModule],
   templateUrl: './aside.component.html',

@@ -11,6 +11,7 @@ import { heroPlus } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 
 @Component({
+  standalone: true,
   selector: 'filemanager',
   imports: [CommonModule, RouterModule, NgIconComponent, SearchbarComponent, SidebarComponent],
   providers: [

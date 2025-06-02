@@ -30,6 +30,7 @@ import { AppStore } from './store/app.store';
     TaskmanagerComponent,
     AsyncPipe,
   ],
+  standalone: true,
   selector: 'ldn-ui',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

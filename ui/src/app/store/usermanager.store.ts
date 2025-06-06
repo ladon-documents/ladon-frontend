@@ -23,7 +23,7 @@ export const UsermanagerStore = signalStore(
     retrieveUsers() {
       patchState(store, { loading: true });
       loading$.next(store.loading());
-      return usermanagerService
+      usermanagerService
         .retrieveUsers()
         .pipe(
           finalize(() => {

@@ -1,31 +1,47 @@
-<div class="flex justify-between items-center">
-  <lib-searchbar></lib-searchbar>
+<div class="flex justify-between items-center gap-4">
+  <app-filter (outputTerm)="onFilterTerm($event)"></app-filter>
   <button class="btn btn-primary" (click)="createUser()">
     <ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
     <span class="hidden lg:block">Neuen Nutzer erstellen</span>
   </button>
 </div>
 
-<ul>
-  @for (user of store.users(); track user.id) {
-    <li class="flex flex-row items-center gap-4 py-2">
-      <div class="flex flex-grow gap-4 cursor-pointer" [routerLink]="user.id">
-        <div class="avatar shrink-0 transition-colors" [attr.data-alias]="user.name | alias"></div>
-        <span class="flex-grow">{{ user.name }}</span>
-        <span class="flex-grow">{{ user.email }}</span>
-      </div>
-      @if (user.status) {
-        <div aria-label="success" class="status status-success shrink-0"></div>
-      } @else {
-        <div aria-label="success" class="status status-neutral shrink-0"></div>
-      }
-      <button class="btn" (click)="deleteUser(user.id)">
-        <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-        <span class="hidden lg:block">Entfernen</span>
-      </button>
-    </li>
-  }
-</ul>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Status</th>
+      <th>Name</th>
+      <th>E-Mail</th>
+      <th class="text-right">Aktion</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of filteredUsers; track user.id) {
+      <tr [routerLink]="user.id" class="cursor-pointer hover:bg-gray-100">
+        <td>
+          @if (user.status) {
+            <div aria-label="success" class="status status-success shrink-0"></div>
+          } @else {
+            <div aria-label="success" class="status status-neutral shrink-0"></div>
+          }
+        </td>
+        <td>
+          <div class="flex items-center gap-2">
+            <div class="avatar shrink-0 transition-colors" [attr.data-alias]="user.name | alias"></div>
+            {{ user.name }}
+          </div>
+        </td>
+        <td>{{ user.email }}</td>
+        <td class="text-right">
+          <button class="btn" (click)="deleteUser(user.id)">
+            <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            <span class="hidden lg:block">Entfernen</span>
+          </button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
 
 <div>
   <router-outlet></router-outlet>

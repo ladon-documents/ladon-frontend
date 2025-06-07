@@ -49,7 +49,7 @@
   <div class="grid grid-flow-dense grid-cols-12 gap-4">
     @for (document of documents(); track document.path; let i = $index) {
       <div
-        class="group/fileitem relative border border-gray-300 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2">
+        class="group/fileitem relative border border-gray-300 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 zoom-in">
         <span  class="flex flex-col pt-6 pb-4" (dblclick)="navigateTo(document)">
           @if (document.isFolder) {
             <ng-container [ngTemplateOutlet]="folder"></ng-container>
@@ -108,13 +108,11 @@
 
 <ng-template #actions let-index="index">
   <div class="absolute top-2 end-2 transition-all duration-300 group-hover/fileitem:opacity-100">
-    <div data-headlessui-state="" class="inline-flex relative">
+    <div class="inline-flex relative">
       <div
         disabled="false"
-        id="headlessui-menu-button-v-343"
         aria-haspopup="menu"
         aria-expanded="false"
-        data-headlessui-state=""
         class="inline-flex">
         <div class="dropdown dropdown-start">
           <div

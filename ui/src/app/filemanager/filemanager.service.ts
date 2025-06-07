@@ -12,6 +12,7 @@ export class FilemanagerService {
     return this.documentsService.listDocuments(bucket, undefined, undefined, undefined, undefined, undefined, true);
   }
 
+
   public loadDocumentList(document: DocumentModel) {
     if (document && document.bucket) {
       return this.documentsService.listDocuments(
@@ -25,5 +26,9 @@ export class FilemanagerService {
       );
     }
     return throwError(new Error('Not Found'));
+  }
+
+  public getStats(bucketId: string) {
+    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
   }
 }

@@ -1,10 +1,57 @@
-<header>
-  <lib-navigation [navigation]="navigationEntries" *ngIf="isAuthenticated()"></lib-navigation>
+<!-- <header>
+<lib-navigation [navigation]="navigationEntries" *ngIf="isAuthenticated()"></lib-navigation>
 </header>
+ -->
+<!--
 @if (isAuthenticating()) {
   <span class="loading loading-ring loading-xl"></span>
 } @else {
-  <main role="main" class="w-full h-screen overflow-y-auto grow">
-    <router-outlet></router-outlet>
-  </main>
+  <div class="flex h-screen overflow-hidden">
+    @if (isAuthenticated()) {
+      <lib-navigation [navigation]="navigationEntries"></lib-navigation>
+    }
+
+    <div class="w-full h-screen overflow-y-auto grow">
+      <main role="main">
+        <div class="p-6">
+          <router-outlet></router-outlet>
+        </div>
+      </main>
+    </div>
+  </div>
+
+}
+
+-->
+@if (isAuthenticating()) {
+  <span class="loading loading-ring loading-xl"></span>
+
+} @else {
+  @if (isAuthenticated()) {
+    <!-- bg-gray-100 -->
+    <div class="flex flex-col h-screen   ">
+
+      <app-header></app-header>
+
+      <div class="flex flex-1 pt-16">
+        <lib-navigation [navigation]="navigationEntries"></lib-navigation>
+        <main class="flex-1 min-w-0 overflow-auto transition-all duration-300 bg-base-200"
+              [ngClass]="{'lg:ml-64': !sidebarCollapsed(), 'lg:ml-20': sidebarCollapsed()}">
+          <div class="container mx-auto px-4 py-6">
+            <div class="rounded-lg shadow overflow-hidden transition-colors duration-200">
+                <router-outlet></router-outlet>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  } @else {
+    <div class="flex h-screen overflow-hidden">
+      <div class="w-full h-screen overflow-y-auto grow">
+        <main role="main">
+            <router-outlet></router-outlet>
+        </main>
+      </div>
+    </div>
+  }
 }

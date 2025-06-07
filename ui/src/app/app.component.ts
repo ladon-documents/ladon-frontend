@@ -32,6 +32,7 @@ import { HeaderComponent } from './header/header.component';
     TaskmanagerComponent,
     AsyncPipe,
   ],
+  standalone: true,
   selector: 'ldn-ui',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

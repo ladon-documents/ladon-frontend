@@ -36,23 +36,31 @@ export class SidebarComponent {
       type: 'folder',
       isOpen: false,
       children: [
-        { name: 'Projekt A', type: 'folder', children: [
+        {
+          name: 'Projekt A',
+          type: 'folder',
+          children: [
             { name: 'Konzept.pdf', type: 'file' },
-            { name: 'Budget.xlsx', type: 'file' }
-          ]},
-        { name: 'Wichtige Notizen.txt', type: 'file' }
-      ]
+            { name: 'Budget.xlsx', type: 'file' },
+          ],
+        },
+        { name: 'Wichtige Notizen.txt', type: 'file' },
+      ],
     },
     {
       name: 'Bilder',
       type: 'folder',
       isOpen: false,
       children: [
-        { name: 'Urlaub', type: 'folder', children: [
+        {
+          name: 'Urlaub',
+          type: 'folder',
+          children: [
             { name: 'foto1.jpg', type: 'file' },
-            { name: 'foto2.jpg', type: 'file' }
-          ]}
-      ]
+            { name: 'foto2.jpg', type: 'file' },
+          ],
+        },
+      ],
     },
     {
       name: 'Downloads',
@@ -60,9 +68,9 @@ export class SidebarComponent {
       isOpen: false,
       children: [
         { name: 'Installation.dmg', type: 'file' },
-        { name: 'Handbuch.pdf', type: 'file' }
-      ]
-    }
+        { name: 'Handbuch.pdf', type: 'file' },
+      ],
+    },
   ];
 
   toggleFolder(item: FileItem) {
@@ -79,5 +87,4 @@ export class SidebarComponent {
       console.log(`Öffne Datei: ${item.name}`);
     }
   }
-
 }

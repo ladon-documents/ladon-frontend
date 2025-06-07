@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 set -e
 
 GREEN='\033[0;32m'
@@ -132,18 +131,14 @@ package_release() {
 
 }
 
-
 main() {
   log_message "Starte Bundling-Prozess für ladon-frontend..."
   
   check_directories
   check_for_node_modules
-  
   build_all
-  
   create_release_package
-
-  package_release
+  # package_release
 
   log_message "Bundling abgeschlossen! Release-Paket wurde erstellt."
 }

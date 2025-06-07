@@ -12,6 +12,7 @@ import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 
 @Component({
+  standalone: true,
   selector: 'filemanager',
   imports: [CommonModule, RouterModule, NgIconComponent, SearchbarComponent, SidebarComponent],
   providers: [

@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { AuthService } from '../services/auth.service';
-import { UserModel } from '../../api';
 import { AppStore } from '../store/app.store';
 
 @Component({
+  standalone: true,
   selector: 'login',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',

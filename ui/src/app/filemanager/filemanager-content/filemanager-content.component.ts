@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, Signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FilemanagerStore } from '../../store/filemanager.store';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { DocumentModel } from '../../../api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -22,6 +22,7 @@ import { LadonRouterService } from '../../services/ladon-router.service';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
 @Component({
+  standalone: true,
   selector: 'app-filemanager-content',
   imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe, NgOptimizedImage, BreadcrumbComponent],
   providers: [

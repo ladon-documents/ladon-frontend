@@ -1,6 +1,6 @@
 {
   "name": "@mind/draco-ui",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "",
   "scripts": {
     "build:api": "npm  --prefix ./api run build:all",
@@ -16,10 +16,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ladon-documents/ladon-frontend.git"
+    "url": "git+https://github.com/ladon-documents/ladon-frontend.git"
   },
   "publishConfig": {
     "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
-  },
-  "private": true
+  }
 }

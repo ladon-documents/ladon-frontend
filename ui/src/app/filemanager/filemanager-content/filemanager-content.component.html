@@ -49,8 +49,8 @@
   <div class="grid grid-flow-dense grid-cols-12 gap-4">
     @for (document of documents(); track document.path; let i = $index) {
       <div
-        class="group/fileitem relative border border-gray-300 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2">
-        <span class="flex flex-col pt-6 pb-4" (dblclick)="navigateTo(document)">
+        class="group/fileitem relative border border-gray-300 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 zoom-in">
+        <span  class="flex flex-col pt-6 pb-4" (dblclick)="navigateTo(document)">
           @if (document.isFolder) {
             <ng-container [ngTemplateOutlet]="folder"></ng-container>
           } @else {
@@ -74,9 +74,9 @@
             </li>
             @if (!document.isFolder) {
               <li
-                class="text-xs/5 relative text-slate-400 first:before:hidden before:absolute before:rounded-full before:-start-1.5 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2 before:h-1 before:w-1 before:bg-slate-400 before:opacity-80">
-                {{ document.size | filesize }}
-              </li>
+              class="text-xs/5 relative text-slate-400 first:before:hidden before:absolute before:rounded-full before:-start-1.5 before:top-1/2 before:-translate-y-1/2 before:-translate-x-1/2 before:h-1 before:w-1 before:bg-slate-400 before:opacity-80">
+              {{ document.size | filesize }}
+            </li>
             }
           </ul>
         </span>
@@ -108,13 +108,11 @@
 
 <ng-template #actions let-index="index">
   <div class="absolute top-2 end-2 transition-all duration-300 group-hover/fileitem:opacity-100">
-    <div data-headlessui-state="" class="inline-flex relative">
+    <div class="inline-flex relative">
       <div
         disabled="false"
-        id="headlessui-menu-button-v-343"
         aria-haspopup="menu"
         aria-expanded="false"
-        data-headlessui-state=""
         class="inline-flex">
         <div class="dropdown dropdown-start">
           <div

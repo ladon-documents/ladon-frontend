@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 
 interface UiState {
   isLoading: boolean;
-  isSidenavOpen: boolean;
+  isSidenavClosed: boolean;
   isDarkMode: boolean;
   activeTheme?: string;
 }
@@ -27,7 +27,7 @@ type AppState = {
 };
 
 const initialState: AppState = {
-  ui: { isLoading: false, isDarkMode: false, isSidenavOpen: true },
+  ui: { isLoading: false, isDarkMode: false, isSidenavClosed: false },
   auth: { isAuthenticated: false, user: null, loginError: null, isAuthenticating: false },
 };
 
@@ -148,6 +148,15 @@ export const AppStore = signalStore(
           .subscribe(() => {
             router.navigateByUrl(`${environment.baseHref}/login`);
           });
+      },
+      toggleSidebar: () => {
+        patchState(store, (state) => ({
+          ...state,
+          ui: {
+            ...state.ui,
+            isSidenavClosed: !state.ui.isSidenavClosed,
+          },
+        }));
       },
     };
   }),

@@ -13,7 +13,7 @@
     "target": "internal",
     "component": "filemanager",
     "path": "filemanager",
-    "icon": "heroFolder",
+    "icon": "heroDocument",
     "hasChildren": true,
     "type": "main",
     "index": 32
@@ -32,7 +32,7 @@
     "target": "internal",
     "component": "pluginmanager",
     "path": "pluginmanager",
-    "icon": "heroFolder",
+    "icon": "heroPuzzlePiece",
     "hasChildren": true,
     "type": "main",
     "index": 32
@@ -42,18 +42,18 @@
     "target": "static",
     "component": "Staticweb",
     "path": "./public/html/test.html",
-    "icon": "heroUsers",
+    "icon": "heroGlobeAlt",
     "type": "main",
     "index": 35
   },
   {
-    "label": "User manager",
+    "label": "Usermanager",
     "target": "internal",
     "component": "usermanager",
     "path": "usermanager",
     "icon": "heroUsers",
     "hasChildren": true,
-    "type": "menu",
+    "type": "main",
     "index": 10
   },
   {

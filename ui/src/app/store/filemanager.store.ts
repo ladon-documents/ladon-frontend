@@ -7,6 +7,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, pipe, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { FilemanagerService } from '../filemanager/filemanager.service';
+import { BucketStatsExtended } from '../interfaces/bucket-stats';
 
 interface PaginationState {
   currentPage: number;
@@ -56,6 +57,7 @@ interface NotificationState {
 
 interface FilemanagerState {
   documents: DocumentModel[];
+  statistics: BucketStatsExtended | null,
   selectedDocument: DocumentModel | null;
   isLoading: boolean;
   error: string | null;
@@ -67,6 +69,7 @@ interface FilemanagerState {
 
 const initialState: FilemanagerState = {
   documents: [],
+  statistics: null,
   selectedDocument: null,
   selectedBucket: null,
   isLoading: false,
@@ -91,6 +94,33 @@ export const FilemanagerStore = signalStore(
       updateSelectedBucket: (selectedBucket: string) => {
         patchState(store, { selectedBucket });
       },
+      loadStats: rxMethod<any>(
+        pipe(
+          tap(() => {
+            // TODO show loading for stats
+          }),
+          switchMap((bucket) =>
+            documentsService.getStats(bucket).pipe(
+              tap(async (stats) => {
+                const response = JSON.parse(await stats.text());
+                patchState(store, (state) => ({
+                  ...state,
+                  isLoading: false,
+                  statistics: response,
+                }));
+              }),
+              catchError((error) => {
+                patchState(store, (state) => ({
+                  ...state,
+                  isLoading: false,
+                  error,
+                }));
+                throw error;
+              }),
+            ),
+          ),
+          )
+      ),
       loadBucket: rxMethod<any>(
         pipe(
           tap(() => {

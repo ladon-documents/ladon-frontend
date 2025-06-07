@@ -1,4 +1,4 @@
-<div class="flex items-center gap-4 p-4 justify-between border-b sticky top-0 z-10 bg-white/95 backdrop-blur-xs">
+<div class="flex items-center gap-4 p-4 bg-base-100 justify-between border-b sticky top-0 z-10  backdrop-blur-xs">
   <div class="flex gap-4">
     <lib-searchbar></lib-searchbar>
 
@@ -22,7 +22,7 @@
   </button>
 </div>
 
-<div class="grid grid-cols-[2fr_1fr]">
+<div class="grid grid-cols-[2fr_1fr] bg-base-100">
   <ul role="list" class="divide-y divide-gray-100 gap-x-6 py-4 grow">
     @for (bucket of bucketsList(); track bucket.id) {
       <li

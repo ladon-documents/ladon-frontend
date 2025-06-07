@@ -1,9 +1,9 @@
 @if (isLoading$()) {
-  <div class="relative bg-white p-6 w-3/4 mx-auto mt-10">
+  <div class="relative  p-6 w-3/4 mx-auto mt-10">
     <span class="loading loading-dots loading-sm"></span>
   </div>
 } @else {
-  <ul class="list bg-base-100 mt-10">
+  <ul class="list  mt-10">
     @for (item of pluginList$() | searchfilter: filterText$(); track item.id) {
       <li
         (click)="onSelect(item)"

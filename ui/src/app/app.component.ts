@@ -1,4 +1,4 @@
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, Signal } from '@angular/core';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, HostListener, inject, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
@@ -14,6 +14,7 @@ import { TaskmanagerComponent } from './taskmanager/taskmanager.component';
 import { PluginmanagerComponent } from './pluginmanager/pluginmanager.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppStore } from './store/app.store';
+import { HeaderComponent } from './header/header.component';
 
 @Component({
   imports: [
@@ -21,6 +22,7 @@ import { AppStore } from './store/app.store';
     RouterModule,
     TranslateModule,
     NavigationComponent,
+    HeaderComponent,
     PluginmanagerComponent,
     AsideComponent,
     UsermanagerComponent,
@@ -43,6 +45,9 @@ export class AppComponent {
 
   public navigationEntries: Array<NavigationEntry> = [];
 
+  sidebarCollapsed:Signal<boolean> = this.#store.ui.isSidenavClosed;
+
+
   constructor(
     private readonly as: AuthService,
     private translate: TranslateService,
@@ -52,6 +57,7 @@ export class AppComponent {
     this.translate.setDefaultLang('de');
     this.translate.use('de');
   }
+
 }
 
 @Component({

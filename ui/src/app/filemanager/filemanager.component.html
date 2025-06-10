@@ -1,49 +1,44 @@
-
 <main class="flex-grow p-6 bg-base-100">
   <div>
     <!-- <app-filemanager-sidebar></app-filemanager-sidebar>-->
 
-
-    <div class="mt-6  overflow-hidden transition-colors duration-200">
+    <div class="mt-6 overflow-hidden transition-colors duration-200">
       <div class="border-b border-gray-200 dark:border-gray-200">
         <div class="flex items-center justify-between px-6 py-4">
-          <h2 class="text-lg font-medium ">{{ selectedBucket}}</h2>
+          <h2 class="text-lg font-medium">{{ selectedBucket }}</h2>
           <button
-                                                                                              class="btn btn-outline"
-                                                                                              popovertarget="popover-create-entity"
-                                                                                              style="anchor-name: --anchor-popover-create-entity">
+            class="btn btn-outline"
+            popovertarget="popover-create-entity"
+            style="anchor-name: --anchor-popover-create-entity">
             <ng-icon name="heroPlus" size="1.0em" class="size-4"></ng-icon>
             Hinzufügen
           </button>
           <ul
-                                                                                              class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
-                                                                                              popover
-                                                                                              id="popover-create-entity"
-                                                                                              style="position-anchor: --anchor-popover-create-entity">
+            class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
+            popover
+            id="popover-create-entity"
+            style="position-anchor: --anchor-popover-create-entity">
             <li><a>Neue Datei</a></li>
             <li><a>Neuer Ordner</a></li>
             <li><a>Datei Hochladen</a></li>
           </ul>
-
         </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 m-5">
-        <div class=" rounded-lg shadow p-6 transition-colors duration-200">
+        <div class="rounded-lg shadow p-6 transition-colors duration-200">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-medium ">Dateien</h2>
-                  <ng-icon name="heroDocument" ></ng-icon>
-
+            <h2 class="text-lg font-medium">Dateien</h2>
+            <ng-icon name="heroDocument"></ng-icon>
           </div>
-          <p class="text-3xl font-bold ">{{stats()?.fileCount}}</p>
+          <p class="text-3xl font-bold">{{ stats()?.fileCount }}</p>
         </div>
 
-        <div class=" rounded-lg shadow p-6 transition-colors duration-200">
+        <div class="rounded-lg shadow p-6 transition-colors duration-200">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-medium ">Ordner</h2>
-                    <ng-icon name="heroFolder"></ng-icon>
-
+            <h2 class="text-lg font-medium">Ordner</h2>
+            <ng-icon name="heroFolder"></ng-icon>
           </div>
-          <p class="text-3xl font-bold ">{{stats()?.folderCount}}</p>
+          <p class="text-3xl font-bold">{{ stats()?.folderCount }}</p>
         </div>
       </div>
       <div class="p-6">

@@ -57,7 +57,7 @@ interface NotificationState {
 
 interface FilemanagerState {
   documents: DocumentModel[];
-  statistics: BucketStatsExtended | null,
+  statistics: BucketStatsExtended | null;
   selectedDocument: DocumentModel | null;
   isLoading: boolean;
   error: string | null;
@@ -119,7 +119,7 @@ export const FilemanagerStore = signalStore(
               }),
             ),
           ),
-          )
+        ),
       ),
       loadBucket: rxMethod<any>(
         pipe(

@@ -1,0 +1,13 @@
+[
+  {
+    "name": "light",
+    "icon": "heroSun"
+  },
+  {
+    "name": "dark",
+    "icon": "heroMoon"
+  },
+  {
+    "name": "dracula"
+  }
+]

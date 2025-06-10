@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal, Signal } from '@angular/core';
+import { Component, computed, OnInit, signal, Signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroFolder, heroPlusCircle } from '@ng-icons/heroicons/outline';
@@ -10,19 +10,26 @@ import { BucketUiItemModel } from '../../api';
 import { TranslateModule } from '@ngx-translate/core';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { Router } from '@angular/router';
+import { DialogComponent } from '@ladon/shared';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'buckets',
   standalone: true,
-  imports: [CommonModule, NgIconComponent, SearchbarComponent, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, NgIconComponent, SearchbarComponent, TranslateModule, DialogComponent],
   providers: [provideIcons({ heroFolder, heroPlusCircle, heroFolderSolid }), BucketsService, BucketsTestObject],
   templateUrl: './buckets.component.html',
   styleUrl: './buckets.component.scss',
 })
 export class BucketsComponent implements OnInit {
+  @ViewChild(DialogComponent, { static: true }) dialogComponent!: DialogComponent | undefined;
+
   dateFormat = 'dd.MM.yyyy';
   bucketsList: Signal<BucketUiItemModel[]> = signal([]);
   bucketStats: Signal<BucketStatsExtended | undefined> = signal<BucketStatsExtended | undefined>(undefined);
+  bucketAddGroup = new FormGroup({
+    bucket: new FormControl('', [Validators.required]),
+  });
   selectedBucket: BucketUiItemModel | undefined;
 
   constructor(
@@ -39,6 +46,7 @@ export class BucketsComponent implements OnInit {
     this.selectedBucket = bucket;
     this.bucketsService.bucket = bucket;
   }
+
   openBucket() {
     if (this.selectedBucket && this.selectedBucket.id) {
       this.bucketsService.dispatchSelectedBucket(this.selectedBucket.id);
@@ -48,5 +56,20 @@ export class BucketsComponent implements OnInit {
   toggleFavorites(event: any) {
     const { target } = event;
     this.bucketsService.toggleFavoriteBuckets(target.checked);
+  }
+
+  closeDialog() {
+    this.dialogComponent?.closeDialog();
+  }
+
+  onAddBucket() {
+    if (this.bucketAddGroup.invalid) {
+      this.bucketAddGroup.markAllAsTouched();
+      return;
+    }
+
+    const { bucket } = this.bucketAddGroup.value;
+    // this.bucketsService.addBucket(bucket);
+    this.closeDialog();
   }
 }

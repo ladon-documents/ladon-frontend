@@ -2,3 +2,9 @@
   display: grid;
   grid-template-columns: auto 0fr;
 }
+
+@media screen and (min-width: 790px) {
+  lib-navigation {
+    display: initial;
+  }
+}

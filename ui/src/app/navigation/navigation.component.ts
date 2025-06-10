@@ -7,15 +7,16 @@ import {
   heroListBullet,
   heroArrowRightStartOnRectangle,
   heroRectangleStack,
-  heroUsers, heroPuzzlePiece, heroDocument, heroGlobeAlt
+  heroUsers,
+  heroPuzzlePiece,
+  heroDocument,
+  heroGlobeAlt,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
 import { environment } from '../../environments/environment';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppStore } from '../store/app.store';
-import { ThemesComponent } from '../themes/themes.component';
-import { AvatarComponent } from '../avatar/avatar.component';
 
 @Component({
   selector: 'lib-navigation',
@@ -35,22 +36,6 @@ import { AvatarComponent } from '../avatar/avatar.component';
     }),
   ],
   templateUrl: './navigation.component.html',
-  styles: `
-    :host {
-      display: block;
-      height: 100%;
-    }
-
-    #logo {
-      img {
-        width: 100px;
-      }
-    }
-
-    ng-icon {
-      --ng-icon__size: 1.5em !important;
-    }
-  `,
 })
 export class NavigationComponent implements OnInit {
   readonly #store = inject(AppStore);
@@ -58,18 +43,14 @@ export class NavigationComponent implements OnInit {
   mainMenu = computed(() => this.navigation().filter(({ type }) => type === 'main'));
   subMenu = computed(() => this.navigation().filter(({ type }) => type === 'menu'));
   navigationEntryAction = output<NavigationEntry>();
+  routerActiveLink: string | undefined;
 
   isOpen = false;
 
   //sidebarCollapsed = false;
   sidebarCollapsed: Signal<boolean> = this.#store.ui.isSidenavClosed;
-  sidebarHidden = true;
   openSubMenu = '';
 
-  // Sidebar auf mobilen Geräten ein-/ausblenden (vollständiges Ein-/Ausblenden)
-  toggleSidebar() {
-    this.sidebarHidden = !this.sidebarHidden;
-  }
 
   // Sidebar minimieren/maximieren (nur Icons oder Icons mit Text)
   collapseSidebar() {
@@ -88,17 +69,19 @@ export class NavigationComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    this.checkScreenSize();
+    
   }
 
-  invokeItem(item: NavigationEntry) {
+  async invokeItem(item: NavigationEntry) {
     switch (item.target) {
       case 'internal':
       case 'remote':
-        this.router.navigate([`${environment.baseHref}/${item.path}`]);
+        await this.router.navigate([`${environment.baseHref}/${item.path}`]);
+        this.routerActiveLink = item.path;
         break;
       case 'static':
-        this.router.navigate([`${environment.baseHref}/static`], { queryParams: { page: item.path } });
+        await this.router.navigate([`${environment.baseHref}/static`], { queryParams: { page: item.path } });
+        this.routerActiveLink = item.path;
         break;
       case 'action':
         this.dispatchNavigationEvent(item);
@@ -115,10 +98,5 @@ export class NavigationComponent implements OnInit {
       return;
     }
     window.dispatchEvent(new CustomEvent('ladon:navigation:item', { detail: item }));
-  }
-
-  @HostListener('window:resize')
-  checkScreenSize() {
-    this.sidebarHidden = window.innerWidth < 1024;
   }
 }

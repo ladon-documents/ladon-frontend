@@ -39,14 +39,13 @@ import { HeaderComponent } from './header/header.component';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent {
-  readonly #store = inject(AppStore);
-  isAuthenticated = this.#store.auth.isAuthenticated;
-  isAuthenticating = this.#store.auth.isAuthenticating;
+  readonly store = inject(AppStore);
+  isAuthenticated = this.store.auth.isAuthenticated;
+  isAuthenticating = this.store.auth.isAuthenticating;
 
   public navigationEntries: Array<NavigationEntry> = [];
 
-  sidebarCollapsed:Signal<boolean> = this.#store.ui.isSidenavClosed;
-
+  sidebarCollapsed: Signal<boolean> = this.store.ui.isSidenavClosed;
 
   constructor(
     private readonly as: AuthService,
@@ -57,7 +56,6 @@ export class AppComponent {
     this.translate.setDefaultLang('de');
     this.translate.use('de');
   }
-
 }
 
 @Component({

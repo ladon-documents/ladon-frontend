@@ -3,10 +3,19 @@
     <div class="flex items-center gap-2">
       <button
         id="sidebar-toggle"
-        class="p-1.5 rounded-md hover:bg-gray-200 cursor-pointer focus:outline-none transition-transform duration-700"
+        class="p-1.5 rounded-md hover:opacity-50 cursor-pointer focus:outline-none transition-transform duration-700"
         [ngClass]="{ active: appStore.ui.isBurgerMenuOpen() }"
         (click)="toggleSidebar()"
         aria-label="Menü umschalten">
+        <span></span><span></span>
+      </button>
+
+      <button
+        id="sidebar-collapse"
+        class="p-1.5 rounded-md hover:opacity-50 cursor-pointer focus:outline-none transition-transform duration-200"
+        [ngClass]="{ active: appStore.ui.isSidenavClosed() }"
+        (click)="collapseSidebar()"
+        aria-label="Seitenleiste minimieren">
         <span></span><span></span>
       </button>
 

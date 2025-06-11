@@ -24,6 +24,14 @@ export class HeaderComponent implements OnInit {
     this.saveThemePreference();
   }
 
+  toggleSidebar() {
+    this.appStore.toggleBurgerMenu();
+  }
+
+  collapseSidebar() {
+    this.appStore.toggleSidebar();
+  }
+
   private loadThemePreference() {
     const savedTheme = localStorage.getItem('theme');
 
@@ -37,9 +45,5 @@ export class HeaderComponent implements OnInit {
 
   private saveThemePreference() {
     localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
-  }
-
-  toggleSidebar() {
-    this.appStore.toggleBurgerMenu();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, input, output, computed, inject, OnInit, HostListener, Signal } from '@angular/core';
+import { Component, input, output, computed, inject, OnInit, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -12,11 +12,12 @@ import {
   heroDocument,
   heroGlobeAlt,
 } from '@ng-icons/heroicons/outline';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
 import { environment } from '../../environments/environment';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppStore } from '../store/app.store';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'lib-navigation',
@@ -45,22 +46,7 @@ export class NavigationComponent implements OnInit {
   navigationEntryAction = output<NavigationEntry>();
   routerActiveLink: string | undefined;
 
-  isOpen = false;
-
-  //sidebarCollapsed = false;
   sidebarCollapsed: Signal<boolean> = this.#store.ui.isSidenavClosed;
-  openSubMenu = '';
-
-
-  // Sidebar minimieren/maximieren (nur Icons oder Icons mit Text)
-  collapseSidebar() {
-    //  this.sidebarCollapsed = !this.sidebarCollapsed;
-    this.#store.toggleSidebar();
-  }
-
-  toggleSubMenu(menu: string) {
-    this.openSubMenu = this.openSubMenu === menu ? '' : menu;
-  }
 
   logout(): void {
     this.#store.logout();
@@ -69,7 +55,10 @@ export class NavigationComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event) => {
+      const { urlAfterRedirects } = event as NavigationEnd;
+      this.routerActiveLink = this.extractPathFromUrl(urlAfterRedirects);
+    });
   }
 
   async invokeItem(item: NavigationEntry) {
@@ -77,11 +66,9 @@ export class NavigationComponent implements OnInit {
       case 'internal':
       case 'remote':
         await this.router.navigate([`${environment.baseHref}/${item.path}`]);
-        this.routerActiveLink = item.path;
         break;
       case 'static':
         await this.router.navigate([`${environment.baseHref}/static`], { queryParams: { page: item.path } });
-        this.routerActiveLink = item.path;
         break;
       case 'action':
         this.dispatchNavigationEvent(item);
@@ -90,6 +77,13 @@ export class NavigationComponent implements OnInit {
         window.open(item.path, '_blank');
         break;
     }
+  }
+
+  /*
+   * Extracts fourth segment from url because we need to be careful of sub routes.
+   */
+  private extractPathFromUrl(url: string): string | undefined {
+    return url.split('/')[4];
   }
 
   private dispatchNavigationEvent(item: NavigationEntry) {

@@ -1,4 +1,4 @@
-import { Component, input, output, computed, inject, OnInit, Signal } from '@angular/core';
+import { Component, input, output, computed, inject, OnInit, Signal, viewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -17,7 +17,7 @@ import { NavigationEntry } from '../interfaces/navigation-entry';
 import { environment } from '../../environments/environment';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppStore } from '../store/app.store';
-import { filter } from 'rxjs';
+import { filter, finalize, tap } from 'rxjs';
 
 @Component({
   selector: 'lib-navigation',
@@ -39,7 +39,10 @@ import { filter } from 'rxjs';
   templateUrl: './navigation.component.html',
 })
 export class NavigationComponent implements OnInit {
+  private timeOut: any | undefined;
   readonly #store = inject(AppStore);
+  readonly highlight = viewChild<ElementRef>('highlight');
+  readonly nav = viewChild<ElementRef>('nav');
   navigation = input.required<NavigationEntry[]>();
   mainMenu = computed(() => this.navigation().filter(({ type }) => type === 'main'));
   subMenu = computed(() => this.navigation().filter(({ type }) => type === 'menu'));
@@ -55,10 +58,18 @@ export class NavigationComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event) => {
-      const { urlAfterRedirects } = event as NavigationEnd;
-      this.routerActiveLink = this.extractPathFromUrl(urlAfterRedirects);
-    });
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        tap(() => {
+          clearTimeout(this.timeOut);
+        }),
+      )
+      .subscribe((event) => {
+        const { urlAfterRedirects } = event as NavigationEnd;
+        this.routerActiveLink = this.extractPathFromUrl(urlAfterRedirects);
+        this.timeOut = setTimeout(() => this.animateHighlight(), 450);
+      });
   }
 
   async invokeItem(item: NavigationEntry) {
@@ -84,6 +95,22 @@ export class NavigationComponent implements OnInit {
    */
   private extractPathFromUrl(url: string): string | undefined {
     return url.split('/')[4];
+  }
+
+  private animateHighlight() {
+    const activeItem = this.nav()?.nativeElement.querySelector('.text-blue-700');
+    const highlightElement = this.highlight()?.nativeElement;
+    const { y } = activeItem?.getBoundingClientRect();
+    const headerHeight = 80;
+
+    if ('startViewTransition' in document) {
+      // @ts-ignore
+      document.startViewTransition(() => {
+        highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
+      });
+    } else {
+      highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
+    }
   }
 
   private dispatchNavigationEvent(item: NavigationEntry) {

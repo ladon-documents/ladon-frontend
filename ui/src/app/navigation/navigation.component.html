@@ -1,7 +1,11 @@
 <aside class="border-r border-gray-100 dark:border-gray-200">
   <!-- Sidebar Navigation -->
-  <nav class="mt-4 px-2">
-    <ul class="space-y-1">
+  <nav class="mt-4 px-2 relative" #nav>
+    <div
+      #highlight
+      class="absolute top-0 left-0 w-full h-8 bg-blue-700 -z-1 opacity-10"
+      [ngStyle]="{ viewTransitionName: 'highlight' }"></div>
+    <ul class="flex flex-col gap-2">
       @for (item of mainMenu(); track $index) {
         <li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target">
           <a

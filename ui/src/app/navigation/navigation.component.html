@@ -1,44 +1,58 @@
-  <aside class="fixed left-0 top-16 bottom-0 z-30 transform transition-transform duration-300 ease-in-out   border-r border-gray-100 dark:border-gray-200"
-         [ngClass]="{'translate-x-0': !sidebarHidden, '-translate-x-full': sidebarHidden, 'lg:translate-x-0': true, 'w-64': !sidebarCollapsed(), 'w-20': sidebarCollapsed() && !sidebarHidden, 'lg:w-20': sidebarCollapsed(), 'lg:w-64': !sidebarCollapsed()}">
-    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-200">
-      <div class="text-lg font-medium " [ngClass]="{'hidden': sidebarCollapsed()}">
+<aside
+  class="fixed left-0 top-16 bottom-0 z-30 transform transition-transform duration-300 ease-in-out border-r border-gray-100 dark:border-gray-200"
+  [ngClass]="{
+    'translate-x-0': !sidebarHidden,
+    '-translate-x-full': sidebarHidden,
+    'lg:translate-x-0': true,
+    'w-64': !sidebarCollapsed(),
+    'w-20': sidebarCollapsed() && !sidebarHidden,
+    'lg:w-20': sidebarCollapsed(),
+    'lg:w-64': !sidebarCollapsed(),
+  }">
+  <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-200">
+    <div class="text-lg font-medium" [ngClass]="{ hidden: sidebarCollapsed() }"></div>
+    <button
+      class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-200 focus:outline-none transition-colors duration-200"
+      (click)="collapseSidebar()"
+      aria-label="Seitenleiste minimieren">
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        [ngClass]="{ 'rotate-180': sidebarCollapsed() }">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
+      </svg>
+    </button>
+  </div>
 
-      </div>
-      <button class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-200 focus:outline-none transition-colors duration-200"
-              (click)="collapseSidebar()"
-              aria-label="Seitenleiste minimieren">
-        <svg class="w-5 h-5 " fill="none" stroke="currentColor" viewBox="0 0 24 24"
-             [ngClass]="{'rotate-180': sidebarCollapsed()}">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
-        </svg>
-      </button>
-    </div>
+  <!-- Sidebar Navigation -->
+  <div class="card" [ngClass]="{ hidden: sidebarCollapsed() }"></div>
+  <nav class="mt-4 px-2">
+    <ul class="space-y-1">
+      @for (item of mainMenu(); track $index) {
+        <li
+          [ngStyle]="{ '--order': item.index, order: 'var(--order)' }"
+          [attr.data-target]="item.target"
+          class="flex items-center px-3 py-2.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors duration-200">
+          <a (click)="invokeItem(item)">
+            @if (item.icon) {
+              <ng-icon [name]="item.icon" color="#9a9cae"></ng-icon>
+            }
+            <span class="ml-3 text-sm font-medium" [ngClass]="{ hidden: sidebarCollapsed() }">{{
+              item.label | translate
+            }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</aside>
 
-    <!-- Sidebar Navigation -->
-    <div class="card" [ngClass]="{'hidden': sidebarCollapsed()}">
-
-    </div>
-    <nav class="mt-4 px-2">
-      <ul class="space-y-1">
-        @for (item of mainMenu(); track $index) {
-          <li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target"
-              class="flex items-center px-3 py-2.5  rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors duration-200"
-          >
-            <a (click)="invokeItem(item)">
-              @if (item.icon) {
-                <ng-icon [name]="item.icon" color="#9a9cae"></ng-icon>
-              }
-              <span class="ml-3 text-sm font-medium"  [ngClass]="{'hidden': sidebarCollapsed()}">{{ item.label | translate }}</span>
-            </a>
-          </li>
-        }
-      </ul>
-    </nav>
-  </aside>
-
-  <div *ngIf="!sidebarHidden"
-       class="fixed inset-0 bg-gray-900 bg-opacity-50 z-20 lg:hidden transition-opacity duration-300"
-       (click)="toggleSidebar()"></div>
+<div
+  *ngIf="!sidebarHidden"
+  class="fixed inset-0 bg-gray-900 bg-opacity-50 z-20 lg:hidden transition-opacity duration-300"
+  (click)="toggleSidebar()"></div>
 
 <!--
 <div class="sidebar transition-all duration-300 ease-in-out "

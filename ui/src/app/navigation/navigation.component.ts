@@ -7,7 +7,10 @@ import {
   heroListBullet,
   heroArrowRightStartOnRectangle,
   heroRectangleStack,
-  heroUsers, heroPuzzlePiece, heroDocument, heroGlobeAlt
+  heroUsers,
+  heroPuzzlePiece,
+  heroDocument,
+  heroGlobeAlt,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';

@@ -25,21 +25,20 @@
 -->
 @if (isAuthenticating()) {
   <span class="loading loading-ring loading-xl"></span>
-
 } @else {
   @if (isAuthenticated()) {
     <!-- bg-gray-100 -->
-    <div class="flex flex-col h-screen   ">
-
+    <div class="flex flex-col h-screen">
       <app-header></app-header>
 
       <div class="flex flex-1 pt-16">
         <lib-navigation [navigation]="navigationEntries"></lib-navigation>
-        <main class="flex-1 min-w-0 overflow-auto transition-all duration-300 bg-base-200"
-              [ngClass]="{'lg:ml-64': !sidebarCollapsed(), 'lg:ml-20': sidebarCollapsed()}">
+        <main
+          class="flex-1 min-w-0 overflow-auto transition-all duration-300 bg-base-200"
+          [ngClass]="{ 'lg:ml-64': !sidebarCollapsed(), 'lg:ml-20': sidebarCollapsed() }">
           <div class="container mx-auto px-4 py-6">
             <div class="rounded-lg shadow overflow-hidden transition-colors duration-200">
-                <router-outlet></router-outlet>
+              <router-outlet></router-outlet>
             </div>
           </div>
         </main>
@@ -49,7 +48,7 @@
     <div class="flex h-screen overflow-hidden">
       <div class="w-full h-screen overflow-y-auto grow">
         <main role="main">
-            <router-outlet></router-outlet>
+          <router-outlet></router-outlet>
         </main>
       </div>
     </div>

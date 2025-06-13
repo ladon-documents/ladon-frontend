@@ -19,7 +19,7 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
     provideIcons({
       heroPlus,
       heroDocument,
-      heroFolder
+      heroFolder,
     }),
     FilesizePipe,
   ],
@@ -28,7 +28,7 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
 })
 export class FilemanagerComponent {
   readonly #store = inject(FilemanagerStore);
-  readonly selectedBucket:Signal<string | null> = this.#store.selectedBucket;
+  readonly selectedBucket: Signal<string | null> = this.#store.selectedBucket;
   readonly stats: Signal<BucketStatsExtended | null> = this.#store.statistics;
   constructor(
     private router: Router,

@@ -45,8 +45,7 @@ export class AppComponent {
 
   public navigationEntries: Array<NavigationEntry> = [];
 
-  sidebarCollapsed:Signal<boolean> = this.#store.ui.isSidenavClosed;
-
+  sidebarCollapsed: Signal<boolean> = this.#store.ui.isSidenavClosed;
 
   constructor(
     private readonly as: AuthService,
@@ -57,7 +56,6 @@ export class AppComponent {
     this.translate.setDefaultLang('de');
     this.translate.use('de');
   }
-
 }
 
 @Component({

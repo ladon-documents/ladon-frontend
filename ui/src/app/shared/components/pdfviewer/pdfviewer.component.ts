@@ -6,6 +6,6 @@ import { DialogComponent } from '@ladon/shared';
   imports: [DialogComponent],
   templateUrl: './pdfviewer.component.html',
   styleUrl: './pdfviewer.component.scss',
-  standalone:true
+  standalone: true,
 })
 export class PdfviewerComponent {}

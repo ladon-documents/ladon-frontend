@@ -64,7 +64,6 @@ export class FilemanagerContentComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    // Kombinierte Parameter-Beobachtung
     this.route.params.subscribe((params) => {
       console.log('Bucket:', params['bucket']);
       console.log('Subfolders:', params['subfolders']);

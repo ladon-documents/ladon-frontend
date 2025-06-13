@@ -15,6 +15,7 @@ import { PluginmanagerComponent } from './pluginmanager/pluginmanager.component'
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppStore } from './store/app.store';
 import { HeaderComponent } from './header/header.component';
+import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.component';
 
 @Component({
   imports: [
@@ -23,6 +24,7 @@ import { HeaderComponent } from './header/header.component';
     TranslateModule,
     NavigationComponent,
     HeaderComponent,
+    PdfviewerComponent,
     PluginmanagerComponent,
     AsideComponent,
     UsermanagerComponent,

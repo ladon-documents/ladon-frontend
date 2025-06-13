@@ -29,7 +29,7 @@
       "@ladon/mocks/*": ["./public/mocks/*", "./src/mocks/*"],
       "@ladon/tests/*": ["./tests/*"],
       "@ladon/shared": ["./src/app/shared/index"],
-      "@utility": ["../api/utility/index"],
+      "@utility": ["../api/utility/index"]
     }
   },
   "angularCompilerOptions": {

@@ -28,16 +28,17 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
 })
 export class FilemanagerComponent {
   readonly #store = inject(FilemanagerStore);
-  readonly selectedBucket: string | null = this.#store.selectedBucket();
+  readonly selectedBucket: Signal<string | null> = this.#store.selectedBucket;
   readonly stats: Signal<BucketStatsExtended | null> = this.#store.statistics;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private filemanagerFadcade: FilemanagerFacade,
   ) {
-    if (this.selectedBucket) {
-      this.#store.loadStats(this.selectedBucket);
-      //this.router.navigate([selectedBucket], { relativeTo: this.route });
+    if (this.selectedBucket()) {
+      console.log(this.#store);
+      this.#store.loadStats(this.selectedBucket());
+      this.router.navigate([this.selectedBucket()], { relativeTo: this.route });
     }
   }
 

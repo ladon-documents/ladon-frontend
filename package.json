@@ -14,6 +14,9 @@
     "build:all": "npm run build:api && npm run build:globals && npm run build:styles && npm run build:ui",
     "release": "./bundle.sh"
   },
+  "files": [
+    "release"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ladon-documents/ladon-frontend.git"

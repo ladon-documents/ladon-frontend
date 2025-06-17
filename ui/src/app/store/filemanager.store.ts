@@ -8,6 +8,7 @@ import { catchError, pipe, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { FilemanagerService } from '../filemanager/filemanager.service';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
+import { LadonRouterService } from '../services/ladon-router.service';
 
 interface PaginationState {
   currentPage: number;
@@ -57,7 +58,7 @@ interface NotificationState {
 
 interface FilemanagerState {
   documents: DocumentModel[];
-  statistics: BucketStatsExtended | null,
+  statistics: BucketStatsExtended | null;
   selectedDocument: DocumentModel | null;
   isLoading: boolean;
   error: string | null;
@@ -89,8 +90,15 @@ const initialState: FilemanagerState = {
 export const FilemanagerStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withMethods((store, documentsService = inject(FilemanagerService)) => {
+  withMethods((store, documentsService = inject(FilemanagerService), ladonRouter = inject(LadonRouterService)) => {
     return {
+      navigateToFilemanagerWithBucket: async (selectedBucket: string) => {
+        patchState(store, (state) => ({
+          ...state,
+          selectedBucket,
+        }));
+        await ladonRouter.navigateToFilemanagerWithBucket(selectedBucket);
+      },
       updateSelectedBucket: (selectedBucket: string) => {
         patchState(store, { selectedBucket });
       },
@@ -119,7 +127,7 @@ export const FilemanagerStore = signalStore(
               }),
             ),
           ),
-          )
+        ),
       ),
       loadBucket: rxMethod<any>(
         pipe(
@@ -134,6 +142,7 @@ export const FilemanagerStore = signalStore(
               tap((documents) => {
                 patchState(store, (state) => ({
                   ...state,
+                  selectedBucket: bucket,
                   isLoading: false,
                   documents,
                 }));

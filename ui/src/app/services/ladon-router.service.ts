@@ -18,7 +18,8 @@ export class LadonRouterService {
   async navigateToFilemanagerWithBucket(bucket: string) {
     const filemangerNavigation = this.getFileManagerNavigationEntry();
     if (filemangerNavigation && filemangerNavigation.path) {
-      await this.router.navigate([`${this.#baseHref}/${filemangerNavigation.path}/${bucket}`]);
+      // await this.router.navigate([`${this.#baseHref}/${filemangerNavigation.path}/${bucket}`]);
+      await this.router.navigate([`${this.#baseHref}/${filemangerNavigation.path}`]);
     }
     return Promise.resolve();
   }

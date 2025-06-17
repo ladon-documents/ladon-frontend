@@ -48,8 +48,7 @@ export class BucketsService {
   }
 
   dispatchSelectedBucket(bucket: string) {
-    this.#filemanagerStore.updateSelectedBucket(bucket);
-    this.ladonRouterService.navigateToFilemanagerWithBucket(bucket);
+    this.#filemanagerStore.navigateToFilemanagerWithBucket(bucket);
   }
 
   set bucket(bucket: BucketUiItemModel) {

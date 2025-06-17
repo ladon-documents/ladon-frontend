@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 interface UiState {
   isLoading: boolean;
   isSidenavClosed: boolean;
+  isBurgerMenuOpen: boolean;
   isDarkMode: boolean;
   activeTheme?: string;
 }
@@ -27,7 +28,7 @@ type AppState = {
 };
 
 const initialState: AppState = {
-  ui: { isLoading: false, isDarkMode: false, isSidenavClosed: false },
+  ui: { isLoading: false, isDarkMode: false, isSidenavClosed: false, isBurgerMenuOpen: false },
   auth: { isAuthenticated: false, user: null, loginError: null, isAuthenticating: false },
 };
 
@@ -155,6 +156,15 @@ export const AppStore = signalStore(
           ui: {
             ...state.ui,
             isSidenavClosed: !state.ui.isSidenavClosed,
+          },
+        }));
+      },
+      toggleBurgerMenu: () => {
+        patchState(store, (state) => ({
+          ...state,
+          ui: {
+            ...state.ui,
+            isBurgerMenuOpen: !state.ui.isBurgerMenuOpen,
           },
         }));
       },

@@ -1,0 +1,76 @@
+@charset "utf-8";
+
+#sidebar-toggle {
+  --rotation: 45deg;
+  --animation-timing: 170ms;
+  --delay: 210ms;
+
+  width: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: gap var(--animation-timing) ease-in var(--delay);
+
+  span {
+    transition: transform var(--animation-timing) ease-in;
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: CanvasText;
+    transform: rotate(0) translateY(0);
+  }
+
+  &.active {
+    gap: 0;
+    transition: gap var(--animation-timing) ease-out;
+    span {
+      transition: transform var(--animation-timing) ease-out var(--delay);
+      &:nth-child(1) {
+        transform: translateY(50%) rotate(var(--rotation));
+      }
+      &:nth-child(2) {
+        transform: translateY(-50%) rotate(calc(var(--rotation) * -1));
+      }
+    }
+  }
+}
+
+#sidebar-collapse {
+  --rotation: 45deg;
+  --animation-timing: 220ms;
+
+  width: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transform: rotate(0);
+  // transition: transform var(--animation-timing) ease-out;
+
+  span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: CanvasText;
+
+    &:nth-child(1) {
+      transform-origin: top left;
+      transform: rotate(var(--rotation)) translateY(175%);
+    }
+
+    &:nth-child(2) {
+      transform-origin: bottom left;
+      transform: rotate(calc(var(--rotation) * -1)) translateY(-175%);
+    }
+  }
+
+  &.active {
+    transform: rotate(180deg);
+    // transition: transform var(--animation-timing) ease-out;
+  }
+}
+
+@media screen and (min-width: 790px) {
+  #sidebar-toggle {
+    display: none;
+  }
+}

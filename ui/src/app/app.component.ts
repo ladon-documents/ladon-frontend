@@ -15,6 +15,7 @@ import { PluginmanagerComponent } from './pluginmanager/pluginmanager.component'
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppStore } from './store/app.store';
 import { HeaderComponent } from './header/header.component';
+import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.component';
 
 @Component({
   imports: [
@@ -23,6 +24,7 @@ import { HeaderComponent } from './header/header.component';
     TranslateModule,
     NavigationComponent,
     HeaderComponent,
+    PdfviewerComponent,
     PluginmanagerComponent,
     AsideComponent,
     UsermanagerComponent,
@@ -39,14 +41,13 @@ import { HeaderComponent } from './header/header.component';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent {
-  readonly #store = inject(AppStore);
-  isAuthenticated = this.#store.auth.isAuthenticated;
-  isAuthenticating = this.#store.auth.isAuthenticating;
+  readonly store = inject(AppStore);
+  isAuthenticated = this.store.auth.isAuthenticated;
+  isAuthenticating = this.store.auth.isAuthenticating;
 
   public navigationEntries: Array<NavigationEntry> = [];
 
-  sidebarCollapsed:Signal<boolean> = this.#store.ui.isSidenavClosed;
-
+  sidebarCollapsed: Signal<boolean> = this.store.ui.isSidenavClosed;
 
   constructor(
     private readonly as: AuthService,
@@ -57,7 +58,6 @@ export class AppComponent {
     this.translate.setDefaultLang('de');
     this.translate.use('de');
   }
-
 }
 
 @Component({

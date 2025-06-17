@@ -12,7 +12,6 @@ export class FilemanagerService {
     return this.documentsService.listDocuments(bucket, undefined, undefined, undefined, undefined, undefined, true);
   }
 
-
   public loadDocumentList(document: DocumentModel) {
     if (document && document.bucket) {
       return this.documentsService.listDocuments(

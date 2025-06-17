@@ -1,4 +1,4 @@
-import { Component, input, output, computed, inject, OnInit, HostListener, Signal } from '@angular/core';
+import { Component, input, output, computed, inject, OnInit, Signal, viewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -7,15 +7,17 @@ import {
   heroListBullet,
   heroArrowRightStartOnRectangle,
   heroRectangleStack,
-  heroUsers, heroPuzzlePiece, heroDocument, heroGlobeAlt
+  heroUsers,
+  heroPuzzlePiece,
+  heroDocument,
+  heroGlobeAlt,
 } from '@ng-icons/heroicons/outline';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
 import { environment } from '../../environments/environment';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AppStore } from '../store/app.store';
-import { ThemesComponent } from '../themes/themes.component';
-import { AvatarComponent } from '../avatar/avatar.component';
+import { filter, finalize, tap } from 'rxjs';
 
 @Component({
   selector: 'lib-navigation',
@@ -35,51 +37,20 @@ import { AvatarComponent } from '../avatar/avatar.component';
     }),
   ],
   templateUrl: './navigation.component.html',
-  styles: `
-    :host {
-      display: block;
-      height: 100%;
-    }
-
-    #logo {
-      img {
-        width: 100px;
-      }
-    }
-
-    ng-icon {
-      --ng-icon__size: 1.5em !important;
-    }
-  `,
 })
 export class NavigationComponent implements OnInit {
+  private timeOut: any | undefined;
+  private readonly timeOutDuration = 250;
   readonly #store = inject(AppStore);
+  readonly highlight = viewChild<ElementRef>('highlight');
+  readonly nav = viewChild<ElementRef>('nav');
   navigation = input.required<NavigationEntry[]>();
   mainMenu = computed(() => this.navigation().filter(({ type }) => type === 'main'));
   subMenu = computed(() => this.navigation().filter(({ type }) => type === 'menu'));
   navigationEntryAction = output<NavigationEntry>();
+  routerActiveLink: string | undefined;
 
-  isOpen = false;
-
-  //sidebarCollapsed = false;
   sidebarCollapsed: Signal<boolean> = this.#store.ui.isSidenavClosed;
-  sidebarHidden = true;
-  openSubMenu = '';
-
-  // Sidebar auf mobilen Geräten ein-/ausblenden (vollständiges Ein-/Ausblenden)
-  toggleSidebar() {
-    this.sidebarHidden = !this.sidebarHidden;
-  }
-
-  // Sidebar minimieren/maximieren (nur Icons oder Icons mit Text)
-  collapseSidebar() {
-    //  this.sidebarCollapsed = !this.sidebarCollapsed;
-    this.#store.toggleSidebar();
-  }
-
-  toggleSubMenu(menu: string) {
-    this.openSubMenu = this.openSubMenu === menu ? '' : menu;
-  }
 
   logout(): void {
     this.#store.logout();
@@ -88,17 +59,30 @@ export class NavigationComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    this.checkScreenSize();
+    // Set intial active link based on current route
+    this.timeOut = setTimeout(() => this.animateHighlight(), this.timeOutDuration);
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        tap(() => {
+          clearTimeout(this.timeOut);
+        }),
+      )
+      .subscribe((event) => {
+        const { urlAfterRedirects } = event as NavigationEnd;
+        this.routerActiveLink = this.extractPathFromUrl(urlAfterRedirects);
+        this.timeOut = setTimeout(() => this.animateHighlight(), this.timeOutDuration);
+      });
   }
 
-  invokeItem(item: NavigationEntry) {
+  async invokeItem(item: NavigationEntry) {
     switch (item.target) {
       case 'internal':
       case 'remote':
-        this.router.navigate([`${environment.baseHref}/${item.path}`]);
+        await this.router.navigate([`${environment.baseHref}/${item.path}`]);
         break;
       case 'static':
-        this.router.navigate([`${environment.baseHref}/static`], { queryParams: { page: item.path } });
+        await this.router.navigate([`${environment.baseHref}/static`], { queryParams: { page: item.path } });
         break;
       case 'action':
         this.dispatchNavigationEvent(item);
@@ -109,16 +93,34 @@ export class NavigationComponent implements OnInit {
     }
   }
 
+  /*
+   * Extracts fourth segment from url because we need to be careful of sub routes.
+   */
+  private extractPathFromUrl(url: string): string | undefined {
+    return url.split('/')[4];
+  }
+
+  private animateHighlight() {
+    const activeItem = this.nav()?.nativeElement.querySelector('.text-blue-700');
+    const highlightElement = this.highlight()?.nativeElement;
+    const { y } = activeItem?.getBoundingClientRect();
+    const headerHeight = 80;
+
+    if ('startViewTransition' in document) {
+      // @ts-ignore
+      document.startViewTransition(() => {
+        highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
+      });
+    } else {
+      highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
+    }
+  }
+
   private dispatchNavigationEvent(item: NavigationEntry) {
     if (item.id === 'ladon:logout') {
       this.#store.logout();
       return;
     }
     window.dispatchEvent(new CustomEvent('ladon:navigation:item', { detail: item }));
-  }
-
-  @HostListener('window:resize')
-  checkScreenSize() {
-    this.sidebarHidden = window.innerWidth < 1024;
   }
 }

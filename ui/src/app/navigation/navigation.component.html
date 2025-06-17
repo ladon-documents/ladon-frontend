@@ -1,185 +1,26 @@
-  <aside class="fixed left-0 top-16 bottom-0 z-30 transform transition-transform duration-300 ease-in-out   border-r border-gray-100 dark:border-gray-200"
-         [ngClass]="{'translate-x-0': !sidebarHidden, '-translate-x-full': sidebarHidden, 'lg:translate-x-0': true, 'w-64': !sidebarCollapsed(), 'w-20': sidebarCollapsed() && !sidebarHidden, 'lg:w-20': sidebarCollapsed(), 'lg:w-64': !sidebarCollapsed()}">
-    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-200">
-      <div class="text-lg font-medium " [ngClass]="{'hidden': sidebarCollapsed()}">
-
-      </div>
-      <button class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-200 focus:outline-none transition-colors duration-200"
-              (click)="collapseSidebar()"
-              aria-label="Seitenleiste minimieren">
-        <svg class="w-5 h-5 " fill="none" stroke="currentColor" viewBox="0 0 24 24"
-             [ngClass]="{'rotate-180': sidebarCollapsed()}">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Sidebar Navigation -->
-    <div class="card" [ngClass]="{'hidden': sidebarCollapsed()}">
-
-    </div>
-    <nav class="mt-4 px-2">
-      <ul class="space-y-1">
-        @for (item of mainMenu(); track $index) {
-          <li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target"
-              class="flex items-center px-3 py-2.5  rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors duration-200"
-          >
-            <a (click)="invokeItem(item)">
-              @if (item.icon) {
-                <ng-icon [name]="item.icon" color="#9a9cae"></ng-icon>
-              }
-              <span class="ml-3 text-sm font-medium"  [ngClass]="{'hidden': sidebarCollapsed()}">{{ item.label | translate }}</span>
-            </a>
-          </li>
-        }
-      </ul>
-    </nav>
-  </aside>
-
-  <div *ngIf="!sidebarHidden"
-       class="fixed inset-0 bg-gray-900 bg-opacity-50 z-20 lg:hidden transition-opacity duration-300"
-       (click)="toggleSidebar()"></div>
-
-<!--
-<div class="sidebar transition-all duration-300 ease-in-out "
-     [ngClass]="{'w-72': !sidebarCollapsed(), 'w-20': sidebarCollapsed()}">
-
-  <div class="flex items-center justify-between p-4 border-b border-gray-700">
-    <a class="btn btn-ghost px-5" id="logo" [ngClass]="{'hidden': sidebarCollapsed()}">
-      <img src="public/svg/ladon-slogan.svg" alt="Ladon Slogan Logo"/>
-    </a>
-    <button class="p-1 rounded hover:bg-gray-700" (click)="toggleSidebar()">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-           [ngClass]="{'rotate-180': sidebarCollapsed()}">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M15 19l-7-7 7-7"></path>
-      </svg>
-    </button>
-  </div>
-
-  <nav role="navigation" class="navbar flex-col h-screen items-start border-r">
-    <div class="card">
-        <div class="flex items-center">
-          <div class="collapse border-base-100 border">
-            <input type="checkbox"/>
-            <div class="collapse-title">
-              <div class="flex items-center">
-                <div class="avatar">
-                  <div class="ring-primary ring-offset-base-100 w-16 rounded-full ring-2 ring-offset-2">
-                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp"/>
-                  </div>
-                </div>
-                <div class="ml-4 mr-2" [ngClass]="{'hidden': sidebarCollapsed()}">
-                  <h6 class="mb-0">{{ fullName }}</h6>
-                  <small>{{ userId }}</small>
-                </div>
-              </div>
-            </div>
-            <div class="collapse-content text-sm">
-              <ul class="menu menu-compact p-2">
-                <li>
-                  <a class="flex items-center p-2 hover:bg-base-200 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    Mein Profil
-                  </a>
-                </li>
-                <li>
-                  <a class="flex items-center p-2 hover:bg-base-200 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    Kontoeinstellungen
-                  </a>
-                </li>
-                <li>
-                  <a class="flex items-center p-2 hover:bg-base-200 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
-                    </svg>
-                    Benachrichtigungen
-                  </a>
-                </li>
-                <li>
-                  <div class="p-2 text-sm font-semibold text-base-content/70">Theme auswählen</div>
-                  <div class="p-2">
-                    <div class="flex justify-between gap-2">
-                      <button class="flex-1 btn btn-sm btn-ghost"
-                              [class.btn-active]="currentTheme === 'light'"
-                              (click)="changeTheme('light')">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-                        </svg>
-                      </button>
-
-                      <button class="flex-1 btn btn-sm btn-ghost"
-                              [class.btn-active]="currentTheme === 'dark'"
-                              (click)="changeTheme('dark')">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                        </svg>
-                      </button>
-
-                      <button class="flex-1 btn btn-sm btn-ghost"
-                              [class.btn-active]="currentTheme === 'system'"
-                              (click)="changeTheme('system')">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                             stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </li>
-
-                <li class="border-t border-base-300 mt-2 pt-2">
-                  <a class="flex items-center p-2 hover:bg-base-200 text-error rounded-md" (click)="logout()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                    </svg>
-                    Abmelden
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
-
-    </div>
-
-    <div class="grow self-stretch flex-col items-start">
-      <nav class="grow self-stretch">
-        <ul class="menu menu-md menu-vertical w-full">
-          @for (item of mainMenu(); track $index) {
-            <li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target">
-              <a (click)="invokeItem(item)">
-                @if (item.icon) {
-                  <ng-icon [name]="item.icon" color="#9a9cae"></ng-icon>
-                }
-                <span [ngClass]="{'hidden': sidebarCollapsed()}">{{ item.label | translate }}</span>
-              </a>
-            </li>
-          }
-        </ul>
-      </nav>
-    </div>
+<aside class="border-r border-gray-100 dark:border-gray-200">
+  <!-- Sidebar Navigation -->
+  <nav class="mt-4 px-2 relative" #nav>
+    <div
+      #highlight
+      class="absolute top-0 left-0 w-full h-8 bg-blue-700 -z-1 opacity-10"
+      [ngStyle]="{ viewTransitionName: 'highlight' }"></div>
+    <ul class="flex flex-col gap-2">
+      @for (item of mainMenu(); track $index) {
+        <li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target">
+          <a
+            (click)="invokeItem(item)"
+            [ngClass]="{ 'text-blue-700': routerActiveLink === item.path }"
+            class="flex items-center gap-1 px-2 py-1 hover:cursor-pointer hover:text-blue-700">
+            @if (item.icon) {
+              <ng-icon [name]="item.icon" style="color: currentColor"></ng-icon>
+            }
+            <span class="ml-3 text-sm font-medium" [ngClass]="{ hidden: sidebarCollapsed() }">{{
+              item.label | translate
+            }}</span>
+          </a>
+        </li>
+      }
+    </ul>
   </nav>
-</div>
--->
+</aside>

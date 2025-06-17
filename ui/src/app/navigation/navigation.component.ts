@@ -40,6 +40,7 @@ import { filter, finalize, tap } from 'rxjs';
 })
 export class NavigationComponent implements OnInit {
   private timeOut: any | undefined;
+  private readonly timeOutDuration = 250;
   readonly #store = inject(AppStore);
   readonly highlight = viewChild<ElementRef>('highlight');
   readonly nav = viewChild<ElementRef>('nav');
@@ -58,6 +59,8 @@ export class NavigationComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
+    // Set intial active link based on current route
+    this.timeOut = setTimeout(() => this.animateHighlight(), this.timeOutDuration);
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -68,7 +71,7 @@ export class NavigationComponent implements OnInit {
       .subscribe((event) => {
         const { urlAfterRedirects } = event as NavigationEnd;
         this.routerActiveLink = this.extractPathFromUrl(urlAfterRedirects);
-        this.timeOut = setTimeout(() => this.animateHighlight(), 450);
+        this.timeOut = setTimeout(() => this.animateHighlight(), this.timeOutDuration);
       });
   }
 

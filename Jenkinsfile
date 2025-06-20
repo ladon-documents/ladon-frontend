@@ -29,11 +29,12 @@ pipeline {
     }
 
     stage('Distribute to ladon') {
-      when {
-        expression { hasGitTag() }
-      }
+      // when {
+      //   expression { hasGitTag() }
+      // }
       steps {
         dir('release') {
+          sh 'ls -l'
           sh 'npm publish'
         }
       }

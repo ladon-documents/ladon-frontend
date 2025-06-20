@@ -35,6 +35,10 @@
   }
 }
 
+#logo {
+  fill: light-dark(var(--logo-fill, #4d4d4d), CanvasText);
+}
+
 @media screen and (min-width: 790px) {
   #sidebar-toggle {
     display: none;

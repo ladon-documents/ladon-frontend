@@ -33,7 +33,9 @@ pipeline {
         expression { hasGitTag() }
       }
       steps {
-        sh 'npm publish'
+        dir('release') {
+          sh 'npm publish'
+        }
       }
     }
   }

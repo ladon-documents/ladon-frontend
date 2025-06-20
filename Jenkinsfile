@@ -34,7 +34,7 @@ pipeline {
       // }
       steps {
         dir('release') {
-          sh 'ls -l'
+          sh 'npm pack'
           sh 'npm publish'
         }
       }

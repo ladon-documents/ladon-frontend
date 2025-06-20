@@ -2,12 +2,14 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { UserEntryModel, UserWrapperModel } from '../../api';
 import { inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
-import { finalize } from 'rxjs';
+import { finalize, Subject } from 'rxjs';
 
 type UsermanagerState = {
   users: UserEntryModel[];
   loading: boolean;
 };
+
+const loading$ = new Subject<boolean>();
 
 const initialState: UsermanagerState = {
   users: [],
@@ -20,11 +22,13 @@ export const UsermanagerStore = signalStore(
   withMethods((store, usermanagerService = inject(UsermanagerService)) => ({
     retrieveUsers() {
       patchState(store, { loading: true });
+      loading$.next(store.loading());
       usermanagerService
         .retrieveUsers()
         .pipe(
           finalize(() => {
             patchState(store, { loading: false });
+            loading$.next(store.loading());
           }),
         )
         .subscribe({
@@ -32,6 +36,10 @@ export const UsermanagerStore = signalStore(
             patchState(store, { users });
           },
         });
+    },
+
+    loading$() {
+      return loading$;
     },
 
     getUser(id: string): UserEntryModel | undefined {

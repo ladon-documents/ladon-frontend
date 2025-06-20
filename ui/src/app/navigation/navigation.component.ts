@@ -11,6 +11,8 @@ import {
   heroPuzzlePiece,
   heroDocument,
   heroGlobeAlt,
+  heroChevronDoubleLeft,
+  heroChevronDoubleRight,
 } from '@ng-icons/heroicons/outline';
 import { NavigationEnd, Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
@@ -34,6 +36,8 @@ import { filter, finalize, tap } from 'rxjs';
       heroPuzzlePiece,
       heroDocument,
       heroGlobeAlt,
+      heroChevronDoubleLeft,
+      heroChevronDoubleRight,
     }),
   ],
   templateUrl: './navigation.component.html',
@@ -41,7 +45,7 @@ import { filter, finalize, tap } from 'rxjs';
 export class NavigationComponent implements OnInit {
   private timeOut: any | undefined;
   private readonly timeOutDuration = 250;
-  readonly #store = inject(AppStore);
+  readonly appStore = inject(AppStore);
   readonly highlight = viewChild<ElementRef>('highlight');
   readonly nav = viewChild<ElementRef>('nav');
   navigation = input.required<NavigationEntry[]>();
@@ -50,10 +54,10 @@ export class NavigationComponent implements OnInit {
   navigationEntryAction = output<NavigationEntry>();
   routerActiveLink: string | undefined;
 
-  sidebarCollapsed: Signal<boolean> = this.#store.ui.isSidenavClosed;
+  sidebarCollapsed: Signal<boolean> = this.appStore.ui.isSidenavClosed;
 
   logout(): void {
-    this.#store.logout();
+    this.appStore.logout();
   }
 
   constructor(private router: Router) {}
@@ -93,6 +97,10 @@ export class NavigationComponent implements OnInit {
     }
   }
 
+  collapseSidebar() {
+    this.appStore.toggleSidebar();
+  }
+
   /*
    * Extracts fourth segment from url because we need to be careful of sub routes.
    */
@@ -104,7 +112,7 @@ export class NavigationComponent implements OnInit {
     const activeItem = this.nav()?.nativeElement.querySelector('.text-blue-700');
     const highlightElement = this.highlight()?.nativeElement;
     const { y } = activeItem?.getBoundingClientRect();
-    const headerHeight = 80;
+    const headerHeight = 72;
 
     if ('startViewTransition' in document) {
       // @ts-ignore
@@ -118,7 +126,7 @@ export class NavigationComponent implements OnInit {
 
   private dispatchNavigationEvent(item: NavigationEntry) {
     if (item.id === 'ladon:logout') {
-      this.#store.logout();
+      this.appStore.logout();
       return;
     }
     window.dispatchEvent(new CustomEvent('ladon:navigation:item', { detail: item }));

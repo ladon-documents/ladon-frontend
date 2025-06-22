@@ -42,4 +42,8 @@ export class RolesComponent implements OnInit {
           role.details?.toLowerCase().includes(term.toLowerCase()),
       );
   }
+
+  deleteRole(roleId: string): void {
+    this.store.deleteRole(roleId);
+  }
 }

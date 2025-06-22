@@ -15,11 +15,23 @@ export class UsermanagerService {
     return this.usermanagerApi.getRoles();
   }
 
+  retrievePermissions() {
+    return this.usermanagerApi.getAllPermissions();
+  }
+
   addUser(user: UserWrapperModel) {
     return this.usermanagerApi.addUser(user);
   }
 
   deleteUser(userId: string) {
     return this.usermanagerApi.deleteUser(userId);
+  }
+
+  deleteRole(roleId: string) {
+    return this.usermanagerApi.deleteRole(roleId);
+  }
+
+  deletePermission(permissionId: string) {
+    return this.usermanagerApi.removePermission(permissionId);
   }
 }

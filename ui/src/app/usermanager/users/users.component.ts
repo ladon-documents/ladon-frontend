@@ -23,7 +23,7 @@ import { UserEntryModel } from '../../../api';
     DialogComponent,
   ],
   templateUrl: './users.component.html',
-  styleUrls: ['../usermanager.component.scss', './users.component.scss'],
+  styleUrl: './users.component.scss',
 })
 export class UsersComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) userDialog: DialogComponent | undefined;

@@ -2,7 +2,7 @@
   <app-filter (outputTerm)="onFilterTerm($event)"></app-filter>
   <button class="btn btn-primary" (click)="createRole()">
     <ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
-    <span class="hidden lg:block">Neue Rolle anlegen</span>
+    <span class="hidden sm:block">Neue Rolle anlegen</span>
   </button>
 </div>
 
@@ -10,11 +10,12 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th class="text-right">Aktion</th>
     </tr>
   </thead>
   <tbody>
     @for (role of filteredRoles; track role.id) {
-      <tr>
+      <tr class="cursor-pointer hover:bg-gray-100">
         <td>
           <div class="flex items-center gap-4">
             <div class="avatar shrink-0 transition-colors" [attr.data-alias]="role.name | alias"></div>
@@ -25,6 +26,12 @@
               }
             </div>
           </div>
+        </td>
+        <td class="text-right">
+          <button class="btn" (click)="deleteRole(role.id)">
+            <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            <span class="hidden lg:block">Entfernen</span>
+          </button>
         </td>
       </tr>
     }

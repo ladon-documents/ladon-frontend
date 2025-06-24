@@ -1,5 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { RoleEntryModel, UserEntryModel, UserWrapperModel } from '../../api';
+import { PermissionModel, RoleEntryModel, UserEntryModel, UserWrapperModel } from '../../api';
 import { inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
 import { finalize, Subject } from 'rxjs';
@@ -7,6 +7,7 @@ import { finalize, Subject } from 'rxjs';
 type UsermanagerState = {
   users: UserEntryModel[];
   roles: RoleEntryModel[];
+  permissions: PermissionModel[];
   loading: boolean;
 };
 
@@ -15,6 +16,7 @@ const loading$ = new Subject<boolean>();
 const initialState: UsermanagerState = {
   users: [],
   roles: [],
+  permissions: [],
   loading: false,
 };
 
@@ -58,6 +60,24 @@ export const UsermanagerStore = signalStore(
         });
     },
 
+    retrievePermissions() {
+      patchState(store, { loading: true });
+      loading$.next(store.loading());
+      usermanagerService
+        .retrievePermissions()
+        .pipe(
+          finalize(() => {
+            patchState(store, { loading: false });
+            loading$.next(store.loading());
+          }),
+        )
+        .subscribe({
+          next: (permissions) => {
+            patchState(store, { permissions });
+          },
+        });
+    },
+
     loading$() {
       return loading$;
     },
@@ -94,6 +114,38 @@ export const UsermanagerStore = signalStore(
         .subscribe({
           next: () => {
             this.retrieveUsers();
+          },
+        });
+    },
+
+    deleteRole(roleId: string) {
+      patchState(store, { loading: true });
+      usermanagerService
+        .deleteRole(roleId)
+        .pipe(
+          finalize(() => {
+            patchState(store, { loading: false });
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.retrieveRoles();
+          },
+        });
+    },
+
+    deletePermission(permissionId: string) {
+      patchState(store, { loading: true });
+      usermanagerService
+        .deletePermission(permissionId)
+        .pipe(
+          finalize(() => {
+            patchState(store, { loading: false });
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.retrievePermissions();
           },
         });
     },

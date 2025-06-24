@@ -11,6 +11,10 @@ export class UsermanagerService {
     return this.usermanagerApi.getUsers();
   }
 
+  retrieveRoles() {
+    return this.usermanagerApi.getRoles();
+  }
+
   addUser(user: UserWrapperModel) {
     return this.usermanagerApi.addUser(user);
   }

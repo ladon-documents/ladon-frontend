@@ -5,12 +5,13 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { RoleEntryModel } from '../../../api';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { heroPlusCircle, heroTrash } from '@ng-icons/heroicons/outline';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
   providers: [provideIcons({ heroPlusCircle, heroTrash })],
-  imports: [FilterComponent, NgIconComponent, DialogComponent, AliasPipe],
+  imports: [FilterComponent, NgIconComponent, DialogComponent, AliasPipe, ReactiveFormsModule],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.scss',
 })
@@ -18,6 +19,7 @@ export class RolesComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) roleDialog: DialogComponent | undefined;
 
   filteredRoles: RoleEntryModel[] | undefined;
+  readonly roleAddGroup = new FormGroup({});
   readonly store = inject(UsermanagerStore);
 
   createRole(): void {
@@ -31,6 +33,8 @@ export class RolesComponent implements OnInit {
         this.filteredRoles = this.store.roles();
       }
     });
+
+    this.generateForm();
   }
 
   onFilterTerm(term: string) {
@@ -43,7 +47,27 @@ export class RolesComponent implements OnInit {
       );
   }
 
+  onAddRole(): void {
+    if (this.roleAddGroup.invalid) {
+      this.roleAddGroup.markAllAsTouched();
+      return;
+    }
+
+    this.store.addRole(this.roleAddGroup.value);
+    this.closeDialog();
+  }
+
+  closeDialog(): void {
+    this.roleDialog?.closeDialog();
+  }
+
   deleteRole(roleId: string): void {
     this.store.deleteRole(roleId);
+  }
+
+  private generateForm(): void {
+    this.roleAddGroup.addControl('name', new FormControl(undefined, Validators.required));
+    this.roleAddGroup.addControl('id', new FormControl(undefined, Validators.required));
+    this.roleAddGroup.addControl('description', new FormControl(undefined, Validators.required));
   }
 }

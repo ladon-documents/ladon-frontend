@@ -23,3 +23,8 @@
     line-height: 1;
   }
 }
+
+app-dialog .input {
+  width: initial;
+  flex-grow: 1;
+}

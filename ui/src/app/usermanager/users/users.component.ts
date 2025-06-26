@@ -13,15 +13,7 @@ import { UserEntryModel } from '../../../api';
   selector: 'app-users',
   standalone: true,
   providers: [provideIcons({ heroPlusCircle, heroTrash })],
-  imports: [
-    NgIconComponent,
-    FilterComponent,
-    RouterModule,
-    AliasPipe,
-    ReactiveFormsModule,
-    FormsModule,
-    DialogComponent,
-  ],
+  imports: [NgIconComponent, FilterComponent, RouterModule, AliasPipe, ReactiveFormsModule, DialogComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
 })
@@ -78,7 +70,7 @@ export class UsersComponent implements OnInit {
 
   private generateForm(): void {
     this.userAddGroup.addControl('name', new FormControl(undefined, Validators.required));
-    this.userAddGroup.addControl('email', new FormControl(undefined, Validators.required));
+    this.userAddGroup.addControl('email', new FormControl(undefined, [Validators.required, Validators.email]));
     this.userAddGroup.addControl('password', new FormControl(undefined, Validators.required));
   }
 }

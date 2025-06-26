@@ -66,7 +66,7 @@
 
     <div class="flex justify-around items-center gap-4">
       <button class="btn btn-outline grow" type="reset" (click)="closeDialog()">Abbrechen</button>
-      <button class="btn grow" type="submit">Erstellen</button>
+      <button class="btn grow" type="submit" [disabled]="userAddGroup.invalid">Erstellen</button>
     </div>
   </form>
 </app-dialog>

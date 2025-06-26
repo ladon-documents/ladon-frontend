@@ -42,4 +42,66 @@
   </tbody>
 </table>
 
-<app-dialog title="Neue Rechte anlegen"></app-dialog>
+<app-dialog title="Neue Rechte anlegen">
+  <form [formGroup]="permissionAddGroup" class="flex flex-col gap-4" (ngSubmit)="onAddPermission()">
+    <div class="input">
+      <label for="permissionId">Identifikation*</label>
+      <input type="text" id="permissionId" required formControlName="permissionId" />
+    </div>
+
+    <div class="input">
+      <label for="allowd">Art*</label>
+      <select id="allowd" required formControlName="allowd" class="select">
+        <option value="true">Positiv</option>
+        <option value="false">Negativ</option>
+      </select>
+    </div>
+
+    <div class="input">
+      <label for="description">Beschreibung*</label>
+      <input type="text" id="description" required formControlName="description" />
+    </div>
+
+    <div class="input">
+      <label for="operation">Operation*</label>
+      <select id="operation" required formControlName="operation" class="select">
+        <option value="CREATE_OBJECT">CREATE_OBJECT</option>
+        <option value="READ_OBJECT">READ_OBJECT</option>
+        <option value="WRITE_OBJECT">WRITE_OBJECT</option>
+        <option value="DELETE_OBJECT">DELETE_OBJECT</option>
+        <option value="WIPE_OUT_OBJECT">WIPE_OUT_OBJECT</option>
+        <option value="CREATE_BUCKET">CREATE_BUCKET</option>
+        <option value="READ_BUCKET">READ_BUCKET</option>
+        <option value="WRITE_BUCKET">WRITE_BUCKET</option>
+        <option value="DELETE_BUCKET">DELETE_BUCKET</option>
+        <option value="LADON_UI">LADON_UI</option>
+        <option value="ADD_USER">ADD_USER</option>
+        <option value="LIST_USER">LIST_USER</option>
+        <option value="DELETE_USER">DELETE_USER</option>
+        <option value="EDIT_PERMISSIONS">EDIT_PERMISSIONS</option>
+        <option value="SHOW_PERMISSIONS">SHOW_PERMISSIONS</option>
+      </select>
+    </div>
+
+    <div class="input">
+      <label for="type">Typ*</label>
+      <select id="type" required formControlName="type" class="select">
+        <option value="ANT">ANT</option>
+        <option value="REGEX">REGEX</option>
+        <option value="EQUALS">EQUALS</option>
+        <option value="SPEL">SPEL</option>
+        <option value="GLOB">GLOB</option>
+      </select>
+    </div>
+
+    <div class="input">
+      <label for="value">Wert*</label>
+      <input type="text" id="value" required formControlName="value" />
+    </div>
+
+    <div class="flex justify-around items-center gap-4">
+      <button class="btn btn-outline grow" type="reset" (click)="closeDialog()">Abbrechen</button>
+      <button class="btn grow" type="submit" [disabled]="permissionAddGroup.invalid">Erstellen</button>
+    </div>
+  </form>
+</app-dialog>

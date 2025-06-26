@@ -1,5 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { PermissionModel, RoleEntryModel, UserEntryModel, UserWrapperModel } from '../../api';
+import { PermissionModel, RoleEntryModel, RoleWrapperModel, UserEntryModel, UserWrapperModel } from '../../api';
 import { inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
 import { finalize, Subject } from 'rxjs';
@@ -98,6 +98,38 @@ export const UsermanagerStore = signalStore(
         .subscribe({
           next: () => {
             this.retrieveUsers();
+          },
+        });
+    },
+
+    addRole(role: RoleWrapperModel) {
+      patchState(store, { loading: true });
+      usermanagerService
+        .addRole(role)
+        .pipe(
+          finalize(() => {
+            patchState(store, { loading: false });
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.retrieveRoles();
+          },
+        });
+    },
+
+    addPermission(permission: PermissionModel) {
+      patchState(store, { loading: true });
+      usermanagerService
+        .addPermission(permission)
+        .pipe(
+          finalize(() => {
+            patchState(store, { loading: false });
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.retrievePermissions();
           },
         });
     },

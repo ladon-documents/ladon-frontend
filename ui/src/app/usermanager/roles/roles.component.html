@@ -38,4 +38,26 @@
   </tbody>
 </table>
 
-<app-dialog title="Neue Rolle anlegen"></app-dialog>
+<app-dialog title="Neue Rolle anlegen">
+  <form [formGroup]="roleAddGroup" class="flex flex-col gap-4" (ngSubmit)="onAddRole()">
+    <label class="input" for="name">
+      <span class="label">Name*</span>
+      <input type="text" id="name" required formControlName="name" />
+    </label>
+
+    <label class="input" for="id">
+      <span class="label">Identifikation*</span>
+      <input type="text" id="id" required formControlName="id" />
+    </label>
+
+    <label class="input" for="description">
+      <span class="label">Beschreibung*</span>
+      <input type="text" id="description" required formControlName="description" />
+    </label>
+
+    <div class="flex justify-around items-center gap-4">
+      <button class="btn btn-outline grow" type="reset" (click)="closeDialog()">Abbrechen</button>
+      <button class="btn grow" type="submit" [disabled]="roleAddGroup.invalid">Erstellen</button>
+    </div>
+  </form>
+</app-dialog>

@@ -42,8 +42,8 @@ import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.comp
 })
 export class AppComponent {
   readonly store = inject(AppStore);
-  isAuthenticated = this.store.auth.isAuthenticated;
-  isAuthenticating = this.store.auth.isAuthenticating;
+  isAuthenticated: Signal<boolean> = this.store.auth.isAuthenticated;
+  isAuthenticating: Signal<boolean> = this.store.auth.isAuthenticating;
 
   public navigationEntries: Array<NavigationEntry> = [];
 

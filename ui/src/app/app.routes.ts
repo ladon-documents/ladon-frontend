@@ -8,6 +8,7 @@ import { environment } from '../environments/environment';
 import { setNavigation } from './app.navconfig';
 import { StaticwebComponent } from './staticweb/staticweb.component';
 import { AuthGuard } from './shared/guards/auth/auth.guard';
+import { CanActivateLogin } from './shared/guards/auth/can-activate.login';
 
 interface NavigationData {
   path: string;
@@ -17,7 +18,7 @@ interface NavigationData {
 }
 
 const loginRoutes: Routes = [
-  { path: `${environment.baseHref}/login`, component: LoginComponent },
+  { path: `${environment.baseHref}/login`, component: LoginComponent, canActivate: [CanActivateLogin] },
   { path: environment.baseHref, redirectTo: `${environment.baseHref}/login`, pathMatch: 'full' },
 ];
 

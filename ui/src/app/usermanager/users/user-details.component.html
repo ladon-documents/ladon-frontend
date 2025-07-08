@@ -26,5 +26,67 @@
     <input type="checkbox" checked="checked" class="toggle toggle-primary" formControlName="status" />
   </label>
 
+  <h2>Rollen</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th class="text-right">Aktion</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="2" class="text-right">
+          <button class="btn btn-primary">
+            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+          </button>
+        </td>
+      </tr>
+    </tfoot>
+    <tbody>
+      @for (role of userRoles; track $index) {
+        <tr class="cursor-pointer hover:bg-gray-100">
+          <td [routerLink]="['../../roles', role]">{{ role }}</td>
+          <td class="text-right">
+            <button class="btn">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <h2>Berechtigungen</h2>
+  <table class="table text-sm">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th class="text-right">Aktion</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="2" class="text-right">
+          <button class="btn btn-primary">
+            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+          </button>
+        </td>
+      </tr>
+    </tfoot>
+    <tbody>
+      @for (permission of userPermissions; track $index) {
+        <tr class="cursor-pointer hover:bg-gray-100">
+          <td [routerLink]="['../../permissions', permission.permissionId]">{{ permission.permissionId }}</td>
+          <td class="text-right">
+            <button class="btn">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
   <button type="submit" class="btn btn-primary">Speichern</button>
 </form>

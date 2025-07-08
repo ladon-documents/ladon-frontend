@@ -1,23 +1,34 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
-import { UserEntryModel } from '../../../api';
+import { PermissionModel, UserEntryModel } from '../../../api';
+
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AliasPipe } from '@ladon/shared';
+import { combineLatest, switchMap, tap } from 'rxjs';
+import { UsermanagerService } from '../services/usermanager.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 
 @Component({
   standalone: true,
   selector: 'app-user-details',
-  imports: [ReactiveFormsModule, AliasPipe],
+  providers: [provideIcons({ heroTrash, heroPlus })],
+  imports: [ReactiveFormsModule, NgIconComponent, AliasPipe, RouterModule],
   templateUrl: './user-details.component.html',
   styleUrls: ['../usermanager.component.scss', './user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit {
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private usermanagerService: UsermanagerService,
+  ) {}
 
   store = inject(UsermanagerStore);
   user: UserEntryModel | undefined;
   userForm = new FormGroup({});
+  userRoles: string[] | undefined;
+  userPermissions: PermissionModel[] | undefined;
 
   ngOnInit(): void {
     this.generateForm();
@@ -25,6 +36,27 @@ export class UserDetailsComponent implements OnInit {
       this.user = this.store.getUser(id);
       this.patchForm(this.user);
     });
+
+    this.route.params
+      .pipe(
+        tap(({ id }) => {
+          this.user = this.store.getUser(id);
+          this.patchForm(this.user);
+        }),
+        switchMap(({ id }) =>
+          combineLatest([
+            this.usermanagerService.retrieveRoleForUser(id),
+            this.usermanagerService.retrievePermissionForUser(id),
+          ]),
+        ),
+      )
+      .subscribe({
+        next: (payload) => {
+          const { 0: roles, 1: permissions } = payload;
+          this.userRoles = roles;
+          this.userPermissions = permissions;
+        },
+      });
   }
 
   changePassword(id: string | undefined) {

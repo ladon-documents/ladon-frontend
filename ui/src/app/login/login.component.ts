@@ -19,8 +19,7 @@ export class LoginComponent {
   public loginAsset: string | undefined;
   public loginForm: FormGroup;
   readonly #store = inject(AppStore);
-  readonly #formBuilder =  inject(FormBuilder);
-
+  readonly #formBuilder = inject(FormBuilder);
 
   constructor() {
     this.loginForm = this.#formBuilder.group({
@@ -35,5 +34,4 @@ export class LoginComponent {
       this.#store.login({ password, email });
     }
   }
-
 }

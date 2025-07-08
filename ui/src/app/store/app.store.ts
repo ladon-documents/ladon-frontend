@@ -31,7 +31,7 @@ type AppState = {
 
 const initialState: AppState = {
   ui: { isLoading: false, isDarkMode: false, isSidenavClosed: false, isBurgerMenuOpen: false },
-  auth: { isAuthenticated: false, user: null, loginError: null, isAuthenticating: true,redirectUrl: null  },
+  auth: { isAuthenticated: false, user: null, loginError: null, isAuthenticating: true, redirectUrl: null },
 };
 
 export const AppStore = signalStore(
@@ -109,7 +109,9 @@ export const AppStore = signalStore(
                     isAuthenticating: false,
                   },
                 }));
-                const redirectUrl: string = store.auth.redirectUrl()?.includes(environment.baseHref) ? store.auth.redirectUrl() as string: `${environment.baseHref}/buckets`;
+                const redirectUrl: string = store.auth.redirectUrl()?.includes(environment.baseHref)
+                  ? (store.auth.redirectUrl() as string)
+                  : `${environment.baseHref}/buckets`;
                 router.navigateByUrl(redirectUrl);
               }),
               catchError((error) => {

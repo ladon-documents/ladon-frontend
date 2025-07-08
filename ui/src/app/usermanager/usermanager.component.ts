@@ -1,6 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet, Router, ActivatedRoute } from '@angular/router';
+import { usermanagerRoutes } from './usermanager.routes';
 
 @Component({
   selector: 'ldn-mf-usermanager',
@@ -16,6 +17,7 @@ export class UsermanagerComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
+    console.info('Routes', usermanagerRoutes);
     this.router.navigate(['users'], { relativeTo: this.route });
   }
 }

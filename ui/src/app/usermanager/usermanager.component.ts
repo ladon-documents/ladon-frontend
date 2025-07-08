@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet, Router, ActivatedRoute } from '@angular/router';
-import { usermanagerRoutes } from './usermanager.routes';
 
 @Component({
   selector: 'ldn-mf-usermanager',
@@ -10,13 +9,13 @@ import { usermanagerRoutes } from './usermanager.routes';
   templateUrl: './usermanager.component.html',
   styleUrl: './usermanager.component.scss',
 })
-export class UsermanagerComponent implements OnInit {
+export class UsermanagerComponent implements AfterViewInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
   ) {}
-  ngOnInit(): void {
+
+  ngAfterViewInit(): void {
     this.router.navigate(['users'], { relativeTo: this.route });
-    console.info('Routes', usermanagerRoutes);
   }
 }

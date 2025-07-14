@@ -19,32 +19,19 @@ export class LoginComponent {
   public loginAsset: string | undefined;
   public loginForm: FormGroup;
   readonly #store = inject(AppStore);
+  readonly #formBuilder = inject(FormBuilder);
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router,
-  ) {
-    this.loginForm = this.formBuilder.group({
+  constructor() {
+    this.loginForm = this.#formBuilder.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
     });
-  }
-
-  ngOnInit(): void {
-    this.checkAuthentificationStatus();
   }
 
   login() {
     if (this.loginForm.valid) {
       const { password, email } = this.loginForm.value;
       this.#store.login({ password, email });
-    }
-  }
-
-  private checkAuthentificationStatus() {
-    const auth = this.#store.auth;
-    if (auth.isAuthenticated() && auth.user()) {
-      this.router.navigateByUrl(`${environment.baseHref}/buckets`);
     }
   }
 }

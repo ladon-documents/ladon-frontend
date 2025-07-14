@@ -15,10 +15,14 @@ export class LadonRouterService {
     this.#baseHref = environment.baseHref ?? '';
   }
 
+  async navigateToLogin() {
+    await this.router.navigateByUrl(`${this.#baseHref}/login`);
+    return Promise.resolve();
+  }
+
   async navigateToFilemanagerWithBucket(bucket: string) {
     const filemangerNavigation = this.getFileManagerNavigationEntry();
     if (filemangerNavigation && filemangerNavigation.path) {
-      // await this.router.navigate([`${this.#baseHref}/${filemangerNavigation.path}/${bucket}`]);
       await this.router.navigate([`${this.#baseHref}/${filemangerNavigation.path}`]);
     }
     return Promise.resolve();

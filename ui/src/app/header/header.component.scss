@@ -35,6 +35,20 @@
   }
 }
 
+div:has(#logo) {
+  position: relative;
+  &::after {
+    content: attr(data-version);
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translateX(110%);
+    font-size: 0.65em;
+    color: light-dark(var(--logo-fill, #4d4d4d), CanvasText);
+    opacity: 0.7;
+  }
+}
+
 #logo {
   fill: light-dark(var(--logo-fill, #4d4d4d), CanvasText);
 }

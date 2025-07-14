@@ -1,9 +1,9 @@
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, HostListener, inject, Signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
 import { BucketsComponent } from './buckets/buckets.component';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NavigationEntry } from './interfaces/navigation-entry';
 import { environment } from '../environments/environment';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -18,22 +18,7 @@ import { HeaderComponent } from './header/header.component';
 import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.component';
 
 @Component({
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    NavigationComponent,
-    HeaderComponent,
-    PdfviewerComponent,
-    PluginmanagerComponent,
-    AsideComponent,
-    UsermanagerComponent,
-    BucketsComponent,
-    LoginComponent,
-    FilemanagerComponent,
-    TaskmanagerComponent,
-    AsyncPipe,
-  ],
+  imports: [CommonModule, RouterModule, TranslateModule, NavigationComponent, HeaderComponent],
   standalone: true,
   selector: 'ldn-ui',
   templateUrl: './app.component.html',
@@ -42,8 +27,8 @@ import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.comp
 })
 export class AppComponent {
   readonly store = inject(AppStore);
-  isAuthenticated = this.store.auth.isAuthenticated;
-  isAuthenticating = this.store.auth.isAuthenticating;
+  isAuthenticated: Signal<boolean> = this.store.auth.isAuthenticated;
+  isAuthenticating: Signal<boolean> = this.store.auth.isAuthenticating;
 
   public navigationEntries: Array<NavigationEntry> = [];
 

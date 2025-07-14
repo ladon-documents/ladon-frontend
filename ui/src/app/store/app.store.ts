@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Router } from '@angular/router';
+import { state } from '@angular/animations';
 
 interface UiState {
   isLoading: boolean;
@@ -20,6 +21,7 @@ interface AuthState {
   user: UserModel | null;
   loginError: string | null;
   isAuthenticating: boolean;
+  redirectUrl: string | null;
 }
 
 type AppState = {
@@ -29,7 +31,7 @@ type AppState = {
 
 const initialState: AppState = {
   ui: { isLoading: false, isDarkMode: false, isSidenavClosed: false, isBurgerMenuOpen: false },
-  auth: { isAuthenticated: false, user: null, loginError: null, isAuthenticating: false },
+  auth: { isAuthenticated: false, user: null, loginError: null, isAuthenticating: true, redirectUrl: null },
 };
 
 export const AppStore = signalStore(
@@ -60,7 +62,6 @@ export const AppStore = signalStore(
                     isAuthenticating: false,
                   },
                 }));
-                router.navigateByUrl(`${environment.baseHref}/buckets`);
               }),
               catchError((error) => {
                 patchState(store, (state) => ({
@@ -108,7 +109,10 @@ export const AppStore = signalStore(
                     isAuthenticating: false,
                   },
                 }));
-                router.navigateByUrl(`${environment.baseHref}/buckets`);
+                const redirectUrl: string = store.auth.redirectUrl()?.includes(environment.baseHref)
+                  ? (store.auth.redirectUrl() as string)
+                  : `${environment.baseHref}/buckets`;
+                router.navigateByUrl(redirectUrl);
               }),
               catchError((error) => {
                 patchState(store, (state) => ({
@@ -140,6 +144,7 @@ export const AppStore = signalStore(
                   user: null,
                   accessToken: null,
                   loginError: null,
+                  redirectUrl: null,
                   isAuthenticating: false,
                 },
               }));
@@ -149,6 +154,15 @@ export const AppStore = signalStore(
           .subscribe(() => {
             router.navigateByUrl(`${environment.baseHref}/login`);
           });
+      },
+      setRedirectUrl(url: string) {
+        patchState(store, (state) => ({
+          ...state,
+          auth: {
+            ...state.auth,
+            redirectUrl: url,
+          },
+        }));
       },
       toggleSidebar: () => {
         patchState(store, (state) => ({

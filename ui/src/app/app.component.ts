@@ -1,9 +1,9 @@
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, HostListener, inject, Signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
 import { BucketsComponent } from './buckets/buckets.component';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { NavigationEntry } from './interfaces/navigation-entry';
 import { environment } from '../environments/environment';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -24,15 +24,6 @@ import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.comp
     TranslateModule,
     NavigationComponent,
     HeaderComponent,
-    PdfviewerComponent,
-    PluginmanagerComponent,
-    AsideComponent,
-    UsermanagerComponent,
-    BucketsComponent,
-    LoginComponent,
-    FilemanagerComponent,
-    TaskmanagerComponent,
-    AsyncPipe,
   ],
   standalone: true,
   selector: 'ldn-ui',

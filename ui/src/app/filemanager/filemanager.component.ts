@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, inject, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
@@ -14,7 +14,7 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
 @Component({
   standalone: true,
   selector: 'filemanager',
-  imports: [CommonModule, RouterModule, NgIconComponent, SearchbarComponent, SidebarComponent],
+  imports: [CommonModule, RouterModule, NgIconComponent],
   providers: [
     provideIcons({
       heroPlus,

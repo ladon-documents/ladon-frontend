@@ -4,7 +4,6 @@ import { PermissionsComponent } from './permissions/permissions.component';
 import { RolesComponent } from './roles/roles.component';
 import { UsermanagerComponent } from './usermanager.component';
 import { UserDetailsComponent } from './users/user-details.component';
-import { environment } from '../../environments/environment';
 
 export const usermanagerRoutes: Routes = [
   {
@@ -31,6 +30,5 @@ export const usermanagerRoutes: Routes = [
       },
     ],
   },
-  { path: '', redirectTo: `${environment.baseHref}/usermanager`, pathMatch: 'full' },
 
 ];

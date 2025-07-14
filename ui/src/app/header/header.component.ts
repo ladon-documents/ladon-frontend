@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
 import { AvatarComponent } from '../avatar/avatar.component';
 import { AppStore } from '../store/app.store';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,7 @@ import { AppStore } from '../store/app.store';
 })
 export class HeaderComponent implements OnInit {
   readonly appStore = inject(AppStore);
+  readonly ladonVersion = environment.version;
   darkMode = false;
 
   ngOnInit() {

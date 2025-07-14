@@ -1,23 +1,21 @@
-import { AfterViewInit, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, RouterOutlet, Router, ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { usermanagerRoutes } from './usermanager.routes';
 
 @Component({
-  selector: 'ldn-mf-usermanager',
+  selector: 'usermanager',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule],
+  imports: [RouterModule],
   templateUrl: './usermanager.component.html',
   styleUrl: './usermanager.component.scss',
 })
-export class UsermanagerComponent implements AfterViewInit {
+export class UsermanagerComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
   ) {}
 
-  ngAfterViewInit(): void {
-    console.info('Routes', usermanagerRoutes);
-    this.router.navigate(['users'], { relativeTo: this.route });
+  async ngOnInit() {
+    await this.router.navigate(['users'], { relativeTo: this.route });
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@mind/draco-ui",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "",
   "scripts": {
     "build:api": "npm  --prefix ./api run build:all",

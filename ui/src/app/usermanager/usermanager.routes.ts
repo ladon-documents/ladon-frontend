@@ -30,5 +30,4 @@ export const usermanagerRoutes: Routes = [
       },
     ],
   },
-
 ];

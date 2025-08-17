@@ -20,8 +20,16 @@ export class UsermanagerService {
     return this.usermanagerApi.getRoles();
   }
 
+  retrieveRoleForUser(userId: string) {
+    return this.usermanagerApi.getRoleForUser(userId);
+  }
+
   retrievePermissions() {
     return this.usermanagerApi.getAllPermissions();
+  }
+
+  retrievePermissionForUser(userId: string) {
+    return this.usermanagerApi.getPermissionsForUser(userId);
   }
 
   addUser(user: UserWrapperModel) {

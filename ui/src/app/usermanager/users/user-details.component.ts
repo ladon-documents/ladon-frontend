@@ -1,30 +1,70 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
-import { UserEntryModel } from '../../../api';
+import { PermissionModel, UserEntryModel, RoleEntryModel } from '../../../api';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AliasPipe } from '@ladon/shared';
+import { combineLatest, switchMap, tap } from 'rxjs';
+import { UsermanagerService } from '../services/usermanager.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 
 @Component({
   standalone: true,
   selector: 'app-user-details',
-  imports: [ReactiveFormsModule, AliasPipe],
+  providers: [provideIcons({ heroTrash, heroPlus })],
+  imports: [ReactiveFormsModule, NgIconComponent, AliasPipe, RouterModule],
   templateUrl: './user-details.component.html',
   styleUrls: ['../usermanager.component.scss', './user-details.component.scss'],
 })
 export class UserDetailsComponent implements OnInit {
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private usermanagerService: UsermanagerService,
+  ) {}
 
   store = inject(UsermanagerStore);
   user: UserEntryModel | undefined;
   userForm = new FormGroup({});
+  userRoles: string[] | undefined;
+  filteredRoles: RoleEntryModel[] | undefined;
+  filteredPermissions: PermissionModel[] | undefined;
+  userPermissions: PermissionModel[] | undefined;
+
+  private rolesSet = new Set<RoleEntryModel>();
+  private permissionsSet = new Set<PermissionModel>();
 
   ngOnInit(): void {
     this.generateForm();
-    this.route.params.subscribe(({ id }) => {
-      this.user = this.store.getUser(id);
-      this.patchForm(this.user);
+    this.store.loading$().subscribe((loading) => {
+      if (!loading) {
+        this.filteredRoles = this.store.roles().filter(({ id }) => !this.userRoles?.includes(id));
+        this.filteredPermissions = this.store
+          .permissions()
+          .filter(({ permissionId }) => !this.userPermissions?.some(({ permissionId: id }) => id === permissionId));
+      }
     });
+
+    this.route.params
+      .pipe(
+        tap(({ id }) => {
+          this.user = this.store.getUser(id);
+          this.patchForm(this.user);
+        }),
+        switchMap(({ id }) =>
+          combineLatest([
+            this.usermanagerService.retrieveRoleForUser(id),
+            this.usermanagerService.retrievePermissionForUser(id),
+          ]),
+        ),
+      )
+      .subscribe({
+        next: (payload) => {
+          const { 0: roles, 1: permissions } = payload;
+          this.userRoles = roles;
+          this.userPermissions = permissions;
+        },
+      });
   }
 
   changePassword(id: string | undefined) {
@@ -37,11 +77,47 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
+  getRolesOrRetrieve() {
+    if (this.store.roles().length === 0) {
+      this.store.retrieveRoles();
+      return;
+    }
+
+    this.filteredRoles = this.store.roles().filter(({ id }) => !this.userRoles?.includes(id));
+  }
+
+  getPermissionsOrRetrieve() {
+    if (this.store.permissions().length === 0) {
+      this.store.retrievePermissions();
+      return;
+    }
+
+    this.filteredPermissions = this.store
+      .permissions()
+      .filter(({ permissionId }) => !this.userPermissions?.some(({ permissionId: id }) => id === permissionId));
+  }
+
+  addToMap(type: string, value: RoleEntryModel | PermissionModel) {
+    if (type === 'role') {
+      this.rolesSet.add(value as RoleEntryModel);
+      this.userForm.patchValue({ [type]: this.rolesSet.values() });
+    } else if (type === 'permission') {
+      this.permissionsSet.add(value as PermissionModel);
+      this.userForm.patchValue({ [type]: this.permissionsSet.values() });
+    }
+  }
+
+  removeFromMap(type: string, value: string) {
+    // this.postMap.get(type)?.delete(value);
+  }
+
   private generateForm() {
     this.userForm.addControl('name', new FormControl());
     this.userForm.addControl('email', new FormControl());
     this.userForm.addControl('id', new FormControl());
     this.userForm.addControl('status', new FormControl());
+    this.userForm.addControl('roles', new FormControl(this.rolesSet));
+    this.userForm.addControl('permissions', new FormControl(this.permissionsSet));
     if (!this.user) {
       return;
     }

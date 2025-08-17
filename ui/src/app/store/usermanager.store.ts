@@ -60,6 +60,12 @@ export const UsermanagerStore = signalStore(
         });
     },
 
+    patchRoles(role: RoleEntryModel) {
+      loading$.next(true);
+      patchState(store, { roles: [...store.roles(), role] });
+      loading$.next(false);
+    },
+
     retrievePermissions() {
       patchState(store, { loading: true });
       loading$.next(store.loading());

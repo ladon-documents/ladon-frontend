@@ -1,7 +1,7 @@
 import { Component, ViewChild, inject, OnInit, ElementRef } from '@angular/core';
 import { UsermanagerService } from '../services/usermanager.service';
 import { RouterModule } from '@angular/router';
-import { heroPlusCircle, heroTrash } from '@ng-icons/heroicons/outline';
+import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
@@ -12,7 +12,7 @@ import { UserEntryModel } from '../../../api';
 @Component({
   selector: 'app-users',
   standalone: true,
-  providers: [provideIcons({ heroPlusCircle, heroTrash })],
+  providers: [provideIcons({ heroPlus, heroTrash })],
   imports: [NgIconComponent, FilterComponent, RouterModule, AliasPipe, ReactiveFormsModule, DialogComponent],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',

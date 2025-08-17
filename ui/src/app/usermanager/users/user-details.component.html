@@ -37,9 +37,18 @@
     <tfoot>
       <tr>
         <td colspan="2" class="text-right">
-          <button class="btn btn-primary">
-            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-          </button>
+          <details class="dropdown dropdown-end" (click)="getRolesOrRetrieve()">
+            <summary class="btn btn-primary">
+              <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </summary>
+            <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm mt-2">
+              @for (role of filteredRoles; track $index) {
+                <li (click)="addToMap('role', role)">
+                  <a>{{ role.name }}</a>
+                </li>
+              }
+            </ul>
+          </details>
         </td>
       </tr>
     </tfoot>
@@ -47,6 +56,17 @@
       @for (role of userRoles; track $index) {
         <tr class="cursor-pointer hover:bg-gray-100">
           <td [routerLink]="['../../roles', role]">{{ role }}</td>
+          <td class="text-right">
+            <button class="btn">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+
+      @for (role of userForm.get("roles")?.value ?? []; track $index) {
+        <tr class="cursor-pointer hover:bg-gray-100">
+          <td>{{ role?.["id"] }}</td>
           <td class="text-right">
             <button class="btn">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
@@ -68,9 +88,18 @@
     <tfoot>
       <tr>
         <td colspan="2" class="text-right">
-          <button class="btn btn-primary">
-            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-          </button>
+          <details class="dropdown dropdown-top dropdown-end" (click)="getPermissionsOrRetrieve()">
+            <summary class="btn btn-primary">
+              <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </summary>
+            <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm mb-2">
+              @for (permission of filteredPermissions; track $index) {
+                <li (click)="addToMap('permission', permission)">
+                  <a>{{ permission.permissionId }}</a>
+                </li>
+              }
+            </ul>
+          </details>
         </td>
       </tr>
     </tfoot>
@@ -78,6 +107,17 @@
       @for (permission of userPermissions; track $index) {
         <tr class="cursor-pointer hover:bg-gray-100">
           <td [routerLink]="['../../permissions', permission.permissionId]">{{ permission.permissionId }}</td>
+          <td class="text-right">
+            <button class="btn">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+
+      @for (permission of userForm.get("permissions")?.value ?? []; track $index) {
+        <tr class="cursor-pointer hover:bg-gray-100">
+          <td>{{ permission?.["permissionId"] }}</td>
           <td class="text-right">
             <button class="btn">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>

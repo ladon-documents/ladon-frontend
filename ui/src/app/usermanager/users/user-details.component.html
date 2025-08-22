@@ -42,7 +42,7 @@
               <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </summary>
             <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm mt-2">
-              @for (role of filteredRoles; track $index) {
+              @for (role of filteredRoles(); track $index) {
                 <li (click)="addToMap('role', role)">
                   <a>{{ role.name }}</a>
                 </li>
@@ -93,7 +93,7 @@
               <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </summary>
             <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm mb-2">
-              @for (permission of filteredPermissions; track $index) {
+              @for (permission of filteredPermissions(); track $index) {
                 <li (click)="addToMap('permission', permission)">
                   <a>{{ permission.permissionId }}</a>
                 </li>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { PermissionModel, UserEntryModel, RoleEntryModel } from '../../../api';
@@ -27,9 +27,24 @@ export class UserDetailsComponent implements OnInit {
   user: UserEntryModel | undefined;
   userForm = new FormGroup({});
   userRoles: string[] | undefined;
-  filteredRoles: RoleEntryModel[] | undefined;
-  filteredPermissions: PermissionModel[] | undefined;
+  // filteredRoles: RoleEntryModel[] | undefined;
+  // filteredPermissions: PermissionModel[] | undefined;
   userPermissions: PermissionModel[] | undefined;
+
+  roleOptions = signal<RoleEntryModel[] | undefined>(undefined);
+  permissionOptions = signal<PermissionModel[] | undefined>(undefined);
+
+  filteredRoles = computed(() => {
+    const options = this.roleOptions();
+    return options?.filter(({ id }) => !this.userRoles?.includes(id));
+  });
+
+  filteredPermissions = computed(() => {
+    const options = this.permissionOptions();
+    return options?.filter(
+      ({ permissionId }) => !this.userPermissions?.some(({ permissionId: id }) => id === permissionId),
+    );
+  });
 
   private rolesSet = new Set<RoleEntryModel>();
   private permissionsSet = new Set<PermissionModel>();
@@ -38,10 +53,9 @@ export class UserDetailsComponent implements OnInit {
     this.generateForm();
     this.store.loading$().subscribe((loading) => {
       if (!loading) {
-        this.filteredRoles = this.store.roles().filter(({ id }) => !this.userRoles?.includes(id));
-        this.filteredPermissions = this.store
-          .permissions()
-          .filter(({ permissionId }) => !this.userPermissions?.some(({ permissionId: id }) => id === permissionId));
+        this.roleOptions.set(this.store.roles());
+        // this.filteredRoles = this.store.roles().filter(({ id }) => !this.userRoles?.includes(id));
+        this.permissionOptions.set(this.store.permissions());
       }
     });
 
@@ -83,7 +97,8 @@ export class UserDetailsComponent implements OnInit {
       return;
     }
 
-    this.filteredRoles = this.store.roles().filter(({ id }) => !this.userRoles?.includes(id));
+    this.roleOptions.set(this.store.roles());
+    // this.filteredRoles = this.store.roles().filter(({ id }) => !this.userRoles?.includes(id));
   }
 
   getPermissionsOrRetrieve() {
@@ -92,18 +107,24 @@ export class UserDetailsComponent implements OnInit {
       return;
     }
 
-    this.filteredPermissions = this.store
-      .permissions()
-      .filter(({ permissionId }) => !this.userPermissions?.some(({ permissionId: id }) => id === permissionId));
+    this.permissionOptions.set(this.store.permissions());
+
+    // this.filteredPermissions = this.store
+    //   .permissions()
+    //   .filter(({ permissionId }) => !this.userPermissions?.some(({ permissionId: id }) => id === permissionId));
   }
 
   addToMap(type: string, value: RoleEntryModel | PermissionModel) {
     if (type === 'role') {
       this.rolesSet.add(value as RoleEntryModel);
       this.userForm.patchValue({ [type]: this.rolesSet.values() });
+      this.roleOptions.update((prev) => prev?.filter(({ id }) => id !== (value as RoleEntryModel).id));
     } else if (type === 'permission') {
       this.permissionsSet.add(value as PermissionModel);
       this.userForm.patchValue({ [type]: this.permissionsSet.values() });
+      this.permissionOptions.update((prev) =>
+        prev?.filter(({ permissionId }) => permissionId !== (value as PermissionModel).permissionId),
+      );
     }
   }
 

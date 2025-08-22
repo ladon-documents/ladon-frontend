@@ -15,7 +15,8 @@ npm start
 
 ### <a id="trigger-a-release-build"></a>Trigger a release build
 
-Run following commands in `root`
+> [!CAUTION]
+> Run following commands in `root`, otherwise no release get's triggered
 
 ```bash
 npm version [major, minor, patch]

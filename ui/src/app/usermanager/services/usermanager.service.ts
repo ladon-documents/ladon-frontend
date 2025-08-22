@@ -36,6 +36,11 @@ export class UsermanagerService {
     return this.usermanagerApi.addUser(user);
   }
 
+  updateUser(user: { [key: string]: any }) {
+    const { id, name, email, status, imageUrl } = user;
+    return this.usermanagerApi.updateUser(id, { name, email, status, imageUrl } as UserWrapperModel);
+  }
+
   addRole(role: RoleWrapperModel) {
     return this.usermanagerApi.createRole(role);
   }

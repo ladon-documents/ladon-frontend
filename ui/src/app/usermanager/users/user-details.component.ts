@@ -75,6 +75,8 @@ export class UserDetailsComponent implements OnInit {
     if (this.userForm.invalid) {
       return;
     }
+
+    this.store.updateUser(this.userForm.value);
   }
 
   getRolesOrRetrieve() {

@@ -108,6 +108,22 @@ export const UsermanagerStore = signalStore(
         });
     },
 
+    updateUser(user: { [key: string]: any }) {
+      patchState(store, { loading: true });
+      usermanagerService
+        .updateUser(user)
+        .pipe(
+          finalize(() => {
+            patchState(store, { loading: false });
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.retrieveUsers();
+          },
+        });
+    },
+
     addRole(role: RoleWrapperModel) {
       patchState(store, { loading: true });
       usermanagerService

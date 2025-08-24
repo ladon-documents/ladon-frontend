@@ -1,5 +1,11 @@
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
+import {
+  provideRouter,
+  UrlSerializer,
+  withComponentInputBinding, withDebugTracing,
+  withRouterConfig,
+  withViewTransitions
+} from '@angular/router';
 import { appRoutes } from './app.routes';
 
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -14,6 +20,7 @@ import {
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { tokenInterceptor } from './interceptors/token.interceptor';
+import { CustomUrlSerializer } from './app.navconfig';
 
 export function apiConfigFactory(): Configuration {
   const params: ConfigurationParameters = {
@@ -38,10 +45,15 @@ export const appConfig: ApplicationConfig = {
       size: '1.5em',
       color: 'darkblue',
     }),
+    { provide: UrlSerializer, useClass: CustomUrlSerializer },
+
     { provide: APP_BASE_HREF, useValue: '/' },
     provideHttpClient(withInterceptors([tokenInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(appRoutes, withComponentInputBinding(), withViewTransitions()),
+    provideRouter(appRoutes, withComponentInputBinding(), withViewTransitions(),
+      withDebugTracing()
+
+    ),
     importProvidersFrom(LadonApiModule.forRoot(apiConfigFactory)),
     importProvidersFrom(PluginApiModule),
     importProvidersFrom(

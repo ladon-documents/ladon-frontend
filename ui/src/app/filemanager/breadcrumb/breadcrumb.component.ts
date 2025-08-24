@@ -1,7 +1,7 @@
 import { Component, inject, Signal } from '@angular/core';
-import { FilemanagerStore } from '../../store/filemanager.store';
 import { BreadcrumbStore } from '../../store/breadcrumb.store';
 import { DocumentModel } from '../../../api';
+import { FilemanagerFacade } from '../filemanager.facade';
 
 @Component({
   standalone: true,
@@ -11,9 +11,24 @@ import { DocumentModel } from '../../../api';
 })
 export class BreadcrumbComponent {
   readonly store = inject(BreadcrumbStore);
+  readonly filemanagerFacade = inject(FilemanagerFacade);
+
   public breadcrumbSignal: Signal<DocumentModel[]>;
 
   constructor() {
     this.breadcrumbSignal = this.store.paths;
   }
+
+  onNavigate(index: number): void {
+    const breadcrumbItems = this.breadcrumbSignal();
+    if (index === breadcrumbItems.length - 1) {
+      return
+    }
+    this.filemanagerFacade.navigateBreadcrumb(index);
+  }
+
+  showRoot() {
+    this.filemanagerFacade.showRoot();
+  }
+
 }

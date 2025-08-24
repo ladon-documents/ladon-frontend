@@ -9,6 +9,7 @@ import { environment } from '../../environments/environment';
 import { FilemanagerService } from '../filemanager/filemanager.service';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { LadonRouterService } from '../services/ladon-router.service';
+import { BreadcrumbStore } from './breadcrumb.store';
 
 interface PaginationState {
   currentPage: number;
@@ -90,8 +91,18 @@ const initialState: FilemanagerState = {
 export const FilemanagerStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withMethods((store, documentsService = inject(FilemanagerService), ladonRouter = inject(LadonRouterService)) => {
+  withMethods((store,
+               documentsService = inject(FilemanagerService),
+               ladonRouter = inject(LadonRouterService),
+               breadcrumbStore = inject(BreadcrumbStore)
+  ) => {
     return {
+      showRoot() {
+        this.loadBucket(store.selectedBucket())
+      },
+      resetFilemanagerStore() {
+        patchState(store, initialState);
+      },
       navigateToFilemanagerWithBucket: async (selectedBucket: string) => {
         patchState(store, (state) => ({
           ...state,
@@ -170,6 +181,10 @@ export const FilemanagerStore = signalStore(
           switchMap((document) =>
             documentsService.loadDocumentList(document).pipe(
               tap((documents) => {
+                if (document) {
+                  breadcrumbStore.addPath(document);
+                }
+
                 patchState(store, (state) => ({
                   ...state,
                   isLoading: false,

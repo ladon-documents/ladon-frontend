@@ -1,5 +1,4 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { computed } from '@angular/core';
 import { DocumentModel } from '../../api';
 
 export interface BreadcrumbState {
@@ -25,9 +24,11 @@ export const BreadcrumbStore = signalStore(
 
     navigateToIndex(index: number) {
       patchState(store, (state) => ({
-        paths: state.paths.slice(0, index + 1),
+        paths: state.paths.slice(0, index),
         currentPath: state.paths[index],
       }));
+      return store.currentPath();
+
     },
     root() {
       patchState(store, initialState);

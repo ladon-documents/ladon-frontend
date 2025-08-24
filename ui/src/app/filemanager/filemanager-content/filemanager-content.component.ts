@@ -1,6 +1,5 @@
-import { Component, inject, OnDestroy, Signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FilemanagerStore } from '../../store/filemanager.store';
 import { CommonModule } from '@angular/common';
 import { DocumentModel } from '../../../api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -20,6 +19,8 @@ import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
 import { FileiconPipe } from '../../shared/pipes/fileicon.pipe';
 import { LadonRouterService } from '../../services/ladon-router.service';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
+import { FilemanagerFacade } from '../filemanager.facade';
+import { Location } from '@angular/common';
 
 @Component({
   standalone: true,
@@ -43,30 +44,36 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
   templateUrl: './filemanager-content.component.html',
   styleUrl: './filemanager-content.component.scss',
 })
-export class FilemanagerContentComponent implements OnDestroy {
+export class FilemanagerContentComponent implements OnDestroy, OnInit {
   public dateFormat = 'dd.MM.yyyy';
-  readonly #store = inject(FilemanagerStore);
-  documents: Signal<DocumentModel[]> = this.#store.documents;
-  readonly #currentBucket: string | null;
+  readonly #facade = inject(FilemanagerFacade);
+  documents: Signal<DocumentModel[]> = this.#facade.documents;
+  #currentBucket: string | null = null;
+  #subfolder: string | null = null;
   #selectedDocument: DocumentModel | null = null;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private ladonRouterService: LadonRouterService,
-  ) {
-    this.#currentBucket = this.route.snapshot.paramMap.get('bucket');
-    //  this.#selectedCurrentFolder = this.route.snapshot.paramMap.get('subfolders');
-
-    if (this.#currentBucket) {
-      this.showRoot();
-    }
-  }
+  ) {}
 
   ngOnInit() {
+    this.route.data.subscribe(data => {
+      this.#currentBucket  = data['bucket'];
+    });
+
+
     this.route.params.subscribe((params) => {
       console.log('Bucket:', params['bucket']);
       console.log('Subfolders:', params['subfolders']);
+  //    this.#currentBucket = params['bucket'];
+      this.#subfolder = params['subfolders'];
+      if (this.#currentBucket && !this.#subfolder) {
+     //   this.showRoot();
+      } else if (this.#currentBucket && this.#subfolder) {
+        console.log(this.#subfolder);
+      }
     });
   }
 
@@ -74,23 +81,13 @@ export class FilemanagerContentComponent implements OnDestroy {
 
   public showRoot() {
     if (this.#currentBucket) {
-      this.#store.loadBucket(this.#currentBucket);
-    }
-  }
-
-  private showFolders() {
-    if (this.#selectedDocument) {
-      this.#store.loadDocumentList(this.#selectedDocument);
+      this.#facade.initRoot();
     }
   }
 
   async navigateTo(document: DocumentModel) {
     if (!document) return;
-    if (document.isFolder && this.#currentBucket && document.key) {
-      console.log(document);
       this.#selectedDocument = document;
-      this.#store.loadDocumentList(this.#selectedDocument);
-      //  await this.ladonRouterService.navigateToFolder(this.#currentBucket, document.key);
-    }
+      this.#facade.load(this.#selectedDocument);
   }
 }

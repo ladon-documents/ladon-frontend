@@ -1,39 +1,56 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, Signal } from '@angular/core';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { DocumentModel } from '../../api';
+import { BreadcrumbStore } from '../store/breadcrumb.store';
+import { LadonRouterService } from '../services/ladon-router.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilemanagerFacade {
-  readonly #store = inject(FilemanagerStore);
+  readonly #filemanagerStore = inject(FilemanagerStore);
+  readonly #breadcrumbStore = inject(BreadcrumbStore);
+  readonly ladonRouterService = inject(LadonRouterService);
+  readonly documents: Signal<DocumentModel[]> = this.#filemanagerStore.documents;
+  readonly selectedBucket = this.#filemanagerStore.selectedBucket;
+  readonly statistics = this.#filemanagerStore.statistics;
+  constructor() {}
 
-  constructor() {
-    /*
-    this.documents$ = store.select(documentsQuery.getDocuments);
-    this.selectedDocumentId$ = this.store.select(documentsQuery.getSelectedDocumentId);
-    this.loadStatus$ = this.store.select(documentsQuery.getLoadStatus);
-    this.totalCount$ = this.store.select(documentsQuery.getTotalDocuments);
-    this.currentBucket$ = this.store.select(documentsQuery.getCurrentBucket);
-    this.breadcrumb$ = this.store.select(selectBreadcrumb);
+  initRoot() {
+    const currentBucket = this.selectedBucket();
+    if (currentBucket) {
+      this.#filemanagerStore.navigateToFilemanagerWithBucket(currentBucket);
+    }
+  }
 
-    this.initActionListener();
-     */
-  }
-  documents() {
-    return this.#store.documents;
-  }
   loadBucket(bucket: string) {
-    this.#store.loadBucket(bucket);
+    this.#filemanagerStore.loadBucket(bucket);
+  }
+
+  loadStats() {
+    this.#filemanagerStore.loadStats(this.selectedBucket());
   }
 
   load(document: DocumentModel): void {
-    this.#store.loadDocumentList(document);
+    if (!document) return;
+    const currentBucket = this.selectedBucket();
+    if (document.isFolder && currentBucket && document.key) {
+      this.#filemanagerStore.loadDocumentList(document);
+      this.ladonRouterService.navigateToFolder(currentBucket, document.key);
+    }
+  }
+
+  showRoot() {
+    this.#breadcrumbStore.reset();
+    this.initRoot();
   }
 
   loadByKey(document: DocumentModel): void {
     if (document && document.key) {
     }
+  }
+  setCurrentFolder(document: DocumentModel) {
+
   }
 
   delete(document: DocumentModel): void {}
@@ -41,4 +58,17 @@ export class FilemanagerFacade {
   updateFolder(document: DocumentModel): void {}
 
   updateFile(document: DocumentModel): void {}
+
+  reset(): void {
+    this.#filemanagerStore.resetFilemanagerStore();
+    const selectedDocument = this.#breadcrumbStore.reset();
+  }
+
+  navigateBreadcrumb(index: number): void {
+    const selectedDocument = this.#breadcrumbStore.navigateToIndex(index);
+    if (selectedDocument) {
+      this.load(selectedDocument);
+    }
+  }
+
 }

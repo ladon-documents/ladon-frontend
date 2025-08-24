@@ -1,4 +1,4 @@
-import { Component, inject, Signal } from '@angular/core';
+import { Component, inject, OnInit, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
@@ -26,18 +26,17 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
   templateUrl: './filemanager.component.html',
   styleUrl: './filemanager.component.scss',
 })
-export class FilemanagerComponent {
-  readonly #store = inject(FilemanagerStore);
-  readonly selectedBucket: Signal<string | null> = this.#store.selectedBucket;
-  readonly stats: Signal<BucketStatsExtended | null> = this.#store.statistics;
+export class FilemanagerComponent implements OnInit {
+  readonly #facade = inject(FilemanagerFacade);
+  readonly selectedBucket: Signal<string | null> = this.#facade.selectedBucket;
+  readonly stats: Signal<BucketStatsExtended | null> = this.#facade.statistics;
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
-    private filemanagerFadcade: FilemanagerFacade,
-  ) {
+    private route: ActivatedRoute) {}
+
+  ngOnInit() {
     if (this.selectedBucket()) {
-      console.log(this.#store);
-      this.#store.loadStats(this.selectedBucket());
+      this.#facade.loadStats();
       this.router.navigate([this.selectedBucket()], { relativeTo: this.route });
     }
   }

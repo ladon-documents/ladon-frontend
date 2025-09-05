@@ -37,18 +37,9 @@
     <tfoot>
       <tr>
         <td colspan="2" class="text-right">
-          <details class="dropdown dropdown-end" (click)="getRolesOrRetrieve()">
-            <summary class="btn btn-primary">
-              <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            </summary>
-            <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm mt-2">
-              @for (role of filteredRoles(); track $index) {
-                <li (click)="addToMap('role', role)">
-                  <a>{{ role.name }}</a>
-                </li>
-              }
-            </ul>
-          </details>
+          <button class="btn btn-primary" type="button" (click)="openDialogType('role')">
+            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+          </button>
         </td>
       </tr>
     </tfoot>
@@ -57,7 +48,7 @@
         <tr class="cursor-pointer hover:bg-gray-100">
           <td [routerLink]="['../../roles', role]">{{ role }}</td>
           <td class="text-right">
-            <button class="btn">
+            <button class="btn" type="button">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>
@@ -68,7 +59,7 @@
         <tr class="cursor-pointer hover:bg-gray-100">
           <td>{{ role?.["id"] }}</td>
           <td class="text-right">
-            <button class="btn">
+            <button class="btn" type="button" (click)="removeByType('role', role)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>
@@ -88,18 +79,9 @@
     <tfoot>
       <tr>
         <td colspan="2" class="text-right">
-          <details class="dropdown dropdown-top dropdown-end" (click)="getPermissionsOrRetrieve()">
-            <summary class="btn btn-primary">
-              <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            </summary>
-            <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm mb-2">
-              @for (permission of filteredPermissions(); track $index) {
-                <li (click)="addToMap('permission', permission)">
-                  <a>{{ permission.permissionId }}</a>
-                </li>
-              }
-            </ul>
-          </details>
+          <button type="button" class="btn btn-primary" (click)="openDialogType('permission')">
+            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+          </button>
         </td>
       </tr>
     </tfoot>
@@ -108,7 +90,7 @@
         <tr class="cursor-pointer hover:bg-gray-100">
           <td [routerLink]="['../../permissions', permission.permissionId]">{{ permission.permissionId }}</td>
           <td class="text-right">
-            <button class="btn">
+            <button class="btn" type="button">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>
@@ -119,7 +101,7 @@
         <tr class="cursor-pointer hover:bg-gray-100">
           <td>{{ permission?.["permissionId"] }}</td>
           <td class="text-right">
-            <button class="btn">
+            <button class="btn" type="button" (click)="removeByType('permission', permission)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>
@@ -128,5 +110,42 @@
     </tbody>
   </table>
 
-  <button type="submit" class="btn btn-primary">Speichern</button>
+  <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Speichern</button>
 </form>
+
+<app-dialog [title]="dialogTitle">
+  <!-- <app-filter></app-filter> -->
+  @if (dialogTitle.includes("Rolle")) {
+    <div class="flex flex-col gap-2">
+      @for (role of mappedRoleOptions(); track $index) {
+        <div class="flex items-center gap-2 hover:cursor-pointer">
+          <input
+            class="checkbox checkbox-primary"
+            type="checkbox"
+            [id]="role.name"
+            [checked]="role.active || checkFormPatch('role', role)"
+            [disabled]="role.active"
+            (click)="updateByType($event, 'role', role)" />
+          <label for="{{ role.name }}" class="grow">{{ role.name }}</label>
+        </div>
+      }
+    </div>
+  }
+
+  @if (dialogTitle.includes("Berechtigung")) {
+    <div class="flex flex-col gap-2">
+      @for (permission of mappedPermissionOptions(); track $index) {
+        <div class="flex items-center gap-2 hover:cursor-pointer">
+          <input
+            class="checkbox checkbox-primary"
+            type="checkbox"
+            [id]="permission.permissionId"
+            [checked]="permission.active || checkFormPatch('permission', permission)"
+            [disabled]="permission.active"
+            (click)="updateByType($event, 'permission', permission)" />
+          <label for="{{ permission.permissionId }}" class="grow">{{ permission.permissionId }}</label>
+        </div>
+      }
+    </div>
+  }
+</app-dialog>

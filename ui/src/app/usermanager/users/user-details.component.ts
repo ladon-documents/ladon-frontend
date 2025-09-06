@@ -38,15 +38,15 @@ export class UserDetailsComponent implements OnInit {
   store = inject(UsermanagerStore);
   user: UserEntryModel | undefined;
   userForm = new FormGroup({});
-  userRoles: string[] | undefined;
-  userPermissions: PermissionModel[] | undefined;
+  userRoles = signal<string[] | undefined>(undefined);
+  userPermissions = signal<PermissionModel[] | undefined>(undefined);
   roleOptions = signal<RoleEntryModel[] | undefined>(undefined);
   permissionOptions = signal<PermissionModel[] | undefined>(undefined);
   dialogTitle = '';
 
   mappedRoleOptions: Signal<MappedRole[] | undefined> = computed(() => {
     const options = this.roleOptions();
-    const userRoles = this.userRoles;
+    const userRoles = this.userRoles();
 
     return options?.map((option) => {
       if (userRoles?.includes(option.id)) {
@@ -62,7 +62,7 @@ export class UserDetailsComponent implements OnInit {
 
   mappedPermissionOptions: Signal<MappedPermission[] | undefined> = computed(() => {
     const options = this.permissionOptions();
-    const userPermissions = this.userPermissions;
+    const userPermissions = this.userPermissions();
 
     return options?.map((option) => {
       if (userPermissions?.some(({ permissionId }) => permissionId === option.permissionId)) {
@@ -101,15 +101,7 @@ export class UserDetailsComponent implements OnInit {
           ]),
         ),
       )
-      .subscribe({
-        next: (payload) => {
-          const { 0: roles, 1: permissions } = payload;
-          this.userRoles = roles;
-          this.userPermissions = permissions;
-          this.userForm.get('roles')?.reset();
-          this.userForm.get('permissions')?.reset();
-        },
-      });
+      .subscribe({ next: this.updatePayload.bind(this) });
   }
 
   changePassword(id: string | undefined) {
@@ -131,15 +123,7 @@ export class UserDetailsComponent implements OnInit {
           ]),
         ),
       )
-      .subscribe({
-        next: (payload) => {
-          const { 0: roles, 1: permissions } = payload;
-          this.userRoles = roles;
-          this.userPermissions = permissions;
-          this.userForm.get('roles')?.reset();
-          this.userForm.get('permissions')?.reset();
-        },
-      });
+      .subscribe({ next: this.updatePayload.bind(this) });
   }
 
   openDialogType(type: UserSetType) {
@@ -195,6 +179,20 @@ export class UserDetailsComponent implements OnInit {
     }
 
     this.permissionOptions.set(this.store.permissions());
+  }
+
+  private updatePayload(payload: any[]) {
+    const { 0: roles, 1: permissions } = payload;
+    this.userRoles.set(roles);
+    this.userPermissions.set(permissions);
+    this.clearRolesAndPermissions();
+  }
+
+  private clearRolesAndPermissions() {
+    this.rolesSet.clear();
+    this.permissionsSet.clear();
+    this.userForm.get('roles')?.reset();
+    this.userForm.get('permissions')?.reset();
   }
 
   /**

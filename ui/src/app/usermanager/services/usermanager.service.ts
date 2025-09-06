@@ -41,6 +41,14 @@ export class UsermanagerService {
     return this.usermanagerApi.updateUser(id, { name, email, status, imageUrl } as UserWrapperModel);
   }
 
+  addRoleForUser(userId: string, roleId: string) {
+    return this.usermanagerApi.addRoleForUser(userId, roleId);
+  }
+
+  addPermissionForUser(userId: string, permissionId: string) {
+    return this.usermanagerApi.addPermissionForUser(userId, permissionId);
+  }
+
   addRole(role: RoleWrapperModel) {
     return this.usermanagerApi.createRole(role);
   }

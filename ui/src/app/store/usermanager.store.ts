@@ -2,7 +2,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { PermissionModel, RoleEntryModel, RoleWrapperModel, UserEntryModel, UserWrapperModel } from '../../api';
 import { inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
-import { finalize, Subject } from 'rxjs';
+import { filter, finalize, forkJoin, map, of, Subject } from 'rxjs';
 
 type UsermanagerState = {
   users: UserEntryModel[];
@@ -76,6 +76,8 @@ export const UsermanagerStore = signalStore(
             patchState(store, { loading: false });
             loading$.next(store.loading());
           }),
+          // Filter out permissions without an ID
+          map((permissions) => permissions.filter(({ permissionId }) => !!permissionId)),
         )
         .subscribe({
           next: (permissions) => {
@@ -110,18 +112,28 @@ export const UsermanagerStore = signalStore(
 
     updateUser(user: { [key: string]: any }) {
       patchState(store, { loading: true });
-      usermanagerService
-        .updateUser(user)
-        .pipe(
-          finalize(() => {
-            patchState(store, { loading: false });
-          }),
-        )
-        .subscribe({
-          next: () => {
-            this.retrieveUsers();
-          },
-        });
+      const { permissions, roles, id } = user;
+
+      const roles$ = Array.isArray(roles)
+        ? forkJoin(roles?.map((role: { id: string }) => usermanagerService.addRoleForUser(id, role.id)))
+        : of([]);
+      const permissions$ = Array.isArray(permissions)
+        ? forkJoin(
+            permissions?.map((permission: { permissionId: string }) =>
+              usermanagerService.addPermissionForUser(id, permission.permissionId),
+            ),
+          )
+        : of([]);
+
+      return forkJoin({
+        user: usermanagerService.updateUser(user),
+        roles: roles$,
+        permissions: permissions$,
+      }).pipe(
+        finalize(() => {
+          patchState(store, { loading: false });
+        }),
+      );
     },
 
     addRole(role: RoleWrapperModel) {

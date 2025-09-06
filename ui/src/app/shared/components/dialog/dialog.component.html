@@ -1,12 +1,12 @@
 <dialog #dialog class="modal">
-  <div class="modal-box">
+  <div class="modal-box max-h-[70vh] flex flex-col">
     <div class="dialog__header flex items-center justify-between mb-4">
       <h3 class="text-lg font-bold">
         {{ title() }}
       </h3>
       <button (click)="closeDialog()" class="btn btn-sm btn-circle btn-ghost">✕</button>
     </div>
-    <div class="dialog__content">
+    <div class="dialog__content overflow-auto grow-[2]">
       <ng-content></ng-content>
     </div>
   </div>

@@ -30,4 +30,12 @@ export class FilemanagerService {
   public getStats(bucketId: string) {
     return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
   }
+
+  public createNewFile(bucket: string, key: string, content: any) {
+    return this.documentsService.putDocument(bucket, key, content);
+  }
+
+  public createNewFolder(bucket: string, key: string) {
+    return this.documentsService.putFolder(bucket, key);
+  }
 }

@@ -43,7 +43,7 @@ export class FilemanagerFolderResolver implements Resolve<string | null> {
     const subfolders = route.paramMap.get('subfolders');
 
     if (subfolders) {
- //     this.filemanagerFacade.load(this.#selectedDocument);
+   //   this.filemanagerFacade.load(this.#selectedDocument);
       return of(subfolders);
     }
 

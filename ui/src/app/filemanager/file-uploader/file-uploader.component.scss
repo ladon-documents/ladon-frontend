@@ -1,0 +1,62 @@
+
+/*  CSS for Drop Zone */
+.file-drop-zone {
+  border: 2px dashed #cbd5e0;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background-color: #f7fafc;
+
+  &:hover {
+    border-color: #4299e1;
+    background-color: #ebf8ff;
+  }
+
+  &.drag-active {
+    border-color: #3182ce;
+    background-color: #bee3f8;
+    transform: scale(1.02);
+  }
+
+  &.drag-over {
+    border-color: #2b77cb;
+    background-color: #90cdf4;
+  }
+
+  .upload-icon {
+    font-size: 3rem;
+    color: #a0aec0;
+    margin-bottom: 1rem;
+  }
+
+  .upload-text {
+    color: #4a5568;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .upload-hint {
+    color: #718096;
+    font-size: 0.875rem;
+  }
+
+  &.drag-active,
+  &.drag-over {
+    .upload-icon {
+      color: #2b77cb;
+    }
+
+    .upload-text {
+      color: #2d3748;
+      font-weight: 600;
+    }
+  }
+}
+
+.upload-error {
+  background-color: #fed7d7;
+  border-color: #fc8181;
+  color: #c53030;
+}

@@ -13,6 +13,7 @@ export class FilemanagerFacade {
   readonly ladonRouterService = inject(LadonRouterService);
   readonly documents: Signal<DocumentModel[]> = this.#filemanagerStore.documents;
   readonly selectedBucket = this.#filemanagerStore.selectedBucket;
+  readonly error = this.#filemanagerStore.error;
   readonly statistics = this.#filemanagerStore.statistics;
   constructor() {}
 
@@ -39,6 +40,12 @@ export class FilemanagerFacade {
       this.ladonRouterService.navigateToFolder(currentBucket, document.key);
     }
   }
+
+  createFolder(folderName: string) {
+    const currentPath =this.#breadcrumbStore.currentPath()?.key;
+     this.#filemanagerStore.createFolder({ folderName, currentPath });
+  }
+
 
   showRoot() {
     this.#breadcrumbStore.reset();

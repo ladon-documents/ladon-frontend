@@ -1,11 +1,8 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { Inject, inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
-import { DocumentModel, DocumentsService, LoginRequestModel } from '../../api';
+import { inject } from '@angular/core';
+import { DocumentModel } from '../../api';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, pipe, switchMap, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { FilemanagerService } from '../filemanager/filemanager.service';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { LadonRouterService } from '../services/ladon-router.service';
@@ -91,118 +88,169 @@ const initialState: FilemanagerState = {
 export const FilemanagerStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withMethods((store,
-               documentsService = inject(FilemanagerService),
-               ladonRouter = inject(LadonRouterService),
-               breadcrumbStore = inject(BreadcrumbStore)
-  ) => {
-    return {
-      showRoot() {
-        this.loadBucket(store.selectedBucket())
-      },
-      resetFilemanagerStore() {
-        patchState(store, initialState);
-      },
-      navigateToFilemanagerWithBucket: async (selectedBucket: string) => {
-        patchState(store, (state) => ({
-          ...state,
-          selectedBucket,
-        }));
-        await ladonRouter.navigateToFilemanagerWithBucket(selectedBucket);
-      },
-      updateSelectedBucket: (selectedBucket: string) => {
-        patchState(store, { selectedBucket });
-      },
-      loadStats: rxMethod<any>(
-        pipe(
-          tap(() => {
-            // TODO show loading for stats
-          }),
-          switchMap((bucket) =>
-            documentsService.getStats(bucket).pipe(
-              tap(async (stats) => {
-                const response = JSON.parse(await stats.text());
-                patchState(store, (state) => ({
-                  ...state,
-                  isLoading: false,
-                  statistics: response,
-                }));
-              }),
-              catchError((error) => {
-                patchState(store, (state) => ({
-                  ...state,
-                  isLoading: false,
-                  error,
-                }));
-                throw error;
-              }),
+  withMethods(
+    (
+      store,
+      filemanagerService = inject(FilemanagerService),
+      ladonRouter = inject(LadonRouterService),
+      breadcrumbStore = inject(BreadcrumbStore),
+    ) => {
+      return {
+        showRoot() {
+          this.loadBucket(store.selectedBucket());
+        },
+        resetFilemanagerStore() {
+          patchState(store, initialState);
+        },
+        navigateToFilemanagerWithBucket: async (selectedBucket: string) => {
+          patchState(store, (state) => ({
+            ...state,
+            selectedBucket,
+          }));
+          await ladonRouter.navigateToFilemanagerWithBucket(selectedBucket);
+        },
+        updateSelectedBucket: (selectedBucket: string) => {
+          patchState(store, { selectedBucket });
+        },
+        loadStats: rxMethod<any>(
+          pipe(
+            tap(() => {
+              // TODO show loading for stats
+            }),
+            switchMap((bucket) =>
+              filemanagerService.getStats(bucket).pipe(
+                tap(async (stats) => {
+                  const response = JSON.parse(await stats.text());
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    statistics: response,
+                  }));
+                }),
+                catchError((error) => {
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    error,
+                  }));
+                  throw error;
+                }),
+              ),
             ),
           ),
         ),
-      ),
-      loadBucket: rxMethod<any>(
-        pipe(
-          tap(() => {
-            patchState(store, (state) => ({
-              ...initialState,
-              isLoading: true,
-            }));
-          }),
-          switchMap((bucket) =>
-            documentsService.loadBucket(bucket).pipe(
-              tap((documents) => {
-                patchState(store, (state) => ({
-                  ...state,
-                  selectedBucket: bucket,
-                  isLoading: false,
-                  documents,
-                }));
-              }),
-              catchError((error) => {
-                patchState(store, (state) => ({
-                  ...state,
-                  isLoading: false,
-                  error,
-                }));
-                throw error;
-              }),
+        loadBucket: rxMethod<any>(
+          pipe(
+            tap(() => {
+              patchState(store, (state) => ({
+                ...initialState,
+                isLoading: true,
+              }));
+            }),
+            switchMap((bucket) =>
+              filemanagerService.loadBucket(bucket).pipe(
+                tap((documents) => {
+                  patchState(store, (state) => ({
+                    ...state,
+                    selectedBucket: bucket,
+                    isLoading: false,
+                    documents,
+                  }));
+                }),
+                catchError((error) => {
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    error: error.error?.reason,
+                  }));
+                  throw error;
+                }),
+              ),
             ),
           ),
         ),
-      ),
-      loadDocumentList: rxMethod<any>(
-        pipe(
-          tap(() => {
-            patchState(store, (state) => ({
-              ...state,
-              isLoading: true,
-            }));
-          }),
-          switchMap((document) =>
-            documentsService.loadDocumentList(document).pipe(
-              tap((documents) => {
-                if (document) {
-                  breadcrumbStore.addPath(document);
-                }
+        loadDocumentList: rxMethod<any>(
+          pipe(
+            tap(() => {
+              patchState(store, (state) => ({
+                ...state,
+                error: null,
+                isLoading: true,
+              }));
+            }),
+            switchMap((document) =>
+              filemanagerService.loadDocumentList(document).pipe(
+                tap((documents) => {
+                  if (document) {
+                    breadcrumbStore.addPath(document);
+                  }
 
-                patchState(store, (state) => ({
-                  ...state,
-                  isLoading: false,
-                  documents,
-                }));
-              }),
-              catchError((error) => {
-                patchState(store, (state) => ({
-                  ...state,
-                  isLoading: false,
-                  error,
-                }));
-                throw error;
-              }),
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    documents,
+                  }));
+                }),
+                catchError((error) => {
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    error,
+                  }));
+                  throw error;
+                }),
+              ),
             ),
           ),
         ),
-      ),
-    };
-  }),
+        createFolder: rxMethod<{ folderName: string; currentPath?: string }>(
+          pipe(
+            tap(() => {
+              patchState(store, (state) => ({
+                ...state,
+                isLoading: true,
+                error: null,
+              }));
+            }),
+            switchMap(({ folderName, currentPath }) => {
+              const bucket = store.selectedBucket();
+              if (!bucket) {
+                throw new Error('Kein Bucket ausgewählt');
+              }
+              const folderPath = currentPath
+                ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${folderName}/`
+                : `${folderName}/`;
+              return filemanagerService.createNewFolder(bucket, folderPath).pipe(
+                switchMap(() => {
+                  if (currentPath) {
+                    const currentDocument: DocumentModel = { path: currentPath };
+                    return filemanagerService.loadDocumentList(currentDocument);
+                  } else {
+                    return filemanagerService.loadBucket(bucket);
+                  }
+                }),
+                tap((documents) => {
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    documents,
+                    error: null,
+                  }));
+                }),
+                catchError((error) => {
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    error: `Fehler beim Erstellen des Ordners: ${error.message || error}`,
+                  }));
+                  throw error;
+                })
+              );
+            })
+          )
+        ),
+
+      };
+    },
+  ),
 );

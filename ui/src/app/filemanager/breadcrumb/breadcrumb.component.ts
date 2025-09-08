@@ -12,6 +12,7 @@ import { FilemanagerFacade } from '../filemanager.facade';
 export class BreadcrumbComponent {
   readonly store = inject(BreadcrumbStore);
   readonly filemanagerFacade = inject(FilemanagerFacade);
+  readonly selectedBucket: Signal<string | null> = this.filemanagerFacade.selectedBucket;
 
   public breadcrumbSignal: Signal<DocumentModel[]>;
 

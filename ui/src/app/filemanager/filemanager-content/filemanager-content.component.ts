@@ -21,6 +21,8 @@ import { LadonRouterService } from '../../services/ladon-router.service';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { Location } from '@angular/common';
+import { ConverterService } from '../../services/converter.service';
+import { SidebarService } from '../sidebar/sidebar.service';
 
 @Component({
   standalone: true,
@@ -47,10 +49,14 @@ import { Location } from '@angular/common';
 export class FilemanagerContentComponent implements OnDestroy, OnInit {
   public dateFormat = 'dd.MM.yyyy';
   readonly #facade = inject(FilemanagerFacade);
+  private readonly converterService = inject(ConverterService);
+  private readonly sidebarService = inject(SidebarService);
   documents: Signal<DocumentModel[]> = this.#facade.documents;
   #currentBucket: string | null = null;
   #subfolder: string | null = null;
   #selectedDocument: DocumentModel | null = null;
+
+  imageUrl: string | null = null;
 
   constructor(
     private router: Router,
@@ -59,25 +65,29 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
-      this.#currentBucket  = data['bucket'];
+    this.route.data.subscribe((data) => {
+      this.#currentBucket = data['bucket'];
     });
-
 
     this.route.params.subscribe((params) => {
       console.log('Bucket:', params['bucket']);
       console.log('Subfolders:', params['subfolders']);
-  //    this.#currentBucket = params['bucket'];
+      //    this.#currentBucket = params['bucket'];
       this.#subfolder = params['subfolders'];
       if (this.#currentBucket && !this.#subfolder) {
-     //   this.showRoot();
+        //   this.showRoot();
       } else if (this.#currentBucket && this.#subfolder) {
         console.log(this.#subfolder);
       }
     });
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    if (this.imageUrl) {
+      URL.revokeObjectURL(this.imageUrl);
+    }
+
+  }
 
   public showRoot() {
     if (this.#currentBucket) {
@@ -85,9 +95,36 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     }
   }
 
+  onImageError(event: any) {
+    console.error('Fehler beim Anzeigen des Bildes:', event);
+    this.imageUrl = null;
+  }
+
+ async select(document: DocumentModel) {
+
+  }
+
   async navigateTo(document: DocumentModel) {
     if (!document) return;
+    if (document.isFolder) {
       this.#selectedDocument = document;
       this.#facade.load(this.#selectedDocument);
+    } else {
+      await this.showPreview(document);
+    }
   }
+
+  async showPreview(document: DocumentModel) {
+    // Sidebar sofort öffnen (mit Loading-State)
+    this.sidebarService.openSidebar();
+
+    try {
+      const imageUrl = await this.converterService.getPreview(document);
+      this.sidebarService.openSidebar(imageUrl);
+    } catch (error) {
+      console.error('Fehler beim Laden der Vorschau:', error);
+      this.sidebarService.closeSidebar();
+    }
+  }
+
 }

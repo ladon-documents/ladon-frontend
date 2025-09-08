@@ -1,6 +1,8 @@
 <div class="breadcrumbs text-sm">
   <ul>
-    <li (click)="showRoot()" class="cursor-pointer">Meine Dateien</li>
+
+
+    <li (click)="showRoot()" class="cursor-pointer"><h2 class="text-lg font-medium">{{ selectedBucket() }}</h2> </li>
     @for (path of store.paths(); track path.key; let i = $index) {
       <li [class.cursor-pointer]="true" (click)="onNavigate(i)">
         {{ path.name }}

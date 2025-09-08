@@ -2,12 +2,20 @@ import { Routes } from '@angular/router';
 import { FilemanagerComponent } from './filemanager.component';
 import { FilemanagerContentComponent } from './filemanager-content/filemanager-content.component';
 import { FilemanagerBucketResolver, FilemanagerFolderResolver } from './filemanager-bucket.resolver';
+import { FilemanagerDynamicRedirectResolver } from './filemanager-dynamic-redirect.resolver';
 
 export const filemanagerRoutes: Routes = [
   {
     path: '',
     component: FilemanagerComponent,
     children: [
+      {
+        path: '',
+        resolve: {
+          redirect: FilemanagerDynamicRedirectResolver
+        },
+        children: []
+      },
       {
         path: ':bucket',
         component: FilemanagerContentComponent,

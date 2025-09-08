@@ -51,7 +51,12 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([tokenInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes, withComponentInputBinding(), withViewTransitions(),
-      withDebugTracing()
+      withDebugTracing(),
+      withRouterConfig({
+        paramsInheritanceStrategy: 'always',
+        onSameUrlNavigation: 'reload'
+      })
+
 
     ),
     importProvidersFrom(LadonApiModule.forRoot(apiConfigFactory)),

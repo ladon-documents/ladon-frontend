@@ -111,16 +111,20 @@ export class NavigationComponent implements OnInit {
   private animateHighlight() {
     const activeItem = this.nav()?.nativeElement.querySelector('.text-blue-700');
     const highlightElement = this.highlight()?.nativeElement;
-    const { y } = activeItem?.getBoundingClientRect();
-    const headerHeight = 72;
+    try {
+      const { y } = activeItem?.getBoundingClientRect();
+      const headerHeight = 72;
 
-    if ('startViewTransition' in document) {
-      // @ts-ignore
-      document.startViewTransition(() => {
+      if ('startViewTransition' in document) {
+        // @ts-ignore
+        document.startViewTransition(() => {
+          highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
+        });
+      } else {
         highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
-      });
-    } else {
-      highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
+      }
+    } catch (e) {
+      console.warn(e);
     }
   }
 

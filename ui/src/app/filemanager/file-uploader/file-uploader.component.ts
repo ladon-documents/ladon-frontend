@@ -9,9 +9,6 @@ interface UploadStatus {
   progress?: number;
 }
 
-
-
-
 @Component({
   selector: 'file-uploader',
   imports: [FileUploadDirective, NgIcon],
@@ -107,5 +104,4 @@ export class FileUploaderComponent {
       }, 200);
     });
   }
-
 }

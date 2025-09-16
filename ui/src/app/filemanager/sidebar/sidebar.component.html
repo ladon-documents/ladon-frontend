@@ -1,22 +1,17 @@
 <div
-                                                                                    *ngIf="isOpen"
-                                                                                    class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
-                                                                                    (click)="closeSidebar()"
-></div>
+  *ngIf="isOpen"
+  class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+  (click)="closeSidebar()"></div>
 
 <!-- Sidebar -->
 <div
-                                                                                    class="fixed top-0 right-0 h-full w-96 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-50"
-                                                                                    [class.translate-x-0]="isOpen"
-                                                                                    [class.translate-x-full]="!isOpen"
->
+  class="fixed top-0 right-0 h-full w-96 bg-white shadow-xl transform transition-transform duration-300 ease-in-out z-50"
+  [class.translate-x-0]="isOpen"
+  [class.translate-x-full]="!isOpen">
   <!-- Header -->
   <div class="flex items-center justify-between p-4 border-b border-gray-200">
     <h2 class="text-lg font-semibold text-gray-800">Vorschau</h2>
-    <button
-                                                                                        (click)="closeSidebar()"
-                                                                                        class="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
-    >
+    <button (click)="closeSidebar()" class="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
       <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
@@ -27,11 +22,10 @@
   <div class="p-4 h-full overflow-y-auto pb-20">
     <div *ngIf="imageUrl" class="w-full">
       <img
-                                                                                          [src]="imageUrl"
-                                                                                          alt="Dokument Vorschau"
-                                                                                          class="w-full h-auto object-contain border border-gray-200 rounded-lg shadow-sm"
-                                                                                          (error)="onImageError($event)"
-      />
+        [src]="imageUrl"
+        alt="Dokument Vorschau"
+        class="w-full h-auto object-contain border border-gray-200 rounded-lg shadow-sm"
+        (error)="onImageError($event)" />
     </div>
 
     <div *ngIf="!imageUrl && isOpen" class="flex items-center justify-center h-64 text-gray-500">

@@ -7,7 +7,7 @@ export interface FileUploadEvent {
 
 @Directive({
   selector: '[appFileUpload]',
-  standalone: true
+  standalone: true,
 })
 export class FileUploadDirective {
   @Input() acceptedTypes: string[] = [];
@@ -18,13 +18,13 @@ export class FileUploadDirective {
 
   @Output() filesDropped = new EventEmitter<FileUploadEvent>();
   @Output() filesHovered = new EventEmitter<boolean>();
-  @Output() filesRejected = new EventEmitter<{ files: File[], reasons: string[] }>();
+  @Output() filesRejected = new EventEmitter<{ files: File[]; reasons: string[] }>();
 
   private dragCounter = 0;
 
   constructor(
     private elementRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
   ) {}
 
   @HostListener('dragenter', ['$event'])
@@ -93,14 +93,14 @@ export class FileUploadDirective {
     if (validationResult.validFiles.length > 0) {
       this.filesDropped.emit({
         files: validationResult.validFiles,
-        event
+        event,
       });
     }
 
     if (validationResult.invalidFiles.length > 0) {
       this.filesRejected.emit({
         files: validationResult.invalidFiles,
-        reasons: validationResult.rejectionReasons
+        reasons: validationResult.rejectionReasons,
       });
     }
   }
@@ -124,7 +124,7 @@ export class FileUploadDirective {
 
     const filesToProcess = this.allowMultiple ? files : files.slice(0, 1);
 
-    filesToProcess.forEach(file => {
+    filesToProcess.forEach((file) => {
       const reasons: string[] = [];
 
       if (file.size > this.maxFileSize) {
@@ -135,7 +135,7 @@ export class FileUploadDirective {
         const fileType = file.type;
         const fileName = file.name.toLowerCase();
 
-        const isAccepted = this.acceptedTypes.some(acceptedType => {
+        const isAccepted = this.acceptedTypes.some((acceptedType) => {
           if (acceptedType.includes('/')) {
             return fileType === acceptedType || fileType.startsWith(acceptedType.replace('*', ''));
           }

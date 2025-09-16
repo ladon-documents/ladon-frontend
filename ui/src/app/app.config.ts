@@ -2,9 +2,10 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import {
   provideRouter,
   UrlSerializer,
-  withComponentInputBinding, withDebugTracing,
+  withComponentInputBinding,
+  withDebugTracing,
   withRouterConfig,
-  withViewTransitions
+  withViewTransitions,
 } from '@angular/router';
 import { appRoutes } from './app.routes';
 
@@ -50,14 +51,15 @@ export const appConfig: ApplicationConfig = {
     { provide: APP_BASE_HREF, useValue: '/' },
     provideHttpClient(withInterceptors([tokenInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(appRoutes, withComponentInputBinding(), withViewTransitions(),
+    provideRouter(
+      appRoutes,
+      withComponentInputBinding(),
+      withViewTransitions(),
       withDebugTracing(),
       withRouterConfig({
         paramsInheritanceStrategy: 'always',
-        onSameUrlNavigation: 'reload'
-      })
-
-
+        onSameUrlNavigation: 'reload',
+      }),
     ),
     importProvidersFrom(LadonApiModule.forRoot(apiConfigFactory)),
     importProvidersFrom(PluginApiModule),

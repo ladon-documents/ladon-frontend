@@ -11,9 +11,11 @@ export class LadonRouterService {
   readonly #navigationEntries: Array<any> = [];
   #baseHref: string;
 
-  constructor(private readonly router: Router,
-              private location: Location,
-              private route: ActivatedRoute) {
+  constructor(
+    private readonly router: Router,
+    private location: Location,
+    private route: ActivatedRoute,
+  ) {
     this.#navigationEntries = environment.navigation;
     this.#baseHref = environment.baseHref ?? '';
   }
@@ -26,7 +28,7 @@ export class LadonRouterService {
   async navigateToFilemanagerWithBucket(bucket: string) {
     const filemangerNavigation = this.getFileManagerNavigationEntry();
     if (filemangerNavigation && filemangerNavigation.path) {
-        await this.router.navigate([`${this.#baseHref}/${filemangerNavigation.path}/${bucket}`]);
+      await this.router.navigate([`${this.#baseHref}/${filemangerNavigation.path}/${bucket}`]);
     }
     return Promise.resolve();
   }
@@ -70,5 +72,4 @@ export class LadonRouterService {
       this.router.navigate([this.router.url]);
     });
   }
-
 }

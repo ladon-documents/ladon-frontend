@@ -12,9 +12,9 @@ export const filemanagerRoutes: Routes = [
       {
         path: '',
         resolve: {
-          redirect: FilemanagerDynamicRedirectResolver
+          redirect: FilemanagerDynamicRedirectResolver,
         },
-        children: []
+        children: [],
       },
       {
         path: ':bucket',

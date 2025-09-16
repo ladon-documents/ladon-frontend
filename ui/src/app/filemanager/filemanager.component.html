@@ -1,11 +1,8 @@
 <main class="flex-grow p-6 bg-base-100">
   @if (error()) {
-    <div
-                                                                                        class="bg-red-50 border-red-200 text-red-800"
-                                                                                        role="alert">
+    <div class="bg-red-50 border-red-200 text-red-800" role="alert">
       <div class="flex">
-        <div class="flex-shrink-0">
-        </div>
+        <div class="flex-shrink-0"></div>
         <div class="ml-3">
           <p class="text-red-400">
             {{ error() }}
@@ -13,7 +10,6 @@
         </div>
       </div>
     </div>
-
   } @else {
     <filemanager-sidebar></filemanager-sidebar>
     <div>
@@ -23,27 +19,26 @@
             <app-breadcrumb></app-breadcrumb>
 
             <button
-                                                                                                class="btn btn-outline"
-                                                                                                popovertarget="popover-create-entity"
-                                                                                                style="anchor-name: --anchor-popover-create-entity">
+              class="btn btn-outline"
+              popovertarget="popover-create-entity"
+              style="anchor-name: --anchor-popover-create-entity">
               <ng-icon name="heroPlus" size="1.0em" class="size-4"></ng-icon>
               Hinzufügen
             </button>
             <ul
-                                                                                                class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
-                                                                                                popover
-                                                                                                id="popover-create-entity"
-                                                                                                style="position-anchor: --anchor-popover-create-entity">
+              class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
+              popover
+              id="popover-create-entity"
+              style="position-anchor: --anchor-popover-create-entity">
               <li><a>Neue Datei</a></li>
-              <li><a>
-                <create-folder></create-folder>
-
-
-              </a></li>
+              <li>
+                <a>
+                  <create-folder></create-folder>
+                </a>
+              </li>
               <li><a>Datei Hochladen</a></li>
             </ul>
           </div>
-
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 m-5">
           <div class="rounded-lg shadow p-6 transition-colors duration-200">
@@ -64,9 +59,7 @@
           </div>
 
           <file-uploader></file-uploader>
-
         </div>
-
 
         <div class="p-6">
           <router-outlet></router-outlet>

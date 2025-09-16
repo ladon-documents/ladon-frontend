@@ -42,10 +42,9 @@ export class FilemanagerFacade {
   }
 
   createFolder(folderName: string) {
-    const currentPath =this.#breadcrumbStore.currentPath()?.key;
-     this.#filemanagerStore.createFolder({ folderName, currentPath });
+    const currentPath = this.#breadcrumbStore.currentPath()?.key;
+    this.#filemanagerStore.createFolder({ folderName, currentPath });
   }
-
 
   showRoot() {
     this.#breadcrumbStore.reset();

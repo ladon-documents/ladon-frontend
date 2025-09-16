@@ -1,16 +1,15 @@
 <div
-                                                                                    class="file-drop-zone rounded-lg shadow p-6 transition-colors duration-200"
-                                                                                    appFileUpload
-                                                                                    [acceptedTypes]="acceptedFileTypes"
-                                                                                    [maxFileSize]="maxFileSize"
-                                                                                    [allowMultiple]="true"
-                                                                                    dragOverClass="drag-over"
-                                                                                    dragActiveClass="drag-active"
-                                                                                    (filesDropped)="onFilesDropped($event)"
-                                                                                    (filesHovered)="onFilesHovered($event)"
-                                                                                    (filesRejected)="onFilesRejected($event)"
-                                                                                    [class.upload-error]="uploadError">
-
+  class="file-drop-zone rounded-lg shadow p-6 transition-colors duration-200"
+  appFileUpload
+  [acceptedTypes]="acceptedFileTypes"
+  [maxFileSize]="maxFileSize"
+  [allowMultiple]="true"
+  dragOverClass="drag-over"
+  dragActiveClass="drag-active"
+  (filesDropped)="onFilesDropped($event)"
+  (filesHovered)="onFilesHovered($event)"
+  (filesRejected)="onFilesRejected($event)"
+  [class.upload-error]="uploadError">
   <div class="flex flex-col items-center">
     @if (isHovering) {
       <ng-icon name="heroCloudArrowDown" class="upload-icon text-blue-500" size="3rem"></ng-icon>
@@ -30,8 +29,7 @@
 
   @if (uploadProgress > 0) {
     <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
-      <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
-           [style.width.%]="uploadProgress"></div>
+      <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" [style.width.%]="uploadProgress"></div>
     </div>
   }
 </div>
@@ -45,13 +43,13 @@
         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
           <span class="text-sm">{{ status.fileName }}</span>
           <div class="flex items-center space-x-2">
-            @if (status.status === 'uploading') {
+            @if (status.status === "uploading") {
               <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
             }
-            @if (status.status === 'success') {
+            @if (status.status === "success") {
               <ng-icon name="heroCheck" class="text-green-600" size="1rem"></ng-icon>
             }
-            @if (status.status === 'error') {
+            @if (status.status === "error") {
               <ng-icon name="heroXMark" class="text-red-600" size="1rem"></ng-icon>
             }
             <span class="text-sm text-gray-500">{{ status.message }}</span>

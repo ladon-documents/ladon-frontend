@@ -24,7 +24,7 @@ import { CreateFolderComponent } from './create-folder/create-folder.component';
     BreadcrumbComponent,
     FileUploaderComponent,
     CreateFolderComponent,
-    SidebarComponent
+    SidebarComponent,
   ],
   providers: [
     provideIcons({

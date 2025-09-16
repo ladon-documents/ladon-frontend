@@ -244,12 +244,11 @@ export const FilemanagerStore = signalStore(
                     error: `Fehler beim Erstellen des Ordners: ${error.message || error}`,
                   }));
                   throw error;
-                })
+                }),
               );
-            })
-          )
+            }),
+          ),
         ),
-
       };
     },
   ),

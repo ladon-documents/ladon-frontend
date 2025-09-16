@@ -112,7 +112,7 @@ export const UsermanagerStore = signalStore(
 
     updateUser(user: { [key: string]: any }) {
       patchState(store, { loading: true });
-      const { permissions, roles, id } = user;
+      const { permissions, roles, id, permissionDeletions, roleDeletions } = user;
 
       const roles$ = Array.isArray(roles)
         ? forkJoin(roles?.map((role: { id: string }) => usermanagerService.addRoleForUser(id, role.id)))
@@ -124,11 +124,24 @@ export const UsermanagerStore = signalStore(
             ),
           )
         : of([]);
+      const roleDeletions$ = Array.isArray(roleDeletions)
+        ? forkJoin(roleDeletions.map((roleId: string) => usermanagerService.deleteRoleFromUser(id, roleId)))
+        : of([]);
+
+      const permissionDeletions$ = Array.isArray(permissionDeletions)
+        ? forkJoin(
+            permissionDeletions.map((permissionId: string) =>
+              usermanagerService.deletePermissionFromUser(id, permissionId),
+            ),
+          )
+        : of([]);
 
       return forkJoin({
         user: usermanagerService.updateUser(user),
         roles: roles$,
         permissions: permissions$,
+        roleDeletions: roleDeletions$,
+        permissionDeletions: permissionDeletions$,
       }).pipe(
         finalize(() => {
           patchState(store, { loading: false });

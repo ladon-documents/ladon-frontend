@@ -9,7 +9,7 @@ import { UsermanagerService } from '../services/usermanager.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 
-type UserSetType = 'role' | 'permission';
+type UserSetType = 'role' | 'roleDeletion' | 'permission' | 'permissionDeletion';
 
 interface MappedRole extends RoleEntryModel {
   active?: boolean;
@@ -44,6 +44,11 @@ export class UserDetailsComponent implements OnInit {
   permissionOptions = signal<PermissionModel[] | undefined>(undefined);
   dialogTitle = '';
 
+  private rolesSet = new Set<RoleEntryModel>();
+  private roleDeletionsSet = new Set<string>();
+  private permissionsSet = new Set<PermissionModel>();
+  private permissionDeletionsSet = new Set<string>();
+
   mappedRoleOptions: Signal<MappedRole[] | undefined> = computed(() => {
     const options = this.roleOptions();
     const userRoles = this.userRoles();
@@ -74,9 +79,6 @@ export class UserDetailsComponent implements OnInit {
       return option;
     });
   });
-
-  private rolesSet = new Set<RoleEntryModel>();
-  private permissionsSet = new Set<PermissionModel>();
 
   ngOnInit(): void {
     this.generateForm();
@@ -123,7 +125,13 @@ export class UserDetailsComponent implements OnInit {
           ]),
         ),
       )
-      .subscribe({ next: this.updatePayload.bind(this) });
+      .subscribe({
+        next: this.updatePayload.bind(this),
+        error: (error) => {
+          console.error('Error updating user:', error);
+          alert('Fehler beim Aktualisieren des Benutzers');
+        },
+      });
   }
 
   openDialogType(type: UserSetType) {
@@ -190,7 +198,9 @@ export class UserDetailsComponent implements OnInit {
 
   private clearRolesAndPermissions() {
     this.rolesSet.clear();
+    this.roleDeletionsSet.clear();
     this.permissionsSet.clear();
+    this.permissionDeletionsSet.clear();
     this.userForm.get('roles')?.reset();
     this.userForm.get('permissions')?.reset();
   }
@@ -226,15 +236,28 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
-  removeByType(type: UserSetType, value: RoleEntryModel | PermissionModel) {
+  /**
+   * Deletes from Set and updates FormControl
+   * @param type
+   * @param value
+   */
+  removeByType(type: UserSetType, value: RoleEntryModel | PermissionModel | string) {
     switch (type) {
       case 'role':
         this.rolesSet.delete(value as RoleEntryModel);
         this.patchFormByType('role');
         break;
+      case 'roleDeletion':
+        this.roleDeletionsSet.add(value as string);
+        this.patchFormByType('roleDeletion');
+        break;
       case 'permission':
         this.permissionsSet.delete(value as PermissionModel);
         this.patchFormByType('permission');
+        break;
+      case 'permissionDeletion':
+        this.permissionDeletionsSet.add(value as string);
+        this.patchFormByType('permissionDeletion');
         break;
       default:
         console.info(`Unknown type: ${type}`);
@@ -249,6 +272,8 @@ export class UserDetailsComponent implements OnInit {
     this.userForm.addControl('status', new FormControl());
     this.userForm.addControl('roles', new FormControl());
     this.userForm.addControl('permissions', new FormControl());
+    this.userForm.addControl('roleDeletions', new FormControl());
+    this.userForm.addControl('permissionDeletions', new FormControl());
     if (!this.user) {
       return;
     }
@@ -262,10 +287,18 @@ export class UserDetailsComponent implements OnInit {
       case 'role':
         this.userForm.patchValue({ roles: Array.from(this.rolesSet) });
         break;
+      case 'roleDeletion':
+        this.userForm.patchValue({ roleDeletions: Array.from(this.roleDeletionsSet) });
+        break;
       case 'permission':
         this.userForm.patchValue({ permissions: Array.from(this.permissionsSet) });
         break;
+      case 'permissionDeletion':
+        this.userForm.patchValue({ permissionDeletions: Array.from(this.permissionDeletionsSet) });
+        break;
     }
+
+    this.userForm.markAsDirty();
   }
 
   private patchForm(user: UserEntryModel | undefined) {

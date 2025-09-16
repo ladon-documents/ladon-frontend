@@ -28,7 +28,6 @@ export const BreadcrumbStore = signalStore(
         currentPath: state.paths[index],
       }));
       return store.currentPath();
-
     },
     root() {
       patchState(store, initialState);

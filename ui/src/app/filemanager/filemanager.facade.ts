@@ -56,9 +56,7 @@ export class FilemanagerFacade {
     if (document && document.key) {
     }
   }
-  setCurrentFolder(document: DocumentModel) {
-
-  }
+  setCurrentFolder(document: DocumentModel) {}
 
   delete(document: DocumentModel): void {}
 
@@ -77,5 +75,4 @@ export class FilemanagerFacade {
       this.load(selectedDocument);
     }
   }
-
 }

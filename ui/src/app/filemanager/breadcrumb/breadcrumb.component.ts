@@ -23,7 +23,7 @@ export class BreadcrumbComponent {
   onNavigate(index: number): void {
     const breadcrumbItems = this.breadcrumbSignal();
     if (index === breadcrumbItems.length - 1) {
-      return
+      return;
     }
     this.filemanagerFacade.navigateBreadcrumb(index);
   }
@@ -31,5 +31,4 @@ export class BreadcrumbComponent {
   showRoot() {
     this.filemanagerFacade.showRoot();
   }
-
 }

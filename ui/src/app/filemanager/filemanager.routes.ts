@@ -20,14 +20,14 @@ export const filemanagerRoutes: Routes = [
         path: ':bucket',
         component: FilemanagerContentComponent,
         resolve: {
-          bucket: FilemanagerBucketResolver
+          bucket: FilemanagerBucketResolver,
         },
       },
       {
         path: ':bucket/:subfolders',
         component: FilemanagerContentComponent,
         resolve: {
-          subfolders: FilemanagerFolderResolver
+          subfolders: FilemanagerFolderResolver,
         },
       },
     ],

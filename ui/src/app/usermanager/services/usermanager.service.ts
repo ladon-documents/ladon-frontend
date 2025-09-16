@@ -45,8 +45,16 @@ export class UsermanagerService {
     return this.usermanagerApi.addRoleForUser(userId, roleId);
   }
 
+  deleteRoleFromUser(userId: string, roleId: string) {
+    return this.usermanagerApi.deleteRoleForUser(userId, roleId);
+  }
+
   addPermissionForUser(userId: string, permissionId: string) {
     return this.usermanagerApi.addPermissionForUser(userId, permissionId);
+  }
+
+  deletePermissionFromUser(userId: string, permissionId: string) {
+    return this.usermanagerApi.removePermissionFromUser(userId, permissionId);
   }
 
   addRole(role: RoleWrapperModel) {

@@ -3,7 +3,7 @@
 
   container: avatar / inline-size;
   background: hsla(0deg, 0%, 0%, 10%);
-  width: var(--avatar-size, 8rem);
+  flex-basis: var(--avatar-size, 8rem);
   aspect-ratio: 1/1;
   border-radius: 50%;
   box-shadow:
@@ -21,6 +21,14 @@
     display: block;
     font-size: 40cqw;
     line-height: 1;
+  }
+
+  &.status-success {
+    --outer-border-color: var(--color-success);
+  }
+
+  &.status-neutral {
+    --outer-border-color: var(--color-neutral);
   }
 }
 

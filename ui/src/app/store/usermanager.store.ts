@@ -110,8 +110,20 @@ export const UsermanagerStore = signalStore(
         });
     },
 
+    patchUsersWithUser(user: UserEntryModel) {
+      const users = store.users();
+      const foundUser = users.find(({ email }) => email === user.email);
+      const foundUserIndex = users.findIndex(({ email }) => email === user.email);
+      users[foundUserIndex] = {
+        ...foundUser,
+        ...user,
+      };
+      patchState(store, { users });
+    },
+
     updateUser(user: { [key: string]: any }) {
       patchState(store, { loading: true });
+      loading$.next(store.loading());
       const { permissions, roles, id, permissionDeletions, roleDeletions } = user;
 
       const roles$ = Array.isArray(roles)
@@ -145,6 +157,7 @@ export const UsermanagerStore = signalStore(
       }).pipe(
         finalize(() => {
           patchState(store, { loading: false });
+          loading$.next(store.loading());
         }),
       );
     },

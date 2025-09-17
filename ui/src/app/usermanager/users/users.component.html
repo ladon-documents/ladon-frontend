@@ -6,45 +6,42 @@
   </button>
 </div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Status</th>
-      <th>Name</th>
-      <th>E-Mail</th>
-      <th class="text-right">Aktion</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (user of filteredUsers; track user.id) {
-      <tr [routerLink]="user.id" class="cursor-pointer hover:bg-gray-100">
-        <td>
-          @if (user.status) {
-            <div aria-label="success" class="status status-success shrink-0"></div>
-          } @else {
-            <div aria-label="success" class="status status-neutral shrink-0"></div>
-          }
-        </td>
-        <td>
-          <div class="flex items-center gap-4">
-            <div class="avatar shrink-0 transition-colors" [attr.data-alias]="user.name | alias"></div>
-            {{ user.name }}
-          </div>
-        </td>
-        <td>{{ user.email }}</td>
-        <td class="text-right">
-          <button class="btn" (click)="deleteUser(user.id)">
-            <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            <span class="hidden lg:block">Entfernen</span>
-          </button>
-        </td>
+<div class="grid">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>E-Mail</th>
+        <th class="text-right">Aktion</th>
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @for (user of filteredUsers; track user.id) {
+        <tr [routerLink]="user.id" class="cursor-pointer hover:bg-gray-100">
+          <td>
+            <div class="flex items-center gap-4">
+              <div
+                class="avatar shrink-0 transition-colors"
+                [ngClass]="user.status ? 'status-success' : 'status-neutral'"
+                [attr.data-alias]="user.name | alias"></div>
+              {{ user.name }}
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td class="text-right">
+            <button class="btn" (click)="deleteUser(user.id)">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+              <span class="hidden lg:block">Entfernen</span>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
 
-<div>
-  <router-outlet></router-outlet>
+  <div>
+    <router-outlet></router-outlet>
+  </div>
 </div>
 
 <app-dialog title="Neuen Nutzer anlegen">

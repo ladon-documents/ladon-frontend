@@ -32,6 +32,10 @@ export class UsermanagerService {
     return this.usermanagerApi.getPermissionsForUser(userId);
   }
 
+  retrieveUser(userId: string) {
+    return this.usermanagerApi.getUserData(userId);
+  }
+
   addUser(user: UserWrapperModel) {
     return this.usermanagerApi.addUser(user);
   }

@@ -4,10 +4,11 @@ import { UsermanagerStore } from '../../store/usermanager.store';
 import { PermissionModel, UserEntryModel, RoleEntryModel } from '../../../api';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
-import { combineLatest, switchMap, tap } from 'rxjs';
+import { combineLatest, switchMap, tap, of } from 'rxjs';
 import { UsermanagerService } from '../services/usermanager.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import { CommonModule } from '@angular/common';
 
 type UserSetType = 'role' | 'roleDeletion' | 'permission' | 'permissionDeletion';
 
@@ -23,7 +24,7 @@ interface MappedPermission extends PermissionModel {
   standalone: true,
   selector: 'app-user-details',
   providers: [provideIcons({ heroTrash, heroPlus })],
-  imports: [ReactiveFormsModule, NgIconComponent, AliasPipe, RouterModule, DialogComponent],
+  imports: [ReactiveFormsModule, NgIconComponent, AliasPipe, RouterModule, DialogComponent, CommonModule],
   templateUrl: './user-details.component.html',
   styleUrls: ['../usermanager.component.scss', './user-details.component.scss'],
 })
@@ -98,12 +99,17 @@ export class UserDetailsComponent implements OnInit {
         }),
         switchMap(({ id }) =>
           combineLatest([
+            of(this.user),
             this.usermanagerService.retrieveRoleForUser(id),
             this.usermanagerService.retrievePermissionForUser(id),
           ]),
         ),
       )
-      .subscribe({ next: this.updatePayload.bind(this) });
+      .subscribe({
+        next: (payload) => {
+          this.updatePayload(payload);
+        },
+      });
   }
 
   changePassword(id: string | undefined) {
@@ -120,13 +126,16 @@ export class UserDetailsComponent implements OnInit {
       .pipe(
         switchMap(() =>
           combineLatest([
+            this.usermanagerService.retrieveUser(this.user!.id),
             this.usermanagerService.retrieveRoleForUser(this.user!.id),
             this.usermanagerService.retrievePermissionForUser(this.user!.id),
           ]),
         ),
       )
       .subscribe({
-        next: this.updatePayload.bind(this),
+        next: (payload) => {
+          this.updatePayload(payload, false);
+        },
         error: (error) => {
           console.error('Error updating user:', error);
           alert('Fehler beim Aktualisieren des Benutzers');
@@ -189,8 +198,11 @@ export class UserDetailsComponent implements OnInit {
     this.permissionOptions.set(this.store.permissions());
   }
 
-  private updatePayload(payload: any[]) {
-    const { 0: roles, 1: permissions } = payload;
+  private updatePayload(payload: any[], skipUserPatch = true) {
+    const { 0: user, 1: roles, 2: permissions } = payload;
+    if (!skipUserPatch) {
+      this.store.patchUsersWithUser(user);
+    }
     this.userRoles.set(roles);
     this.userPermissions.set(permissions);
     this.clearRolesAndPermissions();

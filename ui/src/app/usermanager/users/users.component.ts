@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject, OnInit, ElementRef } from '@angular/core';
+import { Component, ViewChild, inject, OnInit } from '@angular/core';
 import { UsermanagerService } from '../services/usermanager.service';
 import { RouterModule } from '@angular/router';
 import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
@@ -8,12 +8,21 @@ import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
 import { FilterComponent } from '../components/filter/filter.component';
 import { UserEntryModel } from '../../../api';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-users',
   standalone: true,
   providers: [provideIcons({ heroPlus, heroTrash })],
-  imports: [NgIconComponent, FilterComponent, RouterModule, AliasPipe, ReactiveFormsModule, DialogComponent],
+  imports: [
+    NgIconComponent,
+    FilterComponent,
+    RouterModule,
+    AliasPipe,
+    ReactiveFormsModule,
+    DialogComponent,
+    CommonModule,
+  ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
 })

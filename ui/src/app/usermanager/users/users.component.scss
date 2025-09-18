@@ -4,17 +4,13 @@
   --avatar-size: 1.2lh;
 }
 
-.status {
-  width: 1rem;
-  height: 1rem;
+@media screen and (min-width: 1024px) {
+  #main-grid {
+    --grid-template-columns: 1fr;
+    grid-template-columns: var(--grid-template-columns);
 
-  &-success {
-    --color-base-content: var(--color-success);
-  }
-}
-
-div:has(> .avatar):hover {
-  .avatar {
-    --outer-border-color: var(--color-blue-700);
+    &:has(app-user-details) {
+      --grid-template-columns: 1fr 1fr;
+    }
   }
 }

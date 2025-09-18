@@ -1,25 +1,26 @@
-<h1>Details</h1>
-
-<div class="flex gap-4">
+<div class="flex gap-4 py-8">
   <div
     class="avatar self-center"
     [ngClass]="user?.status ? 'status-success' : 'status-neutral'"
     [attr.data-alias]="user?.name | alias"></div>
 
-  <div class="flex flex-col gap-2 grow">
-    <h2 class="text-xl font-semibold">{{ user?.name }}</h2>
-    <code class="text-sm">{{ user?.id }}</code>
+  <div class="flex flex-col gap-4 grow">
+    <div class="flex flex-col gap-2">
+      <h2 class="text-xl font-bold">{{ user?.name }}</h2>
+      <code class="text-sm">{{ user?.id }}</code>
+    </div>
+
     <button (click)="changePassword(user?.id)" class="btn btn-outline">Passwort ändern</button>
   </div>
 </div>
 
 <form class="flex flex-col gap-4" [formGroup]="userForm" (ngSubmit)="onSubmit()">
-  <label class="input" for="name">
+  <label class="input w-full" for="name">
     <span class="label">Name</span>
     <input type="text" id="name" formControlName="name" />
   </label>
 
-  <label class="input" for="email">
+  <label class="input w-full" for="email">
     <span class="label">E-Mail</span>
     <input type="email" id="email" formControlName="email" />
   </label>
@@ -31,8 +32,10 @@
     <input type="checkbox" checked="checked" class="toggle toggle-primary" formControlName="status" />
   </label>
 
-  <h2>Rollen</h2>
   <table class="table">
+    <caption class="font-bold text-left mb-4">
+      Rollen
+    </caption>
     <thead>
       <tr>
         <th>Name</th>
@@ -73,8 +76,10 @@
     </tbody>
   </table>
 
-  <h2>Berechtigungen</h2>
   <table class="table text-sm">
+    <caption class="font-bold text-left mb-4">
+      Berechtigungen
+    </caption>
     <thead>
       <tr>
         <th>Name</th>

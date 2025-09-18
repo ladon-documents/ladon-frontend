@@ -6,7 +6,7 @@
   </button>
 </div>
 
-<div class="grid">
+<div id="main-grid" class="grid gap-4 items-start mt-4">
   <table class="table">
     <thead>
       <tr>
@@ -17,7 +17,7 @@
     </thead>
     <tbody>
       @for (user of filteredUsers; track user.id) {
-        <tr [routerLink]="user.id" class="cursor-pointer hover:bg-gray-100">
+        <tr [routerLink]="user.id" [routerLinkActive]="'bg-gray-100'" class="cursor-pointer hover:bg-gray-100">
           <td>
             <div class="flex items-center gap-4">
               <div
@@ -31,7 +31,6 @@
           <td class="text-right">
             <button class="btn" (click)="deleteUser(user.id)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-              <span class="hidden lg:block">Entfernen</span>
             </button>
           </td>
         </tr>

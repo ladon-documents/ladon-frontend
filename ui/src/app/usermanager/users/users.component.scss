@@ -3,3 +3,14 @@
 .avatar {
   --avatar-size: 1.2lh;
 }
+
+@media screen and (min-width: 1024px) {
+  #main-grid {
+    --grid-template-columns: 1fr;
+    grid-template-columns: var(--grid-template-columns);
+
+    &:has(app-user-details) {
+      --grid-template-columns: 1fr 1fr;
+    }
+  }
+}

@@ -3,6 +3,8 @@ import { FilemanagerStore } from '../store/filemanager.store';
 import { DocumentModel } from '../../api';
 import { BreadcrumbStore } from '../store/breadcrumb.store';
 import { LadonRouterService } from '../services/ladon-router.service';
+import { ConverterService } from '../services/converter.service';
+import { FilemanagerService } from './filemanager.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +12,14 @@ import { LadonRouterService } from '../services/ladon-router.service';
 export class FilemanagerFacade {
   readonly #filemanagerStore = inject(FilemanagerStore);
   readonly #breadcrumbStore = inject(BreadcrumbStore);
+  readonly #converterService = inject(ConverterService);
   readonly ladonRouterService = inject(LadonRouterService);
+  readonly filemanagerSerivce = inject(FilemanagerService);
   readonly documents: Signal<DocumentModel[]> = this.#filemanagerStore.documents;
   readonly selectedBucket = this.#filemanagerStore.selectedBucket;
   readonly error = this.#filemanagerStore.error;
   readonly statistics = this.#filemanagerStore.statistics;
+  readonly selectedDocument = this.#filemanagerStore.selectedDocument;
   constructor() {}
 
   initRoot() {
@@ -23,6 +28,9 @@ export class FilemanagerFacade {
       this.#filemanagerStore.navigateToFilemanagerWithBucket(currentBucket);
     }
   }
+  setSelectedDocument(document: DocumentModel) {
+    this.#filemanagerStore.setSelectedDocument(document);
+  }
 
   loadBucket(bucket: string) {
     this.#filemanagerStore.loadBucket(bucket);
@@ -30,6 +38,23 @@ export class FilemanagerFacade {
 
   loadStats() {
     this.#filemanagerStore.loadStats(this.selectedBucket());
+  }
+
+  getDocument(document: DocumentModel) {
+    return this.filemanagerSerivce.getDocument(document)
+  }
+  saveDocument(document: DocumentModel, content:any) {
+    return this.filemanagerSerivce.saveDocument(document, content)
+  }
+  async getImagePreviewUrll() {
+    try {
+      const document = this.#filemanagerStore.selectedDocument();
+      if (!document) return null;
+      const imageUrl = await this.#converterService.getPreview(document);
+      return imageUrl;
+    } catch (error) {
+      throw error;
+    }
   }
 
   load(document: DocumentModel): void {
@@ -41,9 +66,14 @@ export class FilemanagerFacade {
     }
   }
 
+  createEmptyFile(fileName: string) {
+    const currentPath = this.getCurrentPath();
+  //  this.#filemanagerStore.createNewFile({ fileName, currentPath });
+  }
+
   createFolder(folderName: string) {
-    const currentPath = this.#breadcrumbStore.currentPath()?.key;
-    this.#filemanagerStore.createFolder({ folderName, currentPath });
+    const currentPath =this.getCurrentPath()
+     this.#filemanagerStore.createFolder({ folderName, currentPath });
   }
 
   showRoot() {
@@ -55,7 +85,10 @@ export class FilemanagerFacade {
     if (document && document.key) {
     }
   }
-  setCurrentFolder(document: DocumentModel) {}
+
+  setCurrentFolder(document: DocumentModel) {
+
+  }
 
   delete(document: DocumentModel): void {}
 
@@ -74,4 +107,9 @@ export class FilemanagerFacade {
       this.load(selectedDocument);
     }
   }
+
+  private getCurrentPath(): string | undefined {
+    return this.#breadcrumbStore.currentPath()?.key
+  }
+
 }

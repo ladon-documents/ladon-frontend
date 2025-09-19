@@ -1,32 +1,33 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarService } from './sidebar.service';
-import { Subscription } from 'rxjs';
+import { lastValueFrom, Subscription } from 'rxjs';
+import { FilemanagerFacade } from '../filemanager.facade';
+import { MetaComponent } from '../meta/meta.component';
+import { FileEditorDialogComponent } from '../file-editor-dialog/file-editor-dialog.component';
+import { MonacoEditorService } from '../../editor/editor.service';
+import { PreviewComponent } from '../preview/preview.component';
 
 @Component({
   selector: 'filemanager-sidebar',
-  imports: [CommonModule],
+  imports: [CommonModule, MetaComponent, FileEditorDialogComponent, PreviewComponent],
   providers: [],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  isOpen = false;
-  imageUrl: string | null = null;
-  private subscriptions = new Subscription();
+  private readonly monacoEditorService = inject(MonacoEditorService);
+  private readonly filemanagerFacade = inject(FilemanagerFacade);
+  private readonly sidebarService = inject(SidebarService);
 
-  constructor(private sidebarService: SidebarService) {}
+  selectedDocument = this.filemanagerFacade.selectedDocument;
+  isOpen = false;
+  private subscriptions = new Subscription();
 
   ngOnInit() {
     this.subscriptions.add(
-      this.sidebarService.sidebarOpen$.subscribe((isOpen) => {
+      this.sidebarService.sidebarOpen$.subscribe(async (isOpen) => {
         this.isOpen = isOpen;
-      }),
-    );
-
-    this.subscriptions.add(
-      this.sidebarService.imageUrl$.subscribe((url) => {
-        this.imageUrl = url;
       }),
     );
   }
@@ -39,7 +40,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.sidebarService.closeSidebar();
   }
 
-  onImageError(event: any) {
-    console.error('Fehler beim Anzeigen des Bildes:', event);
+  toggleSidebar() {
+    this.sidebarService.toggleSidebar();
   }
+
 }
+

@@ -696,7 +696,7 @@ paths:
         "200":
           description: OK
           content:
-            "application/json":
+            "application/octet-stream":
               schema:
                 type: string
                 format: binary
@@ -722,13 +722,10 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/octet-stream:
             schema:
-              type: object
-              properties:
-                content:
-                  type: string
-                  format: binary
+              type: string
+              format: binary
       responses:
         "200":
           description: OK

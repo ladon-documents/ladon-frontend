@@ -1,18 +1,18 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { SearchbarComponent } from '../searchbar/searchbar.component';
-import { filemanagerRoutes } from './filemanager.routes';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilemanagerFacade } from './filemanager.facade';
-import { FilemanagerStore } from '../store/filemanager.store';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { heroDocument, heroFolder, heroPlus } from '@ng-icons/heroicons/outline';
+import { heroDocument, heroEye, heroFolder, heroPlus } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { CreateFolderComponent } from './create-folder/create-folder.component';
+import { SidebarService } from './sidebar/sidebar.service';
+import { FileEditorDialogComponent } from './file-editor-dialog/file-editor-dialog.component';
+import { filemanagerRoutes } from './filemanager.routes';
 
 @Component({
   standalone: true,
@@ -25,12 +25,14 @@ import { CreateFolderComponent } from './create-folder/create-folder.component';
     FileUploaderComponent,
     CreateFolderComponent,
     SidebarComponent,
+    FileEditorDialogComponent,
   ],
   providers: [
     provideIcons({
       heroPlus,
       heroDocument,
       heroFolder,
+      heroEye,
     }),
     FilesizePipe,
   ],
@@ -40,6 +42,8 @@ import { CreateFolderComponent } from './create-folder/create-folder.component';
 })
 export class FilemanagerComponent implements OnInit {
   private readonly filemanagerFacade = inject(FilemanagerFacade);
+  sidebarService = inject(SidebarService);
+
   readonly selectedBucket: Signal<string | null> = this.filemanagerFacade.selectedBucket;
   readonly error: Signal<string | null> = this.filemanagerFacade.error;
   readonly stats: Signal<BucketStatsExtended | null> = this.filemanagerFacade.statistics;
@@ -69,6 +73,10 @@ export class FilemanagerComponent implements OnInit {
       this.filemanagerFacade.loadStats();
       this.router.navigate([this.selectedBucket()], { relativeTo: this.route });
     }
+  }
+
+  toggleSidebar() {
+    this.sidebarService.toggleSidebar();
   }
 
   protected readonly heroDocument = heroDocument;

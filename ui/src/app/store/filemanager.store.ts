@@ -112,6 +112,10 @@ export const FilemanagerStore = signalStore(
         updateSelectedBucket: (selectedBucket: string) => {
           patchState(store, { selectedBucket });
         },
+
+        setSelectedDocument: (selectedDocument: DocumentModel | null) => {
+          patchState(store, { selectedDocument });
+        },
         loadStats: rxMethod<any>(
           pipe(
             tap(() => {

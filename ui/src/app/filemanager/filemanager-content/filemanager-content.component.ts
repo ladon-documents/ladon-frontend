@@ -20,7 +20,6 @@ import { FileiconPipe } from '../../shared/pipes/fileicon.pipe';
 import { LadonRouterService } from '../../services/ladon-router.service';
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { Location } from '@angular/common';
 import { ConverterService } from '../../services/converter.service';
 import { SidebarService } from '../sidebar/sidebar.service';
 
@@ -86,6 +85,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     if (this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);
     }
+
   }
 
   public showRoot() {
@@ -99,7 +99,9 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     this.imageUrl = null;
   }
 
-  async select(document: DocumentModel) {}
+ async select(document: DocumentModel) {
+   this.#facade.setSelectedDocument(document);
+  }
 
   async navigateTo(document: DocumentModel) {
     if (!document) return;
@@ -107,20 +109,9 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       this.#selectedDocument = document;
       this.#facade.load(this.#selectedDocument);
     } else {
-      await this.showPreview(document);
+      await this.select(document);
     }
   }
 
-  async showPreview(document: DocumentModel) {
-    // Sidebar sofort öffnen (mit Loading-State)
-    this.sidebarService.openSidebar();
 
-    try {
-      const imageUrl = await this.converterService.getPreview(document);
-      this.sidebarService.openSidebar(imageUrl);
-    } catch (error) {
-      console.error('Fehler beim Laden der Vorschau:', error);
-      this.sidebarService.closeSidebar();
-    }
-  }
 }

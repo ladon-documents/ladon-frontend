@@ -502,7 +502,7 @@ export class DocumentsService {
     return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       params: localVarQueryParameters,
-      responseType: 'blob',
+      responseType: 'text',
       withCredentials: this.configuration.withCredentials,
       headers: localVarHeaders,
       observe: observe,

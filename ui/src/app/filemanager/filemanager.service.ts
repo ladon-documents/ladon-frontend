@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DocumentModel, DocumentsService } from '../../api';
+import { DocumentModel, DocumentsService, ZipUploadRequestModel } from '../../api';
 import { throwError } from 'rxjs';
 
 @Injectable({
@@ -11,6 +11,25 @@ export class FilemanagerService {
   public loadBucket(bucket: string) {
     return this.documentsService.listDocuments(bucket, undefined, undefined, undefined, undefined, undefined, true);
   }
+  public getDocument(document: DocumentModel) {
+    const { bucket, key } = document;
+    if (bucket && key) {
+      return this.documentsService.getDocument(bucket, key);;
+    }
+    return throwError(new Error('Not Found'));
+  }
+
+  public saveDocument(document: DocumentModel, content: any) {
+    const { bucket, key } = document;
+    const zipUploadRequestModel: ZipUploadRequestModel = {
+      content
+    };
+    if (bucket && key) {
+      return this.documentsService.putDocument(bucket, key, undefined, zipUploadRequestModel);;
+    }
+    return throwError(new Error('Not Found'));
+  }
+
 
   public loadDocumentList(document: DocumentModel) {
     if (document && document.bucket) {
@@ -32,7 +51,7 @@ export class FilemanagerService {
   }
 
   public createNewFile(bucket: string, key: string, content: any) {
-    return this.documentsService.putDocument(bucket, key, content);
+    return this.documentsService.putDocument(bucket, key);
   }
 
   public createNewFolder(bucket: string, key: string) {

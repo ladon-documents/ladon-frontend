@@ -20,6 +20,9 @@ export class FilemanagerFacade {
   readonly error = this.#filemanagerStore.error;
   readonly statistics = this.#filemanagerStore.statistics;
   readonly selectedDocument = this.#filemanagerStore.selectedDocument;
+  readonly viewMode = this.#filemanagerStore.viewMode;
+  readonly pagination = this.#filemanagerStore.pagination;
+
   constructor() {}
 
   initRoot() {
@@ -28,6 +31,36 @@ export class FilemanagerFacade {
       this.#filemanagerStore.navigateToFilemanagerWithBucket(currentBucket);
     }
   }
+
+  setViewMode(mode: 'card' | 'table') {
+    this.#filemanagerStore.setViewMode(mode);
+  }
+  // Pagination methods
+  setPageSize(pageSize: number) {
+    this.#filemanagerStore.setPageSize(pageSize);
+  }
+
+  goToPage(page: number) {
+    this.#filemanagerStore.goToPage(page);
+  }
+
+  nextPage() {
+    this.#filemanagerStore.nextPage();
+  }
+
+  previousPage() {
+    this.#filemanagerStore.previousPage();
+  }
+
+  firstPage() {
+    this.#filemanagerStore.firstPage();
+  }
+
+  lastPage() {
+    this.#filemanagerStore.lastPage();
+  }
+
+
   setSelectedDocument(document: DocumentModel) {
     this.#filemanagerStore.setSelectedDocument(document);
   }

@@ -4,7 +4,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilemanagerFacade } from './filemanager.facade';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { heroDocument, heroEye, heroFolder, heroPlus } from '@ng-icons/heroicons/outline';
+import { heroBars3, heroDocument, heroEye, heroFolder, heroPlus, heroSquares2x2 } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
@@ -33,6 +33,8 @@ import { filemanagerRoutes } from './filemanager.routes';
       heroDocument,
       heroFolder,
       heroEye,
+      heroBars3,
+      heroSquares2x2
     }),
     FilesizePipe,
   ],
@@ -47,6 +49,7 @@ export class FilemanagerComponent implements OnInit {
   readonly selectedBucket: Signal<string | null> = this.filemanagerFacade.selectedBucket;
   readonly error: Signal<string | null> = this.filemanagerFacade.error;
   readonly stats: Signal<BucketStatsExtended | null> = this.filemanagerFacade.statistics;
+  viewMode = this.filemanagerFacade.viewMode;
 
   constructor(
     private router: Router,
@@ -73,6 +76,10 @@ export class FilemanagerComponent implements OnInit {
       this.filemanagerFacade.loadStats();
       this.router.navigate([this.selectedBucket()], { relativeTo: this.route });
     }
+  }
+
+  setViewMode(viewMode: 'card' | 'table') {
+    this.filemanagerFacade.setViewMode(viewMode)
   }
 
   toggleSidebar() {

@@ -23,7 +23,23 @@
             <div class="flex items-center justify-between px-6 py-4">
               <app-breadcrumb></app-breadcrumb>
               <div class="flex items-center gap-2">
-                <button class="btn btn-square btn-outline btn-sm" (click)="toggleSidebar()" title="Vorschau ein-/ausblenden">
+                <button
+                                                                                                    class="btn btn-square btn-outline btn-sm"
+                                                                                                    (click)="setViewMode('card')"
+                                                                                                    [title]="'Zur Card-Ansicht wechseln'">
+                  <ng-icon name="heroSquares2x2" size="1.2em" class="size-5"></ng-icon>
+                </button>
+                <button
+                                                                                                    class="btn btn-square btn-outline btn-sm"
+                                                                                                    (click)="setViewMode('table')"
+                                                                                                    [title]="'Zur Tabellenansicht wechseln'">
+
+                  <ng-icon name="heroBars3" size="1.2em" class="size-5"></ng-icon>
+                </button>
+
+
+                <button class="btn btn-square btn-outline btn-sm" (click)="toggleSidebar()"
+                        title="Vorschau ein-/ausblenden">
                   <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
                 </button>
               </div>
@@ -31,7 +47,8 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 m-5">
-            <button class="btn btn-outline" popovertarget="popover-create-entity" style="anchor-name: --anchor-popover-create-entity">
+            <button class="btn btn-outline" popovertarget="popover-create-entity"
+                    style="anchor-name: --anchor-popover-create-entity">
               <ng-icon name="heroPlus" size="1.0em" class="size-4"></ng-icon>
               Hinzufügen
             </button>

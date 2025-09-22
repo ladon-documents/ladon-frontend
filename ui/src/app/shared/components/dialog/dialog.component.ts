@@ -1,4 +1,4 @@
-import { Component, input, ViewChild, ElementRef } from '@angular/core';
+import { Component, input, ViewChild, ElementRef, output, HostListener } from '@angular/core';
 
 @Component({
   standalone: true,
@@ -7,6 +7,7 @@ import { Component, input, ViewChild, ElementRef } from '@angular/core';
   styleUrl: './dialog.component.scss',
 })
 export class DialogComponent {
+  closeEmit = output<void>();
   @ViewChild('dialog', { static: true }) dialog: ElementRef | undefined;
 
   title = input<string>();
@@ -16,6 +17,15 @@ export class DialogComponent {
   }
 
   closeDialog(): void {
+    this.closeEmit.emit();
     this.dialog?.nativeElement.close();
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscape(event: KeyboardEvent): void {
+    const dialogCmp = this.dialog?.nativeElement;
+    if (dialogCmp && dialogCmp.open) {
+      this.closeEmit.emit();
+    }
   }
 }

@@ -10,7 +10,7 @@
       <code class="text-sm">{{ user?.id }}</code>
     </div>
 
-    <button (click)="changePassword(user?.id)" class="btn btn-outline">Passwort ändern</button>
+    <button (click)="openDialogType('password')" class="btn btn-outline">Passwort ändern</button>
   </div>
 </div>
 
@@ -123,7 +123,7 @@
   <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || userForm.pristine">Speichern</button>
 </form>
 
-<app-dialog [title]="dialogTitle">
+<app-dialog [title]="dialogTitle" (closeEmit)="closeDialogEmit()">
   <!-- <app-filter></app-filter> -->
   @if (dialogTitle.includes("Rolle")) {
     <div class="flex flex-col gap-2">
@@ -157,5 +157,39 @@
         </div>
       }
     </div>
+  }
+
+  @if (dialogTitle.includes("Passwort")) {
+    <form class="flex flex-col gap-4" [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()">
+      <label class="input w-full" for="password">
+        <span class="label">Neues Passwort*</span>
+        <input type="password" id="password" formControlName="password" />
+      </label>
+
+      <label class="input w-full" for="passwordConfirm">
+        <span class="label">Passwort bestätigen*</span>
+        <input type="password" id="passwordConfirm" formControlName="passwordConfirm" />
+      </label>
+
+      @if (passwordForm.dirty) {
+        <div class="flex flex-col gap-1">
+          @if (passwordForm.get("password")?.errors?.["required"]) {
+            <p class="text-sm text-red-700">Passwort ist ein Pflichtfeld.</p>
+          }
+
+          @if (passwordForm.get("password")?.errors?.["minlength"]) {
+            <p class="text-sm text-red-700">Passwort muss mindestens 4 Zeichen lang sein.</p>
+          }
+
+          @if (passwordForm.errors?.["notSame"] && passwordForm.get("passwordConfirm")?.dirty) {
+            <p class="text-sm text-red-700">Passwörter stimmen nicht überein.</p>
+          }
+        </div>
+      }
+
+      <button type="submit" class="btn btn-primary" [disabled]="passwordForm.invalid || passwordForm.pristine">
+        Passwort ändern
+      </button>
+    </form>
   }
 </app-dialog>

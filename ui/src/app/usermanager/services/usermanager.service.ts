@@ -45,6 +45,10 @@ export class UsermanagerService {
     return this.usermanagerApi.updateUser(id, { name, email, status, imageUrl } as UserWrapperModel);
   }
 
+  updateUserCredentials(userId: string, newPW: string) {
+    return this.usermanagerApi.setCredentials(userId, newPW);
+  }
+
   addRoleForUser(userId: string, roleId: string) {
     return this.usermanagerApi.addRoleForUser(userId, roleId);
   }

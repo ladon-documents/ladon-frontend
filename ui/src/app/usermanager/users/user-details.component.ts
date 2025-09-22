@@ -2,7 +2,15 @@ import { Component, computed, inject, OnInit, Signal, signal, ViewChild } from '
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { PermissionModel, UserEntryModel, RoleEntryModel } from '../../../api';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { combineLatest, switchMap, tap, of } from 'rxjs';
 import { UsermanagerService } from '../services/usermanager.service';
@@ -11,6 +19,7 @@ import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { CommonModule } from '@angular/common';
 
 type UserSetType = 'role' | 'roleDeletion' | 'permission' | 'permissionDeletion';
+type DialogType = UserSetType | 'password';
 
 interface MappedRole extends RoleEntryModel {
   active?: boolean;
@@ -39,6 +48,7 @@ export class UserDetailsComponent implements OnInit {
   store = inject(UsermanagerStore);
   user: UserEntryModel | undefined;
   userForm = new FormGroup({});
+  passwordForm = new FormGroup({});
   userRoles = signal<string[] | undefined>(undefined);
   userPermissions = signal<PermissionModel[] | undefined>(undefined);
   roleOptions = signal<RoleEntryModel[] | undefined>(undefined);
@@ -83,6 +93,7 @@ export class UserDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.generateForm();
+    this.generatePasswordForm();
 
     this.store.loading$().subscribe((loading) => {
       if (!loading) {
@@ -143,8 +154,11 @@ export class UserDetailsComponent implements OnInit {
       });
   }
 
-  openDialogType(type: UserSetType) {
+  openDialogType(type: DialogType) {
     switch (type) {
+      case 'password':
+        this.dialogTitle = 'Passwort ändern';
+        break;
       case 'role':
         this.dialogTitle = 'Rolle hinzufügen';
         this.getRolesOrRetrieve();
@@ -181,6 +195,12 @@ export class UserDetailsComponent implements OnInit {
 
     return false;
   }
+
+  private checkPasswords: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('passwordConfirm')?.value;
+    return password === confirmPassword ? null : { notSame: true };
+  };
 
   private getRolesOrRetrieve() {
     if (this.store.roles().length === 0) {
@@ -248,6 +268,10 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
+  closeDialogEmit() {
+    this.passwordForm.reset();
+  }
+
   /**
    * Deletes from Set and updates FormControl
    * @param type
@@ -277,6 +301,18 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
+  async onPasswordSubmit() {
+    const id = this.user?.id;
+    const password = this.passwordForm.get('password')?.value;
+    if (id && password) {
+      await this.store.updateUserCredentials(id, password);
+      this.dialogCmp?.closeDialog();
+      return;
+    }
+
+    alert('Technisches Problem - Passwortänderung nicht möglich');
+  }
+
   private generateForm() {
     this.userForm.addControl('name', new FormControl(undefined, [Validators.required]));
     this.userForm.addControl('email', new FormControl(undefined, [Validators.email]));
@@ -292,6 +328,18 @@ export class UserDetailsComponent implements OnInit {
     Object.entries(this.user).forEach(([key, value]) => {
       this.userForm.addControl(key, new FormControl(value));
     });
+  }
+
+  private generatePasswordForm() {
+    this.passwordForm?.addControl(
+      'password',
+      new FormControl(undefined, [Validators.required, Validators.minLength(4)]),
+    );
+    this.passwordForm?.addControl(
+      'passwordConfirm',
+      new FormControl(undefined, [Validators.required, Validators.minLength(4)]),
+    );
+    this.passwordForm?.setValidators(this.checkPasswords);
   }
 
   private patchFormByType(type: UserSetType) {

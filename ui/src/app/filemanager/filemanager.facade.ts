@@ -41,10 +41,10 @@ export class FilemanagerFacade {
   }
 
   getDocument(document: DocumentModel) {
-    return this.filemanagerSerivce.getDocument(document)
+    return this.filemanagerSerivce.getDocument(document);
   }
-  saveDocument(document: DocumentModel, content:any) {
-    return this.filemanagerSerivce.saveDocument(document, content)
+  saveDocument(document: DocumentModel, content: any) {
+    return this.filemanagerSerivce.saveDocument(document, content);
   }
   async getImagePreviewUrll() {
     try {
@@ -68,12 +68,12 @@ export class FilemanagerFacade {
 
   createEmptyFile(fileName: string) {
     const currentPath = this.getCurrentPath();
-  //  this.#filemanagerStore.createNewFile({ fileName, currentPath });
+    //  this.#filemanagerStore.createNewFile({ fileName, currentPath });
   }
 
   createFolder(folderName: string) {
-    const currentPath =this.getCurrentPath()
-     this.#filemanagerStore.createFolder({ folderName, currentPath });
+    const currentPath = this.getCurrentPath();
+    this.#filemanagerStore.createFolder({ folderName, currentPath });
   }
 
   showRoot() {
@@ -86,9 +86,7 @@ export class FilemanagerFacade {
     }
   }
 
-  setCurrentFolder(document: DocumentModel) {
-
-  }
+  setCurrentFolder(document: DocumentModel) {}
 
   delete(document: DocumentModel): void {}
 
@@ -109,7 +107,6 @@ export class FilemanagerFacade {
   }
 
   private getCurrentPath(): string | undefined {
-    return this.#breadcrumbStore.currentPath()?.key
+    return this.#breadcrumbStore.currentPath()?.key;
   }
-
 }

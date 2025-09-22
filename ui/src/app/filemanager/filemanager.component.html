@@ -2,8 +2,7 @@
   @if (error()) {
     <div class="bg-red-50 border-red-200 text-red-800" role="alert">
       <div class="flex">
-        <div class="flex-shrink-0">
-        </div>
+        <div class="flex-shrink-0"></div>
         <div class="ml-3">
           <p class="text-red-400">
             {{ error() }}
@@ -12,18 +11,20 @@
       </div>
     </div>
   } @else {
-    <div class="grid gap-4 h-full transition-all duration-300 ease-in-out"
-         [class.grid-cols-[1fr_0px]]="!sidebarService.isOpen()"
-         [class.grid-cols-[1fr_384px]]="sidebarService.isOpen()">
-
-
+    <div
+      class="grid gap-4 h-full transition-all duration-300 ease-in-out"
+      [class.grid-cols-[1fr_0px]]="!sidebarService.isOpen()"
+      [class.grid-cols-[1fr_384px]]="sidebarService.isOpen()">
       <div class="min-w-0">
         <div class="mt-0 overflow-hidden transition-colors duration-200">
           <div class="border-b border-gray-200 dark:border-gray-200">
             <div class="flex items-center justify-between px-6 py-4">
               <app-breadcrumb></app-breadcrumb>
               <div class="flex items-center gap-2">
-                <button class="btn btn-square btn-outline btn-sm" (click)="toggleSidebar()" title="Vorschau ein-/ausblenden">
+                <button
+                  class="btn btn-square btn-outline btn-sm"
+                  (click)="toggleSidebar()"
+                  title="Vorschau ein-/ausblenden">
                   <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
                 </button>
               </div>
@@ -31,19 +32,25 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 m-5">
-            <button class="btn btn-outline" popovertarget="popover-create-entity" style="anchor-name: --anchor-popover-create-entity">
+            <button
+              class="btn btn-outline"
+              popovertarget="popover-create-entity"
+              style="anchor-name: --anchor-popover-create-entity">
               <ng-icon name="heroPlus" size="1.0em" class="size-4"></ng-icon>
               Hinzufügen
             </button>
 
-            <ul class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
-                popover
-                id="popover-create-entity"
-                style="position-anchor: --anchor-popover-create-entity">
+            <ul
+              class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
+              popover
+              id="popover-create-entity"
+              style="position-anchor: --anchor-popover-create-entity">
               <li><a>Neue Datei</a></li>
-              <li><a>
-                <create-folder></create-folder>
-              </a></li>
+              <li>
+                <a>
+                  <create-folder></create-folder>
+                </a>
+              </li>
               <li><a>Datei Hochladen</a></li>
             </ul>
 
@@ -56,9 +63,10 @@
         </div>
       </div>
 
-      <div class="overflow-hidden transition-all duration-300 ease-in-out"
-           [class.w-0]="!sidebarService.isOpen()"
-           [class.w-96]="sidebarService.isOpen()">
+      <div
+        class="overflow-hidden transition-all duration-300 ease-in-out"
+        [class.w-0]="!sidebarService.isOpen()"
+        [class.w-96]="sidebarService.isOpen()">
         <filemanager-sidebar></filemanager-sidebar>
       </div>
     </div>

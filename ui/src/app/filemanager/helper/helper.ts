@@ -96,11 +96,32 @@ export const isEditableFile = (fileName?: string): boolean => {
   if (!fileName) return false;
 
   const editableExtensions = [
-    'txt', 'md', 'js', 'ts', 'html', 'css', 'scss', 'json', 'xml',
-    'py', 'java', 'c', 'cpp', 'cs', 'php', 'rb', 'go', 'rs', 'sql',
-    'yaml', 'yml', 'sh', 'ps1', 'dockerfile'
+    'txt',
+    'md',
+    'js',
+    'ts',
+    'html',
+    'css',
+    'scss',
+    'json',
+    'xml',
+    'py',
+    'java',
+    'c',
+    'cpp',
+    'cs',
+    'php',
+    'rb',
+    'go',
+    'rs',
+    'sql',
+    'yaml',
+    'yml',
+    'sh',
+    'ps1',
+    'dockerfile',
   ];
 
   const extension = fileName.split('.').pop()?.toLowerCase();
   return editableExtensions.includes(extension || '');
-}
+};

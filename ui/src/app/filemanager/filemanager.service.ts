@@ -14,7 +14,7 @@ export class FilemanagerService {
   public getDocument(document: DocumentModel) {
     const { bucket, key } = document;
     if (bucket && key) {
-      return this.documentsService.getDocument(bucket, key);;
+      return this.documentsService.getDocument(bucket, key);
     }
     return throwError(new Error('Not Found'));
   }
@@ -22,14 +22,13 @@ export class FilemanagerService {
   public saveDocument(document: DocumentModel, content: any) {
     const { bucket, key } = document;
     const zipUploadRequestModel: ZipUploadRequestModel = {
-      content
+      content,
     };
     if (bucket && key) {
-      return this.documentsService.putDocument(bucket, key, undefined, zipUploadRequestModel);;
+      return this.documentsService.putDocument(bucket, key, undefined, zipUploadRequestModel);
     }
     return throwError(new Error('Not Found'));
   }
-
 
   public loadDocumentList(document: DocumentModel) {
     if (document && document.bucket) {

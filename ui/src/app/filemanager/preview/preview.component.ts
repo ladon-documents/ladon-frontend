@@ -8,7 +8,7 @@ import { MonacoEditorService } from '../../editor/editor.service';
   selector: 'filemanager-preview',
   imports: [],
   templateUrl: './preview.component.html',
-  styleUrl: './preview.component.scss'
+  styleUrl: './preview.component.scss',
 })
 export class PreviewComponent {
   readonly monacoEditorService = inject(MonacoEditorService);
@@ -63,5 +63,4 @@ export class PreviewComponent {
   openEditor() {
     this.monacoEditorService.open();
   }
-
 }

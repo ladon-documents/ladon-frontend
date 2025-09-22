@@ -8,9 +8,8 @@ describe('MetaComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetaComponent]
-    })
-    .compileComponents();
+      imports: [MetaComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MetaComponent);
     component = fixture.componentInstance;

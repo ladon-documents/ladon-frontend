@@ -8,9 +8,8 @@ describe('FileEditorDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileEditorDialogComponent]
-    })
-    .compileComponents();
+      imports: [FileEditorDialogComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FileEditorDialogComponent);
     component = fixture.componentInstance;

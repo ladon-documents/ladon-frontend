@@ -16,13 +16,11 @@
       <filemanager-meta></filemanager-meta>
     </div>
   </div>
-
 }
 
 <file-editor-dialog
-                    [config]="{
-                      readOnly: false,
-                      fileName:selectedDocument()?.key || ''
-                    }">
+  [config]="{
+    readOnly: false,
+    fileName: selectedDocument()?.key || '',
+  }">
 </file-editor-dialog>
-

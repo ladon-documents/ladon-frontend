@@ -85,7 +85,6 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     if (this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);
     }
-
   }
 
   public showRoot() {
@@ -99,8 +98,8 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     this.imageUrl = null;
   }
 
- async select(document: DocumentModel) {
-   this.#facade.setSelectedDocument(document);
+  async select(document: DocumentModel) {
+    this.#facade.setSelectedDocument(document);
   }
 
   async navigateTo(document: DocumentModel) {
@@ -112,6 +111,4 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       await this.select(document);
     }
   }
-
-
 }

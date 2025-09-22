@@ -2,7 +2,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { PermissionModel, RoleEntryModel, RoleWrapperModel, UserEntryModel, UserWrapperModel } from '../../api';
 import { inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
-import { filter, finalize, forkJoin, map, of, Subject } from 'rxjs';
+import { filter, finalize, forkJoin, lastValueFrom, map, of, Subject } from 'rxjs';
 
 type UsermanagerState = {
   users: UserEntryModel[];
@@ -160,6 +160,12 @@ export const UsermanagerStore = signalStore(
           loading$.next(store.loading());
         }),
       );
+    },
+
+    async updateUserCredentials(userId: string, newPW: string) {
+      patchState(store, { loading: true });
+      await lastValueFrom(usermanagerService.updateUserCredentials(userId, newPW));
+      patchState(store, { loading: false });
     },
 
     addRole(role: RoleWrapperModel) {

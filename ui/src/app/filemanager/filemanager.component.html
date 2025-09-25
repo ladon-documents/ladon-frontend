@@ -1,6 +1,6 @@
-<main class="flex-grow p-6 bg-base-100">
+<main class="flex-grow bg-base-100">
   @if (error()) {
-    <div class="bg-red-50 border-red-200 text-red-800" role="alert">
+    <div class="bg-red-50 border-red-200 text-red-800 p-6" role="alert">
       <div class="flex">
         <div class="flex-shrink-0">
         </div>
@@ -12,68 +12,161 @@
       </div>
     </div>
   } @else {
-    <div class="grid gap-4 h-full transition-all duration-300 ease-in-out"
+    <div class="sticky top-0 z-10 bg-white border-b border-gray-200 dark:border-gray-200">
+      <div class="flex items-center justify-between px-6 py-4">
+        <app-breadcrumb></app-breadcrumb>
+
+        <div class="flex items-center gap-4">
+          <div class="relative">
+            <input type="text"
+                   placeholder="Dateien suchen..."
+                   class="input input-bordered input-sm w-64 pr-8"
+                   [value]="searchTerm()"
+                   (input)="onSearchChange($event)"
+                   (keyup.escape)="clearSearch()">
+            @if (searchTerm()) {
+              <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      (click)="clearSearch()">
+                <ng-icon name="heroXMark" size="1em"></ng-icon>
+              </button>
+            } @else {
+              <ng-icon name="heroMagnifyingGlass" size="1em"
+                       class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"></ng-icon>
+            }
+          </div>
+
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1">
+              <ng-icon name="heroBars3BottomLeft" size="1em"></ng-icon>
+              Sortieren
+              @if (sortConfig().direction === 'desc') {
+                <ng-icon name="heroChevronDown" size="0.8em"></ng-icon>
+              } @else {
+                <ng-icon name="heroChevronUp" size="0.8em"></ng-icon>
+              }
+            </div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+              <li>
+                <a (click)="toggleSort('name')"
+                   [class.active]="sortConfig().field === 'name'">
+                  <ng-icon name="heroDocumentText" size="1em"></ng-icon>
+                  Name
+                  @if (sortConfig().field === 'name') {
+                    <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                             size="0.8em"></ng-icon>
+                  }
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('size')"
+                   [class.active]="sortConfig().field === 'size'">
+                  <ng-icon name="heroScale" size="1em"></ng-icon>
+                  Größe
+                  @if (sortConfig().field === 'size') {
+                    <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                             size="0.8em"></ng-icon>
+                  }
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('type')"
+                   [class.active]="sortConfig().field === 'type'">
+                  <ng-icon name="heroDocumentDuplicate" size="1em"></ng-icon>
+                  Typ
+                  @if (sortConfig().field === 'type') {
+                    <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                             size="0.8em"></ng-icon>
+                  }
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('last-modified')"
+                   [class.active]="sortConfig().field === 'last-modified'">
+                  <ng-icon name="heroClock" size="1em"></ng-icon>
+                  Geändert
+                  @if (sortConfig().field === 'last-modified') {
+                    <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                             size="0.8em"></ng-icon>
+                  }
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('created')"
+                   [class.active]="sortConfig().field === 'created'">
+                  <ng-icon name="heroCalendarDays" size="1em"></ng-icon>
+                  Erstellt
+                  @if (sortConfig().field === 'created') {
+                    <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                             size="0.8em"></ng-icon>
+                  }
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button class="btn btn-square btn-outline btn-sm"
+                    (click)="setViewMode('card')"
+                    [title]="'Zur Card-Ansicht wechseln'">
+              <ng-icon name="heroSquares2x2" size="1.2em" class="size-5"></ng-icon>
+            </button>
+            <button class="btn btn-square btn-outline btn-sm"
+                    (click)="setViewMode('table')"
+                    [title]="'Zur Tabellenansicht wechseln'">
+              <ng-icon name="heroBars3" size="1.2em" class="size-5"></ng-icon>
+            </button>
+            <button class="btn btn-square btn-outline btn-sm" (click)="toggleSidebar()"
+                    title="Vorschau ein-/ausblenden">
+              <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
+            </button>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid gap-0 h-[calc(100vh-120px)] transition-all duration-300 ease-in-out"
          [class.grid-cols-[1fr_0px]]="!sidebarService.isOpen()"
          [class.grid-cols-[1fr_384px]]="sidebarService.isOpen()">
 
+      <!-- Main Content Area -->
+      <div class="min-w-0 overflow-hidden">
+        <div class="h-full overflow-y-auto">
 
-      <div class="min-w-0">
-        <div class="mt-0 overflow-hidden transition-colors duration-200">
-          <div class="border-b border-gray-200 dark:border-gray-200">
-            <div class="flex items-center justify-between px-6 py-4">
-              <app-breadcrumb></app-breadcrumb>
-              <div class="flex items-center gap-2">
-                <button
-                                                                                                    class="btn btn-square btn-outline btn-sm"
-                                                                                                    (click)="setViewMode('card')"
-                                                                                                    [title]="'Zur Card-Ansicht wechseln'">
-                  <ng-icon name="heroSquares2x2" size="1.2em" class="size-5"></ng-icon>
-                </button>
-                <button
-                                                                                                    class="btn btn-square btn-outline btn-sm"
-                                                                                                    (click)="setViewMode('table')"
-                                                                                                    [title]="'Zur Tabellenansicht wechseln'">
+          <!-- Add Button Section -->
+          <div class="p-6 border-b border-gray-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <button class="btn btn-outline" popovertarget="popover-create-entity"
+                      style="anchor-name: --anchor-popover-create-entity">
+                <ng-icon name="heroPlus" size="1.0em" class="size-4"></ng-icon>
+                Hinzufügen
+              </button>
 
-                  <ng-icon name="heroBars3" size="1.2em" class="size-5"></ng-icon>
-                </button>
-
-
-                <button class="btn btn-square btn-outline btn-sm" (click)="toggleSidebar()"
-                        title="Vorschau ein-/ausblenden">
-                  <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
-                </button>
-              </div>
+              <ul class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
+                  popover
+                  id="popover-create-entity"
+                  style="position-anchor: --anchor-popover-create-entity">
+                <li><a>Neue Datei</a></li>
+                <li><a>
+                  <create-folder></create-folder>
+                </a></li>
+                <li><a>Datei Hochladen</a></li>
+              </ul>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 m-5">
-            <button class="btn btn-outline" popovertarget="popover-create-entity"
-                    style="anchor-name: --anchor-popover-create-entity">
-              <ng-icon name="heroPlus" size="1.0em" class="size-4"></ng-icon>
-              Hinzufügen
-            </button>
-
-            <ul class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
-                popover
-                id="popover-create-entity"
-                style="position-anchor: --anchor-popover-create-entity">
-              <li><a>Neue Datei</a></li>
-              <li><a>
-                <create-folder></create-folder>
-              </a></li>
-              <li><a>Datei Hochladen</a></li>
-            </ul>
-
-            <!--     <file-uploader></file-uploader>-->
-          </div>
-
+          <!-- Router Content -->
           <div class="p-6">
             <router-outlet></router-outlet>
           </div>
         </div>
       </div>
 
-      <div class="overflow-hidden transition-all duration-300 ease-in-out"
+      <!-- Sidebar -->
+      <div class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-200"
            [class.w-0]="!sidebarService.isOpen()"
            [class.w-96]="sidebarService.isOpen()">
         <filemanager-sidebar></filemanager-sidebar>

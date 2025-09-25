@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DocumentModel } from '../../../api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  heroArrowDownTray,
+  heroArrowDownTray, heroChevronDown, heroChevronUp,
   heroDocumentDuplicate,
   heroFolder,
   heroPencilSquare,
@@ -12,7 +12,7 @@ import {
   heroPlusCircle,
   heroShare,
   heroStar,
-  heroTrash,
+  heroTrash
 } from '@ng-icons/heroicons/outline';
 import { heroFolderSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
@@ -22,7 +22,7 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { ConverterService } from '../../services/converter.service';
 import { SidebarService } from '../sidebar/sidebar.service';
-import { FilemanagerPaginationComponent, PaginationInfo } from '../filemanager-pagination.component';
+import { FilemanagerPaginationComponent } from '../pagination/pagination.component';
 
 @Component({
   standalone: true,
@@ -41,6 +41,8 @@ import { FilemanagerPaginationComponent, PaginationInfo } from '../filemanager-p
       heroArrowDownTray,
       heroDocumentDuplicate,
       heroShare,
+      heroChevronUp,
+      heroChevronDown
     }),
     FilesizePipe,
   ],
@@ -53,12 +55,13 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   private readonly converterService = inject(ConverterService);
   private readonly sidebarService = inject(SidebarService);
   documents: Signal<DocumentModel[]> = this.#facade.documents;
-  pagination: Signal<PaginationInfo> = this.#facade.pagination;
 
   #currentBucket: string | null = null;
   #subfolder: string | null = null;
   #selectedDocument: DocumentModel | null = null;
   viewMode = this.#facade.viewMode;
+  readonly searchTerm = this.#facade.searchTerm;
+  readonly sortConfig = this.#facade.sortConfig;
 
   imageUrl: string | null = null;
 
@@ -119,6 +122,10 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
 
   setPageSize(pageSize: number) {
     this.#facade.setPageSize(pageSize);
+  }
+
+  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+    this.#facade.toggleSort(field);
   }
 
   public showRoot() {

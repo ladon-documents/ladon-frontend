@@ -1,0 +1,20 @@
+{
+  "name": "@ladon/editor",
+  "version": "1.0.0",
+  "description": "Monaco Editor Web Component",
+  "main": "dist/monaco-editor.js",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development --watch"
+  },
+  "dependencies": {
+    "monaco-editor": "^0.44.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.0",
+    "css-loader": "^6.8.1",
+    "style-loader": "^3.3.3",
+    "monaco-editor-webpack-plugin": "^7.1.0"
+  }
+}

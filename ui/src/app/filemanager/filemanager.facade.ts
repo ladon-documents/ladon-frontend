@@ -23,6 +23,11 @@ export class FilemanagerFacade {
   readonly viewMode = this.#filemanagerStore.viewMode;
   readonly pagination = this.#filemanagerStore.pagination;
 
+  // Neue Such- und Sortier-Signale
+  readonly searchTerm = this.#filemanagerStore.searchTerm;
+  readonly sortConfig = this.#filemanagerStore.sort;
+  readonly isLoading = this.#filemanagerStore.isLoading;
+
   constructor() {}
 
   initRoot() {
@@ -58,6 +63,22 @@ export class FilemanagerFacade {
 
   lastPage() {
     this.#filemanagerStore.lastPage();
+  }
+// Neue Such- und Sortiermethoden
+  setSearchTerm(searchTerm: string) {
+    this.#filemanagerStore.setSearchTerm(searchTerm);
+  }
+
+  clearSearch() {
+    this.#filemanagerStore.clearSearch();
+  }
+
+  setSortConfig(field: 'name' | 'size' | 'type' | 'last-modified' | 'created', direction?: 'asc' | 'desc') {
+    this.#filemanagerStore.setSortConfig(field, direction);
+  }
+
+  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+    this.#filemanagerStore.setSortConfig(field);
   }
 
 

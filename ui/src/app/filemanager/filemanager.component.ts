@@ -4,7 +4,15 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilemanagerFacade } from './filemanager.facade';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { heroBars3, heroDocument, heroEye, heroFolder, heroPlus, heroSquares2x2 } from '@ng-icons/heroicons/outline';
+import {
+  heroBars3,
+  heroDocument,
+  heroEye,
+  heroFolder,
+  heroMagnifyingGlass,
+  heroPlus,
+  heroSquares2x2, heroXMark
+} from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
@@ -26,6 +34,7 @@ import { filemanagerRoutes } from './filemanager.routes';
     CreateFolderComponent,
     SidebarComponent,
     FileEditorDialogComponent,
+
   ],
   providers: [
     provideIcons({
@@ -34,7 +43,9 @@ import { filemanagerRoutes } from './filemanager.routes';
       heroFolder,
       heroEye,
       heroBars3,
-      heroSquares2x2
+      heroSquares2x2,
+      heroMagnifyingGlass,
+      heroXMark
     }),
     FilesizePipe,
   ],
@@ -50,6 +61,9 @@ export class FilemanagerComponent implements OnInit {
   readonly error: Signal<string | null> = this.filemanagerFacade.error;
   readonly stats: Signal<BucketStatsExtended | null> = this.filemanagerFacade.statistics;
   viewMode = this.filemanagerFacade.viewMode;
+  readonly searchTerm = this.filemanagerFacade.searchTerm;
+  readonly sortConfig = this.filemanagerFacade.sortConfig;
+  readonly pagination = this.filemanagerFacade.pagination;
 
   constructor(
     private router: Router,
@@ -85,6 +99,22 @@ export class FilemanagerComponent implements OnInit {
   toggleSidebar() {
     this.sidebarService.toggleSidebar();
   }
+
+
+  // Neue Such- und Sortiermethoden
+  onSearchChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.filemanagerFacade.setSearchTerm(target.value);
+  }
+
+  clearSearch() {
+    this.filemanagerFacade.clearSearch();
+  }
+
+  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+    this.filemanagerFacade.toggleSort(field);
+  }
+
 
   protected readonly heroDocument = heroDocument;
   protected readonly heroFolder = heroFolder;

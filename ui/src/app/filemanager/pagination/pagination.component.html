@@ -1,0 +1,69 @@
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
+  <div class="text-sm text-slate-600">
+    Zeige {{ getStartItem() }} bis {{ getEndItem() }} von {{ paginationInfo().totalItems }} Einträgen
+  </div>
+
+  <div class="flex items-center gap-2">
+    <span class="text-sm text-slate-600">Einträge pro Seite:</span>
+    <select
+                                                                                        class="select select-bordered select-sm w-auto min-w-0"
+                                                                                        [value]="paginationInfo().pageSize"
+                                                                                        (change)="onPageSizeChange($event)">
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+  </div>
+
+  <div class="join" *ngIf="paginationInfo().totalPages > 1">
+    <button
+                                                                                        class="join-item btn btn-sm"
+                                                                                        [disabled]="!paginationInfo().hasPreviousPage"
+                                                                                        (click)="firstPage()"
+                                                                                        title="Erste Seite">
+      <ng-icon name="heroChevronDoubleLeft" size="1em"></ng-icon>
+    </button>
+
+    <button
+                                                                                        class="join-item btn btn-sm"
+                                                                                        [disabled]="!paginationInfo().hasPreviousPage"
+                                                                                        (click)="previousPage()"
+                                                                                        title="Vorherige Seite">
+      <ng-icon name="heroChevronLeft" size="1em"></ng-icon>
+    </button>
+
+    <div class="join-item">
+      <div class="flex items-center">
+        @for (page of getVisiblePages(); track page) {
+          @if (page === '...') {
+            <span class="px-3 py-1 text-slate-400">...</span>
+          } @else {
+            <button
+                                                                                                class="btn btn-sm join-item"
+                                                                                                [class.btn-active]="page === paginationInfo().currentPage"
+                                                                                                (click)="goToPage(+page)">
+              {{ page }}
+            </button>
+          }
+        }
+      </div>
+    </div>
+
+    <button
+                                                                                        class="join-item btn btn-sm"
+                                                                                        [disabled]="!paginationInfo().hasNextPage"
+                                                                                        (click)="nextPage()"
+                                                                                        title="Nächste Seite">
+      <ng-icon name="heroChevronRight" size="1em"></ng-icon>
+    </button>
+
+    <button
+                                                                                        class="join-item btn btn-sm"
+                                                                                        [disabled]="!paginationInfo().hasNextPage"
+                                                                                        (click)="lastPage()"
+                                                                                        title="Letzte Seite">
+      <ng-icon name="heroChevronDoubleRight" size="1em"></ng-icon>
+    </button>
+  </div>
+</div>

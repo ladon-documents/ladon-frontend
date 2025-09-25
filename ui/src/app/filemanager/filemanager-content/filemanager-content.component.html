@@ -55,17 +55,8 @@
   }
   </div>
 
-  <!-- Pagination -->
   <div class="flex-shrink-0 border-t border-gray-200 mt-4">
-    <filemanager-pagination
-                                                                                        [paginationInfo]="pagination()"
-                                                                                        (goToPage)="goToPage($event)"
-                                                                                        (nextPage)="nextPage()"
-                                                                                        (previousPage)="previousPage()"
-                                                                                        (firstPage)="firstPage()"
-                                                                                        (lastPage)="lastPage()"
-                                                                                        (pageSizeChange)="setPageSize($event)">
-    </filemanager-pagination>
+    <filemanager-pagination></filemanager-pagination>
   </div>
 
 </div>
@@ -164,13 +155,42 @@
         <thead>
         <tr>
           <th class="w-10"></th>
-          <th class="text-left">Name</th>
-          <th class="text-left">Größe</th>
-          <th class="text-left">Geändert</th>
-          <th class="text-left">Erstellt</th>
+          <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('name')">
+            <div class="flex items-center gap-1">
+              Name
+              @if (sortConfig().field === 'name') {
+                <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'" size="0.8em"></ng-icon>
+              }
+            </div>
+          </th>
+          <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('size')">
+            <div class="flex items-center gap-1">
+              Größe
+              @if (sortConfig().field === 'size') {
+                <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'" size="0.8em"></ng-icon>
+              }
+            </div>
+          </th>
+          <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('last-modified')">
+            <div class="flex items-center gap-1">
+              Geändert
+              @if (sortConfig().field === 'last-modified') {
+                <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'" size="0.8em"></ng-icon>
+              }
+            </div>
+          </th>
+          <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('created')">
+            <div class="flex items-center gap-1">
+              Erstellt
+              @if (sortConfig().field === 'created') {
+                <ng-icon [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'" size="0.8em"></ng-icon>
+              }
+            </div>
+          </th>
           <th class="w-16"></th>
         </tr>
         </thead>
+
         <tbody>
           @for (document of documents(); track document.path; let i = $index) {
             <tr
@@ -294,11 +314,17 @@
         <div class="text-center py-12">
           <div class="text-slate-400">
             <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
-            <p class="text-lg font-medium">Keine Dateien gefunden</p>
-            <p class="text-sm">Dieser Ordner ist leer</p>
+            @if (searchTerm()) {
+              <p class="text-lg font-medium">Keine Ergebnisse gefunden</p>
+              <p class="text-sm">Keine Dateien entsprechen dem Suchbegriff "{{ searchTerm() }}"</p>
+            } @else {
+              <p class="text-lg font-medium">Keine Dateien gefunden</p>
+              <p class="text-sm">Dieser Ordner ist leer</p>
+            }
           </div>
         </div>
       }
+
     </div>
   }
 

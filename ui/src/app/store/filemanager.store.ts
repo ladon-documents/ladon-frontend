@@ -7,8 +7,9 @@ import { FilemanagerService } from '../filemanager/filemanager.service';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { BreadcrumbStore } from './breadcrumb.store';
+import { filemanagerHelper } from '../filemanager/helper/helper';
 
-interface PaginationState {
+export interface PaginationState {
   currentPage: number;
   pageSize: number;
   totalItems: number;
@@ -17,52 +18,17 @@ interface PaginationState {
   hasPreviousPage: boolean;
 }
 
-interface SortConfig {
-  field: keyof DocumentModel;
+export interface SortConfig {
+  field: keyof DocumentModel | 'name' | 'size' | 'type';
   direction: 'asc' | 'desc';
-}
-
-interface DocumentPermissions {
-  canRead: boolean;
-  canWrite: boolean;
-  canDelete: boolean;
-  canShare: boolean;
-}
-
-interface FilterState {
-  searchTerm: string;
-  sortBy: string;
-  sortDirection: 'asc' | 'desc';
-  filters: {
-    category: string[];
-    status: string[];
-    dateRange: { start: Date; end: Date };
-  };
-  pagination: {
-    currentPage: number;
-    itemsPerPage: number;
-    totalItems: number;
-  };
-}
-
-interface NotificationState {
-  notifications: Array<{
-    id: string;
-    message: string;
-    type: 'success' | 'error' | 'warning' | 'info';
-    isRead: boolean;
-    timestamp: Date;
-  }>;
-  unreadCount: number;
-  isNotificationPanelOpen: boolean;
 }
 
 type ViewMode = 'card' | 'table';
 
-
-interface FilemanagerState {
+export interface FilemanagerState {
   documents: DocumentModel[];
-  allDocuments: DocumentModel[]; // Alle geladenen Dokumente für Client-seitige Pagination
+  allDocuments: DocumentModel[];
+  filteredDocuments: DocumentModel[];
   statistics: BucketStatsExtended | null;
   selectedDocument: DocumentModel | null;
   isLoading: boolean;
@@ -77,6 +43,7 @@ interface FilemanagerState {
 const initialState: FilemanagerState = {
   documents: [],
   allDocuments: [],
+  filteredDocuments: [],
   statistics: null,
   selectedDocument: null,
   selectedBucket: null,
@@ -98,32 +65,6 @@ const initialState: FilemanagerState = {
   viewMode: 'card',
 };
 
-function calculatePaginationState(
-  allDocuments: DocumentModel[],
-  currentPage: number,
-  pageSize: number
-): {
-  paginatedDocuments: DocumentModel[],
-  paginationState: PaginationState
-} {
-  const totalItems = allDocuments.length;
-  const totalPages = Math.ceil(totalItems / pageSize);
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, totalItems);
-
-  const paginatedDocuments = allDocuments.slice(startIndex, endIndex);
-
-  const paginationState: PaginationState = {
-    currentPage,
-    pageSize,
-    totalItems,
-    totalPages,
-    hasNextPage: currentPage < totalPages,
-    hasPreviousPage: currentPage > 1,
-  };
-
-  return { paginatedDocuments, paginationState };
-}
 
 
 export const FilemanagerStore = signalStore(
@@ -136,8 +77,8 @@ export const FilemanagerStore = signalStore(
       ladonRouter = inject(LadonRouterService),
       breadcrumbStore = inject(BreadcrumbStore),
     ) => {
-      const methods =
-        {
+      const methods = {
+        // Bestehende Methoden...
         showRoot() {
           methods.loadBucket(store.selectedBucket());
         },
@@ -160,26 +101,74 @@ export const FilemanagerStore = signalStore(
         setViewMode: (viewMode: ViewMode) => {
           patchState(store, { viewMode });
         },
-        setPageSize: (pageSize: number) => {
-          const { paginatedDocuments, paginationState } = calculatePaginationState(
+
+        setSearchTerm: (searchTerm: string) => {
+          const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
             store.allDocuments(),
-            1, // Reset to first page when changing page size
+            searchTerm,
+            store.sort(),
+            1,
+            store.pagination().pageSize
+          );
+
+          patchState(store, {
+            searchTerm,
+            filteredDocuments,
+            documents: paginatedDocuments,
+            pagination: paginationState,
+          });
+        },
+
+        clearSearch: () => {
+          methods.setSearchTerm('');
+        },
+
+        setSortConfig: (field: SortConfig['field'], direction?: SortConfig['direction']) => {
+          const newDirection = direction || (
+            store.sort().field === field && store.sort().direction === 'asc' ? 'desc' : 'asc'
+          );
+
+          const newSortConfig: SortConfig = { field, direction: newDirection };
+
+          const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
+            store.allDocuments(),
+            store.searchTerm(),
+            newSortConfig,
+            1,
+            store.pagination().pageSize
+          );
+
+          patchState(store, {
+            sort: newSortConfig,
+            filteredDocuments,
+            documents: paginatedDocuments,
+            pagination: paginationState,
+          });
+        },
+
+        setPageSize: (pageSize: number) => {
+          const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
+            store.allDocuments(),
+            store.searchTerm(),
+            store.sort(),
+            1,
             pageSize
           );
 
           patchState(store, {
+            filteredDocuments,
             documents: paginatedDocuments,
             pagination: paginationState,
           });
         },
-        goToPage: (page: number) => {
-          const currentPagination = store.pagination();
-          const targetPage = Math.max(1, Math.min(page, currentPagination.totalPages));
 
-          const { paginatedDocuments, paginationState } = calculatePaginationState(
-            store.allDocuments(),
+        goToPage: (page: number) => {
+          const targetPage = Math.max(1, Math.min(page, store.pagination().totalPages));
+
+          const { paginatedDocuments, paginationState } = filemanagerHelper.calculatePaginationState(
+            store.filteredDocuments(),
             targetPage,
-            currentPagination.pageSize
+            store.pagination().pageSize
           );
 
           patchState(store, {
@@ -187,6 +176,7 @@ export const FilemanagerStore = signalStore(
             pagination: paginationState,
           });
         },
+
         nextPage: () => {
           const currentPagination = store.pagination();
           if (currentPagination.hasNextPage) {
@@ -207,6 +197,7 @@ export const FilemanagerStore = signalStore(
           methods.goToPage(currentPagination.totalPages);
         },
 
+        // Aktualisierte Load-Methoden
         loadStats: rxMethod<any>(
           pipe(
             tap(() => {
@@ -237,36 +228,36 @@ export const FilemanagerStore = signalStore(
             ),
           ),
         ),
+
         loadBucket: rxMethod<any>(
           pipe(
             tap(() => {
               patchState(store, (state) => ({
                 ...initialState,
                 isLoading: true,
-                viewMode: state.viewMode, // Preserve view mode
-                pagination: { ...state.pagination }, // Preserve pagination settings
-
+                viewMode: state.viewMode,
+                pagination: { ...state.pagination },
               }));
             }),
             switchMap((bucket) =>
               filemanagerService.loadBucket(bucket, 1000).pipe(
                 tap((documents) => {
-                  const currentPagination = store.pagination();
-                  const { paginatedDocuments, paginationState } = calculatePaginationState(
+                  const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
                     documents,
-                    1, // Reset to first page
-                    currentPagination.pageSize
+                    store.searchTerm(),
+                    store.sort(),
+                    1,
+                    store.pagination().pageSize
                   );
-
 
                   patchState(store, (state) => ({
                     ...state,
                     selectedBucket: bucket,
                     isLoading: false,
                     allDocuments: documents,
+                    filteredDocuments,
                     documents: paginatedDocuments,
                     pagination: paginationState,
-
                   }));
                 }),
                 catchError((error) => {
@@ -281,6 +272,7 @@ export const FilemanagerStore = signalStore(
             ),
           ),
         ),
+
         loadDocumentList: rxMethod<any>(
           pipe(
             tap(() => {
@@ -296,22 +288,22 @@ export const FilemanagerStore = signalStore(
                   if (document) {
                     breadcrumbStore.addPath(document);
                   }
-
-                  const currentPagination = store.pagination();
-                  const { paginatedDocuments, paginationState } = calculatePaginationState(
+                  const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
                     documents,
-                    1, // Reset to first page when navigating to new folder
-                    currentPagination.pageSize
+                    store.searchTerm(),
+                    store.sort(),
+                    1,
+                    store.pagination().pageSize
                   );
 
                   patchState(store, (state) => ({
                     ...state,
                     isLoading: false,
                     allDocuments: documents,
+                    filteredDocuments,
                     documents: paginatedDocuments,
                     pagination: paginationState,
                   }));
-
                 }),
                 catchError((error) => {
                   patchState(store, (state) => ({
@@ -325,6 +317,7 @@ export const FilemanagerStore = signalStore(
             ),
           ),
         ),
+
         createFolder: rxMethod<{ folderName: string; currentPath?: string }>(
           pipe(
             tap(() => {
@@ -352,10 +345,21 @@ export const FilemanagerStore = signalStore(
                   }
                 }),
                 tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
+                    documents,
+                    store.searchTerm(),
+                    store.sort(),
+                    store.pagination().currentPage,
+                    store.pagination().pageSize
+                  );
+
                   patchState(store, (state) => ({
                     ...state,
                     isLoading: false,
-                    documents,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
                     error: null,
                   }));
                 }),

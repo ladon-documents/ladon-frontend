@@ -5,12 +5,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilemanagerFacade } from './filemanager.facade';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import {
-  heroBars3,
-  heroDocument,
+  heroBars3, heroBars3BottomLeft, heroCalendarDays, heroChevronDown, heroChevronUp, heroClock,
+  heroDocument, heroDocumentDuplicate, heroDocumentText,
   heroEye,
   heroFolder,
   heroMagnifyingGlass,
-  heroPlus,
+  heroPlus, heroScale,
   heroSquares2x2, heroXMark
 } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
@@ -45,7 +45,15 @@ import { filemanagerRoutes } from './filemanager.routes';
       heroBars3,
       heroSquares2x2,
       heroMagnifyingGlass,
-      heroXMark
+      heroXMark,
+      heroBars3BottomLeft,
+      heroChevronDown,
+      heroDocumentText,
+      heroScale,
+      heroDocumentDuplicate,
+      heroClock,
+      heroCalendarDays,
+      heroChevronUp
     }),
     FilesizePipe,
   ],

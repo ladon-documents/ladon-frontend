@@ -22,8 +22,6 @@ import { DocumentModel } from '../model/document';
 import { MetadataModel } from '../model/metadata';
 // @ts-ignore
 import { ResponseSuccessModel } from '../model/responseSuccess';
-// @ts-ignore
-import { ZipUploadRequestModel } from '../model/zipUploadRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -353,10 +351,10 @@ export class DocumentsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getDocument(bucket: string, key: string, version?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Blob>;
-    public getDocument(bucket: string, key: string, version?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Blob>>;
-    public getDocument(bucket: string, key: string, version?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Blob>>;
-    public getDocument(bucket: string, key: string, version?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public getDocument(bucket: string, key: string, version?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octet-stream', context?: HttpContext, transferCache?: boolean}): Observable<Blob>;
+    public getDocument(bucket: string, key: string, version?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octet-stream', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Blob>>;
+    public getDocument(bucket: string, key: string, version?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/octet-stream', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Blob>>;
+    public getDocument(bucket: string, key: string, version?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/octet-stream', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (bucket === null || bucket === undefined) {
             throw new Error('Required parameter bucket was null or undefined when calling getDocument.');
         }
@@ -380,7 +378,7 @@ export class DocumentsService {
         if (localVarHttpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json'
+                'application/octet-stream'
             ];
             localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -748,14 +746,14 @@ export class DocumentsService {
      * @param bucket 
      * @param key 
      * @param version 
-     * @param zipUploadRequestModel 
+     * @param body 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public putDocument(bucket: string, key: string, version?: string, zipUploadRequestModel?: ZipUploadRequestModel, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<DocumentModel>;
-    public putDocument(bucket: string, key: string, version?: string, zipUploadRequestModel?: ZipUploadRequestModel, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<DocumentModel>>;
-    public putDocument(bucket: string, key: string, version?: string, zipUploadRequestModel?: ZipUploadRequestModel, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<DocumentModel>>;
-    public putDocument(bucket: string, key: string, version?: string, zipUploadRequestModel?: ZipUploadRequestModel, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public putDocument(bucket: string, key: string, version?: string, body?: Blob, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<DocumentModel>;
+    public putDocument(bucket: string, key: string, version?: string, body?: Blob, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<DocumentModel>>;
+    public putDocument(bucket: string, key: string, version?: string, body?: Blob, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<DocumentModel>>;
+    public putDocument(bucket: string, key: string, version?: string, body?: Blob, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (bucket === null || bucket === undefined) {
             throw new Error('Required parameter bucket was null or undefined when calling putDocument.');
         }
@@ -800,7 +798,7 @@ export class DocumentsService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json'
+            'application/octet-stream'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -822,7 +820,7 @@ export class DocumentsService {
         return this.httpClient.request<DocumentModel>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: zipUploadRequestModel,
+                body: body,
                 params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,

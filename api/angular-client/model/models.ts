@@ -34,4 +34,3 @@ export * from './userEntry';
 export * from './userLogins';
 export * from './user';
 export * from './userWrapper';
-export * from './zipUploadRequest';

@@ -113,7 +113,9 @@ export class MonacoEditorService {
     const document = this.selectedDocument();
     if (!document?.key) return;
     try {
-      await this.saveFileToServer(document, content);
+      const blob = new Blob([content], { type: 'text/plain' });
+
+      await this.saveFileToServer(document, blob);
       console.log('Datei gespeichert:', document.key);
     } catch (error) {
       console.error('Fehler beim Speichern der Datei:', error);
@@ -124,16 +126,22 @@ export class MonacoEditorService {
     try {
       const document = this.selectedDocument();
       if (document) {
-        return lastValueFrom(this.filemanagerFacade.getDocument(document));
+        const blob =  await lastValueFrom(this.filemanagerFacade.getDocument(document));
+        return   await this.convertBlobToString(blob);
+
       }
     } catch (error) {
       console.error('Fehler beim Laden der Datei:', error);
     }
   }
 
-  private async saveFileToServer(document: any, content: string): Promise<void> {
+  private async saveFileToServer(document: any, content: Blob): Promise<void> {
     this.filemanagerFacade.saveDocument(document, content).subscribe((res) => {
       console.log(res);
     });
   }
+  private async convertBlobToString(blob: Blob): Promise<string> {
+    return await blob.text();
+  }
+
 }

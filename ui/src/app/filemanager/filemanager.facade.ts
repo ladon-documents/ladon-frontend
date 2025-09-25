@@ -97,7 +97,7 @@ export class FilemanagerFacade {
   getDocument(document: DocumentModel) {
     return this.filemanagerSerivce.getDocument(document)
   }
-  saveDocument(document: DocumentModel, content:any) {
+  saveDocument(document: DocumentModel, content:Blob) {
     return this.filemanagerSerivce.saveDocument(document, content)
   }
   async getImagePreviewUrll() {

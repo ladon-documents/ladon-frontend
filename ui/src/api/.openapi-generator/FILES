@@ -58,6 +58,5 @@ model/userDataWrapper.ts
 model/userEntry.ts
 model/userLogins.ts
 model/userWrapper.ts
-model/zipUploadRequest.ts
 param.ts
 variables.ts

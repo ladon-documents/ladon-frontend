@@ -1819,6 +1819,8 @@ components:
     Document:
       type: object
       properties:
+        name:
+          type: string
         content-type:
           type: string
         created:
@@ -2149,7 +2151,7 @@ components:
         success:
           type: boolean
         exception:
-          type: strings
+          type: string
     ConverterInfo:
       required:
         - cardinality

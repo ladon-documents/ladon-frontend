@@ -130,6 +130,7 @@
       @for (role of mappedRoleOptions(); track $index) {
         <div class="flex items-center gap-2 hover:cursor-pointer">
           <input
+            #roleCheckbox
             class="checkbox checkbox-primary"
             type="checkbox"
             [id]="role.name"
@@ -147,6 +148,7 @@
       @for (permission of mappedPermissionOptions(); track $index) {
         <div class="flex items-center gap-2 hover:cursor-pointer">
           <input
+            #permissionCheckbox
             class="checkbox checkbox-primary"
             type="checkbox"
             [id]="permission.permissionId"

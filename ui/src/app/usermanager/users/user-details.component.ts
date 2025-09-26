@@ -1,4 +1,15 @@
-import { Component, computed, inject, OnInit, Signal, signal, ViewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnInit,
+  QueryList,
+  Signal,
+  signal,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { PermissionModel, UserEntryModel, RoleEntryModel } from '../../../api';
@@ -39,6 +50,8 @@ interface MappedPermission extends PermissionModel {
 })
 export class UserDetailsComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) dialogCmp: DialogComponent | undefined;
+  @ViewChildren('roleCheckbox') roleCheckbox: QueryList<ElementRef<HTMLInputElement>> | undefined;
+  @ViewChildren('permissionCheckbox') permissionCheckbox: QueryList<ElementRef<HTMLInputElement>> | undefined;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -183,17 +196,26 @@ export class UserDetailsComponent implements OnInit {
           // @ts-ignore
           return this.userForm.get(type)?.value?.some(({ permissionId: pId }) => pId === permissionId);
         }
-        break;
+        return false;
       case 'role':
         const { id } = value as RoleEntryModel;
         if (Array.isArray(this.userForm.get(type)?.value)) {
           // @ts-ignore
           return this.userForm.get(type)?.value?.some(({ id: rId }) => rId === id);
         }
-        break;
+        return false;
     }
 
     return false;
+  }
+
+  private clearCheckedStates() {
+    this.roleCheckbox
+      ?.filter((checkbox) => checkbox.nativeElement.disabled === false)
+      .forEach((checkbox) => (checkbox.nativeElement.checked = false));
+    this.permissionCheckbox
+      ?.filter((checkbox) => checkbox.nativeElement.disabled === false)
+      .forEach((checkbox) => (checkbox.nativeElement.checked = false));
   }
 
   private checkPasswords: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -226,6 +248,7 @@ export class UserDetailsComponent implements OnInit {
     this.userRoles.set(roles);
     this.userPermissions.set(permissions);
     this.clearRolesAndPermissions();
+    this.clearCheckedStates();
   }
 
   private clearRolesAndPermissions() {

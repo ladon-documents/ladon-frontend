@@ -209,8 +209,13 @@ const applyFiltersAndPagination = (
   };
 }
 
+const isPdf = (document: DocumentModel | null): boolean => {
+    return !!(document && !document.isFolder && (document["content-type"] === "application/pdf" || document.path?.endsWith('.pdf')));
+}
+
 export const filemanagerHelper = {
   isEditableFile,
+  isPdf,
   filterDocuments,
   calculatePaginationState,
   sortDocuments,

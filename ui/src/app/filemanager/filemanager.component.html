@@ -19,7 +19,7 @@
         <div class="flex items-center gap-4">
           <div class="relative">
             <input type="text"
-                   placeholder="Dateien suchen..."
+                   placeholder="Dateien filtern..."
                    class="input input-bordered input-sm w-64 pr-8"
                    [value]="searchTerm()"
                    (input)="onSearchChange($event)"
@@ -133,8 +133,9 @@
 
       <div class="min-w-0 overflow-hidden">
         <div class="h-full overflow-y-auto">
-          <file-uploader> </file-uploader>
-
+          <!--
+       <ladon-pdfviewer  pdf="/peter/princes-of-the-yen-japans-central-bankers-and-the-transformation-of-the-economy_compress.pdf"></ladon-pdfviewer>
+          -->
           <div class="p-6 border-b border-gray-100">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <button class="btn btn-outline" popovertarget="popover-create-entity"

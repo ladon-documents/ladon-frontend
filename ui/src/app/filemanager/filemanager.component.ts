@@ -34,7 +34,6 @@ import { filemanagerRoutes } from './filemanager.routes';
     CreateFolderComponent,
     SidebarComponent,
     FileEditorDialogComponent,
-
   ],
   providers: [
     provideIcons({

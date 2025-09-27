@@ -200,12 +200,12 @@
 
               <!-- Modified -->
               <td class="text-slate-600">
-                {{ document['last-modified'] | date: 'short' }}
+                {{ document['last-modified'] | date: dateFormat }}
               </td>
 
               <!-- Created -->
               <td class="text-slate-600">
-                {{ document.created | date: 'short' }}
+                {{ document.created | date: dateFormat }}
               </td>
 
               <!-- Actions -->

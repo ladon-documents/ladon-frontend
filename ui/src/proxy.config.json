@@ -13,5 +13,11 @@
     "pathRewrite": {
       "^/plugins": ""
     }
+  },
+  "/ui/draco/webcomponents": {
+    "target": "https://cluster.mind-consulting.de",
+    "secure": true,
+    "logLevel": "debug",
+    "changeOrigin": true,
   }
 }

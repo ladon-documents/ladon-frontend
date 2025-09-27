@@ -256,6 +256,7 @@ export const FilemanagerStore = signalStore(
                     isLoading: false,
                     allDocuments: documents,
                     filteredDocuments,
+                    selectedDocument: documents[0],
                     documents: paginatedDocuments,
                     pagination: paginationState,
                   }));
@@ -301,6 +302,7 @@ export const FilemanagerStore = signalStore(
                     isLoading: false,
                     allDocuments: documents,
                     filteredDocuments,
+                    selectedDocument: documents[0],
                     documents: paginatedDocuments,
                     pagination: paginationState,
                   }));

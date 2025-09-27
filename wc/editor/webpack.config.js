@@ -5,8 +5,8 @@ module.exports = {
   entry: './src/monaco-editor.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'monaco-editor.js',
-    library: 'MonacoEditorWC',
+    filename: 'wc-ladon-editor.js',
+    library: 'LadonEditorWC',
     libraryTarget: 'umd'
   },
   module: {

@@ -1,4 +1,4 @@
-@if(isOpen) {
+@if (isOpen) {
   <div class="fixed inset-0 z-50 overflow-y-auto" [class.hidden]="!isOpen">
     <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" (click)="closeDialog()"></div>
 
@@ -9,21 +9,25 @@
             <ng-icon name="heroDocumentText" class="w-6 h-6 text-gray-600"></ng-icon>
             <div>
               <h3 class="text-lg font-semibold text-gray-900">{{ config().fileName }}</h3>
-              <p class="text-sm text-gray-500">{{ editorConfig?.language }} • {{ config().readOnly ? 'Nur Lesen' : 'Bearbeiten' }}</p>
+              <p class="text-sm text-gray-500">
+                {{ editorConfig?.language }} • {{ config().readOnly ? "Nur Lesen" : "Bearbeiten" }}
+              </p>
             </div>
           </div>
 
           <div class="flex items-center space-x-2">
-            <button (click)="toggleTheme()"
-                    class="p-2 rounded-md hover:bg-gray-100 transition-colors"
-                    title="Theme wechseln">
+            <button
+              (click)="toggleTheme()"
+              class="p-2 rounded-md hover:bg-gray-100 transition-colors"
+              title="Theme wechseln">
               🌓
             </button>
 
             @if (!config().readOnly && hasChanges) {
-              <button (click)="saveFile()"
-                      [disabled]="isSaving"
-                      class="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
+              <button
+                (click)="saveFile()"
+                [disabled]="isSaving"
+                class="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
                 @if (isSaving) {
                   <ng-icon name="heroArrowPath" class="w-4 h-4 mr-2 animate-spin"></ng-icon>
                 } @else {
@@ -33,8 +37,7 @@
               </button>
             }
 
-            <button (click)="closeDialog()"
-                    class="p-2 rounded-md hover:bg-gray-100 transition-colors">
+            <button (click)="closeDialog()" class="p-2 rounded-md hover:bg-gray-100 transition-colors">
               <ng-icon name="heroXMark" class="w-6 h-6 text-gray-600"></ng-icon>
             </button>
           </div>
@@ -42,14 +45,14 @@
 
         <div class="flex-1 overflow-hidden">
           <monaco-editor
-              #editor
-              [value]="fileContent"
-              [language]="editorConfig?.language || 'plaintext'"
-              [theme]="editorConfig?.theme || 'vs'"
-              [readOnly]="config().readOnly"
-              [options]="editorConfig?.options"
-              (valueChange)="onContentChange($event)"
-              (editorReady)="onEditorReady($event)">
+            #editor
+            [value]="fileContent"
+            [language]="editorConfig?.language || 'plaintext'"
+            [theme]="editorConfig?.theme || 'vs'"
+            [readOnly]="config().readOnly"
+            [options]="editorConfig?.options"
+            (valueChange)="onContentChange($event)"
+            (editorReady)="onEditorReady($event)">
           </monaco-editor>
         </div>
 
@@ -62,14 +65,14 @@
               </p>
               <div class="flex space-x-2">
                 <button
-                                                                                                    (click)="discardChanges()"
-                                                                                                    class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                  (click)="discardChanges()"
+                  class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                   Verwerfen
                 </button>
                 <button
-                                                                                                    (click)="saveFile()"
-                                                                                                    [disabled]="isSaving"
-                                                                                                    class="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
+                  (click)="saveFile()"
+                  [disabled]="isSaving"
+                  class="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
                   Speichern
                 </button>
               </div>
@@ -79,5 +82,4 @@
       </div>
     </div>
   </div>
-
 }

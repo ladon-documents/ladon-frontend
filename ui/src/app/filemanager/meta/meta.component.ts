@@ -12,16 +12,15 @@ export class MetaComponent {
   private readonly filemanagerFacade = inject(FilemanagerFacade);
   selectedDocument = this.filemanagerFacade.selectedDocument;
 
-  getMetadataEntries(metadata: any): Array<{key: string, value: any}> {
+  getMetadataEntries(metadata: any): Array<{ key: string; value: any }> {
     if (!metadata) return [];
     return Object.entries(metadata).map(([key, value]) => ({
       key: key,
-      value: value
+      value: value,
     }));
   }
 
-
-// Hilfsfunktion zum Formatieren der Dateigröße
+  // Hilfsfunktion zum Formatieren der Dateigröße
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
 
@@ -31,5 +30,4 @@ export class MetaComponent {
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-
 }

@@ -43,6 +43,4 @@ export class SidebarComponent implements OnInit, OnDestroy {
   toggleSidebar() {
     this.sidebarService.toggleSidebar();
   }
-
 }
-

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import {  MonacoEditorService } from './editor.service';
+import { MonacoEditorService } from './editor.service';
 
 describe('EditorService', () => {
   let service: MonacoEditorService;

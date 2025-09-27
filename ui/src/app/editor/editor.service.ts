@@ -11,10 +11,9 @@ export interface EditorConfig {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MonacoEditorService {
-
   private readonly filemanagerFacade = inject(FilemanagerFacade);
   private selectedDocument = this.filemanagerFacade.selectedDocument;
   private editorOpenSubject = new BehaviorSubject<boolean>(false);
@@ -33,31 +32,31 @@ export class MonacoEditorService {
     const extension = fileName.split('.').pop()?.toLowerCase();
 
     const languageMap: { [key: string]: string } = {
-      'js': 'javascript',
-      'ts': 'typescript',
-      'html': 'html',
-      'css': 'css',
-      'scss': 'scss',
-      'less': 'less',
-      'json': 'json',
-      'xml': 'xml',
-      'md': 'markdown',
-      'py': 'python',
-      'java': 'java',
-      'c': 'c',
-      'cpp': 'cpp',
-      'cs': 'csharp',
-      'php': 'php',
-      'rb': 'ruby',
-      'go': 'go',
-      'rs': 'rust',
-      'sql': 'sql',
-      'yaml': 'yaml',
-      'yml': 'yaml',
-      'sh': 'shell',
-      'ps1': 'powershell',
-      'dockerfile': 'dockerfile',
-      'txt': 'plaintext'
+      js: 'javascript',
+      ts: 'typescript',
+      html: 'html',
+      css: 'css',
+      scss: 'scss',
+      less: 'less',
+      json: 'json',
+      xml: 'xml',
+      md: 'markdown',
+      py: 'python',
+      java: 'java',
+      c: 'c',
+      cpp: 'cpp',
+      cs: 'csharp',
+      php: 'php',
+      rb: 'ruby',
+      go: 'go',
+      rs: 'rust',
+      sql: 'sql',
+      yaml: 'yaml',
+      yml: 'yaml',
+      sh: 'shell',
+      ps1: 'powershell',
+      dockerfile: 'dockerfile',
+      txt: 'plaintext',
     };
 
     return languageMap[extension || ''] || 'plaintext';
@@ -77,22 +76,22 @@ export class MonacoEditorService {
       lineHeight: 20,
       fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
       minimap: { enabled: language !== 'plaintext' },
-      wordWrap: language === 'markdown' || language === 'plaintext' ? 'on' as const : 'off' as const,
+      wordWrap: language === 'markdown' || language === 'plaintext' ? ('on' as const) : ('off' as const),
       scrollBeyondLastLine: false,
       automaticLayout: true,
       contextmenu: true,
       find: {
         addExtraSpaceOnTop: false,
         autoFindInSelection: 'never' as const,
-        seedSearchStringFromSelection: 'always' as const
-      }
+        seedSearchStringFromSelection: 'always' as const,
+      },
     };
 
     return {
       language,
       theme,
       readOnly,
-      options
+      options,
     };
   }
 
@@ -100,9 +99,31 @@ export class MonacoEditorService {
     if (!fileName) return false;
 
     const editableExtensions = [
-      'txt', 'md', 'js', 'ts', 'html', 'css', 'scss', 'json', 'xml',
-      'py', 'java', 'c', 'cpp', 'cs', 'php', 'rb', 'go', 'rs', 'sql',
-      'yaml', 'yml', 'sh', 'ps1', 'dockerfile', 'vm'
+      'txt',
+      'md',
+      'js',
+      'ts',
+      'html',
+      'css',
+      'scss',
+      'json',
+      'xml',
+      'py',
+      'java',
+      'c',
+      'cpp',
+      'cs',
+      'php',
+      'rb',
+      'go',
+      'rs',
+      'sql',
+      'yaml',
+      'yml',
+      'sh',
+      'ps1',
+      'dockerfile',
+      'vm',
     ];
 
     const extension = fileName.split('.').pop()?.toLowerCase();

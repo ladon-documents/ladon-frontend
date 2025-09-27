@@ -20,5 +20,4 @@ export class SidebarService {
   toggleSidebar() {
     this.sidebarOpenSubject.next(!this.sidebarOpenSubject.value);
   }
-
 }

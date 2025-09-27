@@ -1,5 +1,14 @@
-
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, Output, EventEmitter, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  Output,
+  EventEmitter,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 declare const monaco: any;
@@ -8,15 +17,15 @@ declare const monaco: any;
   selector: 'monaco-editor',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="monaco-editor-container w-full h-full" #editorContainer></div>
-  `,
-  styles: [`
-    .monaco-editor-container {
-      min-height: 400px;
-    }
-  `],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  template: ` <div class="monaco-editor-container w-full h-full" #editorContainer></div> `,
+  styles: [
+    `
+      .monaco-editor-container {
+        min-height: 400px;
+      }
+    `,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class MonacoEditorComponent implements OnInit, OnDestroy {
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
@@ -70,8 +79,8 @@ export class MonacoEditorComponent implements OnInit, OnDestroy {
         // Monaco Editor konfigurieren und laden
         (window as any).require.config({
           paths: {
-            'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs'
-          }
+            vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs',
+          },
         });
 
         (window as any).require(['vs/editor/editor.main'], () => {
@@ -102,7 +111,7 @@ export class MonacoEditorComponent implements OnInit, OnDestroy {
       cursorStyle: 'line' as const,
       fontSize: 14,
       fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-      ...this.options
+      ...this.options,
     };
 
     this.editor = monaco.editor.create(this.editorContainer.nativeElement, editorOptions);

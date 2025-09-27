@@ -1,4 +1,5 @@
 import { DocumentModel } from '../../../api';
+import { PaginationState, SortConfig } from '../../store/filemanager.store';
 
 const storageKey = `mf-ladon-docmanager:view`;
 
@@ -92,36 +93,131 @@ export const mergeAndStore = (t: string, v: any) => {
   localStorage.setItem(storageKey, JSON.stringify(Object.assign(storage, { [t]: v })));
 };
 
-export const isEditableFile = (fileName?: string): boolean => {
+const isEditableFile = (fileName?: string): boolean => {
   if (!fileName) return false;
 
   const editableExtensions = [
-    'txt',
-    'md',
-    'js',
-    'ts',
-    'html',
-    'css',
-    'scss',
-    'json',
-    'xml',
-    'py',
-    'java',
-    'c',
-    'cpp',
-    'cs',
-    'php',
-    'rb',
-    'go',
-    'rs',
-    'sql',
-    'yaml',
-    'yml',
-    'sh',
-    'ps1',
-    'dockerfile',
+    'txt', 'md', 'js', 'ts', 'html', 'css', 'scss', 'json', 'xml',
+    'py', 'java', 'c', 'cpp', 'cs', 'php', 'rb', 'go', 'rs', 'sql',
+    'yaml', 'yml', 'sh', 'ps1', 'dockerfile'
   ];
 
   const extension = fileName.split('.').pop()?.toLowerCase();
   return editableExtensions.includes(extension || '');
-};
+}
+
+const calculatePaginationState = (
+  allDocuments: DocumentModel[],
+  currentPage: number,
+  pageSize: number
+): {
+  paginatedDocuments: DocumentModel[],
+  paginationState: PaginationState
+} => {
+  const totalItems = allDocuments.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, totalItems);
+
+  const paginatedDocuments = allDocuments.slice(startIndex, endIndex);
+
+  const paginationState: PaginationState = {
+    currentPage,
+    pageSize,
+    totalItems,
+    totalPages,
+    hasNextPage: currentPage < totalPages,
+    hasPreviousPage: currentPage > 1,
+  };
+
+  return { paginatedDocuments, paginationState };
+}
+
+const filterDocuments = (documents: DocumentModel[], searchTerm: string): DocumentModel[] => {
+  if (!searchTerm.trim()) {
+    return documents;
+  }
+
+  const term = searchTerm.toLowerCase().trim();
+  return documents.filter(doc =>
+    doc.name?.toLowerCase().includes(term) ||
+    doc.key?.toLowerCase().includes(term)
+  );
+}
+
+const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): DocumentModel[] => {
+  return [...documents].sort((a, b) => {
+    let aValue: any;
+    let bValue: any;
+
+    if (a.isFolder && !b.isFolder) return -1;
+    if (!a.isFolder && b.isFolder) return 1;
+
+    switch (sortConfig.field) {
+      case 'name':
+        aValue = (a.name || '').toLowerCase();
+        bValue = (b.name || '').toLowerCase();
+        break;
+      case 'size':
+        aValue = a.size || 0;
+        bValue = b.size || 0;
+        break;
+      case 'type':
+        aValue = a.isFolder ? 'folder' : (a.key?.split('.').pop() || '').toLowerCase();
+        bValue = b.isFolder ? 'folder' : (b.key?.split('.').pop() || '').toLowerCase();
+        break;
+      case 'last-modified':
+        aValue = new Date(a['last-modified'] || 0).getTime();
+        bValue = new Date(b['last-modified'] || 0).getTime();
+        break;
+      case 'created':
+        aValue = new Date(a.created || 0).getTime();
+        bValue = new Date(b.created || 0).getTime();
+        break;
+      default:
+        aValue = a[sortConfig.field as keyof DocumentModel] || '';
+        bValue = b[sortConfig.field as keyof DocumentModel] || '';
+    }
+
+    let comparison = 0;
+    if (aValue < bValue) comparison = -1;
+    if (aValue > bValue) comparison = 1;
+
+    return sortConfig.direction === 'desc' ? -comparison : comparison;
+  });
+}
+
+const applyFiltersAndPagination = (
+  allDocuments: DocumentModel[],
+  searchTerm: string,
+  sortConfig: SortConfig,
+  currentPage: number,
+  pageSize: number
+)=>  {
+  const filtered = filterDocuments(allDocuments, searchTerm);
+  const sorted = sortDocuments(filtered, sortConfig);
+  const { paginatedDocuments, paginationState } = calculatePaginationState(
+    sorted,
+    currentPage,
+    pageSize
+  );
+
+  return {
+    filteredDocuments: sorted,
+    paginatedDocuments,
+    paginationState
+  };
+}
+
+const isPdf = (document: DocumentModel | null): boolean => {
+    return !!(document && !document.isFolder && (document["content-type"] === "application/pdf" || document.path?.endsWith('.pdf')));
+}
+
+export const filemanagerHelper = {
+  isEditableFile,
+  isPdf,
+  filterDocuments,
+  calculatePaginationState,
+  sortDocuments,
+  applyFiltersAndPagination
+}

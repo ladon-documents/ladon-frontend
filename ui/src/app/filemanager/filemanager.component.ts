@@ -4,7 +4,15 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilemanagerFacade } from './filemanager.facade';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { heroDocument, heroEye, heroFolder, heroPlus } from '@ng-icons/heroicons/outline';
+import {
+  heroBars3, heroBars3BottomLeft, heroCalendarDays, heroChevronDown, heroChevronUp, heroClock,
+  heroDocument, heroDocumentDuplicate, heroDocumentText,
+  heroEye,
+  heroFolder,
+  heroMagnifyingGlass,
+  heroPlus, heroScale,
+  heroSquares2x2, heroXMark
+} from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
@@ -33,6 +41,18 @@ import { filemanagerRoutes } from './filemanager.routes';
       heroDocument,
       heroFolder,
       heroEye,
+      heroBars3,
+      heroSquares2x2,
+      heroMagnifyingGlass,
+      heroXMark,
+      heroBars3BottomLeft,
+      heroChevronDown,
+      heroDocumentText,
+      heroScale,
+      heroDocumentDuplicate,
+      heroClock,
+      heroCalendarDays,
+      heroChevronUp
     }),
     FilesizePipe,
   ],
@@ -47,6 +67,10 @@ export class FilemanagerComponent implements OnInit {
   readonly selectedBucket: Signal<string | null> = this.filemanagerFacade.selectedBucket;
   readonly error: Signal<string | null> = this.filemanagerFacade.error;
   readonly stats: Signal<BucketStatsExtended | null> = this.filemanagerFacade.statistics;
+  viewMode = this.filemanagerFacade.viewMode;
+  readonly searchTerm = this.filemanagerFacade.searchTerm;
+  readonly sortConfig = this.filemanagerFacade.sortConfig;
+  readonly pagination = this.filemanagerFacade.pagination;
 
   constructor(
     private router: Router,
@@ -75,9 +99,29 @@ export class FilemanagerComponent implements OnInit {
     }
   }
 
+  setViewMode(viewMode: 'card' | 'table') {
+    this.filemanagerFacade.setViewMode(viewMode)
+  }
+
   toggleSidebar() {
     this.sidebarService.toggleSidebar();
   }
+
+
+  // Neue Such- und Sortiermethoden
+  onSearchChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.filemanagerFacade.setSearchTerm(target.value);
+  }
+
+  clearSearch() {
+    this.filemanagerFacade.clearSearch();
+  }
+
+  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+    this.filemanagerFacade.toggleSort(field);
+  }
+
 
   protected readonly heroDocument = heroDocument;
   protected readonly heroFolder = heroFolder;

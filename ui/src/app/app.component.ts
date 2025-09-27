@@ -16,9 +16,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppStore } from './store/app.store';
 import { HeaderComponent } from './header/header.component';
 import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.component';
+import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
+import { DocumentModel } from '../api';
 
 @Component({
-  imports: [CommonModule, RouterModule, TranslateModule, NavigationComponent, HeaderComponent],
+  imports: [CommonModule, RouterModule, TranslateModule, NavigationComponent, HeaderComponent, PdfViewerComponent
+  ],
   standalone: true,
   selector: 'ldn-ui',
   templateUrl: './app.component.html',
@@ -43,6 +46,31 @@ export class AppComponent {
     this.translate.setDefaultLang('de');
     this.translate.use('de');
   }
+
+  onPdfLoaded(event: { document: DocumentModel, totalPages: number }): void {
+    console.log(`PDF geladen: ${event.document.name} mit ${event.totalPages} Seiten`);
+  }
+
+  onPdfError(event: { document: DocumentModel | null, error: string }): void {
+    console.error('PDF Fehler:', event.error, event.document);
+  }
+
+  onPageChanged(event: { document: DocumentModel | null, page: number, totalPages: number }): void {
+    console.log(`Seite geändert: ${event.page}/${event.totalPages} für ${event.document?.name}`);
+  }
+
+  onDownloadRequested(event: { document: DocumentModel }): void {
+    console.log('Download angefordert für:', event.document.name);
+  }
+
+  onPrintRequested(event: { document: DocumentModel }): void {
+    console.log('Druck angefordert für:', event.document.name);
+  }
+
+  onPdfClosed(event: { document: DocumentModel | null }): void {
+    console.log('PDF Viewer geschlossen für:', event.document?.name);
+  }
+
 }
 
 @Component({

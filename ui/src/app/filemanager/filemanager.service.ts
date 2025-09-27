@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DocumentModel, DocumentsService, ZipUploadRequestModel } from '../../api';
+import { DocumentModel, DocumentsService } from '../../api';
 import { throwError } from 'rxjs';
 
 @Injectable({
@@ -8,33 +8,31 @@ import { throwError } from 'rxjs';
 export class FilemanagerService {
   constructor(private documentsService: DocumentsService) {}
 
-  public loadBucket(bucket: string) {
-    return this.documentsService.listDocuments(bucket, undefined, undefined, undefined, undefined, undefined, true);
+  public loadBucket(bucket: string, limit: number = 25) {
+    return this.documentsService.listDocuments(bucket, limit, undefined, undefined, undefined, undefined, true);
   }
   public getDocument(document: DocumentModel) {
     const { bucket, key } = document;
     if (bucket && key) {
-      return this.documentsService.getDocument(bucket, key);
+      return this.documentsService.getDocument(bucket, key);;
     }
     return throwError(new Error('Not Found'));
   }
 
-  public saveDocument(document: DocumentModel, content: any) {
+  public saveDocument(document: DocumentModel, content: Blob) {
     const { bucket, key } = document;
-    const zipUploadRequestModel: ZipUploadRequestModel = {
-      content,
-    };
     if (bucket && key) {
-      return this.documentsService.putDocument(bucket, key, undefined, zipUploadRequestModel);
+      return this.documentsService.putDocument(bucket, key, undefined, content);;
     }
     return throwError(new Error('Not Found'));
   }
 
-  public loadDocumentList(document: DocumentModel) {
+
+  public loadDocumentList(document: DocumentModel, limit: number = 1000) {
     if (document && document.bucket) {
       return this.documentsService.listDocuments(
         document.bucket,
-        undefined,
+        limit,
         undefined,
         document.key,
         undefined,

@@ -88,6 +88,7 @@ export class FileEditorDialogComponent implements OnDestroy {
   async loadFileContent() {
     this.fileContent = await this.monacoEditorService.loadFileContent();
     if (this.config().fileName) {
+
       this.editorConfig = this.monacoEditorService.getEditorConfig(this.config().fileName, this.config().readOnly);
       this.originalContent = this.fileContent;
       this.currentContent = this.fileContent;

@@ -6,7 +6,6 @@ import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Router } from '@angular/router';
-import { state } from '@angular/animations';
 
 interface UiState {
   isLoading: boolean;

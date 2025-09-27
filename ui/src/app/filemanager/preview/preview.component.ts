@@ -3,12 +3,13 @@ import { FilemanagerFacade } from '../filemanager.facade';
 import { DocumentModel } from '../../../api';
 import { SidebarService } from '../sidebar/sidebar.service';
 import { MonacoEditorService } from '../../editor/editor.service';
+import { filemanagerHelper } from '../helper/helper';
 
 @Component({
   selector: 'filemanager-preview',
   imports: [],
   templateUrl: './preview.component.html',
-  styleUrl: './preview.component.scss',
+  styleUrl: './preview.component.scss'
 })
 export class PreviewComponent {
   readonly monacoEditorService = inject(MonacoEditorService);
@@ -63,4 +64,10 @@ export class PreviewComponent {
   openEditor() {
     this.monacoEditorService.open();
   }
+
+  openPdf() {
+
+  }
+
+  protected readonly filemanagerHelper = filemanagerHelper;
 }

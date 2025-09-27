@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="./dist/monaco-editor.js" type="module"></script>
+  <script type="module">
+      const editor = document.querySelector('ladon-editor');
+      console.log(editor);
+
+      // Events
+      editor.addEventListener('valueChange', (event) => {
+          console.log('Value changed:', event.detail.value);
+      });
+
+      editor.addEventListener('editorReady', (event) => {
+          console.log('Editor ready:', event.detail.editor);
+      });
+  </script>
+
+</head>
+<body>
+
+<ladon-editor
+                                                                                    value="console.log('Hello World');"
+                                                                                    language="javascript"
+                                                                                    theme="vs-dark"
+                                                                                    options='{"fontSize": 16, "lineNumbers": "on"}'>
+</ladon-editor>
+
+</body>
+</html>

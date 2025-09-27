@@ -20,6 +20,14 @@ export class FilemanagerFacade {
   readonly error = this.#filemanagerStore.error;
   readonly statistics = this.#filemanagerStore.statistics;
   readonly selectedDocument = this.#filemanagerStore.selectedDocument;
+  readonly viewMode = this.#filemanagerStore.viewMode;
+  readonly pagination = this.#filemanagerStore.pagination;
+
+  // Neue Such- und Sortier-Signale
+  readonly searchTerm = this.#filemanagerStore.searchTerm;
+  readonly sortConfig = this.#filemanagerStore.sort;
+  readonly isLoading = this.#filemanagerStore.isLoading;
+
   constructor() {}
 
   initRoot() {
@@ -28,6 +36,52 @@ export class FilemanagerFacade {
       this.#filemanagerStore.navigateToFilemanagerWithBucket(currentBucket);
     }
   }
+
+  setViewMode(mode: 'card' | 'table') {
+    this.#filemanagerStore.setViewMode(mode);
+  }
+  // Pagination methods
+  setPageSize(pageSize: number) {
+    this.#filemanagerStore.setPageSize(pageSize);
+  }
+
+  goToPage(page: number) {
+    this.#filemanagerStore.goToPage(page);
+  }
+
+  nextPage() {
+    this.#filemanagerStore.nextPage();
+  }
+
+  previousPage() {
+    this.#filemanagerStore.previousPage();
+  }
+
+  firstPage() {
+    this.#filemanagerStore.firstPage();
+  }
+
+  lastPage() {
+    this.#filemanagerStore.lastPage();
+  }
+// Neue Such- und Sortiermethoden
+  setSearchTerm(searchTerm: string) {
+    this.#filemanagerStore.setSearchTerm(searchTerm);
+  }
+
+  clearSearch() {
+    this.#filemanagerStore.clearSearch();
+  }
+
+  setSortConfig(field: 'name' | 'size' | 'type' | 'last-modified' | 'created', direction?: 'asc' | 'desc') {
+    this.#filemanagerStore.setSortConfig(field, direction);
+  }
+
+  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+    this.#filemanagerStore.setSortConfig(field);
+  }
+
+
   setSelectedDocument(document: DocumentModel) {
     this.#filemanagerStore.setSelectedDocument(document);
   }
@@ -41,10 +95,10 @@ export class FilemanagerFacade {
   }
 
   getDocument(document: DocumentModel) {
-    return this.filemanagerSerivce.getDocument(document);
+    return this.filemanagerSerivce.getDocument(document)
   }
-  saveDocument(document: DocumentModel, content: any) {
-    return this.filemanagerSerivce.saveDocument(document, content);
+  saveDocument(document: DocumentModel, content:Blob) {
+    return this.filemanagerSerivce.saveDocument(document, content)
   }
   async getImagePreviewUrll() {
     try {
@@ -68,12 +122,12 @@ export class FilemanagerFacade {
 
   createEmptyFile(fileName: string) {
     const currentPath = this.getCurrentPath();
-    //  this.#filemanagerStore.createNewFile({ fileName, currentPath });
+  //  this.#filemanagerStore.createNewFile({ fileName, currentPath });
   }
 
   createFolder(folderName: string) {
-    const currentPath = this.getCurrentPath();
-    this.#filemanagerStore.createFolder({ folderName, currentPath });
+    const currentPath =this.getCurrentPath()
+     this.#filemanagerStore.createFolder({ folderName, currentPath });
   }
 
   showRoot() {
@@ -86,7 +140,9 @@ export class FilemanagerFacade {
     }
   }
 
-  setCurrentFolder(document: DocumentModel) {}
+  setCurrentFolder(document: DocumentModel) {
+
+  }
 
   delete(document: DocumentModel): void {}
 
@@ -107,6 +163,7 @@ export class FilemanagerFacade {
   }
 
   private getCurrentPath(): string | undefined {
-    return this.#breadcrumbStore.currentPath()?.key;
+    return this.#breadcrumbStore.currentPath()?.key
   }
+
 }

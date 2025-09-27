@@ -26,19 +26,4 @@ export * from './usermanager.service';
 import { UsermanagerService } from './usermanager.service';
 export * from './users.service';
 import { UsersService } from './users.service';
-export const APIS = [
-  ActionsService,
-  AuthenticationService,
-  BucketsService,
-  ConverterService,
-  DocumentsService,
-  DownloadsService,
-  NodeInfoService,
-  PluginmanagerService,
-  StreamService,
-  TasksService,
-  TransactionService,
-  UIService,
-  UsermanagerService,
-  UsersService,
-];
+export const APIS = [ActionsService, AuthenticationService, BucketsService, ConverterService, DocumentsService, DownloadsService, NodeInfoService, PluginmanagerService, StreamService, TasksService, TransactionService, UIService, UsermanagerService, UsersService];

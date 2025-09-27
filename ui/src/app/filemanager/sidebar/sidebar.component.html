@@ -1,8 +1,8 @@
 @if (isOpen) {
-  <div class="w-96 bg-white">
+  <div class="w-96 bg-white h-full flex flex-col">
     <!-- Header -->
-    <div class="flex items-center justify-between px-6 py-4 border-gray-200">
-      <h2 class="text-lg font-mediu text-gray-800">{{ selectedDocument()?.key }}</h2>
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 flex-shrink-0">
+      <h2 class="text-lg font-medium text-gray-800">{{ selectedDocument()?.key }}</h2>
       <button (click)="closeSidebar()" class="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
         <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -11,16 +11,18 @@
     </div>
 
     <!-- Content -->
-    <div class="p-4 h-full overflow-y-auto">
-      <filemanager-preview></filemanager-preview>
-      <filemanager-meta></filemanager-meta>
+    <div class="flex-1 overflow-y-auto">
+      <div class="p-4">
+        <filemanager-preview></filemanager-preview>
+        <filemanager-meta></filemanager-meta>
+      </div>
     </div>
   </div>
 }
 
 <file-editor-dialog
-  [config]="{
-    readOnly: false,
-    fileName: selectedDocument()?.key || '',
-  }">
+                                                                                    [config]="{
+                      readOnly: false,
+                      fileName:selectedDocument()?.key || ''
+                    }">
 </file-editor-dialog>

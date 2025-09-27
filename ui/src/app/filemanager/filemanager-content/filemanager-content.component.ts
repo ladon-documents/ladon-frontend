@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DocumentModel } from '../../../api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  heroArrowDownTray,
+  heroArrowDownTray, heroChevronDown, heroChevronUp,
   heroDocumentDuplicate,
   heroFolder,
   heroPencilSquare,
@@ -12,7 +12,7 @@ import {
   heroPlusCircle,
   heroShare,
   heroStar,
-  heroTrash,
+  heroTrash
 } from '@ng-icons/heroicons/outline';
 import { heroFolderSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
@@ -22,11 +22,13 @@ import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { ConverterService } from '../../services/converter.service';
 import { SidebarService } from '../sidebar/sidebar.service';
+import { FilemanagerPaginationComponent } from '../pagination/pagination.component';
 
 @Component({
   standalone: true,
   selector: 'app-filemanager-content',
-  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe, BreadcrumbComponent],
+  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe,FilemanagerPaginationComponent
+  ],
   providers: [
     provideIcons({
       heroFolder,
@@ -39,6 +41,8 @@ import { SidebarService } from '../sidebar/sidebar.service';
       heroArrowDownTray,
       heroDocumentDuplicate,
       heroShare,
+      heroChevronUp,
+      heroChevronDown
     }),
     FilesizePipe,
   ],
@@ -51,9 +55,13 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   private readonly converterService = inject(ConverterService);
   private readonly sidebarService = inject(SidebarService);
   documents: Signal<DocumentModel[]> = this.#facade.documents;
+
   #currentBucket: string | null = null;
   #subfolder: string | null = null;
   #selectedDocument: DocumentModel | null = null;
+  viewMode = this.#facade.viewMode;
+  readonly searchTerm = this.#facade.searchTerm;
+  readonly sortConfig = this.#facade.sortConfig;
 
   imageUrl: string | null = null;
 
@@ -87,19 +95,47 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     }
   }
 
+  setViewMode(mode: 'card' | 'table') {
+    this.#facade.setViewMode(mode);
+  }
+
+  // Pagination methods
+  goToPage(page: number) {
+    this.#facade.goToPage(page);
+  }
+
+  nextPage() {
+    this.#facade.nextPage();
+  }
+
+  previousPage() {
+    this.#facade.previousPage();
+  }
+
+  firstPage() {
+    this.#facade.firstPage();
+  }
+
+  lastPage() {
+    this.#facade.lastPage();
+  }
+
+  setPageSize(pageSize: number) {
+    this.#facade.setPageSize(pageSize);
+  }
+
+  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+    this.#facade.toggleSort(field);
+  }
+
   public showRoot() {
     if (this.#currentBucket) {
       this.#facade.initRoot();
     }
   }
 
-  onImageError(event: any) {
-    console.error('Fehler beim Anzeigen des Bildes:', event);
-    this.imageUrl = null;
-  }
-
-  async select(document: DocumentModel) {
-    this.#facade.setSelectedDocument(document);
+ async select(document: DocumentModel) {
+   this.#facade.setSelectedDocument(document);
   }
 
   async navigateTo(document: DocumentModel) {
@@ -111,4 +147,6 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       await this.select(document);
     }
   }
+
+
 }

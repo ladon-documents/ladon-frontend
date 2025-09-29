@@ -30,7 +30,7 @@ export class PdfviewerComponent {
 
   private readonly path: string = "/admin/api/filemanager";
   private pdfSrc: string = "";
-  private readonly deployTarget = "/ui/draco/webcomponents/wc-ladon-pdfviewer/dist/assets"
+  private readonly deployTarget = "/ui/draco/webcomponents/wc-pdfviewer/dist/assets"
   private readonly pdfVersion = "/pdf.worker-4.7.708.min.mjs";
 
   @Input()

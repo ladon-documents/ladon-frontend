@@ -14,6 +14,12 @@ directories=(
   "ui"
 )
 
+wc_directories=(
+  "clipboard"
+  "editor"
+  "pdfviewer"
+)
+
 log_message() {
   echo -e "${GREEN}[BUNDLE]${NC} $1"
 }
@@ -43,6 +49,29 @@ check_for_node_modules() {
     if [ ! -d "./$dir/node_modules" ]; then
       log_message "Verzeichnis ./$dir/node_modules nicht gefunden. Module werden installiert …"
       npm install --prefix "./$dir"
+    fi
+  done
+}
+
+build_webcomponents() {
+  if [ ! -d "./wc" ]; then
+    log_warning "WebComponents-Verzeichnis ./wc nicht gefunden. WebComponent-Build wird übersprungen."
+    return
+  fi
+
+  log_message "Starte Build-Prozess für WebComponents..."
+
+  for wc_dir in "${wc_directories[@]}"; do
+    if [ -d "./wc/$wc_dir" ]; then
+      log_message "Baue WebComponent: $wc_dir..."
+      if [ -f "./wc/$wc_dir/package.json" ]; then
+        npm --prefix "./wc/$wc_dir" run build
+        log_message "WebComponent $wc_dir erfolgreich gebaut!"
+      else
+        log_warning "Keine package.json in ./wc/$wc_dir gefunden. Überspringe..."
+      fi
+    else
+      log_warning "WebComponent-Verzeichnis ./wc/$wc_dir nicht gefunden. Überspringe..."
     fi
   done
 }
@@ -90,6 +119,23 @@ create_release_package() {
   else
     log_warning "Style dist-Verzeichnis nicht gefunden"
   fi
+
+  # Kopiere WebComponents
+    if [ -d "./wc" ]; then
+      log_message "Kopiere WebComponents..."
+      mkdir -p "$RELEASE_DIR/webcomponents"
+
+      for wc_dir in "${wc_directories[@]}"; do
+        if [ -d "./wc/$wc_dir/dist" ]; then
+          log_message "Kopiere WebComponent $wc_dir nach wc-$wc_dir..."
+          mkdir -p "$RELEASE_DIR/webcomponents/wc-$wc_dir"
+          cp -r "./wc/$wc_dir/dist/"* "$RELEASE_DIR/webcomponents/wc-$wc_dir/"
+        else
+          log_warning "WebComponent dist-Verzeichnis ./wc/$wc_dir/dist nicht gefunden"
+        fi
+      done
+    fi
+
 
   cp package.json "$RELEASE_DIR/"
   cp ladon-plugin.json "$RELEASE_DIR/"

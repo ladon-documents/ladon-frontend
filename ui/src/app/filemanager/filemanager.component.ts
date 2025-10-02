@@ -5,13 +5,22 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilemanagerFacade } from './filemanager.facade';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import {
-  heroBars3, heroBars3BottomLeft, heroCalendarDays, heroChevronDown, heroChevronUp, heroClock,
-  heroDocument, heroDocumentDuplicate, heroDocumentText,
+  heroBars3,
+  heroBars3BottomLeft,
+  heroCalendarDays,
+  heroChevronDown,
+  heroChevronUp,
+  heroClock,
+  heroDocument,
+  heroDocumentDuplicate,
+  heroDocumentText,
   heroEye,
   heroFolder,
   heroMagnifyingGlass,
-  heroPlus, heroScale,
-  heroSquares2x2, heroXMark
+  heroPlus,
+  heroScale,
+  heroSquares2x2,
+  heroXMark,
 } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
@@ -52,7 +61,7 @@ import { filemanagerRoutes } from './filemanager.routes';
       heroDocumentDuplicate,
       heroClock,
       heroCalendarDays,
-      heroChevronUp
+      heroChevronUp,
     }),
     FilesizePipe,
   ],
@@ -100,13 +109,12 @@ export class FilemanagerComponent implements OnInit {
   }
 
   setViewMode(viewMode: 'card' | 'table') {
-    this.filemanagerFacade.setViewMode(viewMode)
+    this.filemanagerFacade.setViewMode(viewMode);
   }
 
   toggleSidebar() {
     this.sidebarService.toggleSidebar();
   }
-
 
   // Neue Such- und Sortiermethoden
   onSearchChange(event: Event) {
@@ -121,7 +129,6 @@ export class FilemanagerComponent implements OnInit {
   toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
     this.filemanagerFacade.toggleSort(field);
   }
-
 
   protected readonly heroDocument = heroDocument;
   protected readonly heroFolder = heroFolder;

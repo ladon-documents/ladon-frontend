@@ -147,9 +147,8 @@ export class MonacoEditorService {
     try {
       const document = this.selectedDocument();
       if (document) {
-        const blob =  await lastValueFrom(this.filemanagerFacade.getDocument(document));
-        return   await this.convertBlobToString(blob);
-
+        const blob = await lastValueFrom(this.filemanagerFacade.getDocument(document));
+        return await this.convertBlobToString(blob);
       }
     } catch (error) {
       console.error('Fehler beim Laden der Datei:', error);
@@ -164,5 +163,4 @@ export class MonacoEditorService {
   private async convertBlobToString(blob: Blob): Promise<string> {
     return await blob.text();
   }
-
 }

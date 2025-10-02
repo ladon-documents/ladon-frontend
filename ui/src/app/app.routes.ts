@@ -38,7 +38,7 @@ const pdfViewer: Routes = [
     component: PdfViewerComponent,
     canActivate: [AuthGuard],
   },
-]
+];
 export const setNavigationDefinitions = (navigation: Array<any>) => {
   setNavigation();
 

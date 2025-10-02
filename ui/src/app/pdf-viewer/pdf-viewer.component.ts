@@ -1,4 +1,16 @@
-import { Component, ElementRef, Input, Output, EventEmitter, ViewChild, CUSTOM_ELEMENTS_SCHEMA, effect, signal, computed, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  CUSTOM_ELEMENTS_SCHEMA,
+  effect,
+  signal,
+  computed,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentModel } from '../../api';
@@ -9,8 +21,8 @@ import { FilemanagerFacade } from '../filemanager/filemanager.facade';
   standalone: true,
   imports: [CommonModule, FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: "pdf-viewer.component.html",
-  styleUrls: ["pdf-viewer.component.scss"],
+  templateUrl: 'pdf-viewer.component.html',
+  styleUrls: ['pdf-viewer.component.scss'],
 })
 export class PdfViewerComponent {
   @ViewChild('pdfViewerWC', { static: false }) pdfViewerWC!: ElementRef;
@@ -45,9 +57,7 @@ export class PdfViewerComponent {
     return `/admin/api/filemanager/${encodeURIComponent(doc.bucket)}/direct?id=${encodeURIComponent(doc.key)}`;
   });
 
-  readonly isPdfReady = computed(() =>
-    !this.isLoading() && !this.hasError() && this.selectedDocument() !== null
-  );
+  readonly isPdfReady = computed(() => !this.isLoading() && !this.hasError() && this.selectedDocument() !== null);
 
   // Input Properties - unterstützt sowohl direkte DocumentModel als auch selectedDocument aus Store
   @Input() set document(value: DocumentModel | null) {
@@ -73,9 +83,9 @@ export class PdfViewerComponent {
   }
 
   // Output Events
-  @Output() pdfLoaded = new EventEmitter<{ document: DocumentModel, totalPages: number }>();
-  @Output() pdfError = new EventEmitter<{ document: DocumentModel | null, error: string }>();
-  @Output() pageChanged = new EventEmitter<{ document: DocumentModel | null, page: number, totalPages: number }>();
+  @Output() pdfLoaded = new EventEmitter<{ document: DocumentModel; totalPages: number }>();
+  @Output() pdfError = new EventEmitter<{ document: DocumentModel | null; error: string }>();
+  @Output() pageChanged = new EventEmitter<{ document: DocumentModel | null; page: number; totalPages: number }>();
   @Output() downloadRequested = new EventEmitter<{ document: DocumentModel }>();
   @Output() printRequested = new EventEmitter<{ document: DocumentModel }>();
   @Output() closed = new EventEmitter<{ document: DocumentModel | null }>();
@@ -84,8 +94,7 @@ export class PdfViewerComponent {
     // Effect für automatisches Laden bei Änderungen des selectedDocument im Store
     effect(() => {
       const storeDocument = this.filemanagerFacade.selectedDocument();
-      if (storeDocument && this.isPdfDocument(storeDocument) &&
-        storeDocument !== this.selectedDocument()) {
+      if (storeDocument && this.isPdfDocument(storeDocument) && storeDocument !== this.selectedDocument()) {
         this._selectedDocument.set(storeDocument);
         this.loadPdf();
       }
@@ -146,7 +155,7 @@ export class PdfViewerComponent {
 
     this.pdfError.emit({
       document: this.selectedDocument(),
-      error: this.errorMessage()
+      error: this.errorMessage(),
     });
   }
 
@@ -157,7 +166,7 @@ export class PdfViewerComponent {
     this.pageChanged.emit({
       document: this.selectedDocument(),
       page: this.currentPage(),
-      totalPages: this.totalPages()
+      totalPages: this.totalPages(),
     });
   }
 
@@ -292,7 +301,7 @@ export class PdfViewerComponent {
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       });
     } catch {
       return dateString;
@@ -319,7 +328,7 @@ export class PdfViewerComponent {
       zoom: this.zoomLevel(),
       isLoading: this.isLoading(),
       hasError: this.hasError(),
-      pdfUrl: this.pdfUrl()
+      pdfUrl: this.pdfUrl(),
     };
   }
 }

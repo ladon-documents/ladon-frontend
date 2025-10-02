@@ -20,8 +20,7 @@ import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
 import { DocumentModel } from '../api';
 
 @Component({
-  imports: [CommonModule, RouterModule, TranslateModule, NavigationComponent, HeaderComponent, PdfViewerComponent
-  ],
+  imports: [CommonModule, RouterModule, TranslateModule, NavigationComponent, HeaderComponent, PdfViewerComponent],
   standalone: true,
   selector: 'ldn-ui',
   templateUrl: './app.component.html',
@@ -47,15 +46,15 @@ export class AppComponent {
     this.translate.use('de');
   }
 
-  onPdfLoaded(event: { document: DocumentModel, totalPages: number }): void {
+  onPdfLoaded(event: { document: DocumentModel; totalPages: number }): void {
     console.log(`PDF geladen: ${event.document.name} mit ${event.totalPages} Seiten`);
   }
 
-  onPdfError(event: { document: DocumentModel | null, error: string }): void {
+  onPdfError(event: { document: DocumentModel | null; error: string }): void {
     console.error('PDF Fehler:', event.error, event.document);
   }
 
-  onPageChanged(event: { document: DocumentModel | null, page: number, totalPages: number }): void {
+  onPageChanged(event: { document: DocumentModel | null; page: number; totalPages: number }): void {
     console.log(`Seite geändert: ${event.page}/${event.totalPages} für ${event.document?.name}`);
   }
 
@@ -70,7 +69,6 @@ export class AppComponent {
   onPdfClosed(event: { document: DocumentModel | null }): void {
     console.log('PDF Viewer geschlossen für:', event.document?.name);
   }
-
 }
 
 @Component({

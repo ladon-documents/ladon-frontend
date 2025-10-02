@@ -18,6 +18,6 @@
     "target": "https://cluster.mind-consulting.de",
     "secure": true,
     "logLevel": "debug",
-    "changeOrigin": true,
+    "changeOrigin": true
   }
 }

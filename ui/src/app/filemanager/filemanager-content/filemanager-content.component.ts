@@ -4,7 +4,9 @@ import { CommonModule } from '@angular/common';
 import { DocumentModel } from '../../../api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-  heroArrowDownTray, heroChevronDown, heroChevronUp,
+  heroArrowDownTray,
+  heroChevronDown,
+  heroChevronUp,
   heroDocumentDuplicate,
   heroFolder,
   heroPencilSquare,
@@ -12,7 +14,7 @@ import {
   heroPlusCircle,
   heroShare,
   heroStar,
-  heroTrash
+  heroTrash,
 } from '@ng-icons/heroicons/outline';
 import { heroFolderSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
@@ -27,8 +29,7 @@ import { FilemanagerPaginationComponent } from '../pagination/pagination.compone
 @Component({
   standalone: true,
   selector: 'app-filemanager-content',
-  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe,FilemanagerPaginationComponent
-  ],
+  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe, FilemanagerPaginationComponent],
   providers: [
     provideIcons({
       heroFolder,
@@ -42,7 +43,7 @@ import { FilemanagerPaginationComponent } from '../pagination/pagination.compone
       heroDocumentDuplicate,
       heroShare,
       heroChevronUp,
-      heroChevronDown
+      heroChevronDown,
     }),
     FilesizePipe,
   ],
@@ -134,8 +135,8 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     }
   }
 
- async select(document: DocumentModel) {
-   this.#facade.setSelectedDocument(document);
+  async select(document: DocumentModel) {
+    this.#facade.setSelectedDocument(document);
   }
 
   async navigateTo(document: DocumentModel) {
@@ -147,6 +148,4 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       await this.select(document);
     }
   }
-
-
 }

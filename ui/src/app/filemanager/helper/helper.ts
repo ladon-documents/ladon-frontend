@@ -97,22 +97,43 @@ const isEditableFile = (fileName?: string): boolean => {
   if (!fileName) return false;
 
   const editableExtensions = [
-    'txt', 'md', 'js', 'ts', 'html', 'css', 'scss', 'json', 'xml',
-    'py', 'java', 'c', 'cpp', 'cs', 'php', 'rb', 'go', 'rs', 'sql',
-    'yaml', 'yml', 'sh', 'ps1', 'dockerfile'
+    'txt',
+    'md',
+    'js',
+    'ts',
+    'html',
+    'css',
+    'scss',
+    'json',
+    'xml',
+    'py',
+    'java',
+    'c',
+    'cpp',
+    'cs',
+    'php',
+    'rb',
+    'go',
+    'rs',
+    'sql',
+    'yaml',
+    'yml',
+    'sh',
+    'ps1',
+    'dockerfile',
   ];
 
   const extension = fileName.split('.').pop()?.toLowerCase();
   return editableExtensions.includes(extension || '');
-}
+};
 
 const calculatePaginationState = (
   allDocuments: DocumentModel[],
   currentPage: number,
-  pageSize: number
+  pageSize: number,
 ): {
-  paginatedDocuments: DocumentModel[],
-  paginationState: PaginationState
+  paginatedDocuments: DocumentModel[];
+  paginationState: PaginationState;
 } => {
   const totalItems = allDocuments.length;
   const totalPages = Math.ceil(totalItems / pageSize);
@@ -131,7 +152,7 @@ const calculatePaginationState = (
   };
 
   return { paginatedDocuments, paginationState };
-}
+};
 
 const filterDocuments = (documents: DocumentModel[], searchTerm: string): DocumentModel[] => {
   if (!searchTerm.trim()) {
@@ -139,11 +160,8 @@ const filterDocuments = (documents: DocumentModel[], searchTerm: string): Docume
   }
 
   const term = searchTerm.toLowerCase().trim();
-  return documents.filter(doc =>
-    doc.name?.toLowerCase().includes(term) ||
-    doc.key?.toLowerCase().includes(term)
-  );
-}
+  return documents.filter((doc) => doc.name?.toLowerCase().includes(term) || doc.key?.toLowerCase().includes(term));
+};
 
 const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): DocumentModel[] => {
   return [...documents].sort((a, b) => {
@@ -185,33 +203,33 @@ const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): Docu
 
     return sortConfig.direction === 'desc' ? -comparison : comparison;
   });
-}
+};
 
 const applyFiltersAndPagination = (
   allDocuments: DocumentModel[],
   searchTerm: string,
   sortConfig: SortConfig,
   currentPage: number,
-  pageSize: number
-)=>  {
+  pageSize: number,
+) => {
   const filtered = filterDocuments(allDocuments, searchTerm);
   const sorted = sortDocuments(filtered, sortConfig);
-  const { paginatedDocuments, paginationState } = calculatePaginationState(
-    sorted,
-    currentPage,
-    pageSize
-  );
+  const { paginatedDocuments, paginationState } = calculatePaginationState(sorted, currentPage, pageSize);
 
   return {
     filteredDocuments: sorted,
     paginatedDocuments,
-    paginationState
+    paginationState,
   };
-}
+};
 
 const isPdf = (document: DocumentModel | null): boolean => {
-    return !!(document && !document.isFolder && (document["content-type"] === "application/pdf" || document.path?.endsWith('.pdf')));
-}
+  return !!(
+    document &&
+    !document.isFolder &&
+    (document['content-type'] === 'application/pdf' || document.path?.endsWith('.pdf'))
+  );
+};
 
 export const filemanagerHelper = {
   isEditableFile,
@@ -219,5 +237,5 @@ export const filemanagerHelper = {
   filterDocuments,
   calculatePaginationState,
   sortDocuments,
-  applyFiltersAndPagination
-}
+  applyFiltersAndPagination,
+};

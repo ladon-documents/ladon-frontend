@@ -14,7 +14,7 @@ export class FilemanagerService {
   public getDocument(document: DocumentModel) {
     const { bucket, key } = document;
     if (bucket && key) {
-      return this.documentsService.getDocument(bucket, key);;
+      return this.documentsService.getDocument(bucket, key);
     }
     return throwError(new Error('Not Found'));
   }
@@ -22,11 +22,10 @@ export class FilemanagerService {
   public saveDocument(document: DocumentModel, content: Blob) {
     const { bucket, key } = document;
     if (bucket && key) {
-      return this.documentsService.putDocument(bucket, key, undefined, content);;
+      return this.documentsService.putDocument(bucket, key, undefined, content);
     }
     return throwError(new Error('Not Found'));
   }
-
 
   public loadDocumentList(document: DocumentModel, limit: number = 1000) {
     if (document && document.bucket) {

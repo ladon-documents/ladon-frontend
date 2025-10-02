@@ -9,7 +9,7 @@ import { filemanagerHelper } from '../helper/helper';
   selector: 'filemanager-preview',
   imports: [],
   templateUrl: './preview.component.html',
-  styleUrl: './preview.component.scss'
+  styleUrl: './preview.component.scss',
 })
 export class PreviewComponent {
   readonly monacoEditorService = inject(MonacoEditorService);
@@ -65,9 +65,7 @@ export class PreviewComponent {
     this.monacoEditorService.open();
   }
 
-  openPdf() {
-
-  }
+  openPdf() {}
 
   protected readonly filemanagerHelper = filemanagerHelper;
 }

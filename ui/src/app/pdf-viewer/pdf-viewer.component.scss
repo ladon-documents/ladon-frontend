@@ -27,7 +27,8 @@
   color: #7f8c8d;
 }
 
-.file-size, .last-modified {
+.file-size,
+.last-modified {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -58,8 +59,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {

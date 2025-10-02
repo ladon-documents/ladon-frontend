@@ -5,7 +5,7 @@ import {
   heroChevronLeft,
   heroChevronRight,
   heroChevronDoubleLeft,
-  heroChevronDoubleRight
+  heroChevronDoubleRight,
 } from '@ng-icons/heroicons/outline';
 import { FilemanagerFacade } from '../filemanager.facade';
 
@@ -28,15 +28,17 @@ export interface PaginationInfo {
       heroChevronRight,
       heroChevronDoubleLeft,
       heroChevronDoubleRight,
-    })
+    }),
   ],
-  templateUrl: "pagination.component.html",
-  styles: [`
-    .join-item:not(.btn) {
-      display: flex;
-      align-items: center;
-    }
-  `]
+  templateUrl: 'pagination.component.html',
+  styles: [
+    `
+      .join-item:not(.btn) {
+        display: flex;
+        align-items: center;
+      }
+    `,
+  ],
 })
 export class FilemanagerPaginationComponent {
   readonly #facade = inject(FilemanagerFacade);

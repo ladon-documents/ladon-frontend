@@ -2,27 +2,27 @@
   <!-- Loading Indicator -->
   <div *ngIf="isLoading()" class="loading-overlay">
     <div class="spinner"></div>
-    <p>PDF wird geladen... {{loadingProgress()}}%</p>
-    <p *ngIf="selectedDocument()">{{selectedDocument()?.key || selectedDocument()?.name}}</p>
+    <p>PDF wird geladen... {{ loadingProgress() }}%</p>
+    <p *ngIf="selectedDocument()">{{ selectedDocument()?.key || selectedDocument()?.name }}</p>
   </div>
 
   <!-- Error Display -->
   <div *ngIf="hasError()" class="error-message">
     <h3>Fehler beim Laden der PDF</h3>
-    <p>{{errorMessage()}}</p>
-    <p *ngIf="selectedDocument()">Dokument: {{selectedDocument()?.key || selectedDocument()?.name}}</p>
+    <p>{{ errorMessage() }}</p>
+    <p *ngIf="selectedDocument()">Dokument: {{ selectedDocument()?.key || selectedDocument()?.name }}</p>
     <button (click)="retryLoad()" class="retry-button">Erneut versuchen</button>
   </div>
 
   <!-- PDF Viewer Header mit Dokumentinfo -->
   <div class="pdf-header" *ngIf="selectedDocument() && !hasError()">
     <div class="document-info">
-      <h3>{{getDocumentDisplayName()}}</h3>
+      <h3>{{ getDocumentDisplayName() }}</h3>
       <div class="document-details">
-        <span *ngIf="selectedDocument()?.size" class="file-size">{{formatFileSize(selectedDocument()!.size!)}}</span>
+        <span *ngIf="selectedDocument()?.size" class="file-size">{{ formatFileSize(selectedDocument()!.size!) }}</span>
         <span *ngIf="selectedDocument()?.['last-modified']" class="last-modified">
-              Geändert: {{formatDate(selectedDocument()!['last-modified']!)}}
-            </span>
+          Geändert: {{ formatDate(selectedDocument()!["last-modified"]!) }}
+        </span>
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@
 
     <div class="page-controls">
       <button (click)="previousPage()" [disabled]="isLoading() || currentPage() <= 1">◀</button>
-      <span>{{currentPage()}} / {{totalPages()}}</span>
+      <span>{{ currentPage() }} / {{ totalPages() }}</span>
       <button (click)="nextPage()" [disabled]="isLoading() || currentPage() >= totalPages()">▶</button>
     </div>
 
@@ -46,6 +46,6 @@
   </div>
 
   <!-- Web Component aus dem wc Ordner -->
-  <ladon-pdfviewer  pdf="/peter/testing/princes-of-the-yen-japans-central-bankers-and-the-transformation-of-the-economy_compress.pdf"></ladon-pdfviewer>
-
+  <ladon-pdfviewer
+    pdf="/peter/testing/princes-of-the-yen-japans-central-bankers-and-the-transformation-of-the-economy_compress.pdf"></ladon-pdfviewer>
 </div>

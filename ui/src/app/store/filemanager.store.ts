@@ -65,8 +65,6 @@ const initialState: FilemanagerState = {
   viewMode: 'card',
 };
 
-
-
 export const FilemanagerStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -103,13 +101,14 @@ export const FilemanagerStore = signalStore(
         },
 
         setSearchTerm: (searchTerm: string) => {
-          const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
-            store.allDocuments(),
-            searchTerm,
-            store.sort(),
-            1,
-            store.pagination().pageSize
-          );
+          const { filteredDocuments, paginatedDocuments, paginationState } =
+            filemanagerHelper.applyFiltersAndPagination(
+              store.allDocuments(),
+              searchTerm,
+              store.sort(),
+              1,
+              store.pagination().pageSize,
+            );
 
           patchState(store, {
             searchTerm,
@@ -124,19 +123,19 @@ export const FilemanagerStore = signalStore(
         },
 
         setSortConfig: (field: SortConfig['field'], direction?: SortConfig['direction']) => {
-          const newDirection = direction || (
-            store.sort().field === field && store.sort().direction === 'asc' ? 'desc' : 'asc'
-          );
+          const newDirection =
+            direction || (store.sort().field === field && store.sort().direction === 'asc' ? 'desc' : 'asc');
 
           const newSortConfig: SortConfig = { field, direction: newDirection };
 
-          const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
-            store.allDocuments(),
-            store.searchTerm(),
-            newSortConfig,
-            1,
-            store.pagination().pageSize
-          );
+          const { filteredDocuments, paginatedDocuments, paginationState } =
+            filemanagerHelper.applyFiltersAndPagination(
+              store.allDocuments(),
+              store.searchTerm(),
+              newSortConfig,
+              1,
+              store.pagination().pageSize,
+            );
 
           patchState(store, {
             sort: newSortConfig,
@@ -147,13 +146,14 @@ export const FilemanagerStore = signalStore(
         },
 
         setPageSize: (pageSize: number) => {
-          const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
-            store.allDocuments(),
-            store.searchTerm(),
-            store.sort(),
-            1,
-            pageSize
-          );
+          const { filteredDocuments, paginatedDocuments, paginationState } =
+            filemanagerHelper.applyFiltersAndPagination(
+              store.allDocuments(),
+              store.searchTerm(),
+              store.sort(),
+              1,
+              pageSize,
+            );
 
           patchState(store, {
             filteredDocuments,
@@ -168,7 +168,7 @@ export const FilemanagerStore = signalStore(
           const { paginatedDocuments, paginationState } = filemanagerHelper.calculatePaginationState(
             store.filteredDocuments(),
             targetPage,
-            store.pagination().pageSize
+            store.pagination().pageSize,
           );
 
           patchState(store, {
@@ -242,13 +242,14 @@ export const FilemanagerStore = signalStore(
             switchMap((bucket) =>
               filemanagerService.loadBucket(bucket, 1000).pipe(
                 tap((documents) => {
-                  const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
-                    documents,
-                    store.searchTerm(),
-                    store.sort(),
-                    1,
-                    store.pagination().pageSize
-                  );
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      1,
+                      store.pagination().pageSize,
+                    );
 
                   patchState(store, (state) => ({
                     ...state,
@@ -289,13 +290,14 @@ export const FilemanagerStore = signalStore(
                   if (document) {
                     breadcrumbStore.addPath(document);
                   }
-                  const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
-                    documents,
-                    store.searchTerm(),
-                    store.sort(),
-                    1,
-                    store.pagination().pageSize
-                  );
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      1,
+                      store.pagination().pageSize,
+                    );
 
                   patchState(store, (state) => ({
                     ...state,
@@ -347,13 +349,14 @@ export const FilemanagerStore = signalStore(
                   }
                 }),
                 tap((documents) => {
-                  const { filteredDocuments, paginatedDocuments, paginationState } = filemanagerHelper.applyFiltersAndPagination(
-                    documents,
-                    store.searchTerm(),
-                    store.sort(),
-                    store.pagination().currentPage,
-                    store.pagination().pageSize
-                  );
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
 
                   patchState(store, (state) => ({
                     ...state,

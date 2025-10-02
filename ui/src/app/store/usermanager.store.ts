@@ -94,6 +94,9 @@ export const UsermanagerStore = signalStore(
       return store.users().find((user) => user.id === id);
     },
 
+    getRole(id: string): RoleEntryModel | undefined {
+      return store.roles().find((role) => role.id === id);
+    },
     addUser(user: UserWrapperModel) {
       patchState(store, { loading: true });
       usermanagerService

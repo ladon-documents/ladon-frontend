@@ -69,6 +69,14 @@ export class UsermanagerService {
     return this.usermanagerApi.createRole(role);
   }
 
+  retrievePermissionsByRole(id: string) {
+    return this.usermanagerApi.getPermissionsForRole(id);
+  }
+
+  retrieveUsersByRole(id: string) {
+    return this.usermanagerApi.getUsersForRole(id);
+  }
+
   addPermission(permission: PermissionModel) {
     return this.usermanagerApi.createPermissions(permission);
   }

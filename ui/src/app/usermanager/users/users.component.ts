@@ -1,5 +1,4 @@
 import { Component, ViewChild, inject, OnInit } from '@angular/core';
-import { UsermanagerService } from '../services/usermanager.service';
 import { RouterModule } from '@angular/router';
 import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -28,8 +27,6 @@ import { CommonModule } from '@angular/common';
 })
 export class UsersComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) userDialog: DialogComponent | undefined;
-
-  constructor(private usermanagerService: UsermanagerService) {}
 
   store = inject(UsermanagerStore);
   userAddGroup = new FormGroup({});

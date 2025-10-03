@@ -2,9 +2,22 @@ import { Injectable } from '@angular/core';
 import {
   UsermanagerService as UsermanagerApi,
   UserWrapperModel,
+  RoleEntryModel,
   RoleWrapperModel,
   PermissionModel,
 } from '../../../api';
+
+export interface MappedRole extends RoleEntryModel {
+  active?: boolean;
+}
+
+export interface MappedPermission extends PermissionModel {
+  active?: boolean;
+}
+
+export interface MappedUser extends UserWrapperModel {
+  active?: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -61,8 +74,16 @@ export class UsermanagerService {
     return this.usermanagerApi.addPermissionForUser(userId, permissionId);
   }
 
+  addPermissionForRole(permissionId: string, roleId: string) {
+    return this.usermanagerApi.addPermissionForRole(roleId, permissionId);
+  }
+
   deletePermissionFromUser(userId: string, permissionId: string) {
     return this.usermanagerApi.removePermissionFromUser(userId, permissionId);
+  }
+
+  deletePermissionFromRole(permissionId: string, roleId: string) {
+    return this.usermanagerApi.removePermissionFromRole(permissionId, roleId);
   }
 
   addRole(role: RoleWrapperModel) {

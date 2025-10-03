@@ -134,7 +134,7 @@
             class="checkbox checkbox-primary"
             type="checkbox"
             [id]="role.name"
-            [checked]="role.active || checkFormPatch('role', role)"
+            [checked]="role.active || checkFormPatch('role', role, userForm)"
             [disabled]="role.active"
             (click)="updateByType($event, 'role', role)" />
           <label for="{{ role.name }}" class="grow">{{ role.name }}</label>
@@ -152,7 +152,7 @@
             class="checkbox checkbox-primary"
             type="checkbox"
             [id]="permission.permissionId"
-            [checked]="permission.active || checkFormPatch('permission', permission)"
+            [checked]="permission.active || checkFormPatch('permission', permission, userForm)"
             [disabled]="permission.active"
             (click)="updateByType($event, 'permission', permission)" />
           <label for="{{ permission.permissionId }}" class="grow">{{ permission.permissionId }}</label>

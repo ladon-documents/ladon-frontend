@@ -1,0 +1,142 @@
+<div class="flex gap-4 py-8 items-center">
+  <div class="avatar self-center" [attr.data-alias]="role?.name | alias"></div>
+
+  <div class="flex flex-col gap-4 grow">
+    <div class="flex flex-col gap-2">
+      <h2 class="text-xl font-bold">{{ role?.name }}</h2>
+      <p class="text-sm">{{ role?.details }}</p>
+    </div>
+  </div>
+</div>
+
+<form class="flex flex-col gap-4" [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+  <input hidden readonly type="text" formControlName="id" />
+
+  <table class="table">
+    <caption class="font-bold text-left mb-4">
+      Berechtigungen
+    </caption>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th class="text-right">Aktion</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="2" class="text-right">
+          <button class="btn btn-primary" type="button" (click)="openDialogType('permission')">
+            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+          </button>
+        </td>
+      </tr>
+    </tfoot>
+    <tbody>
+      @for (permission of permissions(); track $index) {
+        <tr class="cursor-pointer hover:bg-gray-100">
+          <td [routerLink]="['../../permissions', permission.permissionId]">{{ permission.permissionId }}</td>
+          <td class="text-right">
+            <button class="btn" type="button">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+
+      @for (permission of roleForm.get("permissions")?.value ?? []; track $index) {
+        <tr class="cursor-pointer hover:bg-gray-100">
+          <td>{{ permission?.["permissionId"] }}</td>
+          <td class="text-right">
+            <button class="btn" type="button" (click)="removeByType('permission', permission)">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <table class="table">
+    <caption class="font-bold text-left mb-4">
+      Nutzer
+    </caption>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th class="text-right">Aktion</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="2" class="text-right">
+          <button class="btn btn-primary" type="button" (click)="openDialogType('user')">
+            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+          </button>
+        </td>
+      </tr>
+    </tfoot>
+    <tbody>
+      @for (user of users(); track $index) {
+        <tr class="cursor-pointer hover:bg-gray-100">
+          <td [routerLink]="['../../users', user.id]">{{ user.name }}</td>
+          <td class="text-right">
+            <button class="btn" type="button">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+
+      @for (user of roleForm.get("users")?.value ?? []; track $index) {
+        <tr class="cursor-pointer hover:bg-gray-100">
+          <td>{{ user?.["name"] }}</td>
+          <td class="text-right">
+            <button class="btn" type="button" (click)="removeByType('user', user)">
+              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <button type="submit" class="btn btn-primary" [disabled]="roleForm.invalid || roleForm.pristine">Speichern</button>
+</form>
+
+<app-dialog [title]="dialogTitle">
+  @if (dialogTitle?.includes("Berechtigung")) {
+    <div class="flex flex-col gap-2">
+      @for (permission of mappedPermissions(); track $index) {
+        <div class="flex items-center gap-2 hover:cursor-pointer">
+          <input
+            #permissionCheckbox
+            class="checkbox checkbox-primary"
+            type="checkbox"
+            [id]="permission.permissionId"
+            [checked]="permission.active || checkFormPatch('permission', permission, roleForm)"
+            [disabled]="permission.active"
+            (click)="updateByType($event, 'permission', permission)" />
+          <label for="{{ permission.permissionId }}" class="grow">{{ permission.permissionId }}</label>
+        </div>
+      }
+    </div>
+  }
+
+  @if (dialogTitle?.includes("Nutzer")) {
+    <div class="flex flex-col gap-2">
+      @for (user of mappedUsers(); track $index) {
+        <div class="flex items-center gap-2 hover:cursor-pointer">
+          <input
+            #userCheckbox
+            class="checkbox checkbox-primary"
+            type="checkbox"
+            [id]="user.id"
+            [checked]="user.active || checkFormPatch('user', user, roleForm)"
+            [disabled]="user.active"
+            (click)="updateByType($event, 'user', user)" />
+          <label for="{{ user.id }}" class="grow">{{ user.name }}</label>
+        </div>
+      }
+    </div>
+  }
+</app-dialog>

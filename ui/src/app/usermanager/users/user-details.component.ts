@@ -24,21 +24,11 @@ import {
 } from '@angular/forms';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { combineLatest, switchMap, tap, of } from 'rxjs';
-import { UsermanagerService } from '../services/usermanager.service';
+import { UsermanagerService, MappedPermission, MappedRole } from '../services/usermanager.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { CommonModule } from '@angular/common';
-
-type UserSetType = 'role' | 'roleDeletion' | 'permission' | 'permissionDeletion';
-type DialogType = UserSetType | 'password';
-
-interface MappedRole extends RoleEntryModel {
-  active?: boolean;
-}
-
-interface MappedPermission extends PermissionModel {
-  active?: boolean;
-}
+import { DialogType, UsermanagerFacade, UserSetType } from '../services/usermanager.facade';
 
 @Component({
   standalone: true,
@@ -56,6 +46,7 @@ export class UserDetailsComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly usermanagerService: UsermanagerService,
+    private readonly usermanagerFacade: UsermanagerFacade,
   ) {}
 
   store = inject(UsermanagerStore);
@@ -77,31 +68,20 @@ export class UserDetailsComponent implements OnInit {
     const options = this.roleOptions();
     const userRoles = this.userRoles();
 
-    return options?.map((option) => {
-      if (userRoles?.includes(option.id)) {
-        return {
-          ...option,
-          active: true,
-        };
-      }
-
-      return option;
-    });
+    return options?.map((option) => ({
+      ...option,
+      active: userRoles?.includes(option.id),
+    }));
   });
 
   mappedPermissionOptions: Signal<MappedPermission[] | undefined> = computed(() => {
     const options = this.permissionOptions();
     const userPermissions = this.userPermissions();
 
-    return options?.map((option) => {
-      if (userPermissions?.some(({ permissionId }) => permissionId === option.permissionId)) {
-        return {
-          ...option,
-          active: true,
-        };
-      }
-      return option;
-    });
+    return options?.map((option) => ({
+      ...option,
+      active: userPermissions?.some(({ permissionId }) => permissionId === option.permissionId),
+    }));
   });
 
   ngOnInit(): void {
@@ -119,7 +99,11 @@ export class UserDetailsComponent implements OnInit {
       .pipe(
         tap(({ id }) => {
           this.user = this.store.getUser(id);
-          this.patchForm(this.user);
+        }),
+        tap(() => {
+          Object.entries(this.user!).forEach(([key, value]) => {
+            this.userForm.patchValue({ [key]: value });
+          });
         }),
         switchMap(({ id }) =>
           combineLatest([
@@ -141,10 +125,6 @@ export class UserDetailsComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.userForm.invalid) {
-      return;
-    }
-
     this.store
       .updateUser(this.userForm.value)
       .pipe(
@@ -167,46 +147,23 @@ export class UserDetailsComponent implements OnInit {
       });
   }
 
-  openDialogType(type: DialogType) {
-    switch (type) {
-      case 'password':
-        this.dialogTitle = 'Passwort ändern';
-        break;
-      case 'role':
-        this.dialogTitle = 'Rolle hinzufügen';
-        this.getRolesOrRetrieve();
-        break;
-      case 'permission':
-        this.dialogTitle = 'Berechtigung hinzufügen';
-        this.getPermissionsOrRetrieve();
-        break;
+  async openDialogType(type: DialogType) {
+    const { dialogTitle, payload } = await this.usermanagerFacade.openDialogByType(type);
+    this.dialogTitle = dialogTitle;
+
+    if (type === 'role') {
+      this.roleOptions.set(payload);
+    }
+
+    if (type === 'permission') {
+      this.permissionOptions.set(payload);
     }
 
     this.dialogCmp?.openDialog();
   }
 
-  /**
-   * Updates check state for FormControl based on the patched userForm
-   */
-  checkFormPatch(type: UserSetType, value: PermissionModel | RoleEntryModel) {
-    switch (type) {
-      case 'permission':
-        const { permissionId } = value as PermissionModel;
-        if (Array.isArray(this.userForm.get(type)?.value)) {
-          // @ts-ignore
-          return this.userForm.get(type)?.value?.some(({ permissionId: pId }) => pId === permissionId);
-        }
-        return false;
-      case 'role':
-        const { id } = value as RoleEntryModel;
-        if (Array.isArray(this.userForm.get(type)?.value)) {
-          // @ts-ignore
-          return this.userForm.get(type)?.value?.some(({ id: rId }) => rId === id);
-        }
-        return false;
-    }
-
-    return false;
+  checkFormPatch(type: UserSetType, value: PermissionModel | RoleEntryModel, form: FormGroup) {
+    return this.usermanagerFacade.checkFormPatch(type, value, form);
   }
 
   private clearCheckedStates() {
@@ -223,22 +180,6 @@ export class UserDetailsComponent implements OnInit {
     const confirmPassword = control.get('passwordConfirm')?.value;
     return password === confirmPassword ? null : { notSame: true };
   };
-
-  private getRolesOrRetrieve() {
-    if (this.store.roles().length === 0) {
-      this.store.retrieveRoles();
-    }
-
-    this.roleOptions.set(this.store.roles());
-  }
-
-  private getPermissionsOrRetrieve() {
-    if (this.store.permissions().length === 0) {
-      this.store.retrievePermissions();
-    }
-
-    this.permissionOptions.set(this.store.permissions());
-  }
 
   private updatePayload(payload: any[], skipUserPatch = true) {
     const { 0: user, 1: roles, 2: permissions } = payload;
@@ -275,7 +216,7 @@ export class UserDetailsComponent implements OnInit {
         } else {
           this.rolesSet.delete(value as RoleEntryModel);
         }
-        this.patchFormByType('role');
+        this.patchFormByType('roles', this.rolesSet);
         break;
       case 'permission':
         if (checked) {
@@ -283,7 +224,7 @@ export class UserDetailsComponent implements OnInit {
         } else {
           this.permissionsSet.delete(value as PermissionModel);
         }
-        this.patchFormByType('permission');
+        this.patchFormByType('permissions', this.permissionsSet);
         break;
       default:
         console.info(`Unknown type: ${type}`);
@@ -304,19 +245,19 @@ export class UserDetailsComponent implements OnInit {
     switch (type) {
       case 'role':
         this.rolesSet.delete(value as RoleEntryModel);
-        this.patchFormByType('role');
+        this.patchFormByType('roles', this.rolesSet);
         break;
       case 'roleDeletion':
         this.roleDeletionsSet.add(value as string);
-        this.patchFormByType('roleDeletion');
+        this.patchFormByType('roleDeletions', this.roleDeletionsSet);
         break;
       case 'permission':
         this.permissionsSet.delete(value as PermissionModel);
-        this.patchFormByType('permission');
+        this.patchFormByType('permissions', this.permissionsSet);
         break;
       case 'permissionDeletion':
         this.permissionDeletionsSet.add(value as string);
-        this.patchFormByType('permissionDeletion');
+        this.patchFormByType('permissionDeletions', this.permissionDeletionsSet);
         break;
       default:
         console.info(`Unknown type: ${type}`);
@@ -365,31 +306,7 @@ export class UserDetailsComponent implements OnInit {
     this.passwordForm?.setValidators(this.checkPasswords);
   }
 
-  private patchFormByType(type: UserSetType) {
-    switch (type) {
-      case 'role':
-        this.userForm.patchValue({ roles: Array.from(this.rolesSet) });
-        break;
-      case 'roleDeletion':
-        this.userForm.patchValue({ roleDeletions: Array.from(this.roleDeletionsSet) });
-        break;
-      case 'permission':
-        this.userForm.patchValue({ permissions: Array.from(this.permissionsSet) });
-        break;
-      case 'permissionDeletion':
-        this.userForm.patchValue({ permissionDeletions: Array.from(this.permissionDeletionsSet) });
-        break;
-    }
-
-    this.userForm.markAsDirty();
-  }
-
-  private patchForm(user: UserEntryModel | undefined) {
-    if (!user) {
-      return;
-    }
-    Object.entries(user).forEach(([key, value]) => {
-      this.userForm.patchValue({ [key]: value });
-    });
+  private patchFormByType(key: 'roles' | 'roleDeletions' | 'permissions' | 'permissionDeletions', set: Set<any>) {
+    this.usermanagerFacade.patchFormByKey(key, set, this.userForm);
   }
 }

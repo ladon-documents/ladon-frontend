@@ -1,6 +1,6 @@
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { PermissionModel, RoleEntryModel, RoleWrapperModel, UserEntryModel, UserWrapperModel } from '../../api';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
 import { filter, finalize, forkJoin, lastValueFrom, map, of, Subject } from 'rxjs';
 
@@ -23,6 +23,11 @@ const initialState: UsermanagerState = {
 export const UsermanagerStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
+  withComputed(({ users, roles, permissions }) => ({
+    usersCount: computed(() => users().length),
+    rolesCount: computed(() => roles().length),
+    permissionsCount: computed(() => permissions().length),
+  })),
   withMethods((store, usermanagerService = inject(UsermanagerService)) => ({
     retrieveUsers() {
       patchState(store, { loading: true });
@@ -66,6 +71,46 @@ export const UsermanagerStore = signalStore(
       loading$.next(false);
     },
 
+    updateRole(role: { [key: string]: any }) {
+      patchState(store, { loading: true });
+      loading$.next(store.loading());
+      const { users, permissions, id, permissionDeletions, userDeletions } = role;
+
+      const users$ = Array.isArray(users)
+        ? forkJoin(users?.map((user: { id: string }) => usermanagerService.addRoleForUser(user.id, id)))
+        : of([]);
+      const userDeletions$ = Array.isArray(userDeletions)
+        ? forkJoin(userDeletions.map((userId: string) => usermanagerService.deleteRoleFromUser(userId, id)))
+        : of([]);
+
+      const permissions$ = Array.isArray(permissions)
+        ? forkJoin(
+            permissions?.map((permission: { permissionId: string }) =>
+              usermanagerService.addPermissionForRole(permission.permissionId, id),
+            ),
+          )
+        : of([]);
+      const permissionDeletions$ = Array.isArray(permissionDeletions)
+        ? forkJoin(
+            permissionDeletions.map((permissionId: string) =>
+              usermanagerService.deletePermissionFromRole(permissionId, id),
+            ),
+          )
+        : of([]);
+
+      return forkJoin({
+        users: users$,
+        userDeletions: userDeletions$,
+        permissions: permissions$,
+        permissionDeletions: permissionDeletions$,
+      }).pipe(
+        finalize(() => {
+          patchState(store, { loading: false });
+          loading$.next(store.loading());
+        }),
+      );
+    },
+
     retrievePermissions() {
       patchState(store, { loading: true });
       loading$.next(store.loading());
@@ -94,6 +139,9 @@ export const UsermanagerStore = signalStore(
       return store.users().find((user) => user.id === id);
     },
 
+    getRole(id: string): RoleEntryModel | undefined {
+      return store.roles().find((role) => role.id === id);
+    },
     addUser(user: UserWrapperModel) {
       patchState(store, { loading: true });
       usermanagerService
@@ -151,8 +199,8 @@ export const UsermanagerStore = signalStore(
       return forkJoin({
         user: usermanagerService.updateUser(user),
         roles: roles$,
-        permissions: permissions$,
         roleDeletions: roleDeletions$,
+        permissions: permissions$,
         permissionDeletions: permissionDeletions$,
       }).pipe(
         finalize(() => {

@@ -4,6 +4,7 @@ import { PermissionsComponent } from './permissions/permissions.component';
 import { RolesComponent } from './roles/roles.component';
 import { UsermanagerComponent } from './usermanager.component';
 import { UserDetailsComponent } from './users/user-details.component';
+import { RoleDetailsComponent } from './roles/role-details.component';
 
 export const usermanagerRoutes: Routes = [
   {
@@ -27,6 +28,12 @@ export const usermanagerRoutes: Routes = [
       {
         path: 'roles',
         component: RolesComponent,
+        children: [
+          {
+            path: ':id',
+            component: RoleDetailsComponent,
+          },
+        ],
       },
     ],
   },

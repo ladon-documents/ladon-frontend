@@ -1,10 +1,21 @@
-import { Component, computed, inject, OnInit, Signal, signal, ViewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnInit,
+  QueryList,
+  Signal,
+  signal,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { MappedPermission, MappedUser, UsermanagerService } from '../services/usermanager.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
-import { tap, take } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { PermissionModel, RoleEntryModel, UserEntryModel } from '../../../api';
-import { combineLatest, filter, firstValueFrom, switchMap } from 'rxjs';
+import { combineLatest, switchMap } from 'rxjs';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroTrash, heroPlus } from '@ng-icons/heroicons/outline';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
@@ -14,13 +25,15 @@ import { DialogType, RoleSetType, UsermanagerFacade, UserSetType } from '../serv
 
 @Component({
   selector: 'app-role-details',
-  providers: [provideIcons({ heroTrash, heroPlus })],
+  providers: [provideIcons({ heroTrash, heroPlus }), UsermanagerFacade],
   imports: [NgIconComponent, AliasPipe, RouterModule, CommonModule, ReactiveFormsModule, DialogComponent],
   templateUrl: './role-details.component.html',
   styleUrls: ['../usermanager.component.scss', './role-details.component.scss'],
 })
 export class RoleDetailsComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) dialogCmp: DialogComponent | undefined;
+  @ViewChildren('userCheckbox') userCheckbox: QueryList<ElementRef<HTMLInputElement>> | undefined;
+  @ViewChildren('permissionCheckbox') permissionCheckbox: QueryList<ElementRef<HTMLInputElement>> | undefined;
 
   role: RoleEntryModel | undefined;
   private readonly route = inject(ActivatedRoute);
@@ -30,14 +43,24 @@ export class RoleDetailsComponent implements OnInit {
 
   dialogTitle: string | undefined;
   permissions = signal<PermissionModel[] | undefined>(undefined);
-  userIds = signal<string[] | undefined>(undefined);
+  patchedPermissions = computed<PermissionModel[] | undefined>(() => {
+    const permissions = this.permissions();
+    const deletions = Array.from(this.permissionDeletionsSet());
+    return permissions?.filter(({ permissionId }) => !deletions.some(({ permissionId: pId }) => pId === permissionId));
+  });
   permissionOptions = signal<PermissionModel[] | undefined>(undefined);
   userOptions = signal<UserEntryModel[] | undefined>(undefined);
   roleForm = new FormGroup({});
+  userIds = signal<string[] | undefined>(undefined);
   users = computed<UserEntryModel[]>(() => {
     const userIds = this.userIds();
     const users = this.store.users();
     return users.filter(({ id }) => userIds?.includes(id));
+  });
+  patchedUsers = computed<UserEntryModel[] | undefined>(() => {
+    const users = this.users();
+    const deletions = Array.from(this.userDeletionsSet());
+    return users.filter(({ id }) => !deletions.some(({ id: uId }) => uId === id));
   });
 
   mappedPermissions: Signal<MappedPermission[] | undefined> = computed(() => {
@@ -59,9 +82,9 @@ export class RoleDetailsComponent implements OnInit {
   });
 
   private usersSet = new Set<UserEntryModel>();
-  private userDeletionsSet = new Set<string>();
   private permissionsSet = new Set<PermissionModel>();
-  private permissionDeletionsSet = new Set<string>();
+  private userDeletionsSet = signal(new Set<UserEntryModel>());
+  private permissionDeletionsSet = signal(new Set<PermissionModel>());
 
   ngOnInit(): void {
     this.generateForm();
@@ -156,16 +179,16 @@ export class RoleDetailsComponent implements OnInit {
         this.patchFormByKey('permissions', this.permissionsSet);
         break;
       case 'permissionDeletion':
-        this.permissionDeletionsSet.add(value as string);
-        this.patchFormByKey('permissionDeletions', this.permissionDeletionsSet);
+        this.usermanagerFacade.addAndSetSignal(value, this.permissionDeletionsSet);
+        this.patchFormByKey('permissionDeletions', this.permissionDeletionsSet());
         break;
       case 'user':
         this.usersSet.delete(value as UserEntryModel);
         this.patchFormByKey('users', this.usersSet);
         break;
       case 'userDeletion':
-        this.userDeletionsSet.add(value as string);
-        this.patchFormByKey('userDeletions', this.userDeletionsSet);
+        this.usermanagerFacade.addAndSetSignal(value, this.userDeletionsSet);
+        this.patchFormByKey('userDeletions', this.userDeletionsSet());
         break;
       default:
         console.info(`Unknown type: ${type}`);
@@ -181,12 +204,34 @@ export class RoleDetailsComponent implements OnInit {
     const { 0: permissions, 1: users } = payload;
     this.permissions.set(permissions);
     this.userIds.set(users);
+    this.clearRolesAndPermissions();
+    this.clearCheckedStates();
+  }
+
+  private clearRolesAndPermissions() {
+    this.usersSet.clear();
+    this.permissionsSet.clear();
+    this.usermanagerFacade.clearAndSetSignal(this.userDeletionsSet);
+    this.usermanagerFacade.clearAndSetSignal(this.permissionDeletionsSet);
+    this.roleForm.get('users')?.reset();
+    this.roleForm.get('permissions')?.reset();
+  }
+
+  private clearCheckedStates() {
+    this.userCheckbox
+      ?.filter((checkbox) => checkbox.nativeElement.disabled === false)
+      .forEach((checkbox) => (checkbox.nativeElement.checked = false));
+    this.permissionCheckbox
+      ?.filter((checkbox) => checkbox.nativeElement.disabled === false)
+      .forEach((checkbox) => (checkbox.nativeElement.checked = false));
   }
 
   private generateForm() {
     this.roleForm.addControl('id', new FormControl());
     this.roleForm.addControl('users', new FormControl());
+    this.roleForm.addControl('userDeletions', new FormControl());
     this.roleForm.addControl('permissions', new FormControl());
+    this.roleForm.addControl('permissionDeletions', new FormControl());
   }
 
   private patchFormByKey(key: 'users' | 'userDeletions' | 'permissions' | 'permissionDeletions', set: Set<any>) {

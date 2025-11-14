@@ -77,22 +77,18 @@ export const UsermanagerStore = signalStore(
       const { users, permissions, id, permissionDeletions, userDeletions } = role;
 
       const users$ = Array.isArray(users)
-        ? forkJoin(users?.map((user: { id: string }) => usermanagerService.addRoleForUser(user.id, id)))
+        ? forkJoin(users?.map(({ id: uId }) => usermanagerService.addRoleForUser(uId, id)))
         : of([]);
       const userDeletions$ = Array.isArray(userDeletions)
-        ? forkJoin(userDeletions.map((userId: string) => usermanagerService.deleteRoleFromUser(userId, id)))
+        ? forkJoin(userDeletions.map(({ id: uId }) => usermanagerService.deleteRoleFromUser(uId, id)))
         : of([]);
 
       const permissions$ = Array.isArray(permissions)
-        ? forkJoin(
-            permissions?.map((permission: { permissionId: string }) =>
-              usermanagerService.addPermissionForRole(permission.permissionId, id),
-            ),
-          )
+        ? forkJoin(permissions?.map(({ permissionId }) => usermanagerService.addPermissionForRole(permissionId, id)))
         : of([]);
       const permissionDeletions$ = Array.isArray(permissionDeletions)
         ? forkJoin(
-            permissionDeletions.map((permissionId: string) =>
+            permissionDeletions.map(({ permissionId }) =>
               usermanagerService.deletePermissionFromRole(permissionId, id),
             ),
           )

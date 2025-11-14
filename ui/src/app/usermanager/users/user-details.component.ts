@@ -33,7 +33,7 @@ import { DialogType, UsermanagerFacade, UserSetType } from '../services/usermana
 @Component({
   standalone: true,
   selector: 'app-user-details',
-  providers: [provideIcons({ heroTrash, heroPlus })],
+  providers: [provideIcons({ heroTrash, heroPlus }), UsermanagerFacade],
   imports: [ReactiveFormsModule, NgIconComponent, AliasPipe, RouterModule, DialogComponent, CommonModule],
   templateUrl: './user-details.component.html',
   styleUrls: ['../usermanager.component.scss', './user-details.component.scss'],
@@ -54,15 +54,25 @@ export class UserDetailsComponent implements OnInit {
   userForm = new FormGroup({});
   passwordForm = new FormGroup({});
   userRoles = signal<string[] | undefined>(undefined);
+  patchedRoles = computed<string[] | undefined>(() => {
+    const roles = this.userRoles();
+    const deletions = Array.from(this.roleDeletionsSet());
+    return roles?.filter((roleId) => !deletions.includes(roleId));
+  });
   userPermissions = signal<PermissionModel[] | undefined>(undefined);
+  patchedPermissions = computed<PermissionModel[] | undefined>(() => {
+    const permissions = this.userPermissions();
+    const deletions = Array.from(this.permissionDeletionsSet());
+    return permissions?.filter(({ permissionId }) => !deletions.includes(permissionId));
+  });
   roleOptions = signal<RoleEntryModel[] | undefined>(undefined);
   permissionOptions = signal<PermissionModel[] | undefined>(undefined);
   dialogTitle = '';
 
   private rolesSet = new Set<RoleEntryModel>();
-  private roleDeletionsSet = new Set<string>();
   private permissionsSet = new Set<PermissionModel>();
-  private permissionDeletionsSet = new Set<string>();
+  private roleDeletionsSet = signal(new Set<string>());
+  private permissionDeletionsSet = signal(new Set<string>());
 
   mappedRoleOptions: Signal<MappedRole[] | undefined> = computed(() => {
     const options = this.roleOptions();
@@ -194,9 +204,9 @@ export class UserDetailsComponent implements OnInit {
 
   private clearRolesAndPermissions() {
     this.rolesSet.clear();
-    this.roleDeletionsSet.clear();
     this.permissionsSet.clear();
-    this.permissionDeletionsSet.clear();
+    this.usermanagerFacade.clearAndSetSignal(this.roleDeletionsSet);
+    this.usermanagerFacade.clearAndSetSignal(this.permissionDeletionsSet);
     this.userForm.get('roles')?.reset();
     this.userForm.get('permissions')?.reset();
   }
@@ -248,16 +258,16 @@ export class UserDetailsComponent implements OnInit {
         this.patchFormByType('roles', this.rolesSet);
         break;
       case 'roleDeletion':
-        this.roleDeletionsSet.add(value as string);
-        this.patchFormByType('roleDeletions', this.roleDeletionsSet);
+        this.usermanagerFacade.addAndSetSignal(value, this.roleDeletionsSet);
+        this.patchFormByType('roleDeletions', this.roleDeletionsSet());
         break;
       case 'permission':
         this.permissionsSet.delete(value as PermissionModel);
         this.patchFormByType('permissions', this.permissionsSet);
         break;
       case 'permissionDeletion':
-        this.permissionDeletionsSet.add(value as string);
-        this.patchFormByType('permissionDeletions', this.permissionDeletionsSet);
+        this.usermanagerFacade.addAndSetSignal(value, this.permissionDeletionsSet);
+        this.patchFormByType('permissionDeletions', this.permissionDeletionsSet());
         break;
       default:
         console.info(`Unknown type: ${type}`);

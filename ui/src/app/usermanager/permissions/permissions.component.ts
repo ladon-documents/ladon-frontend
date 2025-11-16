@@ -4,13 +4,13 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { FilterComponent } from '../components/filter/filter.component';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { PermissionModel } from '../../../api';
-import { heroPlusCircle, heroTrash } from '@ng-icons/heroicons/outline';
+import { heroPlusCircle, heroTrash, heroDocumentDuplicate } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-permissions',
   standalone: true,
-  providers: [provideIcons({ heroPlusCircle, heroTrash })],
+  providers: [provideIcons({ heroPlusCircle, heroTrash, heroDocumentDuplicate })],
   imports: [AliasPipe, NgIconComponent, DialogComponent, FilterComponent, ReactiveFormsModule],
   templateUrl: './permissions.component.html',
   styleUrl: './permissions.component.scss',
@@ -58,6 +58,12 @@ export class PermissionsComponent implements OnInit {
 
   closeDialog(): void {
     this.permissionDialog?.closeDialog();
+    this.permissionAddGroup.reset();
+  }
+
+  duplicatePermission(permission: PermissionModel): void {
+    this.permissionAddGroup.patchValue(permission);
+    this.permissionDialog?.openDialog();
   }
 
   deletePermission(permissionId: string): void {
@@ -66,7 +72,7 @@ export class PermissionsComponent implements OnInit {
 
   private generateForm(): void {
     this.permissionAddGroup.addControl('permissionId', new FormControl(undefined, Validators.required));
-    this.permissionAddGroup.addControl('allowd', new FormControl(undefined, Validators.required));
+    this.permissionAddGroup.addControl('allowed', new FormControl(undefined, Validators.required));
     this.permissionAddGroup.addControl('description', new FormControl(undefined, Validators.required));
     this.permissionAddGroup.addControl('operation', new FormControl(undefined, Validators.required));
     this.permissionAddGroup.addControl('type', new FormControl(undefined, Validators.required));

@@ -56,7 +56,7 @@
         <tr class="cursor-pointer hover:bg-gray-100">
           <td [routerLink]="['../../roles', role]">{{ role }}</td>
           <td class="text-right">
-            <button class="btn" type="button" (click)="removeByType('roleDeletion', role)">
+            <button class="btn text-red-700" type="button" (click)="removeByType('roleDeletion', role)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>
@@ -67,7 +67,7 @@
         <tr class="cursor-pointer hover:bg-gray-100">
           <td>{{ role?.["id"] }}</td>
           <td class="text-right">
-            <button class="btn" type="button" (click)="removeByType('role', role)">
+            <button class="btn text-red-700" type="button" (click)="removeByType('role', role)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>
@@ -100,7 +100,10 @@
         <tr class="cursor-pointer hover:bg-gray-100">
           <td [routerLink]="['../../permissions', permission.permissionId]">{{ permission.permissionId }}</td>
           <td class="text-right">
-            <button class="btn" type="button" (click)="removeByType('permissionDeletion', permission.permissionId)">
+            <button
+              class="btn text-red-700"
+              type="button"
+              (click)="removeByType('permissionDeletion', permission.permissionId)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>
@@ -111,7 +114,7 @@
         <tr class="cursor-pointer hover:bg-gray-100">
           <td>{{ permission?.["permissionId"] }}</td>
           <td class="text-right">
-            <button class="btn" type="button" (click)="removeByType('permission', permission)">
+            <button class="btn text-red-700" type="button" (click)="removeByType('permission', permission)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>

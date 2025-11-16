@@ -29,9 +29,12 @@
             </div>
           </td>
           <td class="text-right">
-            <button class="btn" (click)="deleteRole(role.id)">
+            <button class="btn cursor-pointer" (click)="duplicateRole(role)">
+              <ng-icon name="heroDocumentDuplicate" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+
+            <button class="btn ml-2 cursor-pointer text-red-700" (click)="deleteRole(role.id)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-              <span class="hidden lg:block">Entfernen</span>
             </button>
           </td>
         </tr>

@@ -8,9 +8,7 @@ export type UserSetType = 'role' | 'roleDeletion' | 'permission' | 'permissionDe
 export type RoleSetType = 'user' | 'permission' | 'userDeletion' | 'permissionDeletion';
 export type DialogType = UserSetType | 'password';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class UsermanagerFacade {
   private store = inject(UsermanagerStore);
 
@@ -110,5 +108,17 @@ export class UsermanagerFacade {
   patchFormByKey(key: string, set: Set<any>, form: FormGroup) {
     form.patchValue({ [key]: Array.from(set) });
     form.markAsDirty();
+  }
+
+  addAndSetSignal<Type>(value: Type, signalSet: WritableSignal<Set<Type>>) {
+    const currentSet = new Set(signalSet());
+    currentSet.add(value);
+    signalSet.set(currentSet);
+  }
+
+  clearAndSetSignal<Type>(signalSet: WritableSignal<Set<Type>>) {
+    const currentSet = new Set(signalSet());
+    currentSet.clear();
+    signalSet.set(currentSet);
   }
 }

@@ -18,6 +18,7 @@
     <tbody>
       @for (user of filteredUsers; track user.id) {
         <tr [routerLink]="user.id" [routerLinkActive]="'bg-gray-100'" class="cursor-pointer hover:bg-gray-100">
+          <td>
             <div class="flex items-center gap-4">
               <div
                 class="avatar shrink-0 transition-colors"

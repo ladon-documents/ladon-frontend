@@ -10,6 +10,7 @@ import { StaticwebComponent } from './staticweb/staticweb.component';
 import { AuthGuard } from './shared/guards/auth/auth.guard';
 import { CanActivateLogin } from './shared/guards/auth/can-activate.login';
 import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
+import { pdfviewerRoutes } from './pdf-viewer/pdf-viewer.routes';
 
 interface NavigationData {
   path: string;
@@ -36,6 +37,12 @@ const pdfViewer: Routes = [
   {
     path: `${environment.baseHref}/pdf`,
     component: PdfViewerComponent,
+    resolve: {},
+    canActivate: [AuthGuard],
+  },
+  {
+    path: `${environment.baseHref}/pdf/:path`,
+    component: PdfViewerComponent,
     canActivate: [AuthGuard],
   },
 ];
@@ -43,7 +50,7 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
   setNavigation();
 
   const _appRoutes: any = [];
-  _appRoutes.push(...loginRoutes, ...staticnRoutes, ...pdfViewer);
+  _appRoutes.push(...loginRoutes, ...staticnRoutes, ...pdfviewerRoutes);
   navigation.forEach((navItem) => {
     if (NO_ROUTING_TARGETS.includes(navItem.target)) return;
     const navPath = `${environment.baseHref}/${navItem.path}`;

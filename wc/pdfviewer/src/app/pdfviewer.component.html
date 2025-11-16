@@ -4,14 +4,14 @@
 
 
 <div *ngIf="isLoading">
-  <progress value="{{progressCount}}" max="100"> {{progressCount}}</progress>
+  <progress value="{{progressCount}}" max="100"> {{ progressCount }}</progress>
 </div>
 
 <ng-container *ngIf="appIsReady && pdfurl">
 
   <ngx-extended-pdf-viewer [src]="pdfurl"
-                           [customToolbar]="customLadonToolbar"
                            #pdfViewer
+                           [customToolbar]="customLadonToolbar"
                            (pdfDownloaded)="onEvent('pdfDownloaded', $event)"
                            (pdfLoaded)="onEvent('pdfLoaded', $event)"
                            (pdfLoadingFailed)="onEvent('pdfLoadingFailed', $event)"
@@ -22,26 +22,26 @@
 </ng-container>
 
 <ng-template #customLadonToolbar>
-  <div id="toolbarViewer" class="card-style">
-    <div>
-      <div class="toolbar-controls">
-        <app-ladon-pdf-toggle-sidebar></app-ladon-pdf-toggle-sidebar>
-        <div class="toolbarButtonSpacer"></div>
-        <app-ladon-pdf-paging></app-ladon-pdf-paging>
-      </div>
+  <div id="toolbarViewer">
+    <div id="toolbarViewerLeft">
+      <pdf-toggle-sidebar></pdf-toggle-sidebar>
+      <div class="toolbarButtonSpacer"></div>
+      <pdf-paging-area></pdf-paging-area>
     </div>
 
-    <app-ladon-pdf-zoom-toolbar></app-ladon-pdf-zoom-toolbar>
+    <pdf-zoom-toolbar ></pdf-zoom-toolbar>
 
-    <div>
+    <div id="toolbarViewerRight">
       <div class="toolbar-controls">
         <button class="transparent" (click)="reloadPDF()">
           <span class="webix_icon wxi-sync"></span>
         </button>
-        <app-ladon-pdf-rotate></app-ladon-pdf-rotate>
-        <app-ladon-pdf-presentation-mode></app-ladon-pdf-presentation-mode>
-        <app-ladon-pdf-print></app-ladon-pdf-print>
-        <app-ladon-pdf-download></app-ladon-pdf-download>
+        <pdf-open-file></pdf-open-file>
+        <pdf-presentation-mode></pdf-presentation-mode>
+        <pdf-print></pdf-print>
+        <pdf-download></pdf-download>
+        <div class="verticalToolbarSeparator hiddenSmallView"></div>
+        <pdf-toggle-secondary-toolbar></pdf-toggle-secondary-toolbar>
         <div class="toolbar-control">
           <button class="close"
                   size="small"

@@ -76,7 +76,6 @@ export const FilemanagerStore = signalStore(
       breadcrumbStore = inject(BreadcrumbStore),
     ) => {
       const methods = {
-        // Bestehende Methoden...
         showRoot() {
           methods.loadBucket(store.selectedBucket());
         },
@@ -197,7 +196,6 @@ export const FilemanagerStore = signalStore(
           methods.goToPage(currentPagination.totalPages);
         },
 
-        // Aktualisierte Load-Methoden
         loadStats: rxMethod<any>(
           pipe(
             tap(() => {

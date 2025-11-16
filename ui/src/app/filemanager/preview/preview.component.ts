@@ -4,6 +4,8 @@ import { DocumentModel } from '../../../api';
 import { SidebarService } from '../sidebar/sidebar.service';
 import { MonacoEditorService } from '../../editor/editor.service';
 import { filemanagerHelper } from '../helper/helper';
+import { LadonRouterService } from '../../services/ladon-router.service';
+import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 
 @Component({
   selector: 'filemanager-preview',
@@ -14,6 +16,7 @@ import { filemanagerHelper } from '../helper/helper';
 export class PreviewComponent {
   readonly monacoEditorService = inject(MonacoEditorService);
   private readonly filemanagerFacade = inject(FilemanagerFacade);
+  private readonly pdfViewerFacade = inject(PdfViewerFacade);
 
   selectedDocument = this.filemanagerFacade.selectedDocument;
   imageUrl: string | null = null;
@@ -65,7 +68,13 @@ export class PreviewComponent {
     this.monacoEditorService.open();
   }
 
-  openPdf() {}
+  async openPdf() {
+    const document = this.selectedDocument();
+    if (document) {
+      await this.pdfViewerFacade.navigateToPdfViewer(document);
+    }
+  }
+
 
   protected readonly filemanagerHelper = filemanagerHelper;
 }

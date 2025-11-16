@@ -28,12 +28,12 @@ export class LadonPdfPagingComponent {
   }
 
   public firstPage(): void {
-    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplication;
+    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplicationOptions;
     PDFViewerApplication.eventBus.dispatch('firstpage');
   }
 
   public onPdfJsInit(): void {
-    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplication;
+    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplicationOptions;
     PDFViewerApplication.eventBus.on('updateuistate', event => this.updateUIState(event));
   }
 
@@ -49,7 +49,7 @@ export class LadonPdfPagingComponent {
   }
 
   public lastPage(): void {
-    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplication;
+    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplicationOptions;
     PDFViewerApplication.eventBus.dispatch('lastpage');
   }
 }

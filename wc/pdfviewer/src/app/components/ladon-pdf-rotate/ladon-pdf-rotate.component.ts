@@ -27,18 +27,18 @@ export class LadonPdfRotateComponent implements OnInit {
   }
 
   public rotateCW(): void {
-    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplication;
+    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplicationOptions;
     PDFViewerApplication.eventBus.dispatch('rotatecw');
   }
 
   public rotateCCW(): void {
-    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplication;
+    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplicationOptions;
     PDFViewerApplication.eventBus.dispatch('rotateccw');
   }
 
 
   public onPdfJsInit(): void {
-    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplication;
+    const PDFViewerApplication: IPDFViewerApplication = (window as any).PDFViewerApplicationOptions;
     PDFViewerApplication.eventBus.on('updateuistate', (event) => this.updateUIState(event));
   }
 

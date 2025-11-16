@@ -1,51 +1,71 @@
-<div class="pdf-viewer-container" [class.loading]="isLoading()">
+<div class="pdf-viewer-container" [class]="{'loading': isLoading()}">
   <!-- Loading Indicator -->
-  <div *ngIf="isLoading()" class="loading-overlay">
-    <div class="spinner"></div>
-    <p>PDF wird geladen... {{ loadingProgress() }}%</p>
-    <p *ngIf="selectedDocument()">{{ selectedDocument()?.key || selectedDocument()?.name }}</p>
-  </div>
+  @if (isLoading()) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>PDF wird geladen... {{ loadingProgress() }}%</p>
+      @if (selectedDocument()) {
+        <p>{{ selectedDocument()?.key || selectedDocument()?.name }}</p>
+      }
+    </div>
+  }
 
   <!-- Error Display -->
-  <div *ngIf="hasError()" class="error-message">
-    <h3>Fehler beim Laden der PDF</h3>
-    <p>{{ errorMessage() }}</p>
-    <p *ngIf="selectedDocument()">Dokument: {{ selectedDocument()?.key || selectedDocument()?.name }}</p>
-    <button (click)="retryLoad()" class="retry-button">Erneut versuchen</button>
-  </div>
+  @if (hasError()) {
+    <div class="error-message">
+      <h3>Fehler beim Laden der PDF</h3>
+      <p>{{ errorMessage() }}</p>
+      @if (selectedDocument()) {
+        <p>Dokument: {{ selectedDocument()?.key || selectedDocument()?.name }}</p>
+      }
+      <button (click)="retryLoad()" class="retry-button">Erneut versuchen</button>
+    </div>
+  }
 
   <!-- PDF Viewer Header mit Dokumentinfo -->
-  <div class="pdf-header" *ngIf="selectedDocument() && !hasError()">
-    <div class="document-info">
-      <h3>{{ getDocumentDisplayName() }}</h3>
-      <div class="document-details">
-        <span *ngIf="selectedDocument()?.size" class="file-size">{{ formatFileSize(selectedDocument()!.size!) }}</span>
-        <span *ngIf="selectedDocument()?.['last-modified']" class="last-modified">
-          Geändert: {{ formatDate(selectedDocument()!["last-modified"]!) }}
-        </span>
+  @if (selectedDocument() && !hasError()) {
+    <div class="pdf-header">
+      <div class="document-info">
+        <h3>{{ getDocumentDisplayName() }}</h3>
+        <div class="document-details">
+          @if (selectedDocument()?.size) {
+            <span class="file-size">{{ formatFileSize(selectedDocument()!.size!) }}</span>
+          }
+          @if (selectedDocument()?.['last-modified']) {
+            <span class="last-modified">
+              Geändert: {{ formatDate(selectedDocument()!["last-modified"]!) }}
+            </span>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   <!-- PDF Viewer Toolbar -->
-  <div class="pdf-toolbar" *ngIf="showToolbar() && !hasError() && selectedDocument()">
-    <button (click)="zoomIn()" [disabled]="isLoading()" title="Vergrößern">🔍+</button>
-    <button (click)="zoomOut()" [disabled]="isLoading()" title="Verkleinern">🔍-</button>
-    <button (click)="resetZoom()" [disabled]="isLoading()" title="Zoom zurücksetzen">↻</button>
+  @if (showToolbar() && !hasError() && selectedDocument()) {
+    <div class="pdf-toolbar">
+      <button (click)="zoomIn()" [disabled]="isLoading()" title="Vergrößern">🔍+</button>
+      <button (click)="zoomOut()" [disabled]="isLoading()" title="Verkleinern">🔍-</button>
+      <button (click)="resetZoom()" [disabled]="isLoading()" title="Zoom zurücksetzen">↻</button>
 
-    <div class="page-controls">
-      <button (click)="previousPage()" [disabled]="isLoading() || currentPage() <= 1">◀</button>
-      <span>{{ currentPage() }} / {{ totalPages() }}</span>
-      <button (click)="nextPage()" [disabled]="isLoading() || currentPage() >= totalPages()">▶</button>
+      <div class="page-controls">
+        <button (click)="previousPage()" [disabled]="isLoading() || currentPage() <= 1">◀</button>
+        <span>{{ currentPage() }} / {{ totalPages() }}</span>
+        <button (click)="nextPage()" [disabled]="isLoading() || currentPage() >= totalPages()">▶</button>
+      </div>
+
+      <button (click)="downloadPdf()" [disabled]="isLoading()" title="PDF herunterladen">💾</button>
+      <button (click)="printPdf()" [disabled]="isLoading()" title="PDF drucken">🖨️</button>
+      <button (click)="toggleFullscreen()" [disabled]="isLoading()" title="Vollbild">⛶</button>
+      <button (click)="closePdfViewer()" title="Schließen" class="close-btn">✕</button>
     </div>
+  } @else {
+    <div class="pdf-toolbar minimal">
+      <button (click)="closePdfViewer()" title="Schließen" class="close-btn">✕</button>
+    </div>
+  }
 
-    <button (click)="downloadPdf()" [disabled]="isLoading()" title="PDF herunterladen">💾</button>
-    <button (click)="printPdf()" [disabled]="isLoading()" title="PDF drucken">🖨️</button>
-    <button (click)="toggleFullscreen()" [disabled]="isLoading()" title="Vollbild">⛶</button>
-    <button (click)="closePdfViewer()" title="Schließen" class="close-btn">✕</button>
-  </div>
-
-  <!-- Web Component aus dem wc Ordner -->
-  <ladon-pdfviewer
-    pdf="/peter/testing/princes-of-the-yen-japans-central-bankers-and-the-transformation-of-the-economy_compress.pdf"></ladon-pdfviewer>
-</div>
+  <ladon-pdfviewer #pdfViewerWC
+    [attr.pdf]="pdfName()">
+  </ladon-pdfviewer>
+</div>x

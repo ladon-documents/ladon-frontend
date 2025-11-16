@@ -25,6 +25,8 @@ import { FilemanagerFacade } from '../filemanager.facade';
 import { ConverterService } from '../../services/converter.service';
 import { SidebarService } from '../sidebar/sidebar.service';
 import { FilemanagerPaginationComponent } from '../pagination/pagination.component';
+import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
+import { filemanagerHelper } from '../helper/helper';
 
 @Component({
   standalone: true,
@@ -55,6 +57,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   readonly #facade = inject(FilemanagerFacade);
   private readonly converterService = inject(ConverterService);
   private readonly sidebarService = inject(SidebarService);
+  private readonly pdfViewerFacade = inject(PdfViewerFacade);
   documents: Signal<DocumentModel[]> = this.#facade.documents;
 
   #currentBucket: string | null = null;
@@ -146,6 +149,14 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       this.#facade.load(this.#selectedDocument);
     } else {
       await this.select(document);
+      await this.handleDoubleClickForDocument(document);
     }
+  }
+
+  private async handleDoubleClickForDocument(document: DocumentModel) {
+    if (filemanagerHelper.isPdf(document)) {
+      await this.pdfViewerFacade.navigateToPdfViewer(document);
+    }
+
   }
 }

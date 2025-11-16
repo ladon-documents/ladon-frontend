@@ -9,12 +9,15 @@ import {
   effect,
   signal,
   computed,
-  inject,
+  inject, OnInit
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentModel } from '../../api';
 import { FilemanagerFacade } from '../filemanager/filemanager.facade';
+import { ActivatedRoute } from '@angular/router';
+import { PdfViewerFacade } from './pdf-viewer.facade';
+import { pdfviewerRoutes } from './pdf-viewer.routes';
 
 @Component({
   selector: 'pdf-viewer',
@@ -24,31 +27,34 @@ import { FilemanagerFacade } from '../filemanager/filemanager.facade';
   templateUrl: 'pdf-viewer.component.html',
   styleUrls: ['pdf-viewer.component.scss'],
 })
-export class PdfViewerComponent {
+export class PdfViewerComponent implements OnInit {
   @ViewChild('pdfViewerWC', { static: false }) pdfViewerWC!: ElementRef;
 
   private readonly filemanagerFacade = inject(FilemanagerFacade);
+  private readonly pdfFacade = inject(PdfViewerFacade);
+
+  private readonly activatedRoute = inject(ActivatedRoute);
+  readonly selectedDocument = this.pdfFacade.selectedDocument;
+  readonly isLoading = this.pdfFacade.isLoading;
+  readonly currentPage = this.pdfFacade.currentPage;
+  readonly totalPages = this.pdfFacade.totalPages;
+  readonly zoomLevel = this.pdfFacade.zoomLevel;
+  readonly hasError  = this.pdfFacade.hasError;
+  readonly errorMessage  = this.pdfFacade.errorMessage;
+
 
   private _selectedDocument = signal<DocumentModel | null>(null);
   private _isLoading = signal<boolean>(false);
   private _hasError = signal<boolean>(false);
   private _errorMessage = signal<string>('');
-  private _currentPage = signal<number>(1);
   private _totalPages = signal<number>(0);
   private _zoomLevel = signal<number>(100);
   private _loadingProgress = signal<number>(0);
   private _showToolbar = signal<boolean>(true);
 
-  readonly selectedDocument = this._selectedDocument.asReadonly();
-  readonly isLoading = this._isLoading.asReadonly();
-  readonly hasError = this._hasError.asReadonly();
-  readonly errorMessage = this._errorMessage.asReadonly();
-  readonly currentPage = this._currentPage.asReadonly();
-  readonly totalPages = this._totalPages.asReadonly();
-  readonly zoomLevel = this._zoomLevel.asReadonly();
   readonly loadingProgress = this._loadingProgress.asReadonly();
   readonly showToolbar = this._showToolbar.asReadonly();
-
+  pdfName = signal('')
   readonly pdfUrl = computed(() => {
     const doc = this.selectedDocument();
     if (!doc || !doc.bucket || !doc.key) return '';
@@ -59,39 +65,8 @@ export class PdfViewerComponent {
 
   readonly isPdfReady = computed(() => !this.isLoading() && !this.hasError() && this.selectedDocument() !== null);
 
-  // Input Properties - unterstützt sowohl direkte DocumentModel als auch selectedDocument aus Store
-  @Input() set document(value: DocumentModel | null) {
-    if (value && this.isPdfDocument(value)) {
-      this._selectedDocument.set(value);
-      this.loadPdf();
-    }
-  }
-
-  @Input() set useSelectedDocument(value: boolean) {
-    if (value) {
-      // Verwende selectedDocument aus dem FilemanagerStore
-      const storeDocument = this.filemanagerFacade.selectedDocument();
-      if (storeDocument && this.isPdfDocument(storeDocument)) {
-        this._selectedDocument.set(storeDocument);
-        this.loadPdf();
-      }
-    }
-  }
-
-  @Input() set toolbar(value: boolean) {
-    this._showToolbar.set(value);
-  }
-
-  // Output Events
-  @Output() pdfLoaded = new EventEmitter<{ document: DocumentModel; totalPages: number }>();
-  @Output() pdfError = new EventEmitter<{ document: DocumentModel | null; error: string }>();
-  @Output() pageChanged = new EventEmitter<{ document: DocumentModel | null; page: number; totalPages: number }>();
-  @Output() downloadRequested = new EventEmitter<{ document: DocumentModel }>();
-  @Output() printRequested = new EventEmitter<{ document: DocumentModel }>();
-  @Output() closed = new EventEmitter<{ document: DocumentModel | null }>();
 
   constructor() {
-    // Effect für automatisches Laden bei Änderungen des selectedDocument im Store
     effect(() => {
       const storeDocument = this.filemanagerFacade.selectedDocument();
       if (storeDocument && this.isPdfDocument(storeDocument) && storeDocument !== this.selectedDocument()) {
@@ -100,10 +75,40 @@ export class PdfViewerComponent {
       }
     });
 
-    // Effect für automatisches Laden bei Dokumentänderungen
     effect(() => {
       if (this.selectedDocument()) {
         this.resetState();
+      }
+    });
+  }
+
+
+  ngOnInit() {
+    this.activatedRoute.data.subscribe((data) => {
+      const selectedDocument =  data['selectedDocument'];
+      console.log(selectedDocument);
+      if (selectedDocument) {
+        this._selectedDocument.set(selectedDocument);
+        this.pdfName.set(selectedDocument.name);
+        //this.loadPdf();
+      }
+    });
+
+    this.activatedRoute.queryParams.subscribe((params) => {
+      const pdfName = params['name'];
+      if (pdfName) {
+        this.pdfName.set(params['name']);
+        const storeDocument = this.filemanagerFacade.selectedDocument();
+        if (storeDocument && this.isPdfDocument(storeDocument)) {
+          this._selectedDocument.set(storeDocument);
+          this.loadPdf();
+        }
+      } else {
+        const storeDocument = this.filemanagerFacade.selectedDocument();
+        if (storeDocument && this.isPdfDocument(storeDocument)) {
+          this._selectedDocument.set(storeDocument);
+          this.loadPdf();
+        }
       }
     });
   }
@@ -114,103 +119,68 @@ export class PdfViewerComponent {
     const contentType = document['content-type']?.toLowerCase();
     const fileName = document.key || document.name || '';
     const fileExtension = fileName.split('.').pop()?.toLowerCase();
-
     return contentType === 'application/pdf' || fileExtension === 'pdf';
   }
 
   private resetState(): void {
-    this._hasError.set(false);
-    this._errorMessage.set('');
-    this._currentPage.set(1);
-    this._totalPages.set(0);
-    this._loadingProgress.set(0);
+    this.pdfFacade.resetState();
   }
 
   private loadPdf(): void {
+    /*
     const document = this.selectedDocument();
     if (!document) return;
 
-    this._isLoading.set(true);
+     */
+
+    this._isLoading.set(false);
     this._hasError.set(false);
     this._errorMessage.set('');
   }
 
-  // Event Handlers für Web Component
   onPdfLoaded(event: CustomEvent<any>): void {
-    console.log('PDF loaded:', event.detail);
-    this._isLoading.set(false);
-    this._totalPages.set(event.detail.totalPages || 0);
-
-    const document = this.selectedDocument();
-    if (document) {
-      this.pdfLoaded.emit({ document, totalPages: this.totalPages() });
-    }
+    this.pdfFacade.onPdfLoaded(event.detail.totalPages);
   }
 
   onPdfError(event: CustomEvent<any>): void {
     console.error('PDF error:', event.detail);
-    this._isLoading.set(false);
-    this._hasError.set(true);
-    this._errorMessage.set(event.detail.message || 'Unbekannter Fehler beim Laden der PDF');
-
-    this.pdfError.emit({
-      document: this.selectedDocument(),
-      error: this.errorMessage(),
-    });
+    this.pdfFacade.onError(event.detail.message || 'Unbekannter Fehler beim Laden der PDF');
   }
 
   onPageChanged(event: CustomEvent<any>): void {
     const page = event.detail.page || 1;
-    this._currentPage.set(page);
+   // this._currentPage.set(page);
 
-    this.pageChanged.emit({
-      document: this.selectedDocument(),
-      page: this.currentPage(),
-      totalPages: this.totalPages(),
-    });
   }
 
   onLoadProgress(event: CustomEvent<any>): void {
     const progress = Math.round(event.detail.progress || 0);
-    this._loadingProgress.set(progress);
+    this.pdfFacade.onLoadingProgress(progress);
   }
 
   // Toolbar Actions
   zoomIn(): void {
-    if (this.zoomLevel() < 300) {
-      this._zoomLevel.set(this.zoomLevel() + 25);
-    }
+    this.pdfFacade.zoomIn();
   }
 
   zoomOut(): void {
-    if (this.zoomLevel() > 25) {
-      this._zoomLevel.set(this.zoomLevel() - 25);
-    }
+    this.pdfFacade.zoomOut();
   }
 
   resetZoom(): void {
-    this._zoomLevel.set(100);
+    this.pdfFacade.resetZoom();
   }
 
   previousPage(): void {
-    if (this.currentPage() > 1) {
-      this._currentPage.set(this.currentPage() - 1);
-      this.updateWebComponentPage();
-    }
+    this.pdfFacade.previousPage();
   }
 
   nextPage(): void {
-    if (this.currentPage() < this.totalPages()) {
-      this._currentPage.set(this.currentPage() + 1);
-      this.updateWebComponentPage();
-    }
+    this.pdfFacade.nextPage();
   }
 
   goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages()) {
-      this._currentPage.set(page);
-      this.updateWebComponentPage();
-    }
+    this.pdfFacade.goToPage(page);
   }
 
   private updateWebComponentPage(): void {
@@ -244,7 +214,6 @@ export class PdfViewerComponent {
   printPdf(): void {
     const document = this.selectedDocument();
     if (this.isPdfReady() && document) {
-      this.printRequested.emit({ document });
 
       // Web Component print method aufrufen falls verfügbar
       if (this.pdfViewerWC?.nativeElement?.print) {
@@ -265,8 +234,9 @@ export class PdfViewerComponent {
   }
 
   closePdfViewer(): void {
-    this.closed.emit({ document: this.selectedDocument() });
+ //   this.closed.emit({ document: this.selectedDocument() });
     this._selectedDocument.set(null);
+    this.pdfName.set('')
     this.resetState();
   }
 

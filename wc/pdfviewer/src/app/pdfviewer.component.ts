@@ -30,8 +30,8 @@ export class PdfviewerComponent {
 
   private readonly path: string = "/admin/api/filemanager";
   private pdfSrc: string = "";
-  private readonly deployTarget = "/ui/draco/webcomponents/wc-pdfviewer/dist/assets"
-  private readonly pdfVersion = "/pdf.worker-4.7.708.min.mjs";
+  private readonly deployTarget = "/ui/draco/webcomponents/wc-pdfviewer/dist/assets";
+  private readonly pdfVersion = "/pdf.worker-5.4.1095.min.mjs";
 
   @Input()
   set pdf(pdfSrc: string) {
@@ -103,7 +103,7 @@ export class PdfviewerComponent {
     try {
       const bucket = pdfSrc.split('/')[1];
       if (pdfSrc && bucket) {
-        this.pdfurl = `${this.path}/${encodeURIComponent(bucket)}/direct?id=${encodeURIComponent(pdfSrc)}${""}`
+        this.pdfurl =  `${this.path}/${encodeURIComponent(bucket)}/direct?id=${encodeURIComponent(pdfSrc)}${""}`
       } else {
         this.error = true;
       }

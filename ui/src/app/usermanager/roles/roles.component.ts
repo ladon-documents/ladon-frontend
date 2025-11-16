@@ -4,14 +4,14 @@ import { FilterComponent } from '../components/filter/filter.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { RoleEntryModel } from '../../../api';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
-import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import { heroDocumentDuplicate, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  providers: [provideIcons({ heroPlus, heroTrash })],
+  providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate })],
   imports: [FilterComponent, NgIconComponent, DialogComponent, AliasPipe, ReactiveFormsModule, RouterModule],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.scss',
@@ -60,6 +60,13 @@ export class RolesComponent implements OnInit {
 
   closeDialog(): void {
     this.roleDialog?.closeDialog();
+    this.roleAddGroup.reset();
+  }
+
+  duplicateRole(role: RoleEntryModel): void {
+    const { id, name, details: description } = role;
+    this.roleAddGroup.patchValue({ id, name, description });
+    this.roleDialog?.openDialog();
   }
 
   deleteRole(roleId: string): void {

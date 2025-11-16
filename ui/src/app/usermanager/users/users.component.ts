@@ -1,6 +1,6 @@
 import { Component, ViewChild, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import { heroDocumentDuplicate, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-users',
   standalone: true,
-  providers: [provideIcons({ heroPlus, heroTrash })],
+  providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate })],
   imports: [
     NgIconComponent,
     FilterComponent,
@@ -46,6 +46,11 @@ export class UsersComponent implements OnInit {
     this.userDialog?.openDialog();
   }
 
+  duplicateUser(user: UserEntryModel): void {
+    this.userAddGroup.patchValue(user);
+    this.userDialog?.openDialog();
+  }
+
   deleteUser(userId: string): void {
     this.store.deleteUser(userId);
   }
@@ -62,6 +67,7 @@ export class UsersComponent implements OnInit {
 
   closeDialog(): void {
     this.userDialog?.closeDialog();
+    this.userAddGroup.reset();
   }
 
   onFilterTerm(term: string) {

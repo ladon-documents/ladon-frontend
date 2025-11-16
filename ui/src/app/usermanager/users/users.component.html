@@ -12,13 +12,12 @@
       <tr>
         <th>Name</th>
         <th>E-Mail</th>
-        <th class="text-right">Aktion</th>
+        <th class="text-right" colspan="2">Aktion</th>
       </tr>
     </thead>
     <tbody>
       @for (user of filteredUsers; track user.id) {
         <tr [routerLink]="user.id" [routerLinkActive]="'bg-gray-100'" class="cursor-pointer hover:bg-gray-100">
-          <td>
             <div class="flex items-center gap-4">
               <div
                 class="avatar shrink-0 transition-colors"
@@ -27,9 +26,12 @@
               {{ user.name }}
             </div>
           </td>
-          <td>{{ user.email }}</td>
+          <td class="grow">{{ user.email }}</td>
           <td class="text-right">
-            <button class="btn" (click)="deleteUser(user.id)">
+            <button class="btn cursor-pointer" (click)="duplicateUser(user)">
+              <ng-icon name="heroDocumentDuplicate" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+            <button class="btn ml-2 cursor-pointer text-red-700" (click)="deleteUser(user.id)">
               <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>

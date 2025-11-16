@@ -11,7 +11,7 @@
     <tr>
       <th>Name</th>
       <th class="hidden xl:table-cell">Wert</th>
-      <th>Aktion</th>
+      <th class="text-right">Aktion</th>
     </tr>
   </thead>
   <tbody>
@@ -32,9 +32,12 @@
           <pre><code>{{ permission.value }}</code></pre>
         </td>
         <td class="text-right">
-          <button class="btn" (click)="deletePermission(permission.permissionId)">
+          <button class="btn cursor-pointer" (click)="duplicatePermission(permission)">
+            <ng-icon name="heroDocumentDuplicate" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+          </button>
+
+          <button class="btn text-red-700 ml-2 cursor-pointer" (click)="deletePermission(permission.permissionId)">
             <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            <span class="hidden lg:block">Entfernen</span>
           </button>
         </td>
       </tr>
@@ -49,9 +52,9 @@
       <input type="text" id="permissionId" required formControlName="permissionId" />
     </div>
 
-    <div class="input">
-      <label for="allowd">Art*</label>
-      <select id="allowd" required formControlName="allowd" class="select">
+    <div class="input pr-0">
+      <label for="allowed">Art*</label>
+      <select id="allowed" required formControlName="allowed" class="select w-full">
         <option value="true">Positiv</option>
         <option value="false">Negativ</option>
       </select>
@@ -62,9 +65,9 @@
       <input type="text" id="description" required formControlName="description" />
     </div>
 
-    <div class="input">
+    <div class="input pr-0">
       <label for="operation">Operation*</label>
-      <select id="operation" required formControlName="operation" class="select">
+      <select id="operation" required formControlName="operation" class="select w-full">
         <option value="CREATE_OBJECT">CREATE_OBJECT</option>
         <option value="READ_OBJECT">READ_OBJECT</option>
         <option value="WRITE_OBJECT">WRITE_OBJECT</option>
@@ -83,9 +86,9 @@
       </select>
     </div>
 
-    <div class="input">
+    <div class="input pr-0">
       <label for="type">Typ*</label>
-      <select id="type" required formControlName="type" class="select">
+      <select id="type" required formControlName="type" class="select w-full">
         <option value="ANT">ANT</option>
         <option value="REGEX">REGEX</option>
         <option value="EQUALS">EQUALS</option>

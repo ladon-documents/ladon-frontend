@@ -64,7 +64,6 @@ export class PdfViewerFacade {
   resetState = this.store.resetState;
   resetToInitialState = this.store.resetToInitialState;
 
-
   async navigateToPdfViewer(documuent: DocumentModel) {
     this.setDocument(documuent);
     await this.router.navigateToPdfViewer(documuent.path);

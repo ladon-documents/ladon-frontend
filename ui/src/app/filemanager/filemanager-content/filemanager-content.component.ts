@@ -157,6 +157,5 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     if (filemanagerHelper.isPdf(document)) {
       await this.pdfViewerFacade.navigateToPdfViewer(document);
     }
-
   }
 }

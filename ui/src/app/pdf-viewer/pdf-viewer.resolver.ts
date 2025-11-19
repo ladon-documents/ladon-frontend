@@ -14,7 +14,7 @@ export class PdfViewerResolver implements Resolve<undefined | DocumentModel> {
   readonly #pdfViewerStore = inject(PdfViewerStore);
 
   resolve(): Observable<undefined | DocumentModel> {
-    const selectedDocument = this.#pdfViewerStore.selectedDocument()
+    const selectedDocument = this.#pdfViewerStore.selectedDocument();
     if (selectedDocument && selectedDocument.path && selectedDocument.path.endsWith('.pdf')) {
       //this.#router.navigateToPdfViewer(selectedDocument.path);
       return of(selectedDocument);

@@ -414,8 +414,6 @@ export const PdfViewerStore = signalStore(
       isFullscreen: store.isFullscreen(),
     })),
   })),
-
-
 );
 
 export type { PdfViewerState };

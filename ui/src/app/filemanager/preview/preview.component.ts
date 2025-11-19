@@ -75,6 +75,5 @@ export class PreviewComponent {
     }
   }
 
-
   protected readonly filemanagerHelper = filemanagerHelper;
 }

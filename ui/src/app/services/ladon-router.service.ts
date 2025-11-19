@@ -35,10 +35,9 @@ export class LadonRouterService {
 
   async navigateToPdfViewer(document?: string) {
     await this.router.navigate([`${this.#baseHref}/pdf`], {
-      queryParams: { name: document }
+      queryParams: { name: document },
     });
   }
-
 
   async filemanagerRoute(bucket: string, path: string) {
     const filemangerNavigation = this.getFileManagerNavigationEntry();

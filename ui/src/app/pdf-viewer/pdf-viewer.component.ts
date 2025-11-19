@@ -9,7 +9,8 @@ import {
   effect,
   signal,
   computed,
-  inject, OnInit
+  inject,
+  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,9 +40,8 @@ export class PdfViewerComponent implements OnInit {
   readonly currentPage = this.pdfFacade.currentPage;
   readonly totalPages = this.pdfFacade.totalPages;
   readonly zoomLevel = this.pdfFacade.zoomLevel;
-  readonly hasError  = this.pdfFacade.hasError;
-  readonly errorMessage  = this.pdfFacade.errorMessage;
-
+  readonly hasError = this.pdfFacade.hasError;
+  readonly errorMessage = this.pdfFacade.errorMessage;
 
   private _selectedDocument = signal<DocumentModel | null>(null);
   private _isLoading = signal<boolean>(false);
@@ -54,7 +54,7 @@ export class PdfViewerComponent implements OnInit {
 
   readonly loadingProgress = this._loadingProgress.asReadonly();
   readonly showToolbar = this._showToolbar.asReadonly();
-  pdfName = signal('')
+  pdfName = signal('');
   readonly pdfUrl = computed(() => {
     const doc = this.selectedDocument();
     if (!doc || !doc.bucket || !doc.key) return '';
@@ -64,7 +64,6 @@ export class PdfViewerComponent implements OnInit {
   });
 
   readonly isPdfReady = computed(() => !this.isLoading() && !this.hasError() && this.selectedDocument() !== null);
-
 
   constructor() {
     effect(() => {
@@ -82,10 +81,9 @@ export class PdfViewerComponent implements OnInit {
     });
   }
 
-
   ngOnInit() {
     this.activatedRoute.data.subscribe((data) => {
-      const selectedDocument =  data['selectedDocument'];
+      const selectedDocument = data['selectedDocument'];
       console.log(selectedDocument);
       if (selectedDocument) {
         this._selectedDocument.set(selectedDocument);
@@ -149,8 +147,7 @@ export class PdfViewerComponent implements OnInit {
 
   onPageChanged(event: CustomEvent<any>): void {
     const page = event.detail.page || 1;
-   // this._currentPage.set(page);
-
+    // this._currentPage.set(page);
   }
 
   onLoadProgress(event: CustomEvent<any>): void {
@@ -214,7 +211,6 @@ export class PdfViewerComponent implements OnInit {
   printPdf(): void {
     const document = this.selectedDocument();
     if (this.isPdfReady() && document) {
-
       // Web Component print method aufrufen falls verfügbar
       if (this.pdfViewerWC?.nativeElement?.print) {
         this.pdfViewerWC.nativeElement.print();
@@ -234,9 +230,9 @@ export class PdfViewerComponent implements OnInit {
   }
 
   closePdfViewer(): void {
- //   this.closed.emit({ document: this.selectedDocument() });
+    //   this.closed.emit({ document: this.selectedDocument() });
     this._selectedDocument.set(null);
-    this.pdfName.set('')
+    this.pdfName.set('');
     this.resetState();
   }
 

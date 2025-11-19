@@ -9,6 +9,6 @@ export const pdfviewerRoutes: Routes = [
     component: PdfViewerComponent,
     resolve: {
       selectedDocument: PdfViewerResolver,
-    }
+    },
   },
 ];

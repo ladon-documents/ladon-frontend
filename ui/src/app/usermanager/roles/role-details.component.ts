@@ -18,7 +18,7 @@ import { PermissionModel, RoleEntryModel, UserEntryModel } from '../../../api';
 import { combineLatest, switchMap } from 'rxjs';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroTrash, heroPlus } from '@ng-icons/heroicons/outline';
-import { AliasPipe, DialogComponent } from '@ladon/shared';
+import { AliasPipe, DialogComponent, PillComponent } from '@ladon/shared';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DialogType, RoleSetType, UsermanagerFacade, UserSetType } from '../services/usermanager.facade';
@@ -26,7 +26,15 @@ import { DialogType, RoleSetType, UsermanagerFacade, UserSetType } from '../serv
 @Component({
   selector: 'app-role-details',
   providers: [provideIcons({ heroTrash, heroPlus }), UsermanagerFacade],
-  imports: [NgIconComponent, AliasPipe, RouterModule, CommonModule, ReactiveFormsModule, DialogComponent],
+  imports: [
+    NgIconComponent,
+    AliasPipe,
+    RouterModule,
+    CommonModule,
+    ReactiveFormsModule,
+    DialogComponent,
+    PillComponent,
+  ],
   templateUrl: './role-details.component.html',
   styleUrls: ['../usermanager.component.scss', './role-details.component.scss'],
 })
@@ -152,6 +160,12 @@ export class RoleDetailsComponent implements OnInit {
     this.dialogCmp?.openDialog();
   }
 
+  async onLabelEmit(type: UserSetType, label: string | undefined) {
+    if (label) {
+      await this.router.navigate([`../../${type}s/${label}`], { relativeTo: this.route });
+    }
+  }
+
   updateByType(event: any, type: RoleSetType, value: MappedUser | PermissionModel) {
     const { checked } = event.target;
     switch (type) {
@@ -179,7 +193,7 @@ export class RoleDetailsComponent implements OnInit {
     this.router.navigate(['../'], { relativeTo: this.route });
   }
 
-  removeByType(type: RoleSetType, value: RoleEntryModel | PermissionModel | UserEntryModel | string) {
+  removeByType(type: RoleSetType, value: RoleEntryModel | PermissionModel | UserEntryModel) {
     switch (type) {
       case 'permission':
         this.permissionsSet.delete(value as PermissionModel);

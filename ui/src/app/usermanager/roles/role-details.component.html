@@ -11,94 +11,37 @@
 
 <form class="flex flex-col gap-4" [formGroup]="roleForm" (ngSubmit)="onSubmit()">
   <input hidden readonly type="text" formControlName="id" />
+  <h2>Berechtigungen</h2>
 
-  <table class="table">
-    <caption class="font-bold text-left mb-4">
-      Berechtigungen
-    </caption>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th class="text-right">Aktion</th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <td colspan="2" class="text-right">
-          <button class="btn btn-primary" type="button" (click)="openDialogType('permission')">
-            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-          </button>
-        </td>
-      </tr>
-    </tfoot>
-    <tbody>
-      @for (permission of patchedPermissions(); track $index) {
-        <tr class="cursor-pointer hover:bg-gray-100">
-          <td [routerLink]="['../../permissions', permission.permissionId]">{{ permission.permissionId }}</td>
-          <td class="text-right">
-            <button class="btn text-red-700" type="button" (click)="removeByType('permissionDeletion', permission)">
-              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            </button>
-          </td>
-        </tr>
-      }
+  <div class="flex flex-wrap gap-2">
+    @for (permission of patchedPermissions(); track $index) {
+      <app-pill
+        [label]="permission.permissionId"
+        (labelEmit)="onLabelEmit('permission', $event)"
+        (deleteEmit)="removeByType('permissionDeletion', permission)"></app-pill>
+    }
+  </div>
+  <div class="text-right">
+    <button class="btn btn-primary" type="button" (click)="openDialogType('permission')">
+      <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+    </button>
+  </div>
 
-      @for (permission of roleForm.get("permissions")?.value ?? []; track $index) {
-        <tr class="cursor-pointer hover:bg-gray-100">
-          <td>{{ permission?.["permissionId"] }}</td>
-          <td class="text-right">
-            <button class="btn text-red-700" type="button" (click)="removeByType('permission', permission)">
-              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            </button>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+  <h2>Nutzer</h2>
+  <div class="flex flex-wrap gap-2">
+    @for (user of patchedUsers(); track $index) {
+      <app-pill
+        [label]="user.name"
+        (labelEmit)="onLabelEmit('user', user.id)"
+        (deleteEmit)="removeByType('userDeletion', user)"></app-pill>
+    }
+  </div>
+  <div class="text-right">
+    <button class="btn btn-primary" type="button" (click)="openDialogType('user')">
+      <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+    </button>
+  </div>
 
-  <table class="table">
-    <caption class="font-bold text-left mb-4">
-      Nutzer
-    </caption>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th class="text-right">Aktion</th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <td colspan="2" class="text-right">
-          <button class="btn btn-primary" type="button" (click)="openDialogType('user')">
-            <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-          </button>
-        </td>
-      </tr>
-    </tfoot>
-    <tbody>
-      @for (user of patchedUsers(); track $index) {
-        <tr class="cursor-pointer hover:bg-gray-100">
-          <td [routerLink]="['../../users', user.id]">{{ user.name }}</td>
-          <td class="text-right">
-            <button class="btn text-red-700" type="button" (click)="removeByType('userDeletion', user)">
-              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            </button>
-          </td>
-        </tr>
-      }
-
-      @for (user of roleForm.get("users")?.value ?? []; track $index) {
-        <tr class="cursor-pointer hover:bg-gray-100">
-          <td>{{ user?.["name"] }}</td>
-          <td class="text-right">
-            <button class="btn text-red-700" type="button" (click)="removeByType('user', user)">
-              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            </button>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
   <div class="flex gap-4 justify-end">
     <button type="button" class="btn btn-outline text-red-700 border-red-700" (click)="deleteRole()">Entfernen</button>
     <button type="submit" class="btn btn-primary" [disabled]="roleForm.invalid || roleForm.pristine">Speichern</button>

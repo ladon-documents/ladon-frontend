@@ -32,12 +32,8 @@
           <pre><code>{{ permission.value }}</code></pre>
         </td>
         <td class="text-right">
-          <button class="btn cursor-pointer" (click)="duplicatePermission(permission)">
+          <button class="btn cursor-pointer" title="Duplizieren" (click)="duplicatePermission(permission)">
             <ng-icon name="heroDocumentDuplicate" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-          </button>
-
-          <button class="btn text-red-700 ml-2 cursor-pointer" (click)="deletePermission(permission.permissionId)">
-            <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
           </button>
         </td>
       </tr>

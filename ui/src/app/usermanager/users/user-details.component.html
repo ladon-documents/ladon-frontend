@@ -4,7 +4,7 @@
     [ngClass]="user?.status ? 'status-success' : 'status-neutral'"
     [attr.data-alias]="user?.name | alias"></div>
 
-  <div class="flex flex-col gap-4 grow">
+  <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-2">
       <h2 class="text-xl font-bold">{{ user?.name }}</h2>
       <code class="text-sm">{{ user?.id }}</code>
@@ -123,7 +123,10 @@
     </tbody>
   </table>
 
-  <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || userForm.pristine">Speichern</button>
+  <div class="flex gap-4 justify-end">
+    <button type="button" class="btn btn-outline text-red-700 border-red-700" (click)="deleteUser()">Entfernen</button>
+    <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || userForm.pristine">Speichern</button>
+  </div>
 </form>
 
 <app-dialog [title]="dialogTitle" (closeEmit)="closeDialogEmit()">

@@ -51,10 +51,6 @@ export class UsersComponent implements OnInit {
     this.userDialog?.openDialog();
   }
 
-  deleteUser(userId: string): void {
-    this.store.deleteUser(userId);
-  }
-
   onAddUser(): void {
     if (this.userAddGroup.invalid) {
       this.userAddGroup.markAllAsTouched();

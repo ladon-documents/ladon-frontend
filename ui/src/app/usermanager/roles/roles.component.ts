@@ -69,10 +69,6 @@ export class RolesComponent implements OnInit {
     this.roleDialog?.openDialog();
   }
 
-  deleteRole(roleId: string): void {
-    this.store.deleteRole(roleId);
-  }
-
   private generateForm(): void {
     this.roleAddGroup.addControl('name', new FormControl(undefined, Validators.required));
     this.roleAddGroup.addControl('id', new FormControl(undefined, Validators.required));

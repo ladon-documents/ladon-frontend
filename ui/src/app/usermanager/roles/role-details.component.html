@@ -99,8 +99,10 @@
       }
     </tbody>
   </table>
-
-  <button type="submit" class="btn btn-primary" [disabled]="roleForm.invalid || roleForm.pristine">Speichern</button>
+  <div class="flex gap-4 justify-end">
+    <button type="button" class="btn btn-outline text-red-700 border-red-700" (click)="deleteRole()">Entfernen</button>
+    <button type="submit" class="btn btn-primary" [disabled]="roleForm.invalid || roleForm.pristine">Speichern</button>
+  </div>
 </form>
 
 <app-dialog [title]="dialogTitle">

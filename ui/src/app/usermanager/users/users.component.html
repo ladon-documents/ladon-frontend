@@ -12,7 +12,7 @@
       <tr>
         <th>Name</th>
         <th>E-Mail</th>
-        <th class="text-right" colspan="2">Aktion</th>
+        <th class="text-right" colspan="2"></th>
       </tr>
     </thead>
     <tbody>
@@ -31,9 +31,6 @@
           <td class="text-right">
             <button class="btn cursor-pointer hidden" (click)="duplicateUser(user)">
               <ng-icon name="heroDocumentDuplicate" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-            </button>
-            <button class="btn ml-2 cursor-pointer text-red-700" (click)="deleteUser(user.id)">
-              <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
             </button>
           </td>
         </tr>

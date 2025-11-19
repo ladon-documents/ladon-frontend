@@ -10,7 +10,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { PermissionModel, UserEntryModel, RoleEntryModel } from '../../../api';
 import {
@@ -44,6 +44,7 @@ export class UserDetailsComponent implements OnInit {
   @ViewChildren('permissionCheckbox') permissionCheckbox: QueryList<ElementRef<HTMLInputElement>> | undefined;
 
   constructor(
+    private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly usermanagerService: UsermanagerService,
     private readonly usermanagerFacade: UsermanagerFacade,
@@ -244,6 +245,11 @@ export class UserDetailsComponent implements OnInit {
 
   closeDialogEmit() {
     this.passwordForm.reset();
+  }
+
+  deleteUser() {
+    this.store.deleteUser(this.user!.id);
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   /**

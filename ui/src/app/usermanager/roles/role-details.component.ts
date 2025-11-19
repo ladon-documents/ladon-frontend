@@ -11,7 +11,7 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { MappedPermission, MappedUser, UsermanagerService } from '../services/usermanager.service';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { tap } from 'rxjs/operators';
 import { PermissionModel, RoleEntryModel, UserEntryModel } from '../../../api';
@@ -37,6 +37,7 @@ export class RoleDetailsComponent implements OnInit {
 
   role: RoleEntryModel | undefined;
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly usermanagerService = inject(UsermanagerService);
   private readonly usermanagerFacade = inject(UsermanagerFacade);
   readonly store = inject(UsermanagerStore);
@@ -57,6 +58,7 @@ export class RoleDetailsComponent implements OnInit {
     const users = this.store.users();
     return users.filter(({ id }) => userIds?.includes(id));
   });
+
   patchedUsers = computed<UserEntryModel[] | undefined>(() => {
     const users = this.users();
     const deletions = Array.from(this.userDeletionsSet());
@@ -170,6 +172,11 @@ export class RoleDetailsComponent implements OnInit {
         this.patchFormByKey('permissions', this.permissionsSet);
         break;
     }
+  }
+
+  deleteRole() {
+    this.store.deleteRole(this.role!.id);
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   removeByType(type: RoleSetType, value: RoleEntryModel | PermissionModel | UserEntryModel | string) {

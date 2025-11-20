@@ -22,7 +22,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { AliasPipe, DialogComponent } from '@ladon/shared';
+import { AliasPipe, DialogComponent, PillComponent } from '@ladon/shared';
 import { combineLatest, switchMap, tap, of } from 'rxjs';
 import { UsermanagerService, MappedPermission, MappedRole } from '../services/usermanager.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -34,7 +34,15 @@ import { DialogType, UsermanagerFacade, UserSetType } from '../services/usermana
   standalone: true,
   selector: 'app-user-details',
   providers: [provideIcons({ heroTrash, heroPlus }), UsermanagerFacade],
-  imports: [ReactiveFormsModule, NgIconComponent, AliasPipe, RouterModule, DialogComponent, CommonModule],
+  imports: [
+    ReactiveFormsModule,
+    NgIconComponent,
+    AliasPipe,
+    RouterModule,
+    DialogComponent,
+    PillComponent,
+    CommonModule,
+  ],
   templateUrl: './user-details.component.html',
   styleUrls: ['../usermanager.component.scss', './user-details.component.scss'],
 })
@@ -133,6 +141,12 @@ export class UserDetailsComponent implements OnInit {
 
   changePassword(id: string | undefined) {
     console.log('No implementation yet', id);
+  }
+
+  async onLabelEmit(type: UserSetType, label: string | undefined) {
+    if (label) {
+      await this.router.navigate([`../../${type}s/${label}`], { relativeTo: this.route });
+    }
   }
 
   onSubmit() {
@@ -272,7 +286,7 @@ export class UserDetailsComponent implements OnInit {
         this.patchFormByType('permissions', this.permissionsSet);
         break;
       case 'permissionDeletion':
-        this.usermanagerFacade.addAndSetSignal(value, this.permissionDeletionsSet);
+        this.usermanagerFacade.addAndSetSignal((value as PermissionModel).permissionId, this.permissionDeletionsSet);
         this.patchFormByType('permissionDeletions', this.permissionDeletionsSet());
         break;
       default:

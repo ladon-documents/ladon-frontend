@@ -1,0 +1,9 @@
+<div class="btn rounded-full">
+  <span class="cursor-pointer hover:underline" (click)="onLabelEmit()">{{ label() }}</span>
+
+  @if (isDeletable()) {
+    <button type="button" class="cursor-pointer text-red-700 hover:opacity-70" (click)="onDelete()" title="Entfernen">
+      <ng-icon name="heroTrash" size="1lh" class="shrink-0" color="currentColor"></ng-icon>
+    </button>
+  }
+</div>

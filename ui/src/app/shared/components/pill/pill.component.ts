@@ -15,6 +15,8 @@ import { NgIconComponent } from '@ng-icons/core';
 export class PillComponent {
   label = input<string>();
   isDeletable = input<boolean>(true);
+  class = input<string>('');
+
   labelEmit = output<string | undefined>();
   deleteEmit = output<void>();
 

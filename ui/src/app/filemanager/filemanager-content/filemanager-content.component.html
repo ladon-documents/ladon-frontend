@@ -30,7 +30,7 @@
   </div>
 </ng-template>
 
-<ng-template #actions let-index="index">
+<ng-template #actions let-index="index" let-document="document">
   <div class="absolute top-2 end-2 transition-all duration-300 group-hover/fileitem:opacity-100">
     <div class="inline-flex relative">
       <div disabled="false" aria-haspopup="menu" aria-expanded="false" class="inline-flex">
@@ -74,7 +74,7 @@
               >
             </li>
             <li>
-              <a>
+              <a (click)="download(document.path)">
                 <ng-icon name="heroArrowDownTray" size="1.0em" class="size-4"></ng-icon>
                 Download</a
               >
@@ -156,6 +156,9 @@
           @for (document of documents(); track document.path; let i = $index) {
             <tr
               class="hover:bg-base-200 cursor-pointer group/tablerow"
+              [class.bg-blue-50]="isSelected(document)"
+              [class.border-l-4]="isSelected(document)"
+              [class.border-l-blue-700]="isSelected(document)" [class.text-blue-700]="isSelected(document)"
               (dblclick)="navigateTo(document)"
               (click)="select(document)">
               <td class="w-10">
@@ -246,7 +249,7 @@
                         </a>
                       </li>
                       <li>
-                        <a>
+                        <a (click)="download(document.path)">
                           <ng-icon name="heroArrowDownTray" size="1.0em" class="size-4"></ng-icon>
                           Herunterladen
                         </a>
@@ -296,7 +299,11 @@
     <div class="grid grid-flow-dense grid-cols-12 gap-4">
       @for (document of documents(); track document.path; let i = $index) {
         <div
-          class="group/fileitem relative border border-gray-200 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow">
+          class="group/fileitem relative border border-gray-200 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow"
+          [class.border-blue-700]="isSelected(document)"
+          [class.shadow-lg]="isSelected(document)"
+          [class.bg-blue-50]="isSelected(document)"
+        >
           <span
             class="flex flex-col pt-6 pb-4 cursor-pointer"
             (dblclick)="navigateTo(document)"
@@ -330,6 +337,7 @@
             [ngTemplateOutlet]="actions"
             [ngTemplateOutletContext]="{
               index: i,
+              document: document
             }"></ng-container>
         </div>
       }

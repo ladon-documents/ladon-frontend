@@ -11,54 +11,58 @@
 
 <form class="flex flex-col gap-4" [formGroup]="roleForm" (ngSubmit)="onSubmit()">
   <input hidden readonly type="text" formControlName="id" />
-  <h2>Berechtigungen</h2>
 
-  <div class="flex flex-wrap gap-2">
-    @for (permission of patchedPermissions(); track $index) {
-      <app-pill
-        [class]="'btn-primary'"
-        [label]="permission.permissionId"
-        (labelEmit)="onLabelEmit('permission', $event)"
-        (deleteEmit)="removeByType('permissionDeletion', permission)"></app-pill>
-    }
+  <fieldset class="border-t border-gray-200">
+    <legend class="font-semibold mb-4 pr-4">Berechtigungen</legend>
+    <div class="flex flex-wrap gap-2">
+      @for (permission of patchedPermissions(); track $index) {
+        <app-pill
+          [class]="'btn-primary'"
+          [label]="permission.permissionId"
+          (labelEmit)="onLabelEmit('permission', $event)"
+          (deleteEmit)="removeByType('permissionDeletion', permission)"></app-pill>
+      }
 
-    @for (permission of roleForm.get("permissions")?.value ?? []; track $index) {
-      <app-pill
-        [label]="permission?.['permissionId']"
-        (labelEmit)="onLabelEmit('permission', $event)"
-        (deleteEmit)="removeByType('permission', permission)">
-      </app-pill>
-    }
-  </div>
-  <div class="text-right">
-    <button class="btn btn-primary" type="button" (click)="openDialogType('permission')">
-      <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-    </button>
-  </div>
+      @for (permission of roleForm.get("permissions")?.value ?? []; track $index) {
+        <app-pill
+          [label]="permission?.['permissionId']"
+          (labelEmit)="onLabelEmit('permission', $event)"
+          (deleteEmit)="removeByType('permission', permission)">
+        </app-pill>
+      }
+    </div>
+    <div class="text-right">
+      <button class="btn btn-primary" type="button" (click)="openDialogType('permission')">
+        <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+      </button>
+    </div>
+  </fieldset>
 
-  <h2>Nutzer</h2>
-  <div class="flex flex-wrap gap-2">
-    @for (user of patchedUsers(); track $index) {
-      <app-pill
-        [class]="'btn-primary'"
-        [label]="user.name"
-        (labelEmit)="onLabelEmit('user', user.id)"
-        (deleteEmit)="removeByType('userDeletion', user)"></app-pill>
-    }
+  <fieldset class="border-t border-gray-200">
+    <legend class="font-semibold mb-4 pr-4">Nutzer</legend>
+    <div class="flex flex-wrap gap-2">
+      @for (user of patchedUsers(); track $index) {
+        <app-pill
+          [class]="'btn-primary'"
+          [label]="user.name"
+          (labelEmit)="onLabelEmit('user', user.id)"
+          (deleteEmit)="removeByType('userDeletion', user)"></app-pill>
+      }
 
-    @for (user of roleForm.get("users")?.value ?? []; track $index) {
-      <app-pill
-        [class]="'btn-primary'"
-        [label]="user['name']"
-        (labelEmit)="onLabelEmit('user', user['id'])"
-        (deleteEmit)="removeByType('user', user)"></app-pill>
-    }
-  </div>
-  <div class="text-right">
-    <button class="btn btn-primary" type="button" (click)="openDialogType('user')">
-      <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-    </button>
-  </div>
+      @for (user of roleForm.get("users")?.value ?? []; track $index) {
+        <app-pill
+          [class]="'btn-primary'"
+          [label]="user['name']"
+          (labelEmit)="onLabelEmit('user', user['id'])"
+          (deleteEmit)="removeByType('user', user)"></app-pill>
+      }
+    </div>
+    <div class="text-right">
+      <button class="btn btn-primary" type="button" (click)="openDialogType('user')">
+        <ng-icon name="heroPlus" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+      </button>
+    </div>
+  </fieldset>
 
   <div class="flex gap-4 justify-end">
     <button type="button" class="btn btn-outline text-red-700 border-red-700" (click)="deleteRole()">Entfernen</button>

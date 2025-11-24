@@ -44,7 +44,7 @@ import { DialogType, UsermanagerFacade, UserSetType } from '../services/usermana
     CommonModule,
   ],
   templateUrl: './user-details.component.html',
-  styleUrls: ['../usermanager.component.scss', './user-details.component.scss'],
+  styleUrl: './user-details.component.scss',
 })
 export class UserDetailsComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) dialogCmp: DialogComponent | undefined;

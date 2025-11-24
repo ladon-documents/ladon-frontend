@@ -1,5 +1,26 @@
 @use "../usermanager.component.scss" as globals;
 
+$detailTag: app-permission-details;
+
 .avatar {
-  --avatar-size: 1.5lh;
+  --avatar-size: 1.2lh;
+}
+
+.grid > div {
+  display: none;
+
+  &:has(#{$detailTag}) {
+    display: initial;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .grid {
+    --grid-template-columns: 1fr;
+    grid-template-columns: var(--grid-template-columns);
+
+    &:has(#{$detailTag}) {
+      --grid-template-columns: 2fr 1fr;
+    }
+  }
 }

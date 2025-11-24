@@ -36,7 +36,7 @@ import { DialogType, RoleSetType, UsermanagerFacade, UserSetType } from '../serv
     PillComponent,
   ],
   templateUrl: './role-details.component.html',
-  styleUrls: ['../usermanager.component.scss', './role-details.component.scss'],
+  styleUrl: './role-details.component.scss',
 })
 export class RoleDetailsComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) dialogCmp: DialogComponent | undefined;

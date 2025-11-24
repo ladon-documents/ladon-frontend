@@ -228,6 +228,10 @@ export const UsermanagerStore = signalStore(
         });
     },
 
+    getPermission(id: string): PermissionModel | undefined {
+      return store.permissions().find((permission) => permission.permissionId === id);
+    },
+
     addPermission(permission: PermissionModel) {
       patchState(store, { loading: true });
       usermanagerService

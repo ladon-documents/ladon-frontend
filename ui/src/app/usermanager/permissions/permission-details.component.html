@@ -1,0 +1,76 @@
+<div class="flex gap-4 py-8 items-center">
+  <div class="avatar self-center" [attr.data-alias]="permission?.permissionId | alias"></div>
+
+  <div class="flex flex-col gap-4 grow">
+    <div class="flex flex-col gap-2">
+      <h2 class="text-xl font-bold">{{ permission?.permissionId }}</h2>
+      <p class="text-sm">{{ permission?.description }}</p>
+    </div>
+  </div>
+</div>
+
+<form class="flex flex-col gap-4" [formGroup]="permissionForm" (ngSubmit)="onSubmit()">
+  <div class="input w-full">
+    <label for="permissionId">Identifikation*</label>
+    <input type="text" id="permissionId" readonly required formControlName="permissionId" />
+  </div>
+
+  <div class="input pr-0 w-full">
+    <label for="allowed">Art*</label>
+    <select id="allowed" required formControlName="allowed" class="select w-full">
+      <option value="true">Positiv</option>
+      <option value="false">Negativ</option>
+    </select>
+  </div>
+
+  <div class="input w-full">
+    <label for="description">Beschreibung*</label>
+    <input type="text" id="description" required formControlName="description" />
+  </div>
+
+  <div class="input pr-0 w-full">
+    <label for="operation">Operation*</label>
+    <select id="operation" required formControlName="operation" class="select w-full">
+      <option value="CREATE_OBJECT">CREATE_OBJECT</option>
+      <option value="READ_OBJECT">READ_OBJECT</option>
+      <option value="WRITE_OBJECT">WRITE_OBJECT</option>
+      <option value="DELETE_OBJECT">DELETE_OBJECT</option>
+      <option value="WIPE_OUT_OBJECT">WIPE_OUT_OBJECT</option>
+      <option value="CREATE_BUCKET">CREATE_BUCKET</option>
+      <option value="READ_BUCKET">READ_BUCKET</option>
+      <option value="WRITE_BUCKET">WRITE_BUCKET</option>
+      <option value="DELETE_BUCKET">DELETE_BUCKET</option>
+      <option value="LADON_UI">LADON_UI</option>
+      <option value="ADD_USER">ADD_USER</option>
+      <option value="LIST_USER">LIST_USER</option>
+      <option value="DELETE_USER">DELETE_USER</option>
+      <option value="EDIT_PERMISSIONS">EDIT_PERMISSIONS</option>
+      <option value="SHOW_PERMISSIONS">SHOW_PERMISSIONS</option>
+    </select>
+  </div>
+
+  <div class="input pr-0 w-full">
+    <label for="type">Typ*</label>
+    <select id="type" required formControlName="type" class="select w-full">
+      <option value="ANT">ANT</option>
+      <option value="REGEX">REGEX</option>
+      <option value="EQUALS">EQUALS</option>
+      <option value="SPEL">SPEL</option>
+      <option value="GLOB">GLOB</option>
+    </select>
+  </div>
+
+  <div class="input w-full">
+    <label for="value">Wert*</label>
+    <input type="text" id="value" required formControlName="value" />
+  </div>
+
+  <div class="flex gap-4 justify-end">
+    <button type="button" class="btn btn-outline text-red-700 border-red-700" (click)="deletePermission()">
+      Entfernen
+    </button>
+    <button type="submit" class="btn btn-primary" [disabled]="permissionForm.invalid || permissionForm.pristine">
+      Speichern
+    </button>
+  </div>
+</form>

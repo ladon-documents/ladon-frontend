@@ -6,40 +6,48 @@
   </button>
 </div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th class="hidden xl:table-cell">Wert</th>
-      <th class="text-right">Aktion</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (permission of filteredPermissions; track permission.permissionId) {
-      <tr class="cursor-pointer hover:bg-gray-100">
-        <td>
-          <div class="flex items-center gap-4">
-            <div class="avatar shrink-0 transition-colors" [attr.data-alias]="permission.permissionId | alias"></div>
-            <div class="flex flex-col">
-              {{ permission.permissionId }}
-              @if (permission.description) {
-                <span class="text-xs opacity-70">{{ permission.description }}</span>
-              }
-            </div>
-          </div>
-        </td>
-        <td class="hidden xl:table-cell">
-          <pre><code>{{ permission.value }}</code></pre>
-        </td>
-        <td class="text-right">
-          <button class="btn cursor-pointer" title="Duplizieren" (click)="duplicatePermission(permission)">
-            <ng-icon name="heroDocumentDuplicate" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
-          </button>
-        </td>
+<div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th class="hidden xl:table-cell">Wert</th>
+        <th class="text-right">Aktion</th>
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @for (permission of filteredPermissions; track permission.permissionId) {
+        <tr
+          [routerLink]="permission.permissionId"
+          [routerLinkActive]="'bg-gray-100'"
+          class="cursor-pointer hover:bg-gray-100">
+          <td>
+            <div class="flex items-center gap-4">
+              <div class="avatar shrink-0 transition-colors" [attr.data-alias]="permission.permissionId | alias"></div>
+              <div class="flex flex-col">
+                {{ permission.permissionId }}
+                @if (permission.description) {
+                  <span class="text-xs opacity-70">{{ permission.description }}</span>
+                }
+              </div>
+            </div>
+          </td>
+          <td class="hidden xl:table-cell">
+            <pre><code>{{ permission.value }}</code></pre>
+          </td>
+          <td class="text-right">
+            <button class="btn cursor-pointer" title="Duplizieren" (click)="duplicatePermission(permission)">
+              <ng-icon name="heroDocumentDuplicate" size="1lh" class="shrink-0" color="text-gray-500"></ng-icon>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <div>
+    <router-outlet></router-outlet>
+  </div>
+</div>
 
 <app-dialog title="Neue Rechte anlegen">
   <form [formGroup]="permissionAddGroup" class="flex flex-col gap-4" (ngSubmit)="onAddPermission()">

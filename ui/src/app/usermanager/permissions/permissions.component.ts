@@ -6,12 +6,13 @@ import { UsermanagerStore } from '../../store/usermanager.store';
 import { PermissionModel } from '../../../api';
 import { heroPlus, heroTrash, heroDocumentDuplicate } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-permissions',
   standalone: true,
   providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate })],
-  imports: [AliasPipe, NgIconComponent, DialogComponent, FilterComponent, ReactiveFormsModule],
+  imports: [AliasPipe, NgIconComponent, DialogComponent, FilterComponent, ReactiveFormsModule, RouterModule],
   templateUrl: './permissions.component.html',
   styleUrl: './permissions.component.scss',
 })

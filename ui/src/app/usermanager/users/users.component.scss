@@ -1,16 +1,26 @@
 @use "../usermanager.component.scss" as globals;
 
+$detailTag: app-user-details;
+
 .avatar {
   --avatar-size: 1.2lh;
 }
 
+.grid > div {
+  display: none;
+
+  &:has(#{$detailTag}) {
+    display: initial;
+  }
+}
+
 @media screen and (min-width: 1024px) {
-  #main-grid {
+  .grid {
     --grid-template-columns: 1fr;
     grid-template-columns: var(--grid-template-columns);
 
-    &:has(app-user-details) {
-      --grid-template-columns: 1fr 1fr;
+    &:has(#{$detailTag}) {
+      --grid-template-columns: 2fr 1fr;
     }
   }
 }

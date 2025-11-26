@@ -7,6 +7,7 @@ import { UsermanagerFacade } from '../services/usermanager.facade';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { tap } from 'rxjs/internal/operators/tap';
+import { switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-permission-details',
@@ -37,18 +38,30 @@ export class PermissionDetailsComponent implements OnInit {
         tap(({ id }) => {
           this.permission = this.store.getPermission(id);
         }),
-        tap(() => {
-          this.permissionForm.patchValue(this.permission!);
-        }),
+        switchMap(() => of(this.permission)),
       )
       .subscribe({
         next: (payload) => {
-          // this.updateViewByPayload(payload);
+          if (payload) {
+            this.permissionForm.patchValue(payload);
+          }
         },
       });
+
+    this.store.loading$().subscribe((loading) => {
+      if (!loading) {
+        const { permissionId } = this.permissionForm.value;
+        if (permissionId) {
+          this.permission = this.store.getPermission(permissionId);
+          this.permissionForm.patchValue(this.permission!);
+        }
+      }
+    });
   }
 
-  onSubmit() {}
+  onSubmit() {
+    this.store.addPermission(this.permissionForm.value as PermissionModel);
+  }
 
   deletePermission() {
     this.store.deletePermission(this.permission!.permissionId);

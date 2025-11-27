@@ -127,6 +127,25 @@
               <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
             </button>
           </div>
+          <div class="relative">
+            <div class="border-b border-gray-100">
+              <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-primary btn-sm gap-1">
+                  <ng-icon name="heroPlus" size="1.0em" color="white"></ng-icon>
+                  Hinzufügen
+                </div>
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+                  <li><a>Neue Datei</a></li>
+                  <li>
+                    <a>
+                      <create-folder></create-folder>
+                    </a>
+                  </li>
+                  <li><a>Datei Hochladen</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -137,34 +156,6 @@
       [class.grid-cols-[1fr_384px]]="sidebarService.isOpen()">
       <div class="min-w-0 overflow-hidden">
         <div class="h-full overflow-y-auto">
-          <!--
-       <ladon-pdfviewer  pdf="/peter/princes-of-the-yen-japans-central-bankers-and-the-transformation-of-the-economy_compress.pdf"></ladon-pdfviewer>
-          -->
-          <div class="p-6 border-b border-gray-100">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <button
-                class="btn btn-outline"
-                popovertarget="popover-create-entity"
-                style="anchor-name: --anchor-popover-create-entity">
-                <ng-icon name="heroPlus" size="1.0em" class="size-4"></ng-icon>
-                Hinzufügen
-              </button>
-
-              <ul
-                class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
-                popover
-                id="popover-create-entity"
-                style="position-anchor: --anchor-popover-create-entity">
-                <li><a>Neue Datei</a></li>
-                <li>
-                  <a>
-                    <create-folder></create-folder>
-                  </a>
-                </li>
-                <li><a>Datei Hochladen</a></li>
-              </ul>
-            </div>
-          </div>
 
           <div class="p-6">
             <router-outlet></router-outlet>

@@ -1,99 +1,431 @@
-<div class="flex items-center gap-4 p-4 bg-base-100 justify-between border-b border-gray-200 sticky top-0 z-10 backdrop-blur-xs">
-  <div class="flex gap-4">
-    <lib-searchbar></lib-searchbar>
 
-    <div class="flex items-center gap-2 text-sm">
-      Favoriten
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" class="sr-only peer" (change)="toggleFavorites($event)" />
-        <div
-          class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-indigo-600 peer-focus:ring-2 peer-focus:ring-indigo-300 transition-all duration-300"></div>
-        <div
-          class="absolute left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-5"></div>
-      </label>
-    </div>
-  </div>
-
-  <button
-    (click)="dialogComponent?.openDialog()"
-    class="flex gap-2 center px-4 py-2 btn btn-primary text-white rounded-md focus:outline-none">
-    <ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
-    <span class="hidden lg:block">Neues Verzeichnis erstellen</span>
-  </button>
-</div>
-
-<div class="grid grid-cols-[2fr_1fr] bg-base-100">
-  <ul role="list" class="divide-y divide-gray-200 gap-x-6 py-4 grow">
-    @for (bucket of bucketsList(); track bucket.id) {
-      <li
-        [ngClass]="{ active: selectedBucket && selectedBucket.id === bucket.id }"
-        class="flex justify-between p-4 cursor-pointer"
-        (click)="selectBucket(bucket)"
-        (dblclick)="openBucket()">
-        <div class="flex min-w-0 gap-x-4">
-          <app-folder class="shrink-0 w-[1.5rem]"></app-folder>
-
-          <div class="min-w-0 flex-auto">
-            <p class="text-sm/6 font-semibold">{{ bucket.id }}</p>
-            <p class="truncate text-xs text-gray-500">{{ bucket.created | date: "HH:mm:ss" }}</p>
-          </div>
-        </div>
-        <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-          @if (bucket.favourite) {
-            <span
-              class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-              >Favorit</span
-            >
-          } @else {
-            <p class="text-xs/5">&nbsp;</p>
-          }
-          <p class="text-xs/5 text-gray-500">
-            <time [attr.datetime]="bucket.created | date: dateFormat">{{ bucket.created | date: dateFormat }}</time>
+<main class="flex-grow bg-base-100">
+  @if (error()) {
+    <div class="bg-red-50 border-red-200 text-red-800 p-6" role="alert">
+      <div class="flex">
+        <div class="flex-shrink-0"></div>
+        <div class="ml-3">
+          <p class="text-red-400">
+            {{ error() }}
           </p>
         </div>
-      </li>
-    }
-  </ul>
-
-  <div class="border-l border-gray-200">
-    <div>
-      <div class="h-50 [&>svg]:h-full [&>svg]:mx-auto">
-        <app-folder></app-folder>
-    </div>
-    <div class="grid grid-cols-[1fr_2fr] gap-2 p-4">
-      <div class="text-sm text-gray-500">Name</div>
-      <div class="text-sm">{{ bucketStats()?.name }}</div>
-      <div class="text-sm text-gray-500">Größe</div>
-      <div class="text-sm">{{ bucketStats()?.size }}</div>
-      <div class="text-sm text-gray-500">Ordner</div>
-      <div class="text-sm">{{ bucketStats()?.folderCount }}</div>
-      <div class="text-sm text-gray-500">Datei</div>
-      <div class="text-sm">{{ bucketStats()?.fileCount }}</div>
-      <div class="text-sm text-gray-500">Geändert</div>
-      <!-- <div class="text-sm">{{ bucketStats()?.lastModified | date: dateFormat }}</div>-->
-      <div class="flex items-center gap-2 text-sm text-gray-500">
-        Favoriten
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="sr-only peer" [attr.checked]="bucketStats()?.favourite ? true : null" />
-          <div
-            class="w-11 h-6 bg-gray-200 rounded-full peer-checked:bg-indigo-600 peer-focus:ring-2 peer-focus:ring-indigo-300 transition-all duration-300"></div>
-          <div
-            class="absolute left-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-5"></div>
-        </label>
       </div>
     </div>
-  </div>
-</div>
+  } @else {
+    <div class="sticky top-0 z-10 bg-white border-b border-gray-200 dark:border-gray-200">
+      <div class="flex items-center justify-between px-6 py-4">
+        @if (buckets().length > 0 || searchTerm() || showFavoritesOnly()) {
+          <span class="text-sm text-gray-500">
+              {{ pagination().totalItems }} von {{ buckets().length }} Buckets
+            </span>
+        }
+
+        <div class="flex gap-4 items-center">
+          <div class="flex items-center gap-2 text-sm">
+            Nur Favoriten
+            <input
+                                                                                                type="checkbox"
+                                                                                                class="toggle toggle-primary"
+                                                                                                [checked]="showFavoritesOnly()"
+                                                                                                (change)="toggleFavoritesFilter($event)"
+            />
+          </div>
+          <div class="relative">
+            <input
+                                                                                                type="text"
+                                                                                                class="input input-bordered input-sm w-80 pr-8"
+                                                                                                placeholder="Buckets durchsuchen..."
+                                                                                                [value]="searchTerm()"
+                                                                                                (input)="onSearchChange($event)"
+            />
+            @if (searchTerm()) {
+              <button
+                                                                                                  class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                                                                  (click)="clearSearch()"
+              >
+                <ng-icon name="heroXMark" size="1em"></ng-icon>
+              </button>
+            } @else {
+              <ng-icon
+                                                                                                  name="heroMagnifyingGlass"
+                                                                                                  size="1em"
+                                                                                                  class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"></ng-icon>
+            }
+          </div>
+
+
+
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1">
+              <ng-icon name="heroFunnel" size="1.0em"></ng-icon>
+              Sortieren: {{ getSortLabel() }}
+              @if (sortConfig().direction === 'asc') {
+                <ng-icon name="heroChevronUp" size="1.0em"></ng-icon>
+              } @else {
+                <ng-icon name="heroChevronDown" size="1.0em"></ng-icon>
+              }
+            </div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+              <li>
+                <a (click)="toggleSort('id')"
+                   [class.active]="sortConfig().field === 'id'">
+                  Name
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('created')"
+                   [class.active]="sortConfig().field === 'created'">
+                  Erstellungsdatum
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('createdDate')"
+                   [class.active]="sortConfig().field === 'createdDate'">
+                  Erstellungsdatum
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('createdBy')"
+                   [class.active]="sortConfig().field === 'createdBy'">
+                  Ersteller
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('size')"
+                   [class.active]="sortConfig().field === 'size'">
+                  Größe
+                </a>
+              </li>
+              <li>
+                <a (click)="toggleSort('favourite')"
+                   [class.active]="sortConfig().field === 'favourite'">
+                  Favoriten
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <button
+                                                                                              (click)="dialogComponent?.openDialog()"
+                                                                                              class="btn btn-primary btn-sm gap-1">
+            <ng-icon name="heroPlusCircle" size="1.0em" color="white"></ng-icon>
+            <span class="hidden lg:block">Neues Verzeichnis erstellen</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div
+                                                                                        class="grid gap-0 h-[calc(100vh-180px)] transition-all duration-300 ease-in-out"
+                                                                                        [class.grid-cols-[1fr_0px]]="!hasSelectedBucket()"
+                                                                                        [class.grid-cols-[1fr_384px]]="hasSelectedBucket()">
+
+      <div class="min-w-0 overflow-hidden">
+        <div class="h-full overflow-y-auto">
+          @if (isLoading()) {
+            <div class="flex justify-center items-center h-64">
+              <div class="loading loading-spinner loading-lg"></div>
+            </div>
+          }
+
+          @if (!isLoading() && buckets().length === 0) {
+            <div class="flex flex-col items-center justify-center h-64 text-gray-500 p-6">
+              <ng-icon name="heroFolder" size="4rem" class="mb-4 text-gray-300"></ng-icon>
+              @if (searchTerm() || showFavoritesOnly()) {
+                <h3 class="text-lg font-medium mb-2">Keine Ergebnisse gefunden</h3>
+                <p class="text-sm text-center max-w-sm">
+                  @if (searchTerm()) {
+                    Keine Buckets entsprechen dem Suchbegriff "{{ searchTerm() }}"
+                  }
+                  @if (showFavoritesOnly()) {
+                    Keine Favoriten-Buckets gefunden
+                  }
+                </p>
+                <button class="btn btn-sm mt-4" (click)="clearFilters()">
+                  Filter zurücksetzen
+                </button>
+              } @else {
+                <h3 class="text-lg font-medium mb-2">Keine Buckets vorhanden</h3>
+                <p class="text-sm">Erstellen Sie Ihr erstes Bucket um zu beginnen</p>
+              }
+            </div>
+          } @else {
+            <div class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 text-sm font-medium text-gray-700">
+              <div class="w-8"></div>
+              <div class="cursor-pointer hover:text-primary flex items-center gap-1" (click)="toggleSort('id')">
+                Name
+                @if (sortConfig().field === 'id') {
+                  <ng-icon
+                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                                                                                                      size="0.8em"></ng-icon>
+                }
+              </div>
+              <div class="cursor-pointer hover:text-text-primary flex items-center gap-1 text-center" (click)="toggleSort('created')">
+                Erstellt
+                @if (sortConfig().field === 'created') {
+                  <ng-icon
+                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                                                                                                      size="0.8em"></ng-icon>
+                }
+              </div>
+              <div class="cursor-pointer hover:text-indigo-600 flex items-center gap-1 text-center" (click)="toggleSort('favourite')">
+                Favorit
+                @if (sortConfig().field === 'favourite') {
+                  <ng-icon
+                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                                                                                                      size="0.8em"></ng-icon>
+                }
+              </div>
+              <div class="w-8"></div>
+            </div>
+
+            <ul role="list" class="divide-y divide-gray-100">
+              @for (bucket of buckets(); track bucket.id) {
+                <li class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 hover:bg-gray-50 cursor-pointer group"
+                    [class.bg-secondary]="selectedBucket()?.id === bucket.id"
+                    [class.border-l-4]="selectedBucket()?.id === bucket.id"
+                    [class.border-l-primary]="selectedBucket()?.id === bucket.id"
+                    (click)="selectBucket(bucket)"
+                    (dblclick)="openBucket()">
+
+                  <div class="w-8 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="24" height="24" class="shrink-0">
+                      <g>
+                        <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" class="fill-primary"></rect>
+                        <path
+                                                                                                            d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
+                                                                                                            class="fill-primary opacity-80"></path>
+                        <path
+                                                                                                            d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
+                                                                                                            class="fill-primary opacity-80"></path>
+                      </g>
+                    </svg>
+                  </div>
+
+                  <div class="min-w-0 flex-auto">
+                    <div class="flex items-center gap-2">
+                      <p class="text-sm font-semibold text-gray-900 truncate">{{ bucket.id }}</p>
+                      @if (bucket.favourite) {
+                        <ng-icon name="heroStar" size="1.0em" class="text-yellow-500 flex-shrink-0"></ng-icon>
+                      }
+                    </div>
+                    <p class="text-xs text-gray-500 truncate">{{ bucket.id }}</p>
+                  </div>
+
+                  <div class="text-right">
+                    <p class="text-xs text-gray-900">
+                      {{ bucket.created | date: dateFormat }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                      {{ bucket.created | date: "HH:mm:ss" }}
+                    </p>
+                  </div>
+
+                  <div class="flex items-center">
+                    <button
+                                                                                                        class="btn btn-ghost btn-xs btn-circle"
+                                                                                                        (click)="toggleFavorite($event, bucket.id)"
+                                                                                                        [attr.aria-label]="bucket.favourite ? 'Von Favoriten entfernen' : 'Zu Favoriten hinzufügen'">
+                      <ng-icon
+                                                                                                          name="heroStar"
+                                                                                                          size="1.0em"
+                                                                                                          [class.text-yellow-500]="bucket.favourite"
+                                                                                                          [class.text-gray-300]="!bucket.favourite"
+                                                                                                          [class.hover:text-yellow-400]="!bucket.favourite">
+                      </ng-icon>
+                    </button>
+                  </div>
+
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="dropdown dropdown-end">
+                      <div tabindex="0" role="button" class="btn btn-ghost btn-xs btn-circle">
+                        <ng-icon name="heroEllipsisVertical" size="1.0em"></ng-icon>
+                      </div>
+                      <ul tabindex="0"
+                          class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+                        <li>
+                          <a (click)="openBucket()">
+                            <ng-icon name="heroEye" size="1.0em"></ng-icon>
+                            Öffnen
+                          </a>
+                        </li>
+                        <li>
+                          <a (click)="renameBucket(bucket)">
+                            <ng-icon name="heroPencilSquare" size="1.0em"></ng-icon>
+                            Umbenennen
+                          </a>
+                        </li>
+                        <li>
+                          <a (click)="toggleFavorite($event, bucket.id)">
+                            <ng-icon name="heroStar" size="1.0em"></ng-icon>
+                            {{ bucket.favourite ? 'Von Favoriten entfernen' : 'Zu Favoriten hinzufügen' }}
+                          </a>
+                        </li>
+                        <li>
+                          <hr class="my-1"/>
+                        </li>
+                        <li>
+                          <a class="text-error" (click)="deleteBucket(bucket)">
+                            <ng-icon name="heroTrash" size="1.0em"></ng-icon>
+                            Löschen
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+              }
+            </ul>
+
+            @if (pagination().totalPages > 1) {
+              <div class="border-t bg-gray-50 px-4 py-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm text-gray-700">
+                      Zeige {{ (pagination().currentPage - 1) * pagination().pageSize + 1 }} bis
+                      {{ Math.min(pagination().currentPage * pagination().pageSize, pagination().totalItems) }} von
+                      {{ pagination().totalItems }} Einträgen
+                    </span>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <select
+                                                                                                        class="select select-sm select-bordered"
+                                                                                                        [value]="pagination().pageSize"
+                                                                                                        (change)="onPageSizeChange($event)">
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+
+                    <div class="join">
+                      <button
+                                                                                                          class="join-item btn btn-sm"
+                                                                                                          [disabled]="!pagination().hasPreviousPage"
+                                                                                                          (click)="firstPage()">
+                        <ng-icon name="heroChevronDoubleLeft" size="1.0em"></ng-icon>
+                      </button>
+                      <button
+                                                                                                          class="join-item btn btn-sm"
+                                                                                                          [disabled]="!pagination().hasPreviousPage"
+                                                                                                          (click)="previousPage()">
+                        <ng-icon name="heroChevronLeft" size="1.0em"></ng-icon>
+                      </button>
+                      <button class="join-item btn btn-sm btn-active">
+                        {{ pagination().currentPage }}
+                      </button>
+                      <button
+                                                                                                          class="join-item btn btn-sm"
+                                                                                                          [disabled]="!pagination().hasNextPage"
+                                                                                                          (click)="nextPage()">
+                        <ng-icon name="heroChevronRight" size="1.0em"></ng-icon>
+                      </button>
+                      <button
+                                                                                                          class="join-item btn btn-sm"
+                                                                                                          [disabled]="!pagination().hasNextPage"
+                                                                                                          (click)="lastPage()">
+                        <ng-icon name="heroChevronDoubleRight" size="1.0em"></ng-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <div
+                                                                                          class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-200"
+                                                                                          [class.w-0]="!hasSelectedBucket()"
+                                                                                          [class.w-96]="hasSelectedBucket()">
+        @if (selectedBucket()) {
+          <div class="p-4">
+            <div class="h-32 flex items-center justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" class="h-24 w-24">
+                <g>
+                  <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" class="fill-primary"></rect>
+                  <path
+                                                                                                      d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
+                                                                                                      class="fill-primary opacity-80"></path>
+                  <path
+                                                                                                      d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
+                                                                                                      class="fill-primary opacity-80"></path>
+                </g>
+              </svg>
+            </div>
+
+            <div class="space-y-3">
+              <div class="grid grid-cols-[1fr_2fr] gap-2 text-sm">
+                <span class="text-gray-500">Name:</span>
+                <span class="font-medium">{{ selectedBucket()?.id }}</span>
+              </div>
+
+              @if (bucketStats()) {
+                <div class="grid grid-cols-[1fr_2fr] gap-2 text-sm">
+                  <span class="text-gray-500">Größe:</span>
+                  <span>{{ bucketStats()?.size }}</span>
+                </div>
+                <div class="grid grid-cols-[1fr_2fr] gap-2 text-sm">
+                  <span class="text-gray-500">Ordner:</span>
+                  <span>{{ bucketStats()?.folderCount }}</span>
+                </div>
+                <div class="grid grid-cols-[1fr_2fr] gap-2 text-sm">
+                  <span class="text-gray-500">Dateien:</span>
+                  <span>{{ bucketStats()?.fileCount }}</span>
+                </div>
+              }
+
+              <div class="grid grid-cols-[1fr_2fr] gap-2 text-sm">
+                <span class="text-gray-500">Erstellt:</span>
+                <span>{{ selectedBucket()?.created | date: dateFormat }}</span>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 border-t">
+                <span class="text-sm text-gray-500">Favorit:</span>
+                <input
+                                                                                                    type="checkbox"
+                                                                                                    class="toggle toggle-primary"
+                                                                                                    [checked]="selectedBucket()?.favourite"
+                                                                                                    (change)="toggleFavorite($event, selectedBucket()?.id!)"
+                />
+              </div>
+            </div>
+
+            <div class="mt-6 space-y-2">
+              <button class="btn btn-primary w-full" (click)="openBucket()">
+                Bucket öffnen
+              </button>
+              <button class="btn btn-outline btn-primary w-full" (click)="renameBucket(selectedBucket()!)">
+                Umbenennen
+              </button>
+              <button class="btn btn-error btn-outline w-full" (click)="deleteBucket(selectedBucket()!)">
+                Löschen
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="flex flex-col items-center justify-center h-full text-gray-400 p-8">
+            <ng-icon name="heroFolder" size="4rem" class="mb-4"></ng-icon>
+            <p class="text-center">Wählen Sie ein Bucket aus, um Details anzuzeigen</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</main>
 
 <app-dialog title="Neues Verzeichnis anlegen">
   <form [formGroup]="bucketAddGroup" class="flex flex-col gap-4" (ngSubmit)="onAddBucket()">
     <label class="input" for="bucket">
       <span class="label">Verzeichnisname*</span>
-      <input type="text" id="bucket" required formControlName="bucket" />
+      <input type="text" id="bucket" required formControlName="bucket"/>
     </label>
     <div class="flex justify-around items-center gap-4">
       <button class="btn btn-outline grow" type="reset" (click)="closeDialog()">Abbrechen</button>
-      <button class="btn grow" type="submit">Erstellen</button>
+      <button class="btn grow btn-primary" type="submit">Erstellen</button>
     </div>
   </form>
 </app-dialog>

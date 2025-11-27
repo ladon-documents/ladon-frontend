@@ -1,5 +1,5 @@
 <!-- Trigger Button -->
-<button (click)="openModal()" class="px-4 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2">
+<button (click)="openModal()" class="rounded-lg transition-colors duration-200 flex items-center gap-2">
   <ng-icon name="heroFolder" class="w-4 h-4"></ng-icon>
   Neuer Ordner
 </button>
@@ -15,7 +15,7 @@
         [(ngModel)]="folderName"
         name="folderName"
         placeholder="Ordnername eingeben..."
-        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md "
         [class.border-red-500]="showError"
         required
         maxlength="255"
@@ -30,13 +30,13 @@
       <button
         type="button"
         (click)="closeDialog()"
-        class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-200">
+        class="btn btn-outline grow">
         Abbrechen
       </button>
       <button
         type="submit"
         [disabled]="isCreating || !folderName.trim()"
-        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-2">
+        class="btn btn-primary grow disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200">
         <div *ngIf="isCreating" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
         {{ isCreating ? "Erstelle..." : "Erstellen" }}
       </button>

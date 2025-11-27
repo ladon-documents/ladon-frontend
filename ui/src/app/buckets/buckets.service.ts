@@ -1,45 +1,56 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, mergeMap, of, take } from 'rxjs';
+import { take } from 'rxjs';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import {
-  BucketModel,
   BucketsService as BucketsServiceApi,
   BucketUiItemModel,
-  DocumentsService,
-  UIService,
+  DocumentsService, NewBucketModel,
+  UIService
 } from '../../api';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { LadonRouterService } from '../services/ladon-router.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class BucketsService {
   readonly #filemanagerStore = inject(FilemanagerStore);
+  readonly bucketsService = inject(BucketsServiceApi);
+  readonly uiService = inject(UIService);
   private bucketsListSignal = signal<BucketUiItemModel[]>([]);
   private bucketStatsSignal = signal<BucketStatsExtended | undefined>(undefined);
   private _bucketList = signal<BucketUiItemModel[]>([]);
+
   constructor(
-    private bucketServiceApi: BucketsServiceApi,
     private documentsService: DocumentsService,
-    private uiServiceApi: UIService,
-    private ladonRouterService: LadonRouterService,
+    private ladonRouterService: LadonRouterService
   ) {
-    this.retrieveBucketsList();
   }
 
-  get bucketList() {
-    return this.bucketsListSignal.asReadonly();
+  getBuckets() {
+    return this.uiService.listBuckets();
   }
 
-  get bucketStats() {
-    return this.bucketStatsSignal.asReadonly();
+  createBucket(bucketid: string) {
+    const newBucket: NewBucketModel = {
+      bucketid,
+      versioned: 'false',
+      favourite: 'false'
+    };
+    return this.uiService.createBucket1(newBucket);
+  }
+
+  deleteBucket(bucketId: string) {
+    return this.bucketsService.deleteBucket(bucketId);
+  }
+  public getStats(bucketId: string) {
+    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
   }
 
   toggleFavoriteBuckets(isFavorite: boolean) {
     if (isFavorite) {
       const filteredBucketList = this._bucketList()?.filter(
-        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite,
+        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite
       ) as BucketUiItemModel[];
       this.bucketsListSignal.set(filteredBucketList);
     } else {
@@ -59,21 +70,7 @@ export class BucketsService {
         const response = JSON.parse(await stats.text());
         response.favourite = bucket.favourite;
         this.bucketStatsSignal.set(response);
-        console.log(response);
       });
   }
 
-  private retrieveBucketsList(): void {
-    this.uiServiceApi
-      .listBuckets()
-      .pipe(take(1))
-      .subscribe((buckets) => {
-        this._bucketList.set(buckets);
-        this.bucketsListSignal.set(buckets);
-      });
-  }
-
-  private getStats(bucketId: string) {
-    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
-  }
 }

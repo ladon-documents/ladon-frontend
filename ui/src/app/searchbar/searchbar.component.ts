@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { provideIcons } from '@ng-icons/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounce, forkJoin, interval, mergeMap, of, Subject } from 'rxjs';
@@ -12,7 +12,7 @@ type SearchTypes = 'buckets' | 'files' | 'plugins' | 'users' | 'permissions' | '
   standalone: true,
   selector: 'lib-searchbar',
   providers: [provideIcons({ heroMagnifyingGlass })],
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgIcon],
   templateUrl: './searchbar.component.html',
 })
 export class SearchbarComponent {

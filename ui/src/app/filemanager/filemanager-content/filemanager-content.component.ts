@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, Signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DocumentModel } from '../../../api';
@@ -20,7 +20,6 @@ import { heroFolderSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
 import { FileiconPipe } from '../../shared/pipes/fileicon.pipe';
 import { LadonRouterService } from '../../services/ladon-router.service';
-import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { ConverterService } from '../../services/converter.service';
 import { SidebarService } from '../sidebar/sidebar.service';
@@ -93,10 +92,21 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     });
   }
 
+  isSelected(document: DocumentModel): boolean {
+    const selected = this.#facade.selectedDocument();
+    return selected?.path === document.path && selected?.key === document.key;
+  }
+
+
   ngOnDestroy(): void {
     if (this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);
     }
+  }
+
+  async download(file: string | undefined) {
+    if (!file) return;
+    await this.converterService.downloadAsZip(file);
   }
 
   setViewMode(mode: 'card' | 'table') {

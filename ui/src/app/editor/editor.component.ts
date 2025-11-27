@@ -66,13 +66,10 @@ export class MonacoEditorComponent implements OnInit, OnDestroy {
 
   private loadMonacoScript(): Promise<void> {
     return new Promise((resolve, reject) => {
-      // Monaco Editor CSS laden
       const cssLink = document.createElement('link');
       cssLink.rel = 'stylesheet';
       cssLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.css';
       document.head.appendChild(cssLink);
-
-      // Monaco Editor Loader laden
       const loaderScript = document.createElement('script');
       loaderScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js';
       loaderScript.onload = () => {

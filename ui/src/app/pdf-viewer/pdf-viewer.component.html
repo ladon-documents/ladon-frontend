@@ -1,4 +1,4 @@
-<div class="pdf-viewer-container" [class]="{ loading: isLoading() }">
+<div class="pdf-viewer-container" [class]="{'loading': isLoading()}">
   <!-- Loading Indicator -->
   @if (isLoading()) {
     <div class="loading-overlay">
@@ -21,8 +21,6 @@
       <button (click)="retryLoad()" class="retry-button">Erneut versuchen</button>
     </div>
   }
-
-  <!-- PDF Viewer Header mit Dokumentinfo -->
   @if (selectedDocument() && !hasError()) {
     <div class="pdf-header">
       <div class="document-info">
@@ -31,38 +29,17 @@
           @if (selectedDocument()?.size) {
             <span class="file-size">{{ formatFileSize(selectedDocument()!.size!) }}</span>
           }
-          @if (selectedDocument()?.["last-modified"]) {
-            <span class="last-modified"> Geändert: {{ formatDate(selectedDocument()!["last-modified"]!) }} </span>
+          @if (selectedDocument()?.['last-modified']) {
+            <span class="last-modified">
+              Geändert: {{ formatDate(selectedDocument()!["last-modified"]!) }}
+            </span>
           }
         </div>
       </div>
     </div>
   }
 
-  <!-- PDF Viewer Toolbar -->
-  @if (showToolbar() && !hasError() && selectedDocument()) {
-    <div class="pdf-toolbar">
-      <button (click)="zoomIn()" [disabled]="isLoading()" title="Vergrößern">🔍+</button>
-      <button (click)="zoomOut()" [disabled]="isLoading()" title="Verkleinern">🔍-</button>
-      <button (click)="resetZoom()" [disabled]="isLoading()" title="Zoom zurücksetzen">↻</button>
-
-      <div class="page-controls">
-        <button (click)="previousPage()" [disabled]="isLoading() || currentPage() <= 1">◀</button>
-        <span>{{ currentPage() }} / {{ totalPages() }}</span>
-        <button (click)="nextPage()" [disabled]="isLoading() || currentPage() >= totalPages()">▶</button>
-      </div>
-
-      <button (click)="downloadPdf()" [disabled]="isLoading()" title="PDF herunterladen">💾</button>
-      <button (click)="printPdf()" [disabled]="isLoading()" title="PDF drucken">🖨️</button>
-      <button (click)="toggleFullscreen()" [disabled]="isLoading()" title="Vollbild">⛶</button>
-      <button (click)="closePdfViewer()" title="Schließen" class="close-btn">✕</button>
-    </div>
-  } @else {
-    <div class="pdf-toolbar minimal">
-      <button (click)="closePdfViewer()" title="Schließen" class="close-btn">✕</button>
-    </div>
-  }
-
-  <ladon-pdfviewer #pdfViewerWC [attr.pdf]="pdfName()"> </ladon-pdfviewer>
-</div>
-x
+  <ladon-pdfviewer #pdfViewerWC
+                   [attr.pdf]="pdfName()">
+  </ladon-pdfviewer>
+</div>x

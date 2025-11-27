@@ -10,13 +10,13 @@ import { BucketUiItemModel } from '../../api';
 import { TranslateModule } from '@ngx-translate/core';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { Router } from '@angular/router';
-import { DialogComponent } from '@ladon/shared';
+import { DialogComponent, FolderComponent } from '@ladon/shared';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'buckets',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIconComponent, SearchbarComponent, TranslateModule, DialogComponent],
+  imports: [CommonModule, ReactiveFormsModule, NgIconComponent, SearchbarComponent, TranslateModule, DialogComponent, FolderComponent],
   providers: [provideIcons({ heroFolder, heroPlusCircle, heroFolderSolid }), BucketsService, BucketsTestObject],
   templateUrl: './buckets.component.html',
   styleUrl: './buckets.component.scss',

@@ -1,4 +1,4 @@
-<div class="flex items-center gap-4 p-4 bg-base-100 justify-between border-b sticky top-0 z-10 backdrop-blur-xs">
+<div class="flex items-center gap-4 p-4 bg-base-100 justify-between border-b border-gray-200 sticky top-0 z-10 backdrop-blur-xs">
   <div class="flex gap-4">
     <lib-searchbar></lib-searchbar>
 
@@ -16,14 +16,14 @@
 
   <button
     (click)="dialogComponent?.openDialog()"
-    class="flex gap-2 center px-4 py-2 bg-blue-900 text-white rounded-md hover:bg-blue-950 focus:outline-none">
+    class="flex gap-2 center px-4 py-2 btn btn-primary text-white rounded-md focus:outline-none">
     <ng-icon name="heroPlusCircle" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
     <span class="hidden lg:block">Neues Verzeichnis erstellen</span>
   </button>
 </div>
 
 <div class="grid grid-cols-[2fr_1fr] bg-base-100">
-  <ul role="list" class="divide-y divide-gray-100 gap-x-6 py-4 grow">
+  <ul role="list" class="divide-y divide-gray-200 gap-x-6 py-4 grow">
     @for (bucket of bucketsList(); track bucket.id) {
       <li
         [ngClass]="{ active: selectedBucket && selectedBucket.id === bucket.id }"
@@ -31,17 +31,7 @@
         (click)="selectBucket(bucket)"
         (dblclick)="openBucket()">
         <div class="flex min-w-0 gap-x-4">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="24" height="24" class="shrink-0">
-            <g>
-              <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" style="fill: #4f64ee"></rect>
-              <path
-                d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
-                style="fill: #6678e0"></path>
-              <path
-                d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
-                style="fill: #6678e0"></path>
-            </g>
-          </svg>
+          <app-folder class="shrink-0 w-[1.5rem]"></app-folder>
 
           <div class="min-w-0 flex-auto">
             <p class="text-sm/6 font-semibold">{{ bucket.id }}</p>
@@ -65,22 +55,10 @@
     }
   </ul>
 
-  <div class="border-l">
+  <div class="border-l border-gray-200">
     <div>
-      <!--<img src="public/png/1.png" alt="" />-->
       <div class="h-50 [&>svg]:h-full [&>svg]:mx-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
-          <g>
-            <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" style="fill: #4f64ee"></rect>
-            <path
-              d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
-              style="fill: #6678e0"></path>
-            <path
-              d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
-              style="fill: #6678e0"></path>
-          </g>
-        </svg>
-      </div>
+        <app-folder></app-folder>
     </div>
     <div class="grid grid-cols-[1fr_2fr] gap-2 p-4">
       <div class="text-sm text-gray-500">Name</div>

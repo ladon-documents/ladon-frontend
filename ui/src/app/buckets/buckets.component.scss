@@ -11,7 +11,7 @@ li {
       height: 100%;
       width: var(--active-indicator-width);
       transform: translateX(-50%);
-      background-color: darkblue;
+      background-color: currentColor;
     }
   }
 }

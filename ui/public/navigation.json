@@ -25,7 +25,7 @@
     "path": "taskmanager",
     "icon": "heroRectangleStack",
     "type": "main",
-    "index": 33
+    "index": 34
   },
   {
     "label": "Plugins",
@@ -54,7 +54,7 @@
     "icon": "heroUsers",
     "hasChildren": true,
     "type": "main",
-    "index": 10
+    "index": 33
   },
   {
     "label": "AUTH.LOGOUT",

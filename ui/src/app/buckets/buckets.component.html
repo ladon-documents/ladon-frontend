@@ -12,7 +12,6 @@
       </div>
     </div>
   } @else {
-    <!-- Fixed Toolbar -->
     <div class="sticky top-0 z-10 bg-white border-b border-gray-200 dark:border-gray-200">
       <div class="flex items-center justify-between px-6 py-4">
         @if (buckets().length > 0 || searchTerm() || showFavoritesOnly()) {
@@ -117,13 +116,11 @@
       </div>
     </div>
 
-    <!-- Content Grid -->
     <div
                                                                                         class="grid gap-0 h-[calc(100vh-180px)] transition-all duration-300 ease-in-out"
                                                                                         [class.grid-cols-[1fr_0px]]="!hasSelectedBucket()"
                                                                                         [class.grid-cols-[1fr_384px]]="hasSelectedBucket()">
 
-      <!-- Main Content -->
       <div class="min-w-0 overflow-hidden">
         <div class="h-full overflow-y-auto">
           @if (isLoading()) {
@@ -154,7 +151,6 @@
               }
             </div>
           } @else {
-            <!-- Column Headers -->
             <div class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 text-sm font-medium text-gray-700">
               <div class="w-8"></div>
               <div class="cursor-pointer hover:text-primary flex items-center gap-1" (click)="toggleSort('id')">
@@ -184,7 +180,6 @@
               <div class="w-8"></div>
             </div>
 
-            <!-- Bucket List -->
             <ul role="list" class="divide-y divide-gray-100">
               @for (bucket of buckets(); track bucket.id) {
                 <li class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 hover:bg-gray-50 cursor-pointer group"
@@ -283,7 +278,6 @@
               }
             </ul>
 
-            <!-- Pagination -->
             @if (pagination().totalPages > 1) {
               <div class="border-t bg-gray-50 px-4 py-3">
                 <div class="flex items-center justify-between">
@@ -343,7 +337,6 @@
         </div>
       </div>
 
-      <!-- Sidebar -->
       <div
                                                                                           class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-200"
                                                                                           [class.w-0]="!hasSelectedBucket()"

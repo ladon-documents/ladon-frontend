@@ -1,7 +1,7 @@
 
-import { Component, computed, inject, OnInit, signal, Signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgIconComponent, provideIcons, provideNgIconsConfig } from '@ng-icons/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroFolder,
   heroPlusCircle,
@@ -91,18 +91,15 @@ export class BucketsComponent implements OnInit {
   readonly sortConfig = this.bucketsFacade.sortConfig;
   readonly pagination = this.bucketsFacade.pagination;
 
-  // Helper computed properties
   readonly hasBuckets = this.bucketsFacade.hasBuckets;
   readonly hasSelectedBucket = this.bucketsFacade.hasSelectedBucket;
 
-  // Math reference for template
   readonly Math = Math;
 
   ngOnInit() {
     this.loadBuckets();
   }
 
-  // Data Loading
   loadBuckets() {
     this.bucketsFacade.loadBuckets();
   }
@@ -111,7 +108,6 @@ export class BucketsComponent implements OnInit {
     this.loadBuckets();
   }
 
-  // Selection
   selectBucket(bucket: BucketUiItemModel) {
     this.bucketsFacade.selectBucket(bucket);
   }
@@ -123,7 +119,6 @@ export class BucketsComponent implements OnInit {
     }
   }
 
-  // Search
   onSearchChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.bucketsFacade.setSearchTerm(target.value);
@@ -138,7 +133,6 @@ export class BucketsComponent implements OnInit {
     this.bucketsFacade.toggleFavoritesFilter(false);
   }
 
-  // Favorites
   toggleFavoritesFilter(event: Event) {
     const target = event.target as HTMLInputElement;
     this.bucketsFacade.toggleFavoritesFilter(target.checked);
@@ -150,7 +144,6 @@ export class BucketsComponent implements OnInit {
     this.bucketsFacade.toggleBucketFavorite(bucketId);
   }
 
-  // Sorting
   toggleSort(field: SortConfig['field']) {
     this.bucketsFacade.toggleSort(field);
   }
@@ -168,7 +161,6 @@ export class BucketsComponent implements OnInit {
     return labels[config.field] || 'Name';
   }
 
-  // Pagination
   goToPage(page: number) {
     this.bucketsFacade.goToPage(page);
   }
@@ -195,7 +187,6 @@ export class BucketsComponent implements OnInit {
     this.bucketsFacade.setPageSize(pageSize);
   }
 
-  // CRUD Operations
   onAddBucket() {
     if (this.bucketAddGroup.invalid) {
       this.bucketAddGroup.markAllAsTouched();
@@ -212,27 +203,22 @@ export class BucketsComponent implements OnInit {
 
   renameBucket(bucket: BucketUiItemModel) {
     // TODO: Implement rename functionality
-    // This would typically open a dialog or inline edit
     console.log('Rename bucket:', bucket.id);
   }
 
   deleteBucket(bucket: BucketUiItemModel) {
-    // TODO: Add confirmation dialog
     if (!bucket.id) return;
     if (confirm(`Sind Sie sicher, dass Sie das Bucket "${bucket.id}" löschen möchten?`)) {
       this.bucketsFacade.deleteBucket(bucket.id);
     }
   }
 
-  // Dialog Management
   closeDialog() {
     this.dialogComponent?.closeDialog();
     this.bucketAddGroup.reset();
   }
 
-  // Event Handlers for preventing propagation
   onRowClick(bucket: BucketUiItemModel, event: Event) {
-    // Only select if not clicking on action buttons
     const target = event.target as HTMLElement;
     if (!target.closest('.dropdown') && !target.closest('button')) {
       this.selectBucket(bucket);
@@ -240,7 +226,6 @@ export class BucketsComponent implements OnInit {
   }
 
   onRowDoubleClick(bucket: BucketUiItemModel, event: Event) {
-    // Only open if not clicking on action buttons
     const target = event.target as HTMLElement;
     if (!target.closest('.dropdown') && !target.closest('button')) {
       this.selectBucket(bucket);

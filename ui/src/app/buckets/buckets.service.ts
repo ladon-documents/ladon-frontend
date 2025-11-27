@@ -1,8 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, mergeMap, of, take } from 'rxjs';
+import { take } from 'rxjs';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import {
-  BucketModel,
   BucketsService as BucketsServiceApi,
   BucketUiItemModel,
   DocumentsService, NewBucketModel,
@@ -10,7 +9,6 @@ import {
 } from '../../api';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { LadonRouterService } from '../services/ladon-router.service';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +25,6 @@ export class BucketsService {
     private documentsService: DocumentsService,
     private ladonRouterService: LadonRouterService
   ) {
-    //this.retrieveBucketsList();
   }
 
   getBuckets() {
@@ -48,14 +45,6 @@ export class BucketsService {
   }
   public getStats(bucketId: string) {
     return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
-  }
-
-  get bucketList() {
-    return this.bucketsListSignal.asReadonly();
-  }
-
-  get bucketStats() {
-    return this.bucketStatsSignal.asReadonly();
   }
 
   toggleFavoriteBuckets(isFavorite: boolean) {
@@ -81,19 +70,7 @@ export class BucketsService {
         const response = JSON.parse(await stats.text());
         response.favourite = bucket.favourite;
         this.bucketStatsSignal.set(response);
-        console.log(response);
       });
   }
-
-  private retrieveBucketsList(): void {
-    this.uiService
-      .listBuckets()
-      .pipe(take(1))
-      .subscribe((buckets) => {
-        this._bucketList.set(buckets);
-        this.bucketsListSignal.set(buckets);
-      });
-  }
-
 
 }

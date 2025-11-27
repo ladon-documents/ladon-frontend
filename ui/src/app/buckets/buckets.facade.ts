@@ -7,7 +7,6 @@ import { BucketsStore } from '../store/bucket.store';
 export class BucketsFacade {
   private readonly store = inject(BucketsStore);
 
-  // Selectors
   readonly buckets = this.store.buckets;
   readonly selectedBucket = this.store.selectedBucket;
   readonly bucketStats = this.store.bucketStats;

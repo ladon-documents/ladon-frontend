@@ -17,25 +17,6 @@
 
         <div class="flex items-center gap-4">
           <div class="relative">
-            <div class="border-b border-gray-100">
-              <div class="dropdown dropdown-end">
-                <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1">
-                  <ng-icon name="heroPlus" size="1.0em" ></ng-icon>
-                  Hinzufügen
-                </div>
-                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
-                  <li><a>Neue Datei</a></li>
-                  <li>
-                    <a>
-                      <create-folder></create-folder>
-                    </a>
-                  </li>
-                  <li><a>Datei Hochladen</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="relative">
             <input
               type="text"
               placeholder="Dateien filtern..."
@@ -145,6 +126,25 @@
               title="Vorschau ein-/ausblenden">
               <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
             </button>
+          </div>
+          <div class="relative">
+            <div class="border-b border-gray-100">
+              <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-primary btn-sm gap-1">
+                  <ng-icon name="heroPlus" size="1.0em" color="white"></ng-icon>
+                  Hinzufügen
+                </div>
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+                  <li><a>Neue Datei</a></li>
+                  <li>
+                    <a>
+                      <create-folder></create-folder>
+                    </a>
+                  </li>
+                  <li><a>Datei Hochladen</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>

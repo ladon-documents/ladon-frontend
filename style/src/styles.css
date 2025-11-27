@@ -4,6 +4,12 @@
   root: ":root";
   logs: true;
 }
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #4d9bf4;
+  --color-secondary: #add1fa;
+}
 @plugin "@tailwindcss/typography";
 @source "../../ui/src/app";
 @source "../../wc/clipboard/src/app";

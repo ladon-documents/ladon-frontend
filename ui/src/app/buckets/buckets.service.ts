@@ -5,27 +5,49 @@ import {
   BucketModel,
   BucketsService as BucketsServiceApi,
   BucketUiItemModel,
-  DocumentsService,
-  UIService,
+  DocumentsService, NewBucketModel,
+  UIService
 } from '../../api';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { LadonRouterService } from '../services/ladon-router.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class BucketsService {
   readonly #filemanagerStore = inject(FilemanagerStore);
+  readonly bucketsService = inject(BucketsServiceApi);
+  readonly uiService = inject(UIService);
   private bucketsListSignal = signal<BucketUiItemModel[]>([]);
   private bucketStatsSignal = signal<BucketStatsExtended | undefined>(undefined);
   private _bucketList = signal<BucketUiItemModel[]>([]);
+
   constructor(
-    private bucketServiceApi: BucketsServiceApi,
     private documentsService: DocumentsService,
-    private uiServiceApi: UIService,
-    private ladonRouterService: LadonRouterService,
+    private ladonRouterService: LadonRouterService
   ) {
-    this.retrieveBucketsList();
+    //this.retrieveBucketsList();
+  }
+
+  getBuckets() {
+    return this.uiService.listBuckets();
+  }
+
+  createBucket(bucketid: string) {
+    const newBucket: NewBucketModel = {
+      bucketid,
+      versioned: 'false',
+      favourite: 'false'
+    };
+    return this.uiService.createBucket1(newBucket);
+  }
+
+  deleteBucket(bucketId: string) {
+    return this.bucketsService.deleteBucket(bucketId);
+  }
+  public getStats(bucketId: string) {
+    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
   }
 
   get bucketList() {
@@ -39,7 +61,7 @@ export class BucketsService {
   toggleFavoriteBuckets(isFavorite: boolean) {
     if (isFavorite) {
       const filteredBucketList = this._bucketList()?.filter(
-        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite,
+        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite
       ) as BucketUiItemModel[];
       this.bucketsListSignal.set(filteredBucketList);
     } else {
@@ -64,7 +86,7 @@ export class BucketsService {
   }
 
   private retrieveBucketsList(): void {
-    this.uiServiceApi
+    this.uiService
       .listBuckets()
       .pipe(take(1))
       .subscribe((buckets) => {
@@ -73,7 +95,5 @@ export class BucketsService {
       });
   }
 
-  private getStats(bucketId: string) {
-    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
-  }
+
 }

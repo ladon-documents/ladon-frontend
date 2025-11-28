@@ -11,7 +11,7 @@
       </div>
     </div>
   } @else {
-    <div class="sticky top-0 z-10 bg-white border-b border-gray-200 dark:border-gray-200">
+    <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-200">
       <div class="flex items-center justify-between px-6 py-4">
         @if (buckets().length > 0 || searchTerm() || showFavoritesOnly()) {
           <span class="text-sm text-gray-500"> {{ pagination().totalItems }} von {{ buckets().length }} Buckets </span>
@@ -166,17 +166,7 @@
                   (click)="selectBucket(bucket)"
                   (dblclick)="openBucket()">
                   <div class="w-8 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="24" height="24" class="shrink-0">
-                      <g>
-                        <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" class="fill-primary"></rect>
-                        <path
-                          d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
-                          class="fill-primary opacity-80"></path>
-                        <path
-                          d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
-                          class="fill-primary opacity-80"></path>
-                      </g>
-                    </svg>
+                    <app-folder></app-folder>
                   </div>
 
                   <div class="min-w-0 flex-auto">
@@ -314,18 +304,8 @@
         [class.w-96]="hasSelectedBucket()">
         @if (selectedBucket()) {
           <div class="p-4">
-            <div class="h-32 flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" class="h-24 w-24">
-                <g>
-                  <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" class="fill-primary"></rect>
-                  <path
-                    d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
-                    class="fill-primary opacity-80"></path>
-                  <path
-                    d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
-                    class="fill-primary opacity-80"></path>
-                </g>
-              </svg>
+            <div class="flex items-center justify-center mb-4">
+              <app-folder></app-folder>
             </div>
 
             <div class="space-y-3">

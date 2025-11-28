@@ -1,12 +1,12 @@
-<div class="flex justify-between items-center gap-4">
+<div class="flex justify-between items-center gap-4 p-4">
   <app-filter (outputTerm)="onFilterTerm($event)"></app-filter>
-  <button class="btn btn-primary" (click)="createRole()">
+  <button class="btn btn-primary btn-sm" (click)="createRole()">
     <ng-icon name="heroPlus" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
-    <span class="hidden sm:block">Neue Rolle anlegen</span>
+    <span class="hidden sm:block">Rolle hinzufügen</span>
   </button>
 </div>
 
-<div class="grid items-start mt-4 border-t border-gray-200">
+<div class="grid items-start overflow-auto h-[calc(100%-4.5rem)] border-t border-gray-200">
   <table class="table">
     <thead>
       <tr>
@@ -43,7 +43,7 @@
   </div>
 </div>
 
-<app-dialog title="Neue Rolle anlegen">
+<app-dialog title="Rolle hinzufügen">
   <form [formGroup]="roleAddGroup" class="flex flex-col gap-4" (ngSubmit)="onAddRole()">
     <label class="input" for="name">
       <span class="label">Name*</span>
@@ -61,8 +61,8 @@
     </label>
 
     <div class="flex justify-around items-center gap-4">
-      <button class="btn btn-outline grow" type="reset" (click)="closeDialog()">Abbrechen</button>
-      <button class="btn grow" type="submit" [disabled]="roleAddGroup.invalid">Erstellen</button>
+      <button class="btn btn-outline btn-primary grow" type="reset" (click)="closeDialog()">Abbrechen</button>
+      <button class="btn btn-primary grow" type="submit" [disabled]="roleAddGroup.invalid">Erstellen</button>
     </div>
   </form>
 </app-dialog>

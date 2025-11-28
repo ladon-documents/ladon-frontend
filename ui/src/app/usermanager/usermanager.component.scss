@@ -1,3 +1,9 @@
+:host {
+  --host-height: 100%;
+  display: block;
+  height: var(--host-height);
+}
+
 .avatar {
   --outer-border-color: CanvasText;
 

@@ -2,6 +2,11 @@
 
 $detailTag: app-user-details;
 
+:host {
+  // Need to compensate padding for container set to p-5
+  --host-height: #{calc(100% - (#{var(--spacing)} * 10))};
+}
+
 .avatar {
   --avatar-size: 1.2lh;
 }

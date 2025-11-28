@@ -1,12 +1,12 @@
-<div class="flex justify-between items-center gap-4">
+<div class="flex justify-between items-center gap-4 p-4">
   <app-filter (outputTerm)="onFilterTerm($event)"></app-filter>
-  <button class="btn btn-primary" (click)="createPermission()">
+  <button class="btn btn-primary btn-sm" (click)="createPermission()">
     <ng-icon name="heroPlus" size="1.5rem" class="shrink-0" color="text-white"></ng-icon>
-    <span class="hidden sm:block">Neue Berechtigung anlegen</span>
+    <span class="hidden sm:block">Berechtigung hinzufügen</span>
   </button>
 </div>
 
-<div class="grid items-start mt-4 border-t border-gray-200">
+<div class="grid items-start overflow-auto h-[calc(100%-4.5rem)] border-t border-gray-200">
   <table class="table">
     <thead>
       <tr>
@@ -49,7 +49,7 @@
   </div>
 </div>
 
-<app-dialog title="Neue Rechte anlegen">
+<app-dialog title="Berechtigung hinzufügen">
   <form [formGroup]="permissionAddGroup" class="flex flex-col gap-4" (ngSubmit)="onAddPermission()">
     <div class="input">
       <label for="permissionId">Identifikation*</label>
@@ -107,8 +107,8 @@
     </div>
 
     <div class="flex justify-around items-center gap-4">
-      <button class="btn btn-outline grow" type="reset" (click)="closeDialog()">Abbrechen</button>
-      <button class="btn grow" type="submit" [disabled]="permissionAddGroup.invalid">Erstellen</button>
+      <button class="btn btn-outline btn-primary grow" type="reset" (click)="closeDialog()">Abbrechen</button>
+      <button class="btn btn-primary grow" type="submit" [disabled]="permissionAddGroup.invalid">Erstellen</button>
     </div>
   </form>
 </app-dialog>

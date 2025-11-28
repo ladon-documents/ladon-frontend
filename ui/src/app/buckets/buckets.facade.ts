@@ -44,7 +44,10 @@ export class BucketsFacade {
     this.store.toggleBucketFavorite(bucketId);
   }
 
-  setSortConfig(field: 'id' | 'size' | 'created' | 'createdBy' | 'favourite' |'createdDate', direction?: 'asc' | 'desc') {
+  setSortConfig(
+    field: 'id' | 'size' | 'created' | 'createdBy' | 'favourite' | 'createdDate',
+    direction?: 'asc' | 'desc',
+  ) {
     this.store.setSortConfig(field, direction);
   }
 

@@ -4,14 +4,15 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import {
   BucketsService as BucketsServiceApi,
   BucketUiItemModel,
-  DocumentsService, NewBucketModel,
-  UIService
+  DocumentsService,
+  NewBucketModel,
+  UIService,
 } from '../../api';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { LadonRouterService } from '../services/ladon-router.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BucketsService {
   readonly #filemanagerStore = inject(FilemanagerStore);
@@ -23,9 +24,8 @@ export class BucketsService {
 
   constructor(
     private documentsService: DocumentsService,
-    private ladonRouterService: LadonRouterService
-  ) {
-  }
+    private ladonRouterService: LadonRouterService,
+  ) {}
 
   getBuckets() {
     return this.uiService.listBuckets();
@@ -35,7 +35,7 @@ export class BucketsService {
     const newBucket: NewBucketModel = {
       bucketid,
       versioned: 'false',
-      favourite: 'false'
+      favourite: 'false',
     };
     return this.uiService.createBucket1(newBucket);
   }
@@ -50,7 +50,7 @@ export class BucketsService {
   toggleFavoriteBuckets(isFavorite: boolean) {
     if (isFavorite) {
       const filteredBucketList = this._bucketList()?.filter(
-        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite
+        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite,
       ) as BucketUiItemModel[];
       this.bucketsListSignal.set(filteredBucketList);
     } else {
@@ -72,5 +72,4 @@ export class BucketsService {
         this.bucketStatsSignal.set(response);
       });
   }
-
 }

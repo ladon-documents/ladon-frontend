@@ -97,7 +97,6 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     return selected?.path === document.path && selected?.key === document.key;
   }
 
-
   ngOnDestroy(): void {
     if (this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);

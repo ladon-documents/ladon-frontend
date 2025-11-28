@@ -3,7 +3,7 @@ import { ConverterInfoModel, ConverterService as ConverterServiceApi, DocumentMo
 import { lastValueFrom } from 'rxjs';
 import { ConverterJob } from '../../../../api/fetch-client';
 
-type converterType = "applyandstore" | "applyanddownload"
+type converterType = 'applyandstore' | 'applyanddownload';
 
 @Injectable({
   providedIn: 'root',
@@ -22,9 +22,7 @@ export class ConverterService {
     this.getAvailableConverters();
   }
 
-
   public async downloadAsZip(file: string) {
-
     // document path
     /*
          if (documentList && Array.isArray(documentList)) {
@@ -44,11 +42,10 @@ export class ConverterService {
     if (this.checkConverterIsAvailable(this.zip)) {
       const payload: any = {
         inputPaths: [file], //JSON.parse(files),
-        type: "applyandstore",
-        converterId: this.zip
-      }
+        type: 'applyandstore',
+        converterId: this.zip,
+      };
       await this.handleConverter(payload.inputPaths, payload.converterId, payload.type);
-
     }
   }
 
@@ -81,11 +78,11 @@ export class ConverterService {
 
   private getFileName(result: any): string {
     let filename;
-    if (result.headers["content-disposition"] && result.headers["content-disposition"].startsWith("attachment")) {
+    if (result.headers['content-disposition'] && result.headers['content-disposition'].startsWith('attachment')) {
       const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-      const matches = filenameRegex.exec(result.headers["content-disposition"]);
+      const matches = filenameRegex.exec(result.headers['content-disposition']);
       if (matches != null && matches[1]) {
-        filename = matches[1].replace(/['"]/g, "");
+        filename = matches[1].replace(/['"]/g, '');
       }
     }
     return filename ?? 'filename';
@@ -98,16 +95,17 @@ export class ConverterService {
         {
           id: converterId,
           config: {
-            'flatten': "true"
-          }
-        }]
+            flatten: 'true',
+          },
+        },
+      ],
     };
     if (converterId === this.zipenc) {
       // data.converters[0].config['password'] = generateOTP();
       // data.converters[0].config['filename'] = "/_download/" +generateFilename(10) + ".zip";
     }
 
-    if (type === "applyanddownload") {
+    if (type === 'applyanddownload') {
       try {
         const result = await lastValueFrom(this.converterApi.applyAndDownload(data));
         if (result) {
@@ -124,8 +122,8 @@ export class ConverterService {
         if (result && converterId !== this.zipenc) {
           const url = Array.isArray(result) ? result[0] : result;
           // this.successDispatcher[converterId] && this.successDispatcher[converterId](type, url);
-          const id = url.slice(url.lastIndexOf("/") + 1);
-          const directUrl = this.getDirectLink("_tmp", id);
+          const id = url.slice(url.lastIndexOf('/') + 1);
+          const directUrl = this.getDirectLink('_tmp', id);
           window.open(directUrl);
         } else if (result && converterId === this.zipenc) {
           const url = Array.isArray(result) ? result[0] : result;
@@ -138,11 +136,10 @@ export class ConverterService {
         // this.errorDispatcher[converterId] && this.errorDispatcher[converterId](type, e);
       }
     }
-
   }
 
   private downloadURI(blob: string, filename: string) {
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.download = filename;
     link.href = blob;
     document.body.appendChild(link);
@@ -152,9 +149,6 @@ export class ConverterService {
   }
 
   private getDirectLink(bucket: string, id: string) {
-    return (
-      "/admin/api/filemanager/" + bucket + "/" + `direct?id=${encodeURIComponent(id)}&download=true`
-    );
+    return '/admin/api/filemanager/' + bucket + '/' + `direct?id=${encodeURIComponent(id)}&download=true`;
   }
-
 }

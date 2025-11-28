@@ -1,4 +1,3 @@
-
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -19,7 +18,7 @@ import {
   heroPencilSquare,
   heroTrash,
   heroEllipsisVertical,
-  heroExclamationTriangle
+  heroExclamationTriangle,
 } from '@ng-icons/heroicons/outline';
 import { heroFolderSolid, heroStarSolid } from '@ng-icons/heroicons/solid';
 import { BucketsFacade } from './buckets.facade';
@@ -33,13 +32,7 @@ import { LadonRouterService } from '../services/ladon-router.service';
 @Component({
   selector: 'buckets',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    NgIconComponent,
-    TranslateModule,
-    DialogComponent
-  ],
+  imports: [CommonModule, ReactiveFormsModule, NgIconComponent, TranslateModule, DialogComponent],
   providers: [
     provideIcons({
       heroFolder,
@@ -61,7 +54,7 @@ import { LadonRouterService } from '../services/ladon-router.service';
       heroTrash,
       heroEllipsisVertical,
       heroExclamationTriangle,
-    })
+    }),
   ],
   templateUrl: './buckets.component.html',
   styleUrl: './buckets.component.scss',
@@ -84,7 +77,7 @@ export class BucketsComponent implements OnInit {
   readonly buckets = this.bucketsFacade.buckets;
   readonly selectedBucket = this.bucketsFacade.selectedBucket;
   readonly bucketStats = this.bucketsFacade.bucketStats;
-  readonly isLoading =  signal(false) // this.bucketsFacade.isLoading;
+  readonly isLoading = signal(false); // this.bucketsFacade.isLoading;
   readonly error = this.bucketsFacade.error;
   readonly searchTerm = this.bucketsFacade.searchTerm;
   readonly showFavoritesOnly = this.bucketsFacade.showFavoritesOnly;
@@ -140,7 +133,7 @@ export class BucketsComponent implements OnInit {
 
   toggleFavorite(event: Event, bucketId: string | undefined) {
     event.stopPropagation();
-    if (!bucketId) return
+    if (!bucketId) return;
     this.bucketsFacade.toggleBucketFavorite(bucketId);
   }
 
@@ -156,7 +149,7 @@ export class BucketsComponent implements OnInit {
       created: 'Erstellt',
       createdBy: 'Erstellt von',
       createdDate: 'Erstellt am',
-      favourite: 'Favoriten'
+      favourite: 'Favoriten',
     };
     return labels[config.field] || 'Name';
   }

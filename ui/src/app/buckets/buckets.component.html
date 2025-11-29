@@ -48,7 +48,7 @@
           </div>
 
           <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1">
+            <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1 btn-primary">
               <ng-icon name="heroFunnel" size="1.0em"></ng-icon>
               Sortieren: {{ getSortLabel() }}
               @if (sortConfig().direction === "asc") {
@@ -57,7 +57,7 @@
                 <ng-icon name="heroChevronDown" size="1.0em"></ng-icon>
               }
             </div>
-            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
               <li>
                 <a (click)="toggleSort('id')" [class.active]="sortConfig().field === 'id'"> Name </a>
               </li>

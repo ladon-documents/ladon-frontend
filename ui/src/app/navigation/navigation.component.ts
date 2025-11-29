@@ -109,7 +109,7 @@ export class NavigationComponent implements OnInit {
   }
 
   private animateHighlight() {
-    const activeItem = this.nav()?.nativeElement.querySelector('.text-blue-700');
+    const activeItem = this.nav()?.nativeElement.querySelector('.text-primary');
     const highlightElement = this.highlight()?.nativeElement;
     try {
       const { y } = activeItem?.getBoundingClientRect();

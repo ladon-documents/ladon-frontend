@@ -20,7 +20,7 @@
             <input
               type="text"
               placeholder="Dateien filtern..."
-              class="input input-bordered input-sm w-64 pr-8"
+              class="input input-secondary input-sm w-64 pr-8 focus:ring-0"
               [value]="searchTerm()"
               (input)="onSearchChange($event)"
               (keyup.escape)="clearSearch()" />
@@ -39,22 +39,23 @@
           </div>
 
           <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1">
-              <ng-icon name="heroBars3BottomLeft" size="1em"></ng-icon>
+            <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1 btn-primary">
+              <ng-icon name="heroBars3BottomLeft" size="1em" ></ng-icon>
               Sortieren
               @if (sortConfig().direction === "desc") {
-                <ng-icon name="heroChevronDown" size="0.8em"></ng-icon>
+                <ng-icon name="heroChevronDown" size="0.8em" ></ng-icon>
               } @else {
-                <ng-icon name="heroChevronUp" size="0.8em"></ng-icon>
+                <ng-icon name="heroChevronUp" size="0.8em" ></ng-icon>
               }
             </div>
-            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
               <li>
                 <a (click)="toggleSort('name')" [class.active]="sortConfig().field === 'name'">
                   <ng-icon name="heroDocumentText" size="1em"></ng-icon>
                   Name
                   @if (sortConfig().field === "name") {
                     <ng-icon
+
                       [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
                       size="0.8em"></ng-icon>
                   }
@@ -62,12 +63,12 @@
               </li>
               <li>
                 <a (click)="toggleSort('size')" [class.active]="sortConfig().field === 'size'">
-                  <ng-icon name="heroScale" size="1em"></ng-icon>
+                  <ng-icon name="heroScale" size="1em" ></ng-icon>
                   Größe
                   @if (sortConfig().field === "size") {
                     <ng-icon
                       [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                      size="0.8em"></ng-icon>
+                      size="0.8em" ></ng-icon>
                   }
                 </a>
               </li>
@@ -109,19 +110,19 @@
 
           <div class="flex items-center gap-2">
             <button
-              class="btn btn-square btn-outline btn-sm"
+              class="btn btn-square btn-outline btn-sm btn-primary"
               (click)="setViewMode('card')"
               [title]="'Zur Card-Ansicht wechseln'">
               <ng-icon name="heroSquares2x2" size="1.2em" class="size-5"></ng-icon>
             </button>
             <button
-              class="btn btn-square btn-outline btn-sm"
+              class="btn btn-square btn-outline btn-sm btn-primary"
               (click)="setViewMode('table')"
               [title]="'Zur Tabellenansicht wechseln'">
               <ng-icon name="heroBars3" size="1.2em" class="size-5"></ng-icon>
             </button>
             <button
-              class="btn btn-square btn-outline btn-sm"
+              class="btn btn-square btn-outline btn-sm btn-primary"
               (click)="toggleSidebar()"
               title="Vorschau ein-/ausblenden">
               <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
@@ -131,10 +132,10 @@
             <div class="border-b border-gray-100">
               <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-primary btn-sm gap-1">
-                  <ng-icon name="heroPlus" size="1.0em" color="white"></ng-icon>
+                  <ng-icon name="heroPlus" size="1.0em"></ng-icon>
                   Hinzufügen
                 </div>
-                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
                   <li><a>Neue Datei</a></li>
                   <li>
                     <a>

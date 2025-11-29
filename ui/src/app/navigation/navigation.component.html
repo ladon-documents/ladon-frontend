@@ -3,15 +3,15 @@
   <nav class="mt-4 px-2 relative" #nav>
     <div
       #highlight
-      class="absolute top-0 left-0 w-full h-8 bg-blue-700 -z-1 opacity-10"
+      class="absolute top-0 left-0 w-full h-8 bg-primary -z-1 opacity-10"
       [ngStyle]="{ viewTransitionName: 'highlight' }"></div>
     <ul class="flex flex-col gap-2">
       @for (item of mainMenu(); track $index) {
         <li [ngStyle]="{ '--order': item.index, order: 'var(--order)' }" [attr.data-target]="item.target">
           <a
             (click)="invokeItem(item)"
-            [ngClass]="{ 'text-blue-700': routerActiveLink === item.path }"
-            class="flex items-center gap-1 px-2 py-1 hover:cursor-pointer hover:text-blue-700">
+            [ngClass]="{ 'text-primary': routerActiveLink === item.path }"
+            class="flex items-center gap-1 px-2 py-1 hover:cursor-pointer hover:text-primary">
             @if (item.icon) {
               <ng-icon [name]="item.icon" style="color: currentColor"></ng-icon>
             }

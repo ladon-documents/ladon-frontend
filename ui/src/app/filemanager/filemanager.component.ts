@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { NgIconComponent, provideIcons, provideNgIconsConfig } from '@ng-icons/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FilemanagerFacade } from './filemanager.facade';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -45,6 +45,10 @@ import { filemanagerRoutes } from './filemanager.routes';
     FileEditorDialogComponent,
   ],
   providers: [
+    provideNgIconsConfig({
+      size: '1.5em',
+      color: 'primary',
+    }),
     provideIcons({
       heroPlus,
       heroDocument,

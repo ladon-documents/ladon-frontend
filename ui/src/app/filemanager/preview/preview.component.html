@@ -18,9 +18,7 @@
 }
 @if (selectedDocument() && monacoEditorService.isEditableFile(selectedDocument()?.key)) {
   <div class="mb-4">
-    <button
-      (click)="openEditor()"
-      class="w-full  btn btn-primary">
+    <button (click)="openEditor()" class="w-full btn btn-primary">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
@@ -34,10 +32,6 @@
 }
 @if (selectedDocument() && filemanagerHelper.isPdf(selectedDocument())) {
   <div class="mb-4">
-    <button
-      (click)="openPdf()"
-      class="w-full  btn btn-primary">
-      PDF anzeigen
-    </button>
+    <button (click)="openPdf()" class="w-full btn btn-primary">PDF anzeigen</button>
   </div>
 }

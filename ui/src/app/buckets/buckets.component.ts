@@ -1,4 +1,3 @@
-
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons, provideNgIconsConfig } from '@ng-icons/core';
@@ -19,7 +18,7 @@ import {
   heroPencilSquare,
   heroTrash,
   heroEllipsisVertical,
-  heroExclamationTriangle
+  heroExclamationTriangle,
 } from '@ng-icons/heroicons/outline';
 import { heroFolderSolid, heroStarSolid } from '@ng-icons/heroicons/solid';
 import { BucketsFacade } from './buckets.facade';
@@ -154,7 +153,7 @@ export class BucketsComponent implements OnInit {
       created: 'Erstellt',
       createdBy: 'Erstellt von',
       createdDate: 'Erstellt am',
-      favourite: 'Favoriten'
+      favourite: 'Favoriten',
     };
     return labels[config.field] || 'Name';
   }

@@ -302,8 +302,7 @@
           class="group/fileitem relative border border-gray-200 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow"
           [class.border-blue-700]="isSelected(document)"
           [class.shadow-lg]="isSelected(document)"
-          [class.bg-blue-50]="isSelected(document)"
-        >
+          [class.bg-blue-50]="isSelected(document)">
           <span
             class="flex flex-col pt-6 pb-4 cursor-pointer"
             (dblclick)="navigateTo(document)"
@@ -337,7 +336,7 @@
             [ngTemplateOutlet]="actions"
             [ngTemplateOutletContext]="{
               index: i,
-              document: document
+              document: document,
             }"></ng-container>
         </div>
       }

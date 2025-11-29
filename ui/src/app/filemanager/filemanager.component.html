@@ -40,12 +40,12 @@
 
           <div class="dropdown dropdown-end">
             <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1 btn-primary">
-              <ng-icon name="heroBars3BottomLeft" size="1em" ></ng-icon>
+              <ng-icon name="heroBars3BottomLeft" size="1em"></ng-icon>
               Sortieren
               @if (sortConfig().direction === "desc") {
-                <ng-icon name="heroChevronDown" size="0.8em" ></ng-icon>
+                <ng-icon name="heroChevronDown" size="0.8em"></ng-icon>
               } @else {
-                <ng-icon name="heroChevronUp" size="0.8em" ></ng-icon>
+                <ng-icon name="heroChevronUp" size="0.8em"></ng-icon>
               }
             </div>
             <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
@@ -55,7 +55,6 @@
                   Name
                   @if (sortConfig().field === "name") {
                     <ng-icon
-
                       [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
                       size="0.8em"></ng-icon>
                   }
@@ -63,12 +62,12 @@
               </li>
               <li>
                 <a (click)="toggleSort('size')" [class.active]="sortConfig().field === 'size'">
-                  <ng-icon name="heroScale" size="1em" ></ng-icon>
+                  <ng-icon name="heroScale" size="1em"></ng-icon>
                   Größe
                   @if (sortConfig().field === "size") {
                     <ng-icon
                       [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                      size="0.8em" ></ng-icon>
+                      size="0.8em"></ng-icon>
                   }
                 </a>
               </li>
@@ -135,7 +134,9 @@
                   <ng-icon name="heroPlus" size="1.0em"></ng-icon>
                   Hinzufügen
                 </div>
-                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
+                <ul
+                  tabindex="0"
+                  class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
                   <li><a>Neue Datei</a></li>
                   <li>
                     <a>

@@ -1,4 +1,4 @@
-<main class="flex-grow bg-base-100">
+<main class="flex-grow bg-base-100 h-full">
   @if (error()) {
     <div class="bg-red-50 border-red-200 text-red-800 p-6" role="alert">
       <div class="flex">
@@ -92,7 +92,7 @@
     </div>
 
     <div
-      class="grid gap-0 h-[calc(100vh-180px)] transition-all duration-300 ease-in-out"
+      class="grid gap-0 h-[calc(100%-4.5rem)] transition-all duration-300 ease-in-out"
       [class.grid-cols-[1fr_0px]]="!hasSelectedBucket()"
       [class.grid-cols-[1fr_384px]]="hasSelectedBucket()">
       <div class="min-w-0 overflow-hidden">
@@ -144,7 +144,7 @@
                 }
               </div>
               <div
-                class="cursor-pointer hover:text-indigo-600 flex items-center gap-1 text-center"
+                class="cursor-pointer hover:text-primay-600 flex items-center gap-1 text-center"
                 (click)="toggleSort('favourite')">
                 Favorit
                 @if (sortConfig().field === "favourite") {

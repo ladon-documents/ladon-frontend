@@ -111,7 +111,7 @@
       @if (document.metadata) {
         <div class="border-t border-gray-200 pt-3 mt-3">
           <span class="text-sm text-gray-500 font-medium mb-2 block">Zusätzliche Metadaten:</span>
-          <div class="bg-white space-y-2">
+          <div class="bg-base-100 space-y-2">
             @for (item of getMetadataEntries(document.metadata!); track item.key) {
               <div class="grid grid-cols-3 gap-2">
                 <span class="text-xs text-gray-500 font-medium">{{ item.key }}:</span>

@@ -1,19 +1,12 @@
-<div
-  class="shadow-sm bg-white overflow-y-auto dark:bg-gray-800 dark:text-white"
-  (scroll)="onScroll($event, 'availableTasks')">
+<div class="shadow-sm bg-base-100 overflow-y-auto" (scroll)="onScroll($event, 'availableTasks')">
   <div
-    class="flex justify-between px-4 py-2 backdrop-blur-xs bg-white/95 dark:bg-gray-800/95"
+    class="flex justify-between px-4 py-2 backdrop-blur-xs bg-base-100/95"
     [ngClass]="{ 'shadow-sm': scrolledDivs['activeTasks'] }">
     Verfügbar
     <div class="flex items-center gap-2 text-sm sticky top-0">
-      <!-- TODO: Make shared component -->
-      Alle anzeigen
-      <label class="relative inline-flex items-center cursor-pointer">
-        <input type="checkbox" class="sr-only peer" (change)="toggleAvailableTasks($event)" />
-        <div
-          class="w-10 h-5 bg-stone-200 rounded-full peer-checked:bg-blue-700 peer-focus:ring-2 peer-focus:ring-indigo-300 transition-all duration-300 dark:bg-stone-800"></div>
-        <div
-          class="absolute left-1 w-3 h-3 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-5"></div>
+      <label>
+        Alle anzeigen
+        <input type="checkbox" class="toggle toggle-primary" (change)="toggleAvailableTasks($event)" />
       </label>
     </div>
   </div>
@@ -35,12 +28,10 @@
   </div>
 </div>
 
-<div
-  class="shadow-sm bg-white overflow-y-auto dark:bg-gray-800 dark:text-white"
-  (scroll)="onScroll($event, 'activeTasks')">
+<div class="shadow-sm bg-base-100 overflow-y-auto" (scroll)="onScroll($event, 'activeTasks')">
   <div
     [ngClass]="{ 'shadow-sm': scrolledDivs['activeTasks'] }"
-    class="flex px-4 py-2 sticky top-0 backdrop-blur-xs bg-white/95 dark:bg-gray-800/95">
+    class="flex px-4 py-2 sticky top-0 backdrop-blur-xs bg-base-100/95">
     Aktiv
   </div>
   <div>
@@ -60,12 +51,10 @@
   </div>
 </div>
 
-<div
-  class="shadow-sm bg-white overflow-y-auto dark:bg-gray-800 dark:text-white"
-  (scroll)="onScroll($event, 'availableLogs')">
+<div class="shadow-sm bg-base-100 overflow-y-auto" (scroll)="onScroll($event, 'availableLogs')">
   <div
     [ngClass]="{ 'shadow-sm': scrolledDivs['availableLogs'] }"
-    class="flex px-4 py-2 sticky top-0 backdrop-blur-xs bg-white/95 dark:bg-gray-800/95">
+    class="flex px-4 py-2 sticky top-0 backdrop-blur-xs bg-base-100/95">
     Ausgaben-Log
   </div>
   <div>
@@ -86,11 +75,9 @@
   </div>
 </div>
 
-<div
-  class="shadow-sm bg-white overflow-y-auto dark:bg-gray-800 dark:text-white"
-  (scroll)="onScroll($event, 'activeLog')">
+<div class="shadow-sm bg-base-100 overflow-y-auto" (scroll)="onScroll($event, 'activeLog')">
   <div
-    class="flex px-4 py-2 sticky top-0 backdrop-blur-xs bg-white/95 dark:bg-gray-800/95"
+    class="flex px-4 py-2 sticky top-0 backdrop-blur-xs bg-base-100/95"
     [ngClass]="{ 'shadow-sm': scrolledDivs['activeLog'] }">
     Log
   </div>

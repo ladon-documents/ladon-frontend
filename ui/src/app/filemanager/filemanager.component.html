@@ -1,4 +1,4 @@
-<main class="flex-grow bg-base-100">
+<main class="flex-grow bg-base-100 h-full">
   @if (error()) {
     <div class="bg-red-50 border-red-200 text-red-800 p-6" role="alert">
       <div class="flex">
@@ -11,7 +11,7 @@
       </div>
     </div>
   } @else {
-    <div class="sticky top-0 z-10 bg-white border-b border-gray-200 dark:border-gray-200">
+    <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-200 dark:border-gray-200">
       <div class="flex items-center justify-between px-6 py-4">
         <app-breadcrumb></app-breadcrumb>
 
@@ -153,7 +153,7 @@
     </div>
 
     <div
-      class="grid gap-0 h-[calc(100vh-180px)] transition-all duration-300 ease-in-out"
+      class="grid gap-0 h-[calc(100%-4.5rem)] transition-all duration-300 ease-in-out"
       [class.grid-cols-[1fr_0px]]="!sidebarService.isOpen()"
       [class.grid-cols-[1fr_384px]]="sidebarService.isOpen()">
       <div class="min-w-0 overflow-hidden">

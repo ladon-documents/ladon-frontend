@@ -3,7 +3,7 @@
   <nav class="mt-4 px-2 relative" #nav>
     <div
       #highlight
-      class="absolute top-0 left-0 w-full h-8 bg-primary -z-1 opacity-10"
+      class="absolute top-0 left-0 w-full h-8 -z-1 border-l-4 border-primary"
       [ngStyle]="{ viewTransitionName: 'highlight' }"></div>
     <ul class="flex flex-col gap-2">
       @for (item of mainMenu(); track $index) {

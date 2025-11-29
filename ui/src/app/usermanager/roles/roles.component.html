@@ -16,7 +16,10 @@
     </thead>
     <tbody>
       @for (role of filteredRoles; track role.id) {
-        <tr [routerLink]="role.id" [routerLinkActive]="'bg-gray-100'" class="cursor-pointer hover:bg-gray-100">
+        <tr
+          [routerLink]="role.id"
+          [routerLinkActive]="'bg-primary-content border-l-4 border-l-primary'"
+          class="cursor-pointer hover:bg-primary-content">
           <td>
             <div class="flex items-center gap-4">
               <div class="avatar shrink-0 transition-colors" [attr.data-alias]="role.name | alias"></div>

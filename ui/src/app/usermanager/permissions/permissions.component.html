@@ -19,8 +19,8 @@
       @for (permission of filteredPermissions; track permission.permissionId) {
         <tr
           [routerLink]="permission.permissionId"
-          [routerLinkActive]="'bg-gray-100'"
-          class="cursor-pointer hover:bg-gray-100">
+          [routerLinkActive]="'bg-primary-content border-l-4 border-l-primary'"
+          class="cursor-pointer hover:bg-primary-content">
           <td>
             <div class="flex items-center gap-4">
               <div class="avatar shrink-0 transition-colors" [attr.data-alias]="permission.permissionId | alias"></div>

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, Signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
@@ -27,8 +27,10 @@ import { DocumentModel } from '../api';
   styleUrl: './app.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   readonly store = inject(AppStore);
+  private mql: MediaQueryList | undefined;
+
   isAuthenticated: Signal<boolean> = this.store.auth.isAuthenticated;
   isAuthenticating: Signal<boolean> = this.store.auth.isAuthenticating;
 
@@ -44,6 +46,28 @@ export class AppComponent {
     this.translate.addLangs(['de', 'en']);
     this.translate.setDefaultLang('de');
     this.translate.use('de');
+  }
+
+  ngOnInit() {
+    this.mql = window.matchMedia('(prefers-color-scheme: light)');
+    this.mql.addEventListener('change', (event) => {
+      this.checkAndSetPreferredColorScheme(event.matches);
+    });
+
+    this.checkAndSetPreferredColorScheme(this.mql.matches);
+  }
+
+  ngOnDestroy(): void {
+    this.mql?.removeEventListener('change', (event) => {
+      this.checkAndSetPreferredColorScheme(event.matches);
+    })
+  }
+
+  private checkAndSetPreferredColorScheme(matches: boolean): void {
+    const htmlElement = document.querySelector('html');
+    if (htmlElement) {
+      htmlElement.dataset['theme'] = matches ? 'light' : 'dark';
+    }
   }
 
   onPdfLoaded(event: { document: DocumentModel; totalPages: number }): void {

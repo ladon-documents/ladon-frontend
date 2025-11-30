@@ -15,7 +15,7 @@ import { heroMoon, heroSun } from '@ng-icons/heroicons/outline';
   styleUrl: './themes.component.scss',
 })
 export class ThemesComponent {
-  currentTheme = 'light';
+  currentTheme = 'system';
   availableThemes = [
     { name: 'light', label: 'Hell', icon: 'sun' },
     { name: 'dark', label: 'Dunkel', icon: 'moon' },

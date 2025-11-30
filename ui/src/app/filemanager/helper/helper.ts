@@ -231,7 +231,6 @@ const isPdf = (document: DocumentModel | null): boolean => {
   );
 };
 
-
 const isAudio = (document: DocumentModel | null): boolean => {
   return !!(
     document &&

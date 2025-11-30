@@ -340,7 +340,11 @@ export const FilemanagerStore = signalStore(
               return filemanagerService.createNewFolder(bucket, folderPath).pipe(
                 switchMap(() => {
                   if (currentPath) {
-                    const currentDocument: DocumentModel = { path: currentPath };
+                    const currentDocument: DocumentModel = {
+                      path: currentPath,
+                      bucket: store.selectedBucket() ?? undefined,
+                      key: currentPath
+                    };
                     return filemanagerService.loadDocumentList(currentDocument);
                   } else {
                     return filemanagerService.loadBucket(bucket);

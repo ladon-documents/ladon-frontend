@@ -122,7 +122,7 @@ describe('NavigationComponent', () => {
   describe('test invokeItem', () => {
     let invokeItemSpy: any;
     beforeEach(() => {
-      invokeItemSpy = jest.spyOn(component, 'invokeItem');
+      invokeItemSpy = spyOn(component, 'invokeItem');
       fixture.componentRef.setInput('navigation', navigationTO.returnMockNavigation());
       fixture.detectChanges();
     });

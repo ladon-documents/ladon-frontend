@@ -13,3 +13,4 @@
 @plugin "@tailwindcss/typography";
 @source "../../ui/src/app";
 @source "../../wc/clipboard/src/app";
+@source "../../wc/audioplayer/src/app";

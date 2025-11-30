@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "wc-ladon-pdfviewer": {
+    "wc-ladon-audioplayer": {
       "projectType": "library",
       "schematics": {
         "@schematics/angular:component": {
@@ -22,6 +22,10 @@
               "browser": ""
             },
             "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
             "optimization": {
               "scripts": false,
               "styles": {
@@ -29,20 +33,12 @@
                 "inlineCritical": true
               }
             },
-            "outputHashing": "none",
-            "browser": "src/main.ts",
-
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
-                "output": "/assets/"
               }
             ],
             "styles": [
@@ -52,8 +48,6 @@
           },
           "configurations": {
             "production": {
-              "outputHashing": "none",
-              "optimization": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -80,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "wc-ladon-pdfviewer:build:production"
+              "buildTarget": "wc-ladon-audioplayer:build:production"
             },
             "development": {
-              "buildTarget": "wc-ladon-pdfviewer:build:development"
+              "buildTarget": "wc-ladon-audioplayer:build:development"
             }
           },
           "defaultConfiguration": "development"

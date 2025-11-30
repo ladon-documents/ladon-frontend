@@ -33,7 +33,6 @@ export class CreateFolderComponent {
     this.showError = false;
     this.isCreating = false;
 
-    // Focus auf Input-Feld nach kurzer Verzögerung
     setTimeout(() => {
       const input = document.getElementById('folderName') as HTMLInputElement;
       if (input) {

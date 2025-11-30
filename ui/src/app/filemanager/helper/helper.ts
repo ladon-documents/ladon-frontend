@@ -231,9 +231,19 @@ const isPdf = (document: DocumentModel | null): boolean => {
   );
 };
 
+
+const isAudio = (document: DocumentModel | null): boolean => {
+  return !!(
+    document &&
+    !document.isFolder &&
+    (document['content-type'] === 'audio/mpeg' || document.path?.endsWith('.mp3'))
+  );
+};
+
 export const filemanagerHelper = {
   isEditableFile,
   isPdf,
+  isAudio,
   filterDocuments,
   calculatePaginationState,
   sortDocuments,

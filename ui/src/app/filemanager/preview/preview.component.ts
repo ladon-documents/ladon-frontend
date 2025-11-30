@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject } from '@angular/core';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { DocumentModel } from '../../../api';
 import { SidebarService } from '../sidebar/sidebar.service';
@@ -12,6 +12,8 @@ import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
   imports: [],
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+
 })
 export class PreviewComponent {
   readonly monacoEditorService = inject(MonacoEditorService);
@@ -44,7 +46,9 @@ export class PreviewComponent {
     this.revokeImageUrl();
     this.isLoading = true;
     try {
-      this.imageUrl = await this.filemanagerFacade.getImagePreviewUrll();
+      if (!filemanagerHelper.isAudio(document)) {
+        this.imageUrl = await this.filemanagerFacade.getImagePreviewUrll();
+      }
     } catch (error) {
       console.error('Fehler beim Laden der Vorschau:', error);
     } finally {

@@ -1,4 +1,3 @@
-<!-- Trigger Button -->
 <button (click)="openModal()" class="rounded-lg transition-colors duration-200 flex items-center gap-2">
   <ng-icon name="heroFolder" class="w-4 h-4"></ng-icon>
   Neuer Ordner
@@ -16,16 +15,15 @@
         name="folderName"
         placeholder="Ordnername eingeben..."
         class="w-full px-3 py-2 border border-gray-300 rounded-md"
-        [class.border-red-500]="showError"
+        [class.border-error]="showError"
         required
         maxlength="255"
         autocomplete="off" />
       @if (showError) {
-        <div class="mt-1 text-sm text-red-600">Bitte geben Sie einen gültigen Ordnernamen ein.</div>
+        <div class="mt-1 text-sm text-error">Bitte geben Sie einen gültigen Ordnernamen ein.</div>
       }
     </div>
 
-    <!-- Action Buttons -->
     <div class="flex justify-end gap-3 pt-4">
       <button type="button" (click)="closeDialog()" class="btn btn-outline grow">Abbrechen</button>
       <button

@@ -13,7 +13,6 @@ import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-
 })
 export class PreviewComponent {
   readonly monacoEditorService = inject(MonacoEditorService);

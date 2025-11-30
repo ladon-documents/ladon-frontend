@@ -60,7 +60,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.mql?.removeEventListener('change', (event) => {
       this.checkAndSetPreferredColorScheme(event.matches);
-    })
+    });
   }
 
   private checkAndSetPreferredColorScheme(matches: boolean): void {

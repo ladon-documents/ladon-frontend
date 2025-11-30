@@ -1,10 +1,10 @@
 @if (imageUrl) {
   <div class="w-full">
     <img
-                                                                                        [src]="imageUrl"
-                                                                                        alt="Dokument Vorschau"
-                                                                                        class="w-full h-auto object-contain border border-gray-200 rounded-lg shadow-sm"
-                                                                                        (error)="onImageError($event)"/>
+      [src]="imageUrl"
+      alt="Dokument Vorschau"
+      class="w-full h-auto object-contain border border-gray-200 rounded-lg shadow-sm"
+      (error)="onImageError($event)" />
   </div>
 }
 
@@ -19,14 +19,13 @@
 @if (selectedDocument()) {
   @if (monacoEditorService.isEditableFile(selectedDocument()?.key)) {
     <div class="mb-4">
-      <button
-                                                                                          (click)="openEditor()"
-                                                                                          class="w-full  btn btn-primary">
+      <button (click)="openEditor()" class="w-full btn btn-primary">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
         </svg>
         In Editor öffnen
       </button>
@@ -34,15 +33,11 @@
   }
   @if (filemanagerHelper.isPdf(selectedDocument())) {
     <div class="mb-4">
-      <button (click)="openPdf()"
-              class="w-full  btn btn-primary">
-        PDF anzeigen
-      </button>
+      <button (click)="openPdf()" class="w-full btn btn-primary">PDF anzeigen</button>
     </div>
   }
 
   @if (filemanagerHelper.isAudio(selectedDocument())) {
     <ladon-audioplayer [document]="selectedDocument()"></ladon-audioplayer>
   }
-
 }

@@ -343,7 +343,7 @@ export const FilemanagerStore = signalStore(
                     const currentDocument: DocumentModel = {
                       path: currentPath,
                       bucket: store.selectedBucket() ?? undefined,
-                      key: currentPath
+                      key: currentPath,
                     };
                     return filemanagerService.loadDocumentList(currentDocument);
                   } else {

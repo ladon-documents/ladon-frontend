@@ -1,4 +1,9 @@
 @import "tailwindcss";
+
+:root {
+  --primary-hue: 212;
+}
+
 @plugin "daisyui" {
   themes: light --default, dark, winter, dracula;
   root: ":root";
@@ -7,8 +12,9 @@
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
-  --color-primary: #4d9bf4;
-  --color-secondary: #add1fa;
+  --color-primary: hsl(var(--primary-hue) 88% 62%);
+  --color-secondary: hsl(var(--primary-hue) 88% 82%);
+	--color-accent: hsl(calc(var(--primary-hue) + 60) 88% 62%);
 }
 @plugin "@tailwindcss/typography";
 @source "../../ui/src/app";

@@ -159,8 +159,8 @@
             <ul role="list" class="divide-y divide-gray-100">
               @for (bucket of buckets(); track bucket.id) {
                 <li
-                  class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 hover:bg-gray-50 cursor-pointer group"
-                  [class.bg-secondary]="selectedBucket()?.id === bucket.id"
+                  class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 hover:bg-primary-content cursor-pointer group"
+                  [class.bg-primary-content]="selectedBucket()?.id === bucket.id"
                   [class.border-l-4]="selectedBucket()?.id === bucket.id"
                   [class.border-l-primary]="selectedBucket()?.id === bucket.id"
                   (click)="selectBucket(bucket)"
@@ -171,7 +171,7 @@
 
                   <div class="min-w-0 flex-auto">
                     <div class="flex items-center gap-2">
-                      <p class="text-sm font-semibold text-gray-900 truncate">{{ bucket.id }}</p>
+                      <p class="text-sm font-semibold truncate">{{ bucket.id }}</p>
                       @if (bucket.favourite) {
                         <ng-icon name="heroStar" size="1.0em" class="text-yellow-500 flex-shrink-0"></ng-icon>
                       }
@@ -180,7 +180,7 @@
                   </div>
 
                   <div class="text-right">
-                    <p class="text-xs text-gray-900">
+                    <p class="text-xs">
                       {{ bucket.created | date: dateFormat }}
                     </p>
                     <p class="text-xs text-gray-500">

@@ -7,19 +7,10 @@ import { Component, computed, input } from '@angular/core';
   styleUrl: './folder.component.scss',
 })
 export class FolderComponent {
-  fillColor = computed(() => {
-    return `hsl(${this.hue()} ${this.saturation}% ${this.lightness}%)`;
-  });
-
-  fillColor45L = computed(() => {
-    return `hsl(${this.hue()} ${this.saturation}% ${this.lightness - 5}%)`;
-  });
-
-  fillColor100S = computed(() => {
-    return `hsl(${this.hue()} ${this.saturation + 10}% ${this.lightness}%)`;
-  });
-
-  hue = input<number>(35);
+  fillColor = computed(() => `hsl(${this.hue()} ${this.saturation}% ${this.lightness}%)`);
+  fillColor30L = computed(() => `hsl(${this.hue()} ${this.saturation}% ${this.lightness - 20}%)`);
+  fillColor60L = computed(() => `hsl(${this.hue()} ${this.saturation}% ${this.lightness + 15}%)`);
+  hue = input<string>(window.getComputedStyle(document.body).getPropertyValue('--primary-hue').trim() || '212');
   private readonly saturation = 80;
   private readonly lightness = 50;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
 import { AvatarComponent } from '../avatar/avatar.component';
@@ -11,20 +11,10 @@ import { environment } from '../../environments/environment';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   readonly appStore = inject(AppStore);
   readonly ladonVersion = environment.version;
   darkMode = false;
-
-  ngOnInit() {
-    this.loadThemePreference();
-  }
-
-  // Theme umschalten
-  toggleTheme() {
-    this.darkMode = !this.darkMode;
-    this.saveThemePreference();
-  }
 
   toggleSidebar() {
     this.appStore.toggleBurgerMenu();
@@ -32,20 +22,5 @@ export class HeaderComponent implements OnInit {
 
   collapseSidebar() {
     this.appStore.toggleSidebar();
-  }
-
-  private loadThemePreference() {
-    const savedTheme = localStorage.getItem('theme');
-
-    if (savedTheme) {
-      this.darkMode = savedTheme === 'dark';
-    } else {
-      // Systemeinstellung verwenden, falls keine Einstellung gespeichert ist
-      this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-  }
-
-  private saveThemePreference() {
-    localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
   }
 }

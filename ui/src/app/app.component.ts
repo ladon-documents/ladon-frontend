@@ -67,6 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const htmlElement = document.querySelector('html');
     if (htmlElement) {
       htmlElement.dataset['theme'] = matches ? 'light' : 'dark';
+      localStorage.setItem('theme', matches ? 'light' : 'dark');
     }
   }
 

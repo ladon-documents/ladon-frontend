@@ -1,4 +1,4 @@
-<aside class="border-r border-gray-100 dark:border-gray-200 flex flex-col h-full justify-between">
+<aside class="flex flex-col h-full justify-between">
   <!-- Sidebar Navigation -->
   <nav class="mt-4 px-2 relative" #nav>
     <div
@@ -25,11 +25,11 @@
   </nav>
   <button
     (click)="collapseSidebar()"
-    class="flex items-center p-4 rounded-md hover:opacity-50 cursor-pointer focus:outline-none">
+    class="btn btn-ghost flex items-center p-4 rounded-md opacity-30 hover:opacity-100">
     @if (appStore.ui.isSidenavClosed()) {
-      <ng-icon name="heroChevronDoubleRight" size="1.25rem"></ng-icon>
+      <ng-icon name="heroChevronDoubleRight" size="1.25rem" style="color: currentColor"></ng-icon>
     } @else {
-      <ng-icon name="heroChevronDoubleLeft" size="1.25rem"></ng-icon>
+      <ng-icon name="heroChevronDoubleLeft" size="1.25rem" style="color: currentColor"></ng-icon>
     }
   </button>
 </aside>

@@ -172,6 +172,15 @@ export const AppStore = signalStore(
           },
         }));
       },
+      toggleDarkMode(isDarkMode: boolean) {
+        patchState(store, (state) => ({
+          ...state,
+          ui: {
+            ...state.ui,
+            isDarkMode,
+          },
+        }));
+      },
       toggleBurgerMenu: () => {
         patchState(store, (state) => ({
           ...state,

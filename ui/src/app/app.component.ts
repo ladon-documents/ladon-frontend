@@ -38,10 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   sidebarCollapsed: Signal<boolean> = this.store.ui.isSidenavClosed;
 
-  constructor(
-    private readonly as: AuthService,
-    private translate: TranslateService,
-  ) {
+  constructor(private translate: TranslateService) {
     this.navigationEntries = environment.navigation;
     this.translate.addLangs(['de', 'en']);
     this.translate.setDefaultLang('de');

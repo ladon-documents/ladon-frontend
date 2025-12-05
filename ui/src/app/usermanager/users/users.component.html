@@ -6,7 +6,7 @@
   </button>
 </div>
 
-<div class="grid items-start overflow-auto h-[calc(100%-4.5rem)] border-t border-gray-200">
+<div class="grid items-start overflow-auto h-[calc(100%-4.5rem)] border-t border-gray-500/40">
   <table class="table">
     <thead>
       <tr>
@@ -19,8 +19,8 @@
       @for (user of filteredUsers; track user.id) {
         <tr
           [routerLink]="user.id"
-          [routerLinkActive]="'bg-primary-content border-l-4 border-l-primary'"
-          class="cursor-pointer hover:bg-primary-content">
+          [routerLinkActive]="'bg-primary/10 border-l-4 border-l-primary'"
+          class="cursor-pointer hover:bg-primary/10">
           <td>
             <div class="flex items-center gap-4">
               <div
@@ -41,7 +41,7 @@
     </tbody>
   </table>
 
-  <div class="border-gray-200 p-4 border-t self-stretch lg:border-t-0 lg:border-l">
+  <div class="border-gray-500/40 p-4 border-t self-stretch lg:border-t-0 lg:border-l">
     <router-outlet></router-outlet>
   </div>
 </div>

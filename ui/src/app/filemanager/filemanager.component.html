@@ -11,7 +11,7 @@
       </div>
     </div>
   } @else {
-    <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-200 dark:border-gray-200">
+    <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-500/40 dark:border-gray-500/40">
       <div class="flex items-center justify-between p-4">
         <app-breadcrumb></app-breadcrumb>
 
@@ -163,7 +163,7 @@
       </div>
 
       <div
-        class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-200"
+        class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-500/40"
         [class.w-0]="!sidebarService.isOpen()"
         [class.w-96]="sidebarService.isOpen()">
         <filemanager-sidebar></filemanager-sidebar>

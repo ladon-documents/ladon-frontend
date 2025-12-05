@@ -8,7 +8,7 @@
   --outer-border-color: CanvasText;
 
   container: avatar / inline-size;
-  background: hsla(0deg, 0%, 0%, 10%);
+  background: var(--bg-gray-500);
   flex-basis: var(--avatar-size, 4lh);
   aspect-ratio: 1/1;
   border-radius: 50%;
@@ -23,7 +23,6 @@
   &::before {
     content: attr(data-alias);
     text-transform: uppercase;
-    color: CanvasText;
     display: block;
     font-size: 40cqw;
     line-height: 1;

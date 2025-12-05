@@ -32,7 +32,7 @@
     <input type="checkbox" checked="checked" class="toggle toggle-primary" formControlName="status" />
   </label>
 
-  <fieldset class="border-t border-gray-200">
+  <fieldset class="border-t border-gray-500/40">
     <legend class="font-semibold mb-4 pr-4">Rollen</legend>
     <div class="flex flex-wrap gap-2">
       @for (role of patchedRoles(); track $index) {
@@ -57,7 +57,7 @@
     </div>
   </fieldset>
 
-  <fieldset class="border-t border-gray-200">
+  <fieldset class="border-t border-gray-500/40">
     <legend class="font-semibold mb-4 pr-4">Berechtigungen</legend>
     <div class="flex flex-wrap gap-2">
       @for (permission of patchedPermissions(); track $index) {

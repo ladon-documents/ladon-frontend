@@ -12,7 +12,7 @@
 <form class="flex flex-col gap-4" [formGroup]="roleForm" (ngSubmit)="onSubmit()">
   <input hidden readonly type="text" formControlName="id" />
 
-  <fieldset class="border-t border-gray-200">
+  <fieldset class="border-t border-gray-500/40">
     <legend class="font-semibold mb-4 pr-4">Berechtigungen</legend>
     <div class="flex flex-wrap gap-2">
       @for (permission of patchedPermissions(); track $index) {
@@ -38,7 +38,7 @@
     </div>
   </fieldset>
 
-  <fieldset class="border-t border-gray-200">
+  <fieldset class="border-t border-gray-500/40">
     <legend class="font-semibold mb-4 pr-4">Nutzer</legend>
     <div class="flex flex-wrap gap-2">
       @for (user of patchedUsers(); track $index) {

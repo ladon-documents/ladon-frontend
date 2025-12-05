@@ -11,7 +11,7 @@
       </div>
     </div>
   } @else {
-    <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-200">
+    <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-500/40">
       <div class="flex items-center justify-between px-6 py-4">
         @if (buckets().length > 0 || searchTerm() || showFavoritesOnly()) {
           <span class="text-sm text-gray-500"> {{ pagination().totalItems }} von {{ buckets().length }} Buckets </span>
@@ -156,13 +156,13 @@
               <div class="w-8"></div>
             </div>
 
-            <ul role="list" class="divide-y divide-gray-100">
+            <ul role="list" class="divide-y divide-gray-500/20">
               @for (bucket of buckets(); track bucket.id) {
                 <li
-                  class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 hover:bg-primary-content cursor-pointer group"
-                  [class.bg-primary-content]="selectedBucket()?.id === bucket.id"
-                  [class.border-l-4]="selectedBucket()?.id === bucket.id"
-                  [class.border-l-primary]="selectedBucket()?.id === bucket.id"
+                  class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 hover:bg-primary/10 cursor-pointer group"
+                  [ngClass]="{
+                    'bg-primary/10 border-l-4 border-l-primary': selectedBucket()?.id === bucket.id,
+                  }"
                   (click)="selectBucket(bucket)"
                   (dblclick)="openBucket()">
                   <div class="w-8 flex items-center">
@@ -299,7 +299,7 @@
       </div>
 
       <div
-        class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-200"
+        class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-500/40"
         [class.w-0]="!hasSelectedBucket()"
         [class.w-96]="hasSelectedBucket()">
         @if (selectedBucket()) {

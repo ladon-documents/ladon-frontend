@@ -109,22 +109,23 @@ export class NavigationComponent implements OnInit {
   }
 
   private animateHighlight() {
-    const activeItem = this.nav()?.nativeElement.querySelector('.text-primary');
+    const activeItem = this.nav()?.nativeElement.querySelector('.active');
     const highlightElement = this.highlight()?.nativeElement;
-    try {
-      const { y } = activeItem?.getBoundingClientRect();
-      const headerHeight = 72;
+    const navElement = this.nav()?.nativeElement;
 
-      if ('startViewTransition' in document) {
-        // @ts-ignore
-        document.startViewTransition(() => {
-          highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
-        });
-      } else {
-        highlightElement.style.top = `${Math.round(y - headerHeight)}px`;
-      }
-    } catch (e) {
-      console.warn(e);
+    if (!activeItem || !highlightElement || !navElement) return;
+
+    const { top: navTop } = navElement.getBoundingClientRect();
+    const { top: activeTop } = activeItem.getBoundingClientRect();
+    const relativeTop = activeTop - navTop;
+
+    if ('startViewTransition' in document) {
+      // @ts-ignore
+      document.startViewTransition(() => {
+        highlightElement.style.top = `${Math.round(relativeTop)}px`;
+      });
+    } else {
+      highlightElement.style.top = `${Math.round(relativeTop)}px`;
     }
   }
 

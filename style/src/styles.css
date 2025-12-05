@@ -5,17 +5,26 @@
 }
 
 @plugin "daisyui" {
-  themes: light --default, dark, winter, dracula;
+  themes: light --default, dark;
   root: ":root";
   logs: true;
 }
+
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
+  --color-primary: hsl(var(--primary-hue) 88% 52%);
+  --color-secondary: hsl(var(--primary-hue) 88% 82%);
+  --color-accent: hsl(calc(var(--primary-hue) + 60) 88% 52%);
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
   --color-primary: hsl(var(--primary-hue) 88% 62%);
   --color-secondary: hsl(var(--primary-hue) 88% 82%);
-	--color-accent: hsl(calc(var(--primary-hue) + 60) 88% 62%);
+  --color-accent: hsl(calc(var(--primary-hue) + 60) 88% 62%);
 }
+
 @plugin "@tailwindcss/typography";
 @source "../../ui/src/app";
 @source "../../wc/clipboard/src/app";

@@ -48,7 +48,7 @@ This updates all derived HSL colors immediately without rebuild.
  > Read more about daisyUI [color options](https://daisyui.com/docs/colors/#list-of-all-daisyui-color-names)
 
 > [!TIP]
-> For more color variations which work great in darkmode aswell use the [color opacitiy options](https://daisyui.com/docs/colors/#color-opacity-and-muted-colors)
+> For more color variations which work should work in dark mode we recommend the usage of [color opacitiy options](https://daisyui.com/docs/colors/#color-opacity-and-muted-colors)
 
 ## Use in component SCSS / CSS
 

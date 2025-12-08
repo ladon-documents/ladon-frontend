@@ -4,6 +4,7 @@
 
 * [Starting frontend](#starting-frontend)
 * [Trigger a release build](#trigger-a-release-build)
+* [Colors and Themes](style/README.md)
 
 ### <a id="starting-frontend"></a>Starting frontend
 

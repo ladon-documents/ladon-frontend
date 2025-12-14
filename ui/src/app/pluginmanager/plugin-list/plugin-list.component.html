@@ -1,48 +1,45 @@
 @if (isLoading$()) {
-  <div class="relative p-6 w-3/4 mx-auto mt-10">
+  <div class="p-6 w-3/4 mx-auto">
     <span class="loading loading-dots loading-sm"></span>
   </div>
 } @else {
-  <ul class="list mt-10">
+  <ul role="list" class="divide-y divide-gray-500/20">
     @for (item of pluginList$() | searchfilter: filterText$(); track item.id) {
       <li
         (click)="onSelect(item)"
-        class="list-row cursor-pointer hover:bg-sky-700"
-        [ngClass]="{ active: item === selectedItem }">
-        <div>
-          <div>{{ item.name }}</div>
-          <div class="text-xs uppercase font-semibold opacity-60"></div>
-          @if (item.current === item.version) {
-            <div
-              class="badge badge-soft badge-neutral"
-              *ngIf="item.current"
-              [attr.datacaption]="'PLUGIN.VERSION' | translate">
-              {{ item.current }}
-            </div>
-          } @else {
-            <div
-              class="badge badge-soft badge-neutral"
-              *ngIf="item.current"
-              [attr.datacaption]="'PLUGIN.AVAILABLE' | translate">
-              {{ item.current }}
-            </div>
-            <div
-              class="badge badge-soft"
-              [ngClass]="item.canUpdate ? 'badge-secondary' : 'badge-neutral'"
-              [attr.datacaption]="'PLUGIN.AVAILABLE' | translate">
-              {{ item.version }}
-            </div>
-          }
+        class="flex cursor-pointer py-2 px-4 items-center hover:bg-primary/50"
+        [ngClass]="{ 'bg-primary/10 border-l-4 border-l-primary': item === selectedItem }">
+        <div class="grow">
+          <h3>{{ item.name }}</h3>
+          <div class="mt-2 flex gap-2">
+            @if (item.current === item.version) {
+              @if (item.current) {
+                <app-pill
+                  [class]="'badge-success'"
+                  [attr.datacaption]="'PLUGIN.VERSION' | translate"
+                  [label]="item.current"
+                  [isDeletable]="false">
+                </app-pill>
+              }
+            } @else {
+              @if (item.current) {
+                <app-pill [class]="'badge-success'" [label]="item.current" [isDeletable]="false"> </app-pill>
+              }
+
+              <app-pill
+                [class]="item.canUpdate ? 'badge-primary' : 'bg-success'"
+                [attr.datacaption]="
+                  item.canUpdate ? ('PLUGIN.CAN_UPDATE' | translate) : ('PLUGIN.CAN_INSTALL' | translate)
+                "
+                [label]="item.version"
+                [isDeletable]="false"></app-pill>
+            }
+          </div>
         </div>
-        <div></div>
         @if (!item.canInstall && !item.canUpdate) {
-          <div>
-            <ng-icon name="heroCheck" size="1rem" color="green"></ng-icon>
-          </div>
+          <ng-icon name="heroCheck" size="1.25rem" style="color: var(--color-success)"></ng-icon>
         } @else {
-          <div>
-            <ng-icon name="heroChevronRight" size="1rem"></ng-icon>
-          </div>
+          <ng-icon name="heroChevronRight" size="1.25rem" style="color: currentColor" class="opacity-30"></ng-icon>
         }
       </li>
     }

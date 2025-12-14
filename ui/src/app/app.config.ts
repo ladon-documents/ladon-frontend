@@ -44,7 +44,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideNgIconsConfig({
       size: '1.5em',
-      color: 'darkblue',
     }),
     { provide: UrlSerializer, useClass: CustomUrlSerializer },
 

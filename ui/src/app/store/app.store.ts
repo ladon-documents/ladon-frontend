@@ -38,6 +38,17 @@ export const AppStore = signalStore(
   withState(initialState),
   withHooks({
     onInit: (store, authService = inject(AuthService), router = inject(Router)) => {
+      const toggleSidenavState = () => {
+        const storedSidenavClosed = localStorage.getItem('sidenavClosed');
+        const isSidenavClosed = storedSidenavClosed ? storedSidenavClosed === 'true' : false;
+        patchState(store, (state) => ({
+          ...state,
+          ui: {
+            ...state.ui,
+            isSidenavClosed,
+          },
+        }));
+      };
       const loadCurrentUser = rxMethod<void>(
         pipe(
           tap(() => {
@@ -81,6 +92,7 @@ export const AppStore = signalStore(
         ),
       );
       loadCurrentUser();
+      toggleSidenavState();
     },
   }),
   withMethods((store, authService = inject(AuthService), router = inject(Router)) => {
@@ -171,6 +183,7 @@ export const AppStore = signalStore(
             isSidenavClosed: !state.ui.isSidenavClosed,
           },
         }));
+        localStorage.setItem('sidenavClosed', String(store.ui.isSidenavClosed()));
       },
       toggleDarkMode(isDarkMode: boolean) {
         patchState(store, (state) => ({

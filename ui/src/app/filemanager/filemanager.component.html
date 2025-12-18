@@ -128,7 +128,7 @@
             </button>
           </div>
           <div class="relative">
-            <div class="border-b border-gray-100">
+            <div>
               <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-primary btn-sm gap-1">
                   <ng-icon name="heroPlus" size="1.0em"></ng-icon>
@@ -170,4 +170,9 @@
       </div>
     </div>
   }
+  <app-search-modal [isOpen]="isSearchModalOpen()"
+                    (close)="closeSearchModal()"
+                    (bucketSelected)="onBucketSelected($event)"
+                    placeholder="Nach Buckets suchen..."
+  ></app-search-modal>
 </main>

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, Signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons, provideNgIconsConfig } from '@ng-icons/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -30,6 +30,8 @@ import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
 import { FileEditorDialogComponent } from './file-editor-dialog/file-editor-dialog.component';
 import { filemanagerRoutes } from './filemanager.routes';
+import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
+import { BucketUiItemModel } from '../../api';
 
 @Component({
   standalone: true,
@@ -43,6 +45,7 @@ import { filemanagerRoutes } from './filemanager.routes';
     CreateFolderComponent,
     SidebarComponent,
     FileEditorDialogComponent,
+    SearchModalComponent,
   ],
   providers: [
     provideNgIconsConfig({
@@ -80,6 +83,8 @@ export class FilemanagerComponent implements OnInit {
   readonly selectedBucket: Signal<string | null> = this.filemanagerFacade.selectedBucket;
   readonly error: Signal<string | null> = this.filemanagerFacade.error;
   readonly stats: Signal<BucketStatsExtended | null> = this.filemanagerFacade.statistics;
+  isSearchModalOpen = signal(false);
+
   viewMode = this.filemanagerFacade.viewMode;
   readonly searchTerm = this.filemanagerFacade.searchTerm;
   readonly sortConfig = this.filemanagerFacade.sortConfig;
@@ -88,20 +93,11 @@ export class FilemanagerComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+  ) {
+    this.initKeyDownListener()
+  }
 
   ngOnInit() {
-    /*
-    if (this.route.firstChild === null) {
-      try {
-        const defaultBucketId = await this.#bucketsService.ensureDefaultBucket();
-        this.router.navigate([defaultBucketId], { relativeTo: this.route });
-      } catch (error) {
-        console.error('Fehler beim Laden/Erstellen des Standard-Buckets:', error);
-      }
-    }
-
-     */
     if (this.route.firstChild === null) {
       console.log('route is null');
     }
@@ -132,6 +128,29 @@ export class FilemanagerComponent implements OnInit {
 
   toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
     this.filemanagerFacade.toggleSort(field);
+  }
+
+  private initKeyDownListener() {
+    document.addEventListener('keydown', (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        event.preventDefault();
+        this.openSearchModal();
+      }
+    });
+  }
+
+
+  openSearchModal() {
+    this.isSearchModalOpen.set(true);
+  }
+
+  closeSearchModal() {
+    this.isSearchModalOpen.set(false);
+  }
+
+  onBucketSelected(bucket: BucketUiItemModel) {
+    console.log('Selected bucket:', bucket);
+    this.filemanagerFacade.loadBucket(bucket.id as string);
   }
 
   protected readonly heroDocument = heroDocument;

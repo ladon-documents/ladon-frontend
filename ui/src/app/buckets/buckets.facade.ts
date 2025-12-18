@@ -13,6 +13,7 @@ export class BucketsFacade {
   readonly isLoading = this.store.isLoading;
   readonly error = this.store.error;
   readonly searchTerm = this.store.searchTerm;
+  readonly remoteSearchTerm = this.store.remoteSearchTerm;
   readonly showFavoritesOnly = this.store.showFavoritesOnly;
   readonly sortConfig = this.store.sort;
   readonly pagination = this.store.pagination;
@@ -28,11 +29,19 @@ export class BucketsFacade {
     this.store.setSelectedBucket(bucket);
   }
 
+  setRemoteSearchTerm(searchTerm: string) {
+    this.store.setRemoteSearchTerm(searchTerm);
+  }
+
   setSearchTerm(searchTerm: string) {
     this.store.setSearchTerm(searchTerm);
   }
 
   clearSearch() {
+    this.store.clearSearch();
+  }
+
+  clearRemoteSearch() {
     this.store.clearSearch();
   }
 

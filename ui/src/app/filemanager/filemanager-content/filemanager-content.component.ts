@@ -26,11 +26,12 @@ import { SidebarService } from '../sidebar/sidebar.service';
 import { FilemanagerPaginationComponent } from '../pagination/pagination.component';
 import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 import { filemanagerHelper } from '../helper/helper';
+import { CalendarComponent } from '@ladon/shared';
 
 @Component({
   standalone: true,
   selector: 'app-filemanager-content',
-  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe, FilemanagerPaginationComponent],
+  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe, FilemanagerPaginationComponent, CalendarComponent],
   providers: [
     provideIcons({
       heroFolder,

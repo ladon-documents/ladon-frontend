@@ -1,7 +1,7 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
+import { catchError, debounceTime, EMPTY, pipe, switchMap, tap } from 'rxjs';
 import { BucketsService } from '../buckets/buckets.service';
 import { BucketUiItemModel } from '../../api';
 
@@ -37,6 +37,7 @@ export interface BucketsState {
   isLoading: boolean;
   error: string | null;
   searchTerm: string;
+  remoteSearchTerm: string;
   showFavoritesOnly: boolean;
   sort: SortConfig;
   pagination: PaginationState;
@@ -51,6 +52,7 @@ const initialState: BucketsState = {
   isLoading: false,
   error: null,
   searchTerm: '',
+  remoteSearchTerm: '',
   showFavoritesOnly: false,
   sort: {
     field: 'created',
@@ -102,8 +104,16 @@ export const BucketsStore = signalStore(
         });
       },
 
+      setRemoteSearchTerm: (searchTerm: string) => {
+        methods.searchBucket(searchTerm);
+      },
+
       clearSearch: () => {
         methods.setSearchTerm('');
+      },
+
+      clearRemoteSearch: () => {
+        methods.loadBuckets();
       },
 
       toggleFavoritesFilter: (showFavoritesOnly: boolean) => {
@@ -355,6 +365,44 @@ export const BucketsStore = signalStore(
           }),
           switchMap(() =>
             bucketsService.getBuckets().pipe(
+              tap((buckets) => {
+                const { filteredBuckets, paginatedBuckets, paginationState } = methods.applyFiltersAndPagination(
+                  buckets,
+                  store.searchTerm(),
+                  store.showFavoritesOnly(),
+                  store.sort(),
+                  1,
+                  store.pagination().pageSize,
+                );
+
+                patchState(store, {
+                  isLoading: false,
+                  allBuckets: buckets,
+                  filteredBuckets,
+                  buckets: paginatedBuckets,
+                  pagination: paginationState,
+                });
+              }),
+              catchError((error) => {
+                patchState(store, {
+                  isLoading: false,
+                  error: error.error?.reason || 'Fehler beim Laden der Buckets',
+                });
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      ),
+
+      searchBucket: rxMethod<string>(
+        pipe(
+          tap(() => {
+            patchState(store, { isLoading: true, error: null });
+          }),
+          debounceTime(100),
+          switchMap((bucketToSearch) =>
+            bucketsService.searchBuckets(bucketToSearch).pipe(
               tap((buckets) => {
                 const { filteredBuckets, paginatedBuckets, paginationState } = methods.applyFiltersAndPagination(
                   buckets,

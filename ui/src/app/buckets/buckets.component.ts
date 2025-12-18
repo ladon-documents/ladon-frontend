@@ -32,7 +32,14 @@ import { LadonRouterService } from '../services/ladon-router.service';
 @Component({
   selector: 'buckets',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIconComponent, TranslateModule, DialogComponent, FolderComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgIconComponent,
+    TranslateModule,
+    DialogComponent,
+    FolderComponent,
+  ],
   providers: [
     provideIcons({
       heroFolder,
@@ -83,6 +90,7 @@ export class BucketsComponent implements OnInit {
   readonly bucketStats = this.bucketsFacade.bucketStats;
   readonly isLoading = signal(false); // this.bucketsFacade.isLoading;
   readonly error = this.bucketsFacade.error;
+  readonly remoteSearchTerm = this.bucketsFacade.remoteSearchTerm;
   readonly searchTerm = this.bucketsFacade.searchTerm;
   readonly showFavoritesOnly = this.bucketsFacade.showFavoritesOnly;
   readonly sortConfig = this.bucketsFacade.sortConfig;
@@ -116,9 +124,18 @@ export class BucketsComponent implements OnInit {
     }
   }
 
+  onRemoteSearchChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.bucketsFacade.setRemoteSearchTerm(target.value);
+  }
+
   onSearchChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.bucketsFacade.setSearchTerm(target.value);
+  }
+
+  clearRemoteSearch() {
+    this.bucketsFacade.clearRemoteSearch();
   }
 
   clearSearch() {

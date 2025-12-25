@@ -43,6 +43,7 @@ export class UsersComponent implements OnInit {
   }
 
   createUser(): void {
+    this.userAddGroup.reset({ userid: this.generateRandomUUID() });
     this.userDialog?.openDialog();
   }
 
@@ -79,6 +80,11 @@ export class UsersComponent implements OnInit {
   private generateForm(): void {
     this.userAddGroup.addControl('name', new FormControl(undefined, Validators.required));
     this.userAddGroup.addControl('email', new FormControl(undefined, [Validators.required, Validators.email]));
+    this.userAddGroup.addControl('userid', new FormControl(undefined, Validators.required));
     this.userAddGroup.addControl('password', new FormControl(undefined, Validators.required));
+  }
+
+  private generateRandomUUID() {
+    return crypto.randomUUID();
   }
 }

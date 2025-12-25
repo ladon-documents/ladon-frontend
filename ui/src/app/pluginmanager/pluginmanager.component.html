@@ -11,36 +11,32 @@
   }
 </div>
 
-<div class="grid grid-cols-2 gap-4 h-[calc(100%-2.5rem)]">
+<div class="grid md:grid-cols-2 gap-4 h-[calc(100%-2.5rem)]">
   <div class="h-full overflow-auto bg-base-100">
     <router-outlet></router-outlet>
   </div>
 
-  <div class="h-full overflow-auto">
+  <div class="h-full overflow-auto hidden md:block">
     <div id="iframe" slot="right" class="h-full">
       <ng-container *ngTemplateOutlet="iframeWithControls"></ng-container>
     </div>
-    <dialog #dialog>
-      <div class="dialog__header">
-        <button class="close" (click)="dialog.close()"><span></span></button>
-      </div>
-      <div class="dialog__content">
-        <ng-container *ngTemplateOutlet="iframeWithControls"></ng-container>
-      </div>
-    </dialog>
-
-    <ng-template #iframeWithControls>
-      @if (selectedItem$ | async; as selectedItem) {
-        @if (selectedItem && selectedItem.name) {
-          <plugin-progressbar
-            [pluginInstalState]="pluginInstallList[selectedItem.name]"
-            [plugin]="selectedItem"
-            (update)="install($event)"
-            (deinstall)="deinstall($event)">
-          </plugin-progressbar>
-        }
-      }
-      <iframe [src]="pluginInfoUrl$()" class="w-full h-full"></iframe>
-    </ng-template>
   </div>
 </div>
+
+<app-dialog [title]="(selectedItem$ | async)?.name">
+  <ng-container *ngTemplateOutlet="iframeWithControls"></ng-container>
+</app-dialog>
+
+<ng-template #iframeWithControls>
+  @if (selectedItem$ | async; as selectedItem) {
+    @if (selectedItem && selectedItem.name) {
+      <plugin-progressbar
+        [pluginInstalState]="pluginInstallList[selectedItem.name]"
+        [plugin]="selectedItem"
+        (update)="install($event)"
+        (deinstall)="deinstall($event)">
+      </plugin-progressbar>
+    }
+  }
+  <iframe [src]="pluginInfoUrl$()" class="w-full h-full"></iframe>
+</ng-template>

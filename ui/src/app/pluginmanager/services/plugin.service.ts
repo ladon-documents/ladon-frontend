@@ -25,8 +25,8 @@ export interface PluginWithVersionStatus extends PluginModel {
   canInstall: boolean;
   canUpdate: boolean;
   canDeinstall: boolean;
-  current: string | null;
-  version: string | null;
+  current?: string;
+  version?: string;
 }
 
 export interface WebBundleWrapper {

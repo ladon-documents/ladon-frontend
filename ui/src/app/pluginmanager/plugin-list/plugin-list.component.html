@@ -1,21 +1,19 @@
 @if (isLoading$()) {
-  <div class="p-6 w-3/4 mx-auto">
-    <span class="loading loading-dots loading-sm"></span>
-  </div>
+  <app-spinner></app-spinner>
 } @else {
   <ul role="list" class="divide-y divide-gray-500/20">
     @for (item of pluginList$() | searchfilter: filterText$(); track item.id) {
       <li
         (click)="onSelect(item)"
-        class="flex cursor-pointer py-2 px-4 items-center hover:bg-primary/50"
-        [ngClass]="{ 'bg-primary/10 border-l-4 border-l-primary': item === selectedItem }">
+        class="flex cursor-pointer py-2 px-4 items-center border-l-4 hover:bg-primary/50"
+        [ngClass]="item === selectedItem ? 'bg-primary/10 border-l-primary' : 'border-transparent'">
         <div class="grow">
           <h3>{{ item.name }}</h3>
           <div class="mt-2 flex gap-2">
             @if (item.current === item.version) {
               @if (item.current) {
                 <app-pill
-                  [class]="'badge-success'"
+                  [class]="'bg-success/30 border-success'"
                   [attr.datacaption]="'PLUGIN.VERSION' | translate"
                   [label]="item.current"
                   [isDeletable]="false">
@@ -23,11 +21,12 @@
               }
             } @else {
               @if (item.current) {
-                <app-pill [class]="'badge-success'" [label]="item.current" [isDeletable]="false"> </app-pill>
+                <app-pill [class]="'bg-success/30 border-success'" [label]="item.current" [isDeletable]="false">
+                </app-pill>
               }
 
               <app-pill
-                [class]="item.canUpdate ? 'badge-primary' : 'bg-success'"
+                [class]="item.canUpdate ? 'bg-primary/30 border-primary' : 'bg-success/30 border-success'"
                 [attr.datacaption]="
                   item.canUpdate ? ('PLUGIN.CAN_UPDATE' | translate) : ('PLUGIN.CAN_INSTALL' | translate)
                 "

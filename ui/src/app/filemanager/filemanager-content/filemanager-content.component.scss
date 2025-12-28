@@ -1,0 +1,127 @@
+.drag-over {
+  border: 2px dashed #3b82f6;
+  background-color: rgba(59, 130, 246, 0.1);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(59, 130, 246, 0.05);
+    pointer-events: none;
+  }
+}
+
+.upload-progress {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.drop-zone-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
+// Toast Animationen
+.toast .alert {
+  animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+// Upload Progress spezifische Styles
+.upload-progress-container {
+  .alert {
+    backdrop-filter: blur(8px);
+    border: 1px solid hsl(var(--bc) / 0.1);
+
+    &.alert-info {
+      background: linear-gradient(135deg, hsl(var(--in) / 0.05) 0%, hsl(var(--in) / 0.02) 100%);
+    }
+
+    &.alert-success {
+      background: linear-gradient(135deg, hsl(var(--su) / 0.05) 0%, hsl(var(--su) / 0.02) 100%);
+    }
+
+    &.alert-error {
+      background: linear-gradient(135deg, hsl(var(--er) / 0.05) 0%, hsl(var(--er) / 0.02) 100%);
+    }
+  }
+}
+
+// Progress Bar Animationen
+.progress {
+  transition: all 0.3s ease-out;
+
+  &::-webkit-progress-bar {
+    border-radius: 0.5rem;
+  }
+
+  &::-webkit-progress-value {
+    transition: width 0.3s ease-out;
+    border-radius: 0.5rem;
+  }
+}
+
+// Drag & Drop Overlay Verbesserungen
+.drag-overlay {
+  .card {
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Loading Spinner Verbesserungen
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+// Responsive Anpassungen
+@media (max-width: 640px) {
+  .toast {
+    max-width: calc(100vw - 2rem);
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .toast .alert {
+    min-width: auto;
+    width: 100%;
+  }
+}

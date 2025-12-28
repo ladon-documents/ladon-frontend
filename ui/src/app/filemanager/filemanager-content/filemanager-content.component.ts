@@ -6,7 +6,7 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   heroArrowDownTray,
   heroChevronDown,
-  heroChevronUp,
+  heroChevronUp, heroCloudArrowUp,
   heroDocumentDuplicate,
   heroFolder,
   heroPencilSquare,
@@ -14,7 +14,7 @@ import {
   heroPlusCircle,
   heroShare,
   heroStar,
-  heroTrash,
+  heroTrash
 } from '@ng-icons/heroicons/outline';
 import { heroFolderSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
@@ -26,12 +26,20 @@ import { SidebarService } from '../sidebar/sidebar.service';
 import { FilemanagerPaginationComponent } from '../pagination/pagination.component';
 import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 import { filemanagerHelper } from '../helper/helper';
-import { CalendarComponent } from '@ladon/shared';
+import { FileUploadDirective } from '../../shared/directive/file-upload.directive';
+import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.facade';
+
 
 @Component({
   standalone: true,
   selector: 'app-filemanager-content',
-  imports: [CommonModule, NgIcon, FilesizePipe, FileiconPipe, FilemanagerPaginationComponent, CalendarComponent],
+  imports: [CommonModule,
+    NgIcon,
+    FilesizePipe,
+    FileiconPipe,
+    FilemanagerPaginationComponent,
+    FileUploadDirective
+  ],
   providers: [
     provideIcons({
       heroFolder,
@@ -46,6 +54,7 @@ import { CalendarComponent } from '@ladon/shared';
       heroShare,
       heroChevronUp,
       heroChevronDown,
+      heroCloudArrowUp
     }),
     FilesizePipe,
   ],
@@ -55,10 +64,13 @@ import { CalendarComponent } from '@ladon/shared';
 export class FilemanagerContentComponent implements OnDestroy, OnInit {
   public dateFormat = 'dd.MM.yyyy';
   readonly #facade = inject(FilemanagerFacade);
+  readonly filemanagerContentFacade = inject(FilemanagerContentFacade);
   private readonly converterService = inject(ConverterService);
   private readonly sidebarService = inject(SidebarService);
   private readonly pdfViewerFacade = inject(PdfViewerFacade);
+
   documents: Signal<DocumentModel[]> = this.#facade.documents;
+  uploadProgress = this.filemanagerContentFacade.uploadProgress;
 
   #currentBucket: string | null = null;
   #subfolder: string | null = null;
@@ -68,6 +80,10 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   readonly sortConfig = this.#facade.sortConfig;
 
   imageUrl: string | null = null;
+
+  isDragOver = signal(false);
+  allowedFileTypes: string[] = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.png', '.gif'];
+  maxFileSize = 10 * 1024 * 1024; // 10MB
 
   constructor(
     private router: Router,
@@ -168,4 +184,27 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       await this.pdfViewerFacade.navigateToPdfViewer(document);
     }
   }
+
+  // ******** //
+
+  onFilesHovered(isHovered: boolean): void {
+    this.isDragOver.set(isHovered);
+  }
+
+  onFilesDropped(event: { files: File[]; event: DragEvent }): void {
+    this.isDragOver.set(false);
+    if (event.files && event.files.length > 0) {
+      event.files.forEach(file => this.filemanagerContentFacade.uploadFile(file));
+    }
+  }
+
+  onFilesRejected(event: { files: File[]; reasons: string[] }): void {
+    this.isDragOver.set(false);
+    console.error('Dateien abgelehnt:', event.reasons);
+    // Optional: Toast-Notification implementieren
+    this.filemanagerContentFacade.showErrorToast(`${event.files.length} Datei(en) wurden abgelehnt: ${event.reasons.join(', ')}`);
+  }
+
+
+  protected readonly Math = Math;
 }

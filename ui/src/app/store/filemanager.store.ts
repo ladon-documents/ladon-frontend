@@ -319,7 +319,6 @@ export const FilemanagerStore = signalStore(
             ),
           ),
         ),
-
         createFolder: rxMethod<{ folderName: string; currentPath?: string }>(
           pipe(
             tap(() => {
@@ -338,6 +337,68 @@ export const FilemanagerStore = signalStore(
                 ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${folderName}/`
                 : `${folderName}/`;
               return filemanagerService.createNewFolder(bucket, folderPath).pipe(
+                switchMap(() => {
+                  if (currentPath) {
+                    const currentDocument: DocumentModel = {
+                      path: currentPath,
+                      bucket: store.selectedBucket() ?? undefined,
+                      key: currentPath,
+                    };
+                    return filemanagerService.loadDocumentList(currentDocument);
+                  } else {
+                    return filemanagerService.loadBucket(bucket);
+                  }
+                }),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  }));
+                }),
+                catchError((error) => {
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    error: `Fehler beim Erstellen des Ordners: ${error.message || error}`,
+                  }));
+                  throw error;
+                }),
+              );
+            }),
+          ),
+        ),
+        uploadFile: rxMethod<{ folderName: string; currentPath?: string, content: any }>(
+          pipe(
+            tap(() => {
+              patchState(store, (state) => ({
+                ...state,
+                isLoading: true,
+                error: null,
+              }));
+            }),
+            switchMap(({ folderName, currentPath, content }) => {
+              const bucket = store.selectedBucket();
+              if (!bucket) {
+                throw new Error('Kein Bucket ausgewählt');
+              }
+              const folderPath = currentPath
+                ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${folderName}/`
+                : `${folderName}/`;
+              return filemanagerService.createNewFile(bucket, folderPath, content).pipe(
                 switchMap(() => {
                   if (currentPath) {
                     const currentDocument: DocumentModel = {

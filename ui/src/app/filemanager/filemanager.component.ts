@@ -21,6 +21,8 @@ import {
   heroScale,
   heroSquares2x2,
   heroXMark,
+  heroCloudArrowUp
+
 } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
@@ -137,6 +139,17 @@ export class FilemanagerComponent implements OnInit {
         this.openSearchModal();
       }
     });
+  }
+  onFileInputChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      const files = Array.from(input.files);
+      // Weiterleitung an die Upload-Logik
+      //files.forEach(file => this.uploadFile(file));
+
+      // Input zurücksetzen für wiederholte Uploads derselben Datei
+      input.value = '';
+    }
   }
 
 

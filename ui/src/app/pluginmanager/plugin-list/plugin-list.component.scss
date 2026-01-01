@@ -1,4 +1,6 @@
-li.active {
-  border-left: 2px solid #1c398e;
-  border-radius: 0;
+:host {
+  // Set to have boundries for spinner when in full mode
+  position: relative;
+  display: block;
+  height: inherit;
 }

@@ -3,11 +3,12 @@ import { PluginInstallState, PluginWithVersionStatus } from '../services/plugin.
 import { PluginModel } from '../../../plugin';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { PillComponent } from '@ladon/shared';
 
 @Component({
   selector: 'plugin-progressbar',
   templateUrl: './plugin-progressbar.component.html',
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, PillComponent],
   styleUrls: ['./plugin-progressbar.component.scss'],
 })
 export class PluginProgressbarComponent implements OnInit {

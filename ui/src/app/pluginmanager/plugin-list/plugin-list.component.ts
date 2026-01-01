@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { heroCheck, heroChevronRight } from '@ng-icons/heroicons/outline';
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { PillComponent } from '@ladon/shared';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-plugin-list',
-  imports: [CommonModule, SearchfilterPipe, TranslatePipe, NgIcon],
+  imports: [CommonModule, SearchfilterPipe, TranslatePipe, NgIcon, PillComponent, SpinnerComponent],
   providers: [provideIcons({ heroCheck, heroChevronRight })],
   templateUrl: './plugin-list.component.html',
   styleUrl: './plugin-list.component.scss',

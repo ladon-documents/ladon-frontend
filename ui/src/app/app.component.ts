@@ -18,9 +18,18 @@ import { HeaderComponent } from './header/header.component';
 import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.component';
 import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
 import { DocumentModel } from '../api';
+import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 
 @Component({
-  imports: [CommonModule, RouterModule, TranslateModule, NavigationComponent, HeaderComponent, PdfViewerComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    NavigationComponent,
+    HeaderComponent,
+    PdfViewerComponent,
+    SpinnerComponent,
+  ],
   standalone: true,
   selector: 'ldn-ui',
   templateUrl: './app.component.html',

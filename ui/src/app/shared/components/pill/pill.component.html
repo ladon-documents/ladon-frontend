@@ -1,4 +1,4 @@
-<div class="btn rounded-full" [ngClass]="class()">
+<div class="rounded-full text-xs shadow-sm" [ngClass]="pillClasses()">
   <span class="cursor-pointer hover:underline" (click)="onLabelEmit()">{{ label() }}</span>
 
   @if (isDeletable()) {

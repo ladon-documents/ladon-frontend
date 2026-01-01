@@ -5,6 +5,7 @@ import {
   ElementRef,
   HostListener,
   OnInit,
+  signal,
   Signal,
   ViewChild,
 } from '@angular/core';
@@ -20,18 +21,20 @@ import { PluginProgressbarComponent } from './progressbar/plugin-progressbar.com
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { pluginmanagerRoutes } from './pluginmanager.routes';
 import { PluginListComponent } from './plugin-list/plugin-list.component';
+import { DialogComponent } from '@ladon/shared';
 
 @Component({
   standalone: true,
   selector: 'pluginmanager',
-  imports: [CommonModule, RouterModule, PluginProgressbarComponent, FormsModule, TranslateModule],
+  imports: [CommonModule, RouterModule, PluginProgressbarComponent, FormsModule, TranslateModule, DialogComponent],
   templateUrl: './pluginmanager.component.html',
   styleUrl: './pluginmanager.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PluginmanagerComponent implements OnInit {
   @ViewChild('search') search!: ElementRef;
-  @ViewChild('dialog') dialog!: ElementRef;
+  @ViewChild(DialogComponent, { static: true }) dialog!: DialogComponent;
+  hasSMBreakpoint = signal<boolean>(false);
 
   public pluginInstallList: { [key: string]: PluginInstallState } = {};
   public isLoading = true;
@@ -44,6 +47,7 @@ export class PluginmanagerComponent implements OnInit {
   filterText: string = '';
 
   private sub$: Subscription = new Subscription();
+  private resizeObserver: ResizeObserver | undefined;
 
   @HostListener('document:keyup', ['$event'])
   handleHotKey(event: KeyboardEvent): void {
@@ -60,6 +64,20 @@ export class PluginmanagerComponent implements OnInit {
   ) {
     this.selectedItem$ = this.pluginService.selectedPlugin;
     this.filterText = '';
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        if (entry.contentRect) {
+          const width = entry.contentRect.width;
+
+          if (width < 768) {
+            this.hasSMBreakpoint.set(true);
+          } else {
+            this.hasSMBreakpoint.set(false);
+          }
+        }
+      }
+    });
+    this.resizeObserver.observe(document.body);
 
     this.channels$ = this.pluginService.getPluginChannels().pipe(
       tap((channels) => {
@@ -76,18 +94,14 @@ export class PluginmanagerComponent implements OnInit {
     this.pluginInfoUrl$ = computed(() =>
       this.sanitizer.bypassSecurityTrustResourceUrl(this.pluginService.pluginInfoUrl()),
     );
+
+    this.pluginService.selectedPlugin.subscribe((selected) => {
+      if (selected && this.hasSMBreakpoint()) {
+        this.dialog.openDialog();
+      }
+    });
+
     this.getInstalling();
-  }
-
-  private findCurrentSelectedItemFromPayload(
-    payload: PluginWithVersionStatus[],
-    currentId: string,
-  ): PluginWithVersionStatus | undefined {
-    if (payload instanceof Array) {
-      return payload.find((plugin) => plugin.id === currentId);
-    }
-
-    throw TypeError(`Please pass in array for ${payload}`);
   }
 
   private getInstalling(): void {
@@ -116,10 +130,6 @@ export class PluginmanagerComponent implements OnInit {
   ngOnDestroy(): void {
     //   this.webbundle = undefined;
     //   this.bundleContent = undefined;
-  }
-
-  private get checkForOpenDialog(): boolean {
-    return this.dialog.nativeElement.hasAttribute('open');
   }
 
   changeChannel(channel: string): void {
@@ -178,13 +188,6 @@ export class PluginmanagerComponent implements OnInit {
           .subscribe(),
       );
     }
-  }
-
-  private isMinWidth(minWidth: number): boolean {
-    if (isNaN(minWidth)) {
-      throw TypeError(`Passed parameter should be a number`);
-    }
-    return window.innerWidth >= minWidth;
   }
 
   private installBundle(plugin: PluginModel): void {

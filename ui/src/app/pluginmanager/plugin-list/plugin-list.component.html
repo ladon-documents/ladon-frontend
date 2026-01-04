@@ -1,5 +1,5 @@
 @if (isLoading$()) {
-  <app-spinner></app-spinner>
+  <lib-spinner></lib-spinner>
 } @else {
   <ul role="list" class="divide-y divide-gray-500/20">
     @for (item of pluginList$() | searchfilter: filterText$(); track item.id) {

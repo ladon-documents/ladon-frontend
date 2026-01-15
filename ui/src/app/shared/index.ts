@@ -7,3 +7,4 @@ export * from './pipes/assetUrl.pipe';
 export * from './components/folder/folder.component';
 export * from './components/pill/pill.component';
 export * from './components/dialog/dialog.component';
+export * from './components/uploads/uploads.component';

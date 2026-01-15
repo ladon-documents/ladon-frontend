@@ -4,10 +4,11 @@ import { SearchbarComponent } from '../searchbar/searchbar.component';
 import { AvatarComponent } from '../avatar/avatar.component';
 import { AppStore } from '../store/app.store';
 import { environment } from '../../environments/environment';
+import { UploadsComponent } from '@ladon/shared';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, SearchbarComponent, AvatarComponent],
+  imports: [CommonModule, SearchbarComponent, AvatarComponent, UploadsComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })

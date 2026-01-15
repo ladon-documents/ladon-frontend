@@ -28,17 +28,20 @@ import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 import { filemanagerHelper } from '../helper/helper';
 import { FileUploadDirective } from '../../shared/directive/file-upload.directive';
 import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.facade';
+import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
 
 
 @Component({
   standalone: true,
   selector: 'app-filemanager-content',
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     NgIcon,
     FilesizePipe,
     FileiconPipe,
     FilemanagerPaginationComponent,
-    FileUploadDirective
+    FileUploadDirective,
+    UploadProgressComponent,
   ],
   providers: [
     provideIcons({
@@ -54,7 +57,7 @@ import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.fa
       heroShare,
       heroChevronUp,
       heroChevronDown,
-      heroCloudArrowUp
+      heroCloudArrowUp,
     }),
     FilesizePipe,
   ],
@@ -70,7 +73,6 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   private readonly pdfViewerFacade = inject(PdfViewerFacade);
 
   documents: Signal<DocumentModel[]> = this.#facade.documents;
-  uploadProgress = this.filemanagerContentFacade.uploadProgress;
 
   #currentBucket: string | null = null;
   #subfolder: string | null = null;
@@ -194,7 +196,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   onFilesDropped(event: { files: File[]; event: DragEvent }): void {
     this.isDragOver.set(false);
     if (event.files && event.files.length > 0) {
-      event.files.forEach(file => this.filemanagerContentFacade.uploadFile(file));
+      event.files.forEach((file) => this.filemanagerContentFacade.uploadFile(file));
     }
   }
 
@@ -202,9 +204,10 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     this.isDragOver.set(false);
     console.error('Dateien abgelehnt:', event.reasons);
     // Optional: Toast-Notification implementieren
-    this.filemanagerContentFacade.showErrorToast(`${event.files.length} Datei(en) wurden abgelehnt: ${event.reasons.join(', ')}`);
+    this.filemanagerContentFacade.showErrorToast(
+      `${event.files.length} Datei(en) wurden abgelehnt: ${event.reasons.join(', ')}`,
+    );
   }
-
 
   protected readonly Math = Math;
 }

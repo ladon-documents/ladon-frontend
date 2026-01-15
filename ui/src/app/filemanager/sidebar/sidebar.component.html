@@ -1,16 +1,14 @@
 @if (isOpen) {
   <div class="w-96 bg-base-100 h-full flex flex-col">
-    <!-- Header -->
     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-500/40 flex-shrink-0">
-      <h2 class="text-lg font-medium text-gray-800">{{ selectedDocument()?.key }}</h2>
-      <button (click)="closeSidebar()" class="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200">
-        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <h2 class="text-lg font-medium ">{{ selectedDocument()?.key }}</h2>
+      <button (click)="closeSidebar()" class="p-2 rounded-full hover:bg-base-100 transition-colors duration-200">
+        <svg class="w-6 h-6 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>
 
-    <!-- Content -->
     <div class="flex-1 overflow-y-auto">
       <div class="p-4">
         <filemanager-preview></filemanager-preview>

@@ -11,7 +11,7 @@ export interface FileUploadEvent {
 })
 export class FileUploadDirective {
   @Input() acceptedTypes: string[] = [];
-  @Input() maxFileSize: number = 10 * 1024 * 1024; // 10MB default
+  @Input() maxFileSize: number = 10 * 1024 * 1024;
   @Input() allowMultiple: boolean = true;
   @Input() dragOverClass: string = 'drag-over';
   @Input() dragActiveClass: string = 'drag-active';

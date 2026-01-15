@@ -131,12 +131,10 @@ export const SearchStore = signalStore(
         resultCount,
       };
 
-      // Füge neue Suche am Anfang hinzu und begrenze auf 10 Einträge
       const updatedRecentSearches = [newRecentSearch, ...filteredSearches].slice(0, 10);
 
       patchState(store, { recentSearches: updatedRecentSearches });
 
-      // Persistiere in localStorage
       if (typeof localStorage !== 'undefined') {
         try {
           localStorage.setItem('search_recent_searches', JSON.stringify(updatedRecentSearches));

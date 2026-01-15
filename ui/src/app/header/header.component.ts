@@ -5,10 +5,11 @@ import { AvatarComponent } from '../avatar/avatar.component';
 import { AppStore } from '../store/app.store';
 import { environment } from '../../environments/environment';
 import { UploadsComponent } from '@ladon/shared';
+import { UploadProgressComponent } from '../shared/components/upload-progress/upload-progress.component';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, SearchbarComponent, AvatarComponent, UploadsComponent],
+  imports: [CommonModule, SearchbarComponent, AvatarComponent, UploadsComponent, UploadProgressComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })

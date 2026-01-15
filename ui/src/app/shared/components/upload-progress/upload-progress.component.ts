@@ -5,7 +5,7 @@ import { FilemanagerContentFacade } from '../../../filemanager/filemanager-conte
 import { heroCheckCircle, heroCloudArrowUp, heroXCircle, heroXMark } from '@ng-icons/heroicons/outline';
 
 @Component({
-  selector: 'app-upload-progress',
+  selector: 'lib-upload-progress',
   standalone: true,
   imports: [CommonModule, NgIconComponent],
   providers: [provideIcons({ heroCheckCircle, heroXCircle, heroXMark, heroCloudArrowUp })],

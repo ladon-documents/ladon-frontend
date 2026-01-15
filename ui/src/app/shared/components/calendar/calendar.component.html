@@ -1,0 +1,39 @@
+<div class="calendar-container">
+  <div class="calendar-header flex justify-between items-center mb-4">
+    <button type="button" class="btn btn-icon" (click)="previousMonth()" aria-label="Vorheriger Monat">
+      <ng-icon name="heroChevronLeft" size="1.5rem" class="shrink-0" color="currentColor"></ng-icon>
+    </button>
+    <h2 class="text-lg font-semibold">{{ monthName() }}</h2>
+    <button type="button" class="btn btn-icon" (click)="nextMonth()" aria-label="Nächster Monat">
+      <ng-icon name="heroChevronRight" size="1.5rem" class="shrink-0" color="currentColor"></ng-icon>
+    </button>
+  </div>
+
+  <div class="calendar-grid">
+    <div class="calendar-weekdays grid grid-cols-7 mb-2">
+      @for (day of weekdays; track day) {
+        <div class="text-center font-medium text-sm">{{ day }}</div>
+      }
+    </div>
+
+    <div class="calendar-days grid grid-cols-7 gap-1">
+      @for (date of days(); track date.getTime()) {
+        <button 
+          type="button"
+          class="calendar-day p-2 rounded-full text-center"
+          [class.text-gray-400]="!isCurrentMonth(date)"
+          [class.bg-primary]="isSelectedDate(date)"
+          [class.text-white]="isSelectedDate(date)"
+          [class.ring-2]="isToday(date) && !isSelectedDate(date) || isSelectedDate(date) || isLastClickedDate(date)"
+          [class.ring-primary]="isSelectedDate(date)"
+          [class.ring-bg-primary]="isLastClickedDate(date) && !isSelectedDate(date)"
+          [class.cursor-not-allowed]="isDisabled(date)"
+          [disabled]="isDisabled(date)"
+          (click)="selectDate(date)"
+        >
+          {{ date.getDate() }}
+        </button>
+      }
+    </div>
+  </div>
+</div>

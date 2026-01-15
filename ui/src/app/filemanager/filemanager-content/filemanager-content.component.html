@@ -1,5 +1,38 @@
-<div class="h-full flex flex-col">
-  <!-- Content Area -->
+<div class="h-full flex flex-col"
+     appFileUpload
+     [acceptedTypes]="allowedFileTypes"
+     [maxFileSize]="maxFileSize"
+     [allowMultiple]="true"
+     (filesDropped)="onFilesDropped($event)"
+     (filesHovered)="onFilesHovered($event)"
+     (filesRejected)="onFilesRejected($event)"
+     #dropZone
+>
+
+
+  @if (isDragOver()) {
+    <div class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center">
+      <div class="card bg-base-100 shadow-2xl">
+        <div class="card-body text-center max-w-sm">
+          <div class="text-6xl mb-4 text-primary">
+            <ng-icon name="heroCloudArrowUp" size="4rem"></ng-icon>
+          </div>
+          <h3 class="card-title justify-center text-xl mb-2">
+            Dateien hier ablegen
+          </h3>
+          <p class="text-base-content/70">
+            Lassen Sie Ihre Dateien los, um sie hochzuladen
+          </p>
+          <div class="card-actions justify-center mt-4">
+            <div class="badge badge-primary badge-outline">
+              Bis zu {{ maxFileSize / 1024 / 1024 }}MB pro Datei
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
   <div class="flex-1 min-h-0 overflow-y-auto p-4">
     @if (viewMode() === "card") {
       <ng-container [ngTemplateOutlet]="gridView"></ng-container>
@@ -155,8 +188,7 @@
         <tbody>
           @for (document of documents(); track document.path; let i = $index) {
             <tr
-              class="hover:bg-base-200 cursor-pointer group/tablerow"
-              [class.bg-secondary]="isSelected(document)"
+              class="hover:bg-base cursor-pointer group/tablerow"
               [class.border-l-4]="isSelected(document)"
               [class.border-l-primary]="isSelected(document)"
               (dblclick)="navigateTo(document)"
@@ -188,7 +220,6 @@
                 }
               </td>
 
-              <!-- Name -->
               <td class="font-medium">
                 <div class="flex items-center gap-2">
                   <span class="truncate max-w-xs">{{ document.name }}</span>
@@ -201,7 +232,6 @@
                 </div>
               </td>
 
-              <!-- Size -->
               <td class="text-slate-600">
                 @if (document.isFolder) {
                   <span class="text-xs badge badge-ghost">Ordner</span>
@@ -210,17 +240,14 @@
                 }
               </td>
 
-              <!-- Modified -->
               <td class="text-slate-600">
                 {{ document["last-modified"] | date: dateFormat }}
               </td>
 
-              <!-- Created -->
               <td class="text-slate-600">
                 {{ document.created | date: dateFormat }}
               </td>
 
-              <!-- Actions -->
               <td class="w-16">
                 <div class="opacity-0 group-hover/tablerow:opacity-100 transition-opacity">
                   <div class="dropdown dropdown-end">
@@ -302,7 +329,7 @@
           class="group/fileitem relative border border-gray-500/40 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow"
           [class.border-blue-700]="isSelected(document)"
           [class.shadow-lg]="isSelected(document)"
-          [class.bg-blue-50]="isSelected(document)">
+          [class.bg-base-300]="isSelected(document)">
           <span
             class="flex flex-col pt-6 pb-4 cursor-pointer"
             (dblclick)="navigateTo(document)"

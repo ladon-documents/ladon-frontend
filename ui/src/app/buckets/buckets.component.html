@@ -13,11 +13,25 @@
   } @else {
     <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-500/40">
       <div class="flex items-center justify-between px-6 py-4">
-        @if (buckets().length > 0 || searchTerm() || showFavoritesOnly()) {
-          <span class="text-sm text-gray-500"> {{ pagination().totalItems }} von {{ buckets().length }} Buckets </span>
-        }
-
+        <div class="relative">
+          <input type="text"
+                 class="input input-bordered input-sm w-100 pr-8"
+                 placeholder="Verzeichnisse suchen..."
+                 [value]="remoteSearchTerm()"
+                 (input)="onRemoteSearchChange($event)" />
+          @if (remoteSearchTerm()) {
+            <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    (click)="clearRemoteSearch()">
+              <ng-icon name="heroXMark" size="1em"></ng-icon>
+            </button>
+          } @else {
+            <ng-icon name="heroMagnifyingGlass"
+                     size="1em"
+                     class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"></ng-icon>
+          }
+        </div>
         <div class="flex gap-4 items-center">
+
           <div class="flex items-center gap-2 text-sm">
             Nur Favoriten
             <input
@@ -25,26 +39,6 @@
               class="toggle toggle-primary"
               [checked]="showFavoritesOnly()"
               (change)="toggleFavoritesFilter($event)" />
-          </div>
-          <div class="relative">
-            <input
-              type="text"
-              class="input input-bordered input-sm w-80 pr-8"
-              placeholder="Buckets durchsuchen..."
-              [value]="searchTerm()"
-              (input)="onSearchChange($event)" />
-            @if (searchTerm()) {
-              <button
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                (click)="clearSearch()">
-                <ng-icon name="heroXMark" size="1em"></ng-icon>
-              </button>
-            } @else {
-              <ng-icon
-                name="heroMagnifyingGlass"
-                size="1em"
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"></ng-icon>
-            }
           </div>
 
           <div class="dropdown dropdown-end">
@@ -246,6 +240,10 @@
             </ul>
 
             @if (pagination().totalPages > 1) {
+              @if (buckets().length > 0 || searchTerm() || showFavoritesOnly()) {
+                <span class="text-sm text-gray-500"> {{ pagination().totalItems }} von {{ buckets().length }} Buckets </span>
+              }
+
               <div class="border-t bg-gray-50 px-4 py-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
@@ -293,6 +291,7 @@
                   </div>
                 </div>
               </div>
+
             }
           }
         </div>

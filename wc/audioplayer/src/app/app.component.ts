@@ -1,13 +1,10 @@
-
 import {
   Component,
   input,
   OnInit,
   OnDestroy,
   inject,
-  ViewEncapsulation,
   CUSTOM_ELEMENTS_SCHEMA,
-  signal,
   effect
 } from '@angular/core';
 import { CommonModule } from '@angular/common';

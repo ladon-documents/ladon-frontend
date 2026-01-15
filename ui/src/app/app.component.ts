@@ -18,6 +18,7 @@ import { HeaderComponent } from './header/header.component';
 import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.component';
 import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
 import { DocumentModel } from '../api';
+import { SearchModalComponent } from './shared/components/search-modal/search-modal.component';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 
 @Component({
@@ -29,6 +30,7 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
     HeaderComponent,
     PdfViewerComponent,
     SpinnerComponent,
+    SearchModalComponent
   ],
   standalone: true,
   selector: 'ldn-ui',
@@ -61,6 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.checkAndSetPreferredColorScheme(this.mql.matches);
+
   }
 
   ngOnDestroy(): void {
@@ -101,6 +104,7 @@ export class AppComponent implements OnInit, OnDestroy {
   onPdfClosed(event: { document: DocumentModel | null }): void {
     console.log('PDF Viewer geschlossen für:', event.document?.name);
   }
+
 }
 
 @Component({

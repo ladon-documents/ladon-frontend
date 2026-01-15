@@ -1,8 +1,7 @@
-<!-- Metadaten Sektion -->
 @let document = selectedDocument();
 @if (document) {
   <div class="p-4">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+    <h3 class="text-lg font-semibold  mb-4 flex items-center">
       <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
@@ -14,85 +13,68 @@
     </h3>
 
     <div class="space-y-3">
-      <!-- Dateiname -->
       @if (document?.key) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Name:</span>
-          <span class="text-sm text-gray-800 col-span-2 break-all">{{ document?.key }}</span>
+            <span class="text-sm  col-span-2 break-all">{{ document?.key }}</span>
         </div>
       }
-
-      <!-- Dateigröße -->
       @if (document?.size) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Größe:</span>
-          <span class="text-sm text-gray-800 col-span-2">{{ formatFileSize(document?.size!) }}</span>
+          <span class="text-sm  col-span-2">{{ formatFileSize(document?.size!) }}</span>
         </div>
       }
-
-      <!-- Content Type -->
       @if (document["content-type"]) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Typ:</span>
-          <span class="text-sm text-gray-800 col-span-2">
-            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          <span class="text-sm  col-span-2">
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-primary">
               {{ document["content-type"] }}
             </span>
           </span>
         </div>
       }
-
-      <!-- Erstellt -->
       @if (document.created) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Erstellt:</span>
-          <span class="text-sm text-gray-800 col-span-2">{{ document.created | date: "dd.MM.yyyy HH:mm" }}</span>
+          <span class="text-sm  col-span-2">{{ document.created | date: "dd.MM.yyyy HH:mm" }}</span>
         </div>
       }
-
-      <!-- Letzte Änderung -->
       @if (document["last-modified"]) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Geändert:</span>
-          <span class="text-sm text-gray-800 col-span-2">{{
+          <span class="text-sm  col-span-2">{{
             document["last-modified"] | date: "dd.MM.yyyy HH:mm"
           }}</span>
         </div>
       }
-
-      <!-- Pfad -->
       @if (document.path) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Pfad:</span>
-          <span class="text-sm text-gray-800 col-span-2 break-all font-mono text-xs bg-gray-100 px-2 py-1 rounded">{{
+          <span class="text-sm  col-span-2 break-all font-mono text-xs text-primary px-2 py-1 rounded">{{
             document.path
           }}</span>
         </div>
       }
-
-      <!-- Bucket -->
       @if (document.bucket) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Bucket:</span>
-          <span class="text-sm text-gray-800 col-span-2">{{ document.bucket }}</span>
+          <span class="text-sm  col-span-2">{{ document.bucket }}</span>
         </div>
       }
-
-      <!-- Owner -->
       @if (document.owner) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Besitzer:</span>
-          <span class="text-sm text-gray-800 col-span-2">{{ document.owner }}</span>
+          <span class="text-sm  col-span-2">{{ document.owner }}</span>
         </div>
       }
-
-      <!-- Version -->
       @if (document.version) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Version:</span>
-          <span class="text-sm text-gray-800 col-span-2">
+          <span class="text-sm  col-span-2">
             <span
-              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium  text-primary">
               {{ document.version }}
             </span>
           </span>
@@ -103,11 +85,10 @@
       @if (document.etag) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">ETag:</span>
-          <span class="text-sm text-gray-600 col-span-2 font-mono text-xs break-all">{{ document.etag }}</span>
+          <span class="text-sm  col-span-2 font-mono text-xs break-all">{{ document.etag }}</span>
         </div>
       }
 
-      <!-- Zusätzliche Metadaten -->
       @if (document.metadata) {
         <div class="border-t border-gray-500/40 pt-3 mt-3">
           <span class="text-sm text-gray-500 font-medium mb-2 block">Zusätzliche Metadaten:</span>
@@ -115,7 +96,7 @@
             @for (item of getMetadataEntries(document.metadata!); track item.key) {
               <div class="grid grid-cols-3 gap-2">
                 <span class="text-xs text-gray-500 font-medium">{{ item.key }}:</span>
-                <span class="text-xs text-gray-800 col-span-2 break-all">{{ item.value }}</span>
+                <span class="text-xs  col-span-2 break-all">{{ item.value }}</span>
               </div>
             }
           </div>

@@ -26,7 +26,7 @@ import { pdfviewerRoutes } from './pdf-viewer.routes';
   imports: [CommonModule, FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: 'pdf-viewer.component.html',
-  styleUrls: ['pdf-viewer.component.scss'],
+//  styleUrls: ['pdf-viewer.component.scss'],
 })
 export class PdfViewerComponent implements OnInit {
   @ViewChild('pdfViewerWC', { static: false }) pdfViewerWC!: ElementRef;

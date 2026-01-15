@@ -22,10 +22,10 @@
     </div>
   }
   @if (selectedDocument() && !hasError()) {
-    <div class="pdf-header">
-      <div class="document-info">
-        <h3>{{ getDocumentDisplayName() }}</h3>
-        <div class="document-details">
+    <div class="pdf-header bg-primary-500">
+      <div class="document-info p-3">
+        <h3 class="text-2xl">{{ getDocumentDisplayName() }}</h3>
+        <div class="document-details text-sm">
           @if (selectedDocument()?.size) {
             <span class="file-size">{{ formatFileSize(selectedDocument()!.size!) }}</span>
           }

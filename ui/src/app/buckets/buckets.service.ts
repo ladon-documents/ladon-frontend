@@ -40,6 +40,10 @@ export class BucketsService {
     return this.uiService.createBucket1(newBucket);
   }
 
+  searchBuckets(bucketName: string) {
+    return this.uiService.listBuckets(bucketName);
+  }
+
   deleteBucket(bucketId: string) {
     return this.bucketsService.deleteBucket(bucketId);
   }

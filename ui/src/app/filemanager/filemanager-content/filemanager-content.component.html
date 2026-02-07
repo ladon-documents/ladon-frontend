@@ -1,32 +1,25 @@
-<div class="h-full flex flex-col"
-     appFileUpload
-     [acceptedTypes]="allowedFileTypes"
-     [maxFileSize]="maxFileSize"
-     [allowMultiple]="true"
-     (filesDropped)="onFilesDropped($event)"
-     (filesHovered)="onFilesHovered($event)"
-     (filesRejected)="onFilesRejected($event)"
-     #dropZone
->
-
-
+<div
+  class="h-full flex flex-col"
+  appFileUpload
+  [acceptedTypes]="allowedFileTypes"
+  [maxFileSize]="maxFileSize"
+  [allowMultiple]="true"
+  (filesDropped)="onFilesDropped($event)"
+  (filesHovered)="onFilesHovered($event)"
+  (filesRejected)="onFilesRejected($event)"
+  #dropZone>
   @if (isDragOver()) {
-    <div class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center">
+    <div
+      class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center">
       <div class="card bg-base-100 shadow-2xl">
         <div class="card-body text-center max-w-sm">
           <div class="text-6xl mb-4 text-primary">
             <ng-icon name="heroCloudArrowUp" size="4rem"></ng-icon>
           </div>
-          <h3 class="card-title justify-center text-xl mb-2">
-            Dateien hier ablegen
-          </h3>
-          <p class="text-base-content/70">
-            Lassen Sie Ihre Dateien los, um sie hochzuladen
-          </p>
+          <h3 class="card-title justify-center text-xl mb-2">Dateien hier ablegen</h3>
+          <p class="text-base-content/70">Lassen Sie Ihre Dateien los, um sie hochzuladen</p>
           <div class="card-actions justify-center mt-4">
-            <div class="badge badge-primary badge-outline">
-              Bis zu {{ maxFileSize / 1024 / 1024 }}MB pro Datei
-            </div>
+            <div class="badge badge-primary badge-outline">Bis zu {{ maxFileSize / 1024 / 1024 }}MB pro Datei</div>
           </div>
         </div>
       </div>

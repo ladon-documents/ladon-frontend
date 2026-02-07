@@ -5,7 +5,9 @@ import {
   heroBars3,
   heroBars3BottomLeft,
   heroCalendarDays,
-  heroChevronDown, heroChevronLeft, heroChevronRight,
+  heroChevronDown,
+  heroChevronLeft,
+  heroChevronRight,
   heroChevronUp,
   heroClock,
   heroDocumentDuplicate,
@@ -15,7 +17,7 @@ import {
   heroPlus,
   heroScale,
   heroSquares2x2,
-  heroXMark
+  heroXMark,
 } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -30,10 +32,10 @@ import {
   providers: [
     provideIcons({
       heroChevronRight,
-      heroChevronLeft
+      heroChevronLeft,
     }),
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent {
   // Inputs
@@ -84,9 +86,11 @@ export class CalendarComponent {
     const clicked = this.lastClickedDate();
     if (!clicked) return false;
 
-    return date.getDate() === clicked.getDate() && 
-           date.getMonth() === clicked.getMonth() && 
-           date.getFullYear() === clicked.getFullYear();
+    return (
+      date.getDate() === clicked.getDate() &&
+      date.getMonth() === clicked.getMonth() &&
+      date.getFullYear() === clicked.getFullYear()
+    );
   }
 
   isCurrentMonth(date: Date): boolean {
@@ -95,16 +99,20 @@ export class CalendarComponent {
 
   isSelectedDate(date: Date): boolean {
     const selected = this.selectedDate();
-    return date.getDate() === selected.getDate() && 
-           date.getMonth() === selected.getMonth() && 
-           date.getFullYear() === selected.getFullYear();
+    return (
+      date.getDate() === selected.getDate() &&
+      date.getMonth() === selected.getMonth() &&
+      date.getFullYear() === selected.getFullYear()
+    );
   }
 
   isToday(date: Date): boolean {
     const today = new Date();
-    return date.getDate() === today.getDate() && 
-           date.getMonth() === today.getMonth() && 
-           date.getFullYear() === today.getFullYear();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
   }
 
   isDisabled(date: Date): boolean {

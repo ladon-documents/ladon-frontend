@@ -145,16 +145,16 @@
                   </li>
                   <li>
                     <label class="cursor-pointer flex items-center gap-2">
-                      <input  type="file"
-                              multiple
-                              class="hidden"
-                              (change)="onFileInputChange($event)"
-                              accept=".pdf,.doc,.docx,.txt,.jpg,.png,.gif">
+                      <input
+                        type="file"
+                        multiple
+                        class="hidden"
+                        (change)="onFileInputChange($event)"
+                        accept=".pdf,.doc,.docx,.txt,.jpg,.png,.gif" />
                       <ng-icon name="heroCloudArrowUp" size="1.0em"></ng-icon>
                       Datei Hochladen
                     </label>
                   </li>
-
                 </ul>
               </div>
             </div>
@@ -181,9 +181,9 @@
       </div>
     </div>
   }
-  <app-search-modal [isOpen]="isSearchModalOpen()"
-                    (close)="closeSearchModal()"
-                    (bucketSelected)="onBucketSelected($event)"
-                    placeholder="Nach Buckets suchen..."
-  ></app-search-modal>
+  <app-search-modal
+    [isOpen]="isSearchModalOpen()"
+    (close)="closeSearchModal()"
+    (bucketSelected)="onBucketSelected($event)"
+    placeholder="Nach Buckets suchen..."></app-search-modal>
 </main>

@@ -1,5 +1,3 @@
-
-
 <!--
 @if (isOpen()) {
   <div
@@ -127,36 +125,35 @@
 }
 -->
 
-
 @if (isOpen()) {
-  <div
-                                                                                      class="fixed inset-0 z-50 overflow-y-auto"
-                                                                                      (click)="onBackdropClick($event)">
+  <div class="fixed inset-0 z-50 overflow-y-auto" (click)="onBackdropClick($event)">
     <div class="fixed inset-0 bg-primary/10 backdrop-blur-md transition-opacity"></div>
     <div class="flex min-h-full items-start justify-center p-4 pt-16">
       <div
-                                                                                          class="relative w-full max-w-2xl transform overflow-hidden rounded-lg bg-base-100 shadow-2xl transition-all"
-                                                                                          (click)="$event.stopPropagation()">
-
+        class="relative w-full max-w-2xl transform overflow-hidden rounded-lg bg-base-100 shadow-2xl transition-all"
+        (click)="$event.stopPropagation()">
         <div class="border-b border-primary/10">
           <div class="flex items-center px-4 py-3">
             <svg class="h-5 w-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
             <input
-                #searchInput
-                [value]="searchTerm()"
-                (input)="onSearchInput($event)"
-                type="text"
-                class="flex-1 bg-transparent placeholder-gray-400 focus:outline-none"
-                [placeholder]="placeholder()"
-                autocomplete="off"
-                spellcheck="false">
+              #searchInput
+              [value]="searchTerm()"
+              (input)="onSearchInput($event)"
+              type="text"
+              class="flex-1 bg-transparent placeholder-gray-400 focus:outline-none"
+              [placeholder]="placeholder()"
+              autocomplete="off"
+              spellcheck="false" />
 
             <button
-                                                                                                (click)="closeModal()"
-                                                                                                class="ml-3 rounded-md p-1 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+              (click)="closeModal()"
+              class="ml-3 rounded-md p-1 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
               <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -181,8 +178,11 @@
           @if (showNoResults()) {
             <div class="px-4 py-8 text-center">
               <svg class="h-12 w-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg>
               <p class="text-sm text-gray-600">Keine Buckets gefunden für "{{ searchTerm() }}"</p>
             </div>
@@ -190,16 +190,13 @@
 
           @if (hasResults()) {
             <div class="py-2">
-              <div class="px-4 py-2 text-xs font-medium  uppercase tracking-wide">
-                Suchergebnisse
-              </div>
+              <div class="px-4 py-2 text-xs font-medium uppercase tracking-wide">Suchergebnisse</div>
               @for (result of searchResults(); track result.id; let i = $index) {
                 <div
-                                                                                                    (click)="selectBucket(result.id)"
-                                                                                                    class="flex items-center bg-base-100  px-4 py-3 hover:bg-primary cursor-pointer transition-colors duration-150 m-2 rounded-sm"
-                                                                                                    [class.bg-gray-100]="selectedIndex() === i">
-
-                  <div class="flex-shrink-0 w-8 h-8  rounded-lg flex items-center justify-center mr-3">
+                  (click)="selectBucket(result.id)"
+                  class="flex items-center bg-base-100 px-4 py-3 hover:bg-primary cursor-pointer transition-colors duration-150 m-2 rounded-sm"
+                  [class.bg-gray-100]="selectedIndex() === i">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center mr-3">
                     <svg class="h-4 w-4 text-base-content/50" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path>
                     </svg>
@@ -215,12 +212,13 @@
                   @if (result.favourite) {
                     <div class="flex-shrink-0 ml-2">
                       <svg class="h-4 w-4 text-base-content/80" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        <path
+                          d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     </div>
                   }
 
-                  <svg class="h-4 w-4 ml-2 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="h-4 w-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                   </svg>
                 </div>
@@ -230,21 +228,23 @@
 
           @if (showRecentSearches()) {
             <div class="py-2">
-              <div class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center justify-between">
+              <div
+                class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide flex items-center justify-between">
                 Letzte Suchen
-                <button
-                                                                                                    (click)="clearRecentSearches()"
-                                                                                                    class="text-primary hover:text-primary/15 text-xs normal-case">
+                <button (click)="clearRecentSearches()" class="text-primary hover:text-primary/15 text-xs normal-case">
                   Alle löschen
                 </button>
               </div>
               @for (recent of recentSearches(); track recent.term) {
-                <div class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer transition-colors duration-150 group">
-                  <div
-                                                                                                      (click)="selectFromRecentSearch(recent.term)"
-                                                                                                      class="flex-1 flex items-center">
+                <div
+                  class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer transition-colors duration-150 group">
+                  <div (click)="selectFromRecentSearch(recent.term)" class="flex-1 flex items-center">
                     <svg class="h-4 w-4 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <div class="flex-1 min-w-0">
                       <p class="text-sm text-gray-500 truncate">{{ recent.term }}</p>
@@ -252,10 +252,14 @@
                     </div>
                   </div>
                   <button
-                                                                                                      (click)="removeRecentSearch($event, recent.term)"
-                                                                                                      class="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 rounded transition-all">
+                    (click)="removeRecentSearch($event, recent.term)"
+                    class="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 rounded transition-all">
                     <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                   </button>
                 </div>
@@ -266,8 +270,11 @@
           @if (showEmptyState()) {
             <div class="px-4 py-8 text-center">
               <svg class="h-12 w-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
               <p class="text-gray-500">Geben Sie einen Suchbegriff ein</p>
               @if (recentSearches().length === 0) {
@@ -281,15 +288,24 @@
           <div class="flex items-center justify-between text-xs text-gray-500">
             <div class="flex items-center space-x-4">
               <span class="flex items-center">
-                <kbd class="inline-flex items-center rounded border border-gray-200 px-1.5 py-0.5 font-mono text-xs font-medium mr-1 bg-white">↑↓</kbd>
+                <kbd
+                  class="inline-flex items-center rounded border border-gray-200 px-1.5 py-0.5 font-mono text-xs font-medium mr-1 bg-white"
+                  >↑↓</kbd
+                >
                 Navigate
               </span>
               <span class="flex items-center">
-                <kbd class="inline-flex items-center rounded border border-gray-200 px-1.5 py-0.5 font-mono text-xs font-medium mr-1 bg-white">↵</kbd>
+                <kbd
+                  class="inline-flex items-center rounded border border-gray-200 px-1.5 py-0.5 font-mono text-xs font-medium mr-1 bg-white"
+                  >↵</kbd
+                >
                 Auswählen
               </span>
               <span class="flex items-center">
-                <kbd class="inline-flex items-center rounded border border-gray-200 px-1.5 py-0.5 font-mono text-xs font-medium mr-1 bg-white">ESC</kbd>
+                <kbd
+                  class="inline-flex items-center rounded border border-gray-200 px-1.5 py-0.5 font-mono text-xs font-medium mr-1 bg-white"
+                  >ESC</kbd
+                >
                 Schließen
               </span>
             </div>

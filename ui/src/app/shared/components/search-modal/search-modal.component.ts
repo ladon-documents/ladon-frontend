@@ -8,8 +8,8 @@ import { BucketsFacade } from '../../../buckets/buckets.facade';
   selector: 'app-search-modal',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: "search-modal.component.html",
-  styleUrls: ['./search-modal.component.scss']
+  templateUrl: 'search-modal.component.html',
+  styleUrls: ['./search-modal.component.scss'],
 })
 export class SearchModalComponent {
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
@@ -58,7 +58,7 @@ export class SearchModalComponent {
   selectBucket(bucketId: string) {
     // Finde das Bucket in der Facade
     const buckets = this.bucketsFacade.buckets();
-    const bucket = buckets.find(b => b.id === bucketId);
+    const bucket = buckets.find((b) => b.id === bucketId);
 
     if (bucket) {
       this.bucketsFacade.selectBucket(bucket);

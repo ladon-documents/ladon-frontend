@@ -7,7 +7,7 @@ describe('CalendarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CalendarComponent]
+      imports: [CalendarComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CalendarComponent);
@@ -67,7 +67,7 @@ describe('CalendarComponent', () => {
     // Find a day button that's in the current month
     const dayButtons = fixture.nativeElement.querySelectorAll('.calendar-day');
     const currentMonthDayButton = Array.from(dayButtons).find(
-      (button: any) => !button.classList.contains('text-gray-400')
+      (button: any) => !button.classList.contains('text-gray-400'),
     ) as HTMLElement;
 
     currentMonthDayButton.click();
@@ -81,7 +81,7 @@ describe('CalendarComponent', () => {
     // Find a day button that's in the current month
     const dayButtons = fixture.nativeElement.querySelectorAll('.calendar-day');
     const currentMonthDayButton = Array.from(dayButtons).find(
-      (button: any) => !button.classList.contains('text-gray-400')
+      (button: any) => !button.classList.contains('text-gray-400'),
     ) as HTMLElement;
 
     // Get the day number from the button
@@ -101,5 +101,4 @@ describe('CalendarComponent', () => {
     expect(typeof emittedValue).toBe('string');
     expect(emittedValue).toBe(expectedDate.toLocaleDateString('de-DE'));
   });
-
 });

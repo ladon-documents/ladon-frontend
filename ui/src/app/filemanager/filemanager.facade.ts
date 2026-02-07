@@ -94,7 +94,6 @@ export class FilemanagerFacade {
     this.#filemanagerStore.loadBucket(this.selectedBucket());
   }
 
-
   loadStats() {
     this.#filemanagerStore.loadStats(this.selectedBucket());
   }
@@ -153,7 +152,7 @@ export class FilemanagerFacade {
 
   updateFile(document: DocumentModel): void {
     const currentPath = this.getCurrentPath();
-//    this.#filemanagerStore.uploadFile({ document, currentPath });
+    //    this.#filemanagerStore.uploadFile({ document, currentPath });
   }
 
   reset(): void {

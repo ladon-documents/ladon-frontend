@@ -30,7 +30,7 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
     HeaderComponent,
     PdfViewerComponent,
     SpinnerComponent,
-    SearchModalComponent
+    SearchModalComponent,
   ],
   standalone: true,
   selector: 'ldn-ui',
@@ -63,7 +63,6 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.checkAndSetPreferredColorScheme(this.mql.matches);
-
   }
 
   ngOnDestroy(): void {
@@ -104,7 +103,6 @@ export class AppComponent implements OnInit, OnDestroy {
   onPdfClosed(event: { document: DocumentModel | null }): void {
     console.log('PDF Viewer geschlossen für:', event.document?.name);
   }
-
 }
 
 @Component({

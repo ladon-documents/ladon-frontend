@@ -21,8 +21,7 @@ import {
   heroScale,
   heroSquares2x2,
   heroXMark,
-  heroCloudArrowUp
-
+  heroCloudArrowUp,
 } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
@@ -96,7 +95,7 @@ export class FilemanagerComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
   ) {
-    this.initKeyDownListener()
+    this.initKeyDownListener();
   }
 
   ngOnInit() {
@@ -151,7 +150,6 @@ export class FilemanagerComponent implements OnInit {
       input.value = '';
     }
   }
-
 
   openSearchModal() {
     this.isSearchModalOpen.set(true);

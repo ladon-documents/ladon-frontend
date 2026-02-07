@@ -32,14 +32,7 @@ import { LadonRouterService } from '../services/ladon-router.service';
 @Component({
   selector: 'buckets',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    NgIconComponent,
-    TranslateModule,
-    DialogComponent,
-    FolderComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, NgIconComponent, TranslateModule, DialogComponent, FolderComponent],
   providers: [
     provideIcons({
       heroFolder,

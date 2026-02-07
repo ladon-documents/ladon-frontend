@@ -14,24 +14,26 @@
     <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-500/40">
       <div class="flex items-center justify-between px-6 py-4">
         <div class="relative">
-          <input type="text"
-                 class="input input-bordered input-sm w-100 pr-8"
-                 placeholder="Verzeichnisse suchen..."
-                 [value]="remoteSearchTerm()"
-                 (input)="onRemoteSearchChange($event)" />
+          <input
+            type="text"
+            class="input input-bordered input-sm w-100 pr-8"
+            placeholder="Verzeichnisse suchen..."
+            [value]="remoteSearchTerm()"
+            (input)="onRemoteSearchChange($event)" />
           @if (remoteSearchTerm()) {
-            <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    (click)="clearRemoteSearch()">
+            <button
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              (click)="clearRemoteSearch()">
               <ng-icon name="heroXMark" size="1em"></ng-icon>
             </button>
           } @else {
-            <ng-icon name="heroMagnifyingGlass"
-                     size="1em"
-                     class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"></ng-icon>
+            <ng-icon
+              name="heroMagnifyingGlass"
+              size="1em"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"></ng-icon>
           }
         </div>
         <div class="flex gap-4 items-center">
-
           <div class="flex items-center gap-2 text-sm">
             Nur Favoriten
             <input
@@ -241,7 +243,9 @@
 
             @if (pagination().totalPages > 1) {
               @if (buckets().length > 0 || searchTerm() || showFavoritesOnly()) {
-                <span class="text-sm text-gray-500"> {{ pagination().totalItems }} von {{ buckets().length }} Buckets </span>
+                <span class="text-sm text-gray-500">
+                  {{ pagination().totalItems }} von {{ buckets().length }} Buckets
+                </span>
               }
 
               <div class="border-t bg-gray-50 px-4 py-3">
@@ -291,7 +295,6 @@
                   </div>
                 </div>
               </div>
-
             }
           }
         </div>

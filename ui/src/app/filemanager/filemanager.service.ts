@@ -50,7 +50,6 @@ export class FilemanagerService {
     return this.documentsService.putDocument(bucket, key);
   }
 
-
   public createNewFolder(bucket: string, key: string) {
     return this.documentsService.putFolder(bucket, key);
   }

@@ -5,7 +5,7 @@ import { SearchStore } from '../../../store/search.store';
 import { BucketsFacade } from '../../../buckets/buckets.facade';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SearchService {
   private readonly searchStore = inject(SearchStore);
@@ -21,13 +21,15 @@ export class SearchService {
     this.searchStore.loadRecentSearches();
 
     // Reagiere auf Suchbegriff-Änderungen
-    this.searchTerm$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      filter(term => typeof term === 'string'), // Sicherheitscheck
-      switchMap(term => this.performSearch(term)),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe();
+    this.searchTerm$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((term) => typeof term === 'string'), // Sicherheitscheck
+        switchMap((term) => this.performSearch(term)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   private performSearch(term: string) {
@@ -43,16 +45,16 @@ export class SearchService {
 
     return this.buckets$.pipe(
       debounceTime(100), // Kurze Debounce um auf Facade-Updates zu warten
-      switchMap(buckets => {
+      switchMap((buckets) => {
         this.searchStore.setSearchResults(buckets);
         this.searchStore.addRecentSearch(term, buckets.length);
         return of(buckets);
       }),
-      catchError(error => {
+      catchError((error) => {
         this.searchStore.setError('Fehler bei der Suche');
         console.error('Search error:', error);
         return of([]);
-      })
+      }),
     );
   }
 

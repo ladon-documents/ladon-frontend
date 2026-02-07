@@ -11,40 +11,32 @@ export interface UploadItem {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UploadProgressService {
   private readonly _uploads = signal<UploadItem[]>([]);
 
   readonly uploads = this._uploads.asReadonly();
-  readonly hasActiveUploads = computed(() =>
-    this._uploads().some(upload => upload.status === 'uploading')
-  );
-  readonly activeUploadsCount = computed(() =>
-    this._uploads().filter(upload => upload.status === 'uploading').length
+  readonly hasActiveUploads = computed(() => this._uploads().some((upload) => upload.status === 'uploading'));
+  readonly activeUploadsCount = computed(
+    () => this._uploads().filter((upload) => upload.status === 'uploading').length,
   );
 
   addUpload(upload: UploadItem): void {
-    this._uploads.update(uploads => [...uploads, upload]);
+    this._uploads.update((uploads) => [...uploads, upload]);
   }
 
   updateUpload(fileName: string, updates: Partial<UploadItem>): void {
-    this._uploads.update(uploads =>
-      uploads.map(upload =>
-        upload.fileName === fileName ? { ...upload, ...updates } : upload
-      )
+    this._uploads.update((uploads) =>
+      uploads.map((upload) => (upload.fileName === fileName ? { ...upload, ...updates } : upload)),
     );
   }
 
   removeUpload(fileName: string): void {
-    this._uploads.update(uploads =>
-      uploads.filter(upload => upload.fileName !== fileName)
-    );
+    this._uploads.update((uploads) => uploads.filter((upload) => upload.fileName !== fileName));
   }
 
   clearCompleted(): void {
-    this._uploads.update(uploads =>
-      uploads.filter(upload => upload.status === 'uploading')
-    );
+    this._uploads.update((uploads) => uploads.filter((upload) => upload.status === 'uploading'));
   }
 }

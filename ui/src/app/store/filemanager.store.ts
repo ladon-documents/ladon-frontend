@@ -381,7 +381,7 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        uploadFile: rxMethod<{ folderName: string; currentPath?: string, content: any }>(
+        uploadFile: rxMethod<{ folderName: string; currentPath?: string; content: any }>(
           pipe(
             tap(() => {
               patchState(store, (state) => ({

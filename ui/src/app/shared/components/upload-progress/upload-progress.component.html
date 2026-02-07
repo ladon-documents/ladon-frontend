@@ -1,20 +1,20 @@
 <div class="toast toast-top toast-end z-50 space-y-2 max-w-sm">
   @for (upload of uploadProgress(); track upload.fileName) {
-    <div class="alert shadow-lg bg-base-100 border border-base-300 p-4 min-w-80"
-         [class]="filemanagerContentFacade.getUploadAlertClass(upload.status)">
-
+    <div
+      class="alert shadow-lg bg-base-100 border border-base-300 p-4 min-w-80"
+      [class]="filemanagerContentFacade.getUploadAlertClass(upload.status)">
       <div class="flex items-center justify-between w-full mb-3">
         <div class="flex items-center gap-3 flex-1">
           <div class="flex-shrink-0">
-            @if (upload.status === 'uploading') {
+            @if (upload.status === "uploading") {
               <span class="loading loading-spinner loading-sm text-primary"></span>
             }
-            @if (upload.status === 'success') {
+            @if (upload.status === "success") {
               <div class="badge badge-success badge-sm">
                 <ng-icon name="heroCheckCircle" size="0.875em"></ng-icon>
               </div>
             }
-            @if (upload.status === 'error') {
+            @if (upload.status === "error") {
               <div class="badge badge-error badge-sm">
                 <ng-icon name="heroXCircle" size="0.875em"></ng-icon>
               </div>
@@ -33,36 +33,31 @@
         </div>
 
         <!-- Close Button für erfolgreiche/fehlerhafte Uploads -->
-        @if (upload.status !== 'uploading') {
+        @if (upload.status !== "uploading") {
           <button
-                                                                                              class="btn btn-ghost btn-xs btn-square ml-2"
-                                                                                              (click)="filemanagerContentFacade.removeUpload(upload)"
-                                                                                              title="Schließen">
+            class="btn btn-ghost btn-xs btn-square ml-2"
+            (click)="filemanagerContentFacade.removeUpload(upload)"
+            title="Schließen">
             <ng-icon name="heroXMark" size="0.75em"></ng-icon>
           </button>
         }
       </div>
 
       <!-- Progress Bar für aktive Uploads -->
-      @if (upload.status === 'uploading') {
+      @if (upload.status === "uploading") {
         <div class="w-full mb-2">
           <div class="flex justify-between text-xs mb-1">
             <span class="text-primary font-medium">{{ Math.round(upload.progress) }}%</span>
             <span class="opacity-70">{{ filemanagerContentFacade.getUploadSpeed(upload) }}</span>
           </div>
-          <progress
-                                                                                              class="progress progress-primary w-full h-2"
-                                                                                              [value]="upload.progress"
-                                                                                              max="100">
-          </progress>
+          <progress class="progress progress-primary w-full h-2" [value]="upload.progress" max="100"></progress>
         </div>
       }
 
       <!-- Status Message -->
-      <div class="text-xs mt-1"
-           [class]="filemanagerContentFacade.getStatusTextClass(upload.status)">
+      <div class="text-xs mt-1" [class]="filemanagerContentFacade.getStatusTextClass(upload.status)">
         {{ upload.message }}
-        @if (upload.status === 'uploading') {
+        @if (upload.status === "uploading") {
           <span class="opacity-70"> • {{ filemanagerContentFacade.getRemainingTime(upload) }}</span>
         }
       </div>
@@ -81,15 +76,15 @@
             {{ filemanagerContentFacade.getActiveUploadsCount() }} Dateien werden hochgeladen
           </div>
           <div class="text-xs opacity-70">
-            Gesamt: {{ filemanagerContentFacade.getTotalProgress() }}% • {{ filemanagerContentFacade.getTotalUploadSpeed() }}
+            Gesamt: {{ filemanagerContentFacade.getTotalProgress() }}% •
+            {{ filemanagerContentFacade.getTotalUploadSpeed() }}
           </div>
         </div>
       </div>
       <progress
-                                                                                          class="progress progress-info w-full h-1 mt-2"
-                                                                                          [value]="filemanagerContentFacade.getTotalProgress()"
-                                                                                          max="100">
-      </progress>
+        class="progress progress-info w-full h-1 mt-2"
+        [value]="filemanagerContentFacade.getTotalProgress()"
+        max="100"></progress>
     </div>
   </div>
 }

@@ -42,19 +42,16 @@ export const SearchStore = signalStore(
   withState(initialState),
   withComputed((store) => ({
     hasResults: computed(() => store.searchResults().length > 0),
-    showNoResults: computed(() =>
-      !store.isLoading() && store.searchTerm().length > 0 && store.searchResults().length === 0
+    showNoResults: computed(
+      () => !store.isLoading() && store.searchTerm().length > 0 && store.searchResults().length === 0,
     ),
-    showEmptyState: computed(() =>
-      !store.searchTerm() && store.searchResults().length === 0
-    ),
-    showRecentSearches: computed(() =>
-      !store.searchTerm() && store.recentSearches().length > 0
-    ),
+    showEmptyState: computed(() => !store.searchTerm() && store.searchResults().length === 0),
+    showRecentSearches: computed(() => !store.searchTerm() && store.recentSearches().length > 0),
     topRecentSearches: computed(() =>
-      store.recentSearches()
+      store
+        .recentSearches()
         .sort((a, b) => new Date(b.searchedAt).getTime() - new Date(a.searchedAt).getTime())
-        .slice(0, 5)
+        .slice(0, 5),
     ),
   })),
   withMethods((store) => ({
@@ -62,7 +59,7 @@ export const SearchStore = signalStore(
       patchState(store, {
         searchTerm: term,
         selectedIndex: -1,
-        error: null
+        error: null,
       });
     },
 
@@ -71,7 +68,7 @@ export const SearchStore = signalStore(
     },
 
     setSearchResults: (results: BucketUiItemModel[]) => {
-      const searchItems: SearchItem[] = results.map(bucket => ({
+      const searchItems: SearchItem[] = results.map((bucket) => ({
         id: bucket.id || '',
         name: bucket.id || '',
         size: bucket.size,
@@ -84,7 +81,7 @@ export const SearchStore = signalStore(
         searchResults: searchItems,
         isLoading: false,
         lastSearchTime: new Date(),
-        error: null
+        error: null,
       });
     },
 
@@ -92,7 +89,7 @@ export const SearchStore = signalStore(
       patchState(store, {
         error,
         isLoading: false,
-        searchResults: []
+        searchResults: [],
       });
     },
 
@@ -122,7 +119,7 @@ export const SearchStore = signalStore(
 
       // Entferne existierende Suche mit dem gleichen Begriff
       const filteredSearches = currentRecentSearches.filter(
-        search => search.term.toLowerCase() !== term.toLowerCase()
+        (search) => search.term.toLowerCase() !== term.toLowerCase(),
       );
 
       const newRecentSearch: RecentSearch = {
@@ -174,9 +171,7 @@ export const SearchStore = signalStore(
 
     removeRecentSearch: (term: string) => {
       const currentRecentSearches = store.recentSearches();
-      const filtered = currentRecentSearches.filter(
-        search => search.term !== term
-      );
+      const filtered = currentRecentSearches.filter((search) => search.term !== term);
       patchState(store, { recentSearches: filtered });
 
       if (typeof localStorage !== 'undefined') {
@@ -201,5 +196,5 @@ export const SearchStore = signalStore(
     reset: () => {
       patchState(store, initialState);
     },
-  }))
+  })),
 );

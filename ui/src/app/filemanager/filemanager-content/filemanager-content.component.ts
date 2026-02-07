@@ -6,7 +6,8 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   heroArrowDownTray,
   heroChevronDown,
-  heroChevronUp, heroCloudArrowUp,
+  heroChevronUp,
+  heroCloudArrowUp,
   heroDocumentDuplicate,
   heroFolder,
   heroPencilSquare,
@@ -14,7 +15,7 @@ import {
   heroPlusCircle,
   heroShare,
   heroStar,
-  heroTrash
+  heroTrash,
 } from '@ng-icons/heroicons/outline';
 import { heroFolderSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
@@ -29,7 +30,6 @@ import { filemanagerHelper } from '../helper/helper';
 import { FileUploadDirective } from '../../shared/directive/file-upload.directive';
 import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.facade';
 import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
-
 
 @Component({
   standalone: true,

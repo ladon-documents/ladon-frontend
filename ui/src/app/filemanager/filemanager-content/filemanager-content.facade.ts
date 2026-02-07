@@ -2,7 +2,6 @@ import { inject, Injectable, signal } from '@angular/core';
 import { FilemanagerService } from '../filemanager.service';
 import { FilemanagerFacade } from '../filemanager.facade';
 
-
 export interface UploadStatus {
   fileName: string;
   status: 'uploading' | 'success' | 'error';
@@ -14,9 +13,8 @@ export interface UploadStatus {
   speed?: number; // Bytes pro Sekunde
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FilemanagerContentFacade {
   uploadProgress = signal<UploadStatus[]>([]);
@@ -24,7 +22,7 @@ export class FilemanagerContentFacade {
   filemanagerService = inject(FilemanagerService);
   filemanagerFacade = inject(FilemanagerFacade);
 
-  constructor() { }
+  constructor() {}
 
   getUploadAlertClass(status: string): string {
     const baseClasses = 'animate-in slide-in-from-right-4 duration-300';
@@ -88,21 +86,19 @@ export class FilemanagerContentFacade {
   }
 
   removeUpload(upload: UploadStatus): void {
-    this.uploadProgress.update(current =>
-      current.filter(u => u !== upload)
-    );
+    this.uploadProgress.update((current) => current.filter((u) => u !== upload));
   }
 
   hasActiveUploads(): boolean {
-    return this.uploadProgress().some(upload => upload.status === 'uploading');
+    return this.uploadProgress().some((upload) => upload.status === 'uploading');
   }
 
   getActiveUploadsCount(): number {
-    return this.uploadProgress().filter(upload => upload.status === 'uploading').length;
+    return this.uploadProgress().filter((upload) => upload.status === 'uploading').length;
   }
 
   getTotalProgress(): number {
-    const activeUploads = this.uploadProgress().filter(upload => upload.status === 'uploading');
+    const activeUploads = this.uploadProgress().filter((upload) => upload.status === 'uploading');
     if (activeUploads.length === 0) return 100;
 
     const totalProgress = activeUploads.reduce((sum, upload) => sum + upload.progress, 0);
@@ -110,7 +106,7 @@ export class FilemanagerContentFacade {
   }
 
   getTotalUploadSpeed(): string {
-    const activeUploads = this.uploadProgress().filter(upload => upload.status === 'uploading');
+    const activeUploads = this.uploadProgress().filter((upload) => upload.status === 'uploading');
     const totalSpeed = activeUploads.reduce((sum, upload) => sum + (upload.speed || 0), 0);
 
     if (totalSpeed > 1024 * 1024) {
@@ -122,8 +118,6 @@ export class FilemanagerContentFacade {
     }
   }
 
-
-
   async uploadFile(file: File): Promise<void> {
     const uploadStatus: UploadStatus = {
       fileName: file.name,
@@ -133,10 +127,10 @@ export class FilemanagerContentFacade {
       startTime: Date.now(),
       fileSize: file.size,
       uploadedBytes: 0,
-      speed: 0
+      speed: 0,
     };
 
-    this.uploadProgress.update(current => [...current, uploadStatus]);
+    this.uploadProgress.update((current) => [...current, uploadStatus]);
 
     try {
       const currentPath = this.getCurrentPath();
@@ -155,7 +149,6 @@ export class FilemanagerContentFacade {
       setTimeout(() => {
         this.removeUpload(uploadStatus);
       }, 1500);
-
     } catch (error) {
       console.error('Upload failed:', error);
       uploadStatus.status = 'error';
@@ -167,7 +160,7 @@ export class FilemanagerContentFacade {
     bucket: string,
     fileName: string,
     file: File,
-    uploadStatus: UploadStatus
+    uploadStatus: UploadStatus,
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       let progress = 0;
@@ -184,17 +177,15 @@ export class FilemanagerContentFacade {
           const document = {
             bucket,
             key: fileName,
-          }
+          };
 
           // Hier würden Sie den echten Upload durchführen
-          this.filemanagerService.saveDocument(document, file)
-            .subscribe({
-              next: () => resolve(),
-              error: (error) => reject(error)
-            });
+          this.filemanagerService.saveDocument(document, file).subscribe({
+            next: () => resolve(),
+            error: (error) => reject(error),
+          });
 
-
-        // Finaler Upload-Call
+          // Finaler Upload-Call
           setTimeout(() => resolve(), 500);
         }
 
@@ -216,19 +207,15 @@ export class FilemanagerContentFacade {
         } else {
           uploadStatus.message = 'Upload wird finalisiert...';
         }
-
       }, 300);
     });
   }
-
-
 
   showErrorToast(message: string): void {
     // Implementieren Sie Toast-Benachrichtigungen
     console.error(message);
     // Optional: Integration mit einem Toast-Service
   }
-
 
   private getCurrentPath(): string {
     // Implementieren Sie diese Methode basierend auf Ihrer Router-Logik
@@ -237,8 +224,6 @@ export class FilemanagerContentFacade {
   }
 
   private refreshFileList(): void {
-    this.filemanagerFacade.reloadBucket()
+    this.filemanagerFacade.reloadBucket();
   }
-
-
 }

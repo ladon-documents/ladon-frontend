@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit, signal, Signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, signal, Signal } from '@angular/core';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  copyArrayItem,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DocumentModel } from '../../../api';
@@ -28,8 +35,11 @@ import { FilemanagerPaginationComponent } from '../pagination/pagination.compone
 import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 import { filemanagerHelper } from '../helper/helper';
 import { FileUploadDirective } from '../../shared/directive/file-upload.directive';
-import { FilemanagerContentFacade } from './filemanager-content.facade';
+import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.facade';
+import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
+import { ClipboardService } from '../../shared/components/clipboard/clipboard.service';
 import { FolderComponent } from '@ladon/shared';
+
 
 @Component({
   standalone: true,
@@ -41,6 +51,9 @@ import { FolderComponent } from '@ladon/shared';
     FileiconPipe,
     FilemanagerPaginationComponent,
     FileUploadDirective,
+    CdkDrag,
+    UploadProgressComponent,
+    CdkDropList,
     FolderComponent,
   ],
   providers: [
@@ -63,6 +76,7 @@ import { FolderComponent } from '@ladon/shared';
   ],
   templateUrl: './filemanager-content.component.html',
   styleUrl: './filemanager-content.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FilemanagerContentComponent implements OnDestroy, OnInit {
   public dateFormat = 'dd.MM.yyyy';
@@ -71,6 +85,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   private readonly converterService = inject(ConverterService);
   private readonly sidebarService = inject(SidebarService);
   private readonly pdfViewerFacade = inject(PdfViewerFacade);
+  protected readonly clipboardList = inject(ClipboardService).clipboardList;
 
   documents: Signal<DocumentModel[]> = this.#facade.documents;
 

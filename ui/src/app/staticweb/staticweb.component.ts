@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
@@ -15,6 +15,7 @@ import { DocumentsService } from '../../api';
 export class StaticwebComponent implements OnInit, OnDestroy {
   private subscription!: Subscription;
   staticHMTL!: SafeHtml;
+  private injectedScripts: HTMLScriptElement[] = [];
 
   constructor(
     private http: HttpClient,
@@ -36,12 +37,15 @@ export class StaticwebComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.cleanupScripts();
   }
 
   loadContent(url: string) {
     this.handleQueryParams();
     this.http.get(url, { responseType: 'text' }).subscribe((response) => {
-      this.staticHMTL = this.sanitizer.bypassSecurityTrustHtml(response);
+      this.cleanupScripts();
+
+      this.processHtmlWithScripts(response);
     });
   }
 
@@ -57,21 +61,113 @@ export class StaticwebComponent implements OnInit, OnDestroy {
       const bucket = url.slice(0, url.indexOf('/'));
       this.documentService.getDocument(bucket, path).subscribe((response) => {
         console.log(response);
-        //this.staticHMTL =  this.sanitizer.bypassSecurityTrustHtml(response);
+        this.cleanupScripts();
+
+        // Process the response HTML
+        //this.processHtmlWithScripts(response);
       });
     } else {
-      this.staticHMTL = 'No content found';
+      this.staticHMTL = this.sanitizer.bypassSecurityTrustHtml('No content found');
     }
   }
 
-  setInnerHTML(elm: any, html: any) {
-    elm.innerHTML = html;
-    Array.from(elm.querySelectorAll('script')).forEach((oldScript: any) => {
-      const newScript = document.createElement('script');
-      Array.from(oldScript.attributes).forEach((attr: any) => newScript.setAttribute(attr.name, attr.value));
-      newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-      oldScript.parentNode.replaceChild(newScript, oldScript);
+  private processHtmlWithScripts(htmlString: string) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlString;
+    const scriptTags = tempDiv.querySelectorAll('script');
+    const scripts: { type: 'inline' | 'external'; content: string; attributes: { [key: string]: string } }[] = [];
+    scriptTags.forEach((script) => {
+      const scriptInfo = {
+        type: script.src ? ('external' as const) : ('inline' as const),
+        content: script.src || script.innerHTML,
+        attributes: {} as { [key: string]: string },
+      };
+
+      Array.from(script.attributes).forEach((attr) => {
+        scriptInfo.attributes[attr.name] = attr.value;
+      });
+
+      scripts.push(scriptInfo);
+      script.remove();
     });
+
+    this.staticHMTL = this.sanitizer.bypassSecurityTrustHtml(tempDiv.innerHTML);
+
+    setTimeout(() => {
+      this.executeScripts(scripts);
+    }, 0);
+  }
+
+  private executeScripts(
+    scripts: { type: 'inline' | 'external'; content: string; attributes: { [key: string]: string } }[],
+  ) {
+    scripts.forEach((scriptInfo, index) => {
+      if (scriptInfo.type === 'external') {
+        this.loadExternalScript(scriptInfo.content, scriptInfo.attributes, index);
+      } else {
+        this.executeInlineScript(scriptInfo.content, scriptInfo.attributes, index);
+      }
+    });
+  }
+
+  private loadExternalScript(src: string, attributes: { [key: string]: string }, index: number) {
+    const script = document.createElement('script');
+    script.src = src;
+
+    Object.entries(attributes).forEach(([key, value]) => {
+      if (key !== 'src') {
+        script.setAttribute(key, value);
+      }
+    });
+
+    script.onload = () => {
+      console.log(`External script ${index} loaded:`, src);
+    };
+
+    script.onerror = (error) => {
+      console.error(`Failed to load external script ${index}:`, src, error);
+    };
+
+    this.injectedScripts.push(script);
+
+    document.head.appendChild(script);
+  }
+
+  private executeInlineScript(scriptContent: string, attributes: { [key: string]: string }, index: number) {
+    try {
+      const script = document.createElement('script');
+
+      Object.entries(attributes).forEach(([key, value]) => {
+        script.setAttribute(key, value);
+      });
+
+      const wrappedScript = `
+        try {
+          ${scriptContent}
+        } catch (error) {
+          console.error('Error in inline script ${index}:', error);
+        }
+      `;
+
+      script.innerHTML = wrappedScript;
+
+      this.injectedScripts.push(script);
+
+      document.head.appendChild(script);
+
+      console.log(`Inline script ${index} executed`);
+    } catch (error) {
+      console.error(`Failed to execute inline script ${index}:`, error);
+    }
+  }
+
+  private cleanupScripts() {
+    this.injectedScripts.forEach((script) => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    });
+    this.injectedScripts = [];
   }
 
   private handleError(code: number, url: string) {

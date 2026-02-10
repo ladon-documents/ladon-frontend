@@ -5,6 +5,19 @@ export let navigationConfig: Array<any> = [];
 
 api.utility.Initalizer().initWebComponents();
 
+if (isDevMode()) {
+
+  let wcScriptElm = document.createElement("script");
+
+  wcScriptElm.setAttribute("src", './public/wc-ladon-forms.js');
+  wcScriptElm.setAttribute("type", "text/javascript");
+  wcScriptElm.setAttribute("type", "module");
+
+  document.body.appendChild(wcScriptElm);
+}
+
+
+
 fetchNavigation
   .then((res) => res.json())
   .then((nav) => (navigationConfig = nav))

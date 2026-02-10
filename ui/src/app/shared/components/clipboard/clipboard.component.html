@@ -1,0 +1,63 @@
+
+<div class="h-full flex flex-col" >
+  <div class="flex-1 overflow-y-auto min-h-0">
+    <div cdkDropList
+         #dropList="cdkDropList"
+         [cdkDropListData]="documents"
+         class="example-list h-full"
+         (cdkDropListDropped)="drop($event)">
+      <table class="table table-zebra w-full">
+        <tbody>
+          @for (document of documents; track $index) {
+            <tr>
+              <td class="w-10">
+                <div class="w-6 h-6">
+                  @if (document.key) {
+                    <img src="{{ document.key | fileicon }}" class="w-6 h-6"/>
+                  }
+                </div>
+              </td>
+              <td class="font-medium">
+                <div class="flex items-center gap-2">
+                  <span class="truncate max-w-xs">{{ document.name }}</span>
+                </div>
+              </td>
+              <td class="text-slate-600">
+                {{ document.size | filesize }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (documents.length === 0) {
+        <div class="h-full flex items-center justify-center">
+          <div class="text-center text-gray-500">
+            <p class="text-lg mb-2">Dateien hierher ziehen</p>
+            <p class="text-sm">Ziehen Sie Dateien aus dem Dateimanager hierher</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+
+  <div class="grid grid-cols-2 gap-4">
+    <button [disabled]="!buttonStates.pdf"
+            (click)="action('pdf')"
+            class="btn btn-outline btn-primary btn-sm w-full">
+      PDF erstellen
+    </button>
+    <button [disabled]="!buttonStates.download"
+            (click)="action('zip')"
+            class="btn btn-outline btn-primary btn-sm w-full">
+      Auswahl runterladen
+    </button>
+    <button (click)="reset()"
+            [disabled]="!buttonStates.reset"
+            class="btn btn-outline btn-secondary btn-sm w-full">
+      Auswahl zurücksetzen
+    </button>
+  </div>
+
+</div>

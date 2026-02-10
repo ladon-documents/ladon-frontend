@@ -162,9 +162,12 @@
           </tr>
         </thead>
 
-        <tbody>
+        <tbody  cdkDropList
+                [cdkDropListData]="documents()"
+                [cdkDropListConnectedTo]="[clipboardList()]"
+                cdkDropListHasAnchor>
           @for (document of documents(); track document.path; let i = $index) {
-            <tr
+            <tr cdkDrag [cdkDragData]="document"
               class="hover:bg-base cursor-pointer group/tablerow"
               [class.border-l-4]="isSelected(document)"
               [class.border-l-primary]="isSelected(document)"
@@ -287,7 +290,12 @@
 
 <ng-template #gridView>
   @if (viewMode() === "card") {
-    <div class="grid grid-flow-dense grid-cols-12 gap-4">
+    <div class="grid grid-flow-dense grid-cols-12 gap-4"
+         cdkDropList
+         [cdkDropListData]="documents()"
+         [cdkDropListConnectedTo]="[clipboardList()]"
+         cdkDropListHasAnchor
+    >
       @for (document of documents(); track document.path; let i = $index) {
         <div
           class="group/fileitem relative border border-gray-500/40 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow"

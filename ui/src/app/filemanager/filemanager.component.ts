@@ -109,12 +109,18 @@ export class FilemanagerComponent implements OnInit {
     }
   }
 
-  setViewMode(viewMode: 'card' | 'table') {
-    this.filemanagerFacade.setViewMode(viewMode);
+  toggleViewMode() {
+    const currentMode = this.viewMode();
+    const newMode = currentMode === 'card' ? 'table' : 'card';
+    this.filemanagerFacade.setViewMode(newMode);
   }
 
-  toggleSidebar() {
-    this.sidebarService.toggleSidebar();
+  toggleClipboardMode() {
+    this.sidebarService.toggleClipboardMode();
+  }
+
+  togglePreviewMode() {
+    this.sidebarService.togglePreviewMode();
   }
 
   // Neue Such- und Sortiermethoden

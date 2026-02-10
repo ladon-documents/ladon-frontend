@@ -1,0 +1,76 @@
+.example-list {
+  min-height: 400px;
+
+  // Verbesserte Drop-Zone Styles
+  &.cdk-drop-list-dragging {
+    background-color: rgba(59, 130, 246, 0.05);
+    border-radius: 0.5rem;
+  }
+}
+
+// Responsive Tabelle
+.table {
+  // Kompakte Darstellung bei schmaler Sidebar
+  td {
+    padding: 0.25rem 0.5rem;
+  }
+
+  // Scroll-Verhalten für horizontales Scrollen bei sehr schmalen Sidebars
+  .overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(156, 163, 175, 0.3);
+      border-radius: 2px;
+    }
+  }
+}
+
+// Scroll-Styling für bessere UX
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.7);
+  }
+}
+
+// Responsive Button-Layout
+.btn-xs {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  min-height: 1.5rem;
+  height: 1.5rem;
+}
+
+// Anpassungen für sehr schmale Sidebars
+@media (max-width: 350px) {
+  .btn-xs {
+    font-size: 0.6875rem;
+    padding: 0.1875rem 0.375rem;
+  }
+}

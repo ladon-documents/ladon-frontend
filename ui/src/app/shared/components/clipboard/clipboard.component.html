@@ -1,6 +1,7 @@
 
 <div class="h-full flex flex-col" >
   <div class="flex-1 overflow-y-auto min-h-0">
+
     <div cdkDropList
          #dropList="cdkDropList"
          [cdkDropListData]="documents"
@@ -8,7 +9,7 @@
          (cdkDropListDropped)="drop($event)">
       <table class="table table-zebra w-full">
         <tbody>
-          @for (document of documents; track $index) {
+          @for (document of clipboardStore.selectedDocuments(); track $index) {
             <tr>
               <td class="w-10">
                 <div class="w-6 h-6">
@@ -30,12 +31,10 @@
         </tbody>
       </table>
 
-      @if (documents.length === 0) {
-        <div class="h-full flex items-center justify-center">
-          <div class="text-center text-gray-500">
-            <p class="text-lg mb-2">Dateien hierher ziehen</p>
-            <p class="text-sm">Ziehen Sie Dateien aus dem Dateimanager hierher</p>
-          </div>
+      @if (clipboardStore.isEmpty()) {
+        <div class="empty-state">
+          <ng-icon name="heroDocumentPlus"></ng-icon>
+          <p>Ziehen Sie Dokumente hierher</p>
         </div>
       }
     </div>
@@ -43,18 +42,22 @@
 
 
   <div class="grid grid-cols-2 gap-4">
-    <button [disabled]="!buttonStates.pdf"
+    <button
+            [disabled]="!clipboardStore.canGeneratePdf() || clipboardStore.actionInProgress()"
             (click)="action('pdf')"
             class="btn btn-outline btn-primary btn-sm w-full">
+      <ng-icon name="heroDocumentText"></ng-icon>
       PDF erstellen
     </button>
-    <button [disabled]="!buttonStates.download"
+    <button [disabled]="!clipboardStore.canCreateZip() || clipboardStore.actionInProgress()"
             (click)="action('zip')"
             class="btn btn-outline btn-primary btn-sm w-full">
+      <ng-icon name="heroArchiveBox"></ng-icon>
       Auswahl runterladen
     </button>
+
     <button (click)="reset()"
-            [disabled]="!buttonStates.reset"
+            [disabled]="clipboardStore.actionInProgress()"
             class="btn btn-outline btn-secondary btn-sm w-full">
       Auswahl zurücksetzen
     </button>

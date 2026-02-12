@@ -10,8 +10,27 @@ import {
 import { ClipboardService } from './clipboard.service';
 import { DocumentModel } from '../../../../api';
 import { FileiconPipe } from '../../pipes/fileicon.pipe';
-import { NgIcon } from '@ng-icons/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
 import { FilesizePipe } from '../../pipes/filesize.pipe';
+import { ClipboardStore } from '../../../store/clipboard.store';
+import {
+  heroArchiveBox,
+  heroBars3,
+  heroBars3BottomLeft,
+  heroCalendarDays,
+  heroChevronDown,
+  heroChevronUp,
+  heroClock,
+  heroDocumentDuplicate,
+  heroDocumentPlus,
+  heroDocumentText,
+  heroEye,
+  heroMagnifyingGlass,
+  heroPlus,
+  heroScale,
+  heroSquares2x2,
+  heroXMark,
+} from '@ng-icons/heroicons/outline';
 
 interface ButtonStateInterface {
   pdf: boolean;
@@ -26,6 +45,13 @@ type ACTION = 'pdf' | 'zip';
   selector: 'ladon-clip-board',
   standalone: true,
   imports: [CommonModule, CdkDropList, CdkDrag, FileiconPipe, NgIcon, FilesizePipe],
+  providers: [
+    provideIcons({
+      heroDocumentPlus,
+      heroArchiveBox,
+      heroDocumentText,
+    }),
+  ],
   templateUrl: './clipboard.component.html',
   styleUrls: ['./clipboard.component.scss'],
 })
@@ -38,15 +64,16 @@ export class ClipboardComponent implements AfterViewInit {
     download: false,
     reset: false,
   };
+  readonly clipboardStore = inject(ClipboardStore);
 
   constructor(private clipboardService: ClipboardService) {}
   documents: Array<DocumentModel> = [];
-
 
   ngAfterViewInit(): void {
     this.clipboardService.setClipboardList(this.dropList);
   }
 
+  /*
   drop(event: CdkDragDrop<DocumentModel[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -56,21 +83,36 @@ export class ClipboardComponent implements AfterViewInit {
     this.handleButtonState();
   }
 
-  /*
-  remove(doc: LadonDocument) {
-    this.ds.remove(doc);
-  }
-
    */
+
+  drop(event: CdkDragDrop<DocumentModel[]>) {
+    if (event.previousContainer === event.container) {
+      // Dokumente innerhalb des Clipboards neu anordnen
+      this.clipboardStore.reorderDocuments(event.previousIndex, event.currentIndex);
+    } else {
+      // Dokument von außen ins Clipboard kopieren
+      const document = event.previousContainer.data[event.previousIndex];
+      this.clipboardStore.addDocument(document);
+    }
+  }
+
+  remove(doc: DocumentModel): void {
+    if (doc.key) {
+      this.clipboardStore.removeDocument(doc.key);
+    }
+  }
+
+  removeByIndex(index: number): void {
+    this.clipboardStore.removeDocumentByIndex(index);
+  }
+
   action(type: ACTION) {
-    //this.ds.action(type);
+    this.clipboardStore.setActionInProgress(true);
   }
 
-  public reset(): void {
-    this.documents = [];
-    this.handleButtonState();
+  reset(): void {
+    this.clipboardStore.clearDocuments();
   }
-
 
   private handleButtonState() {
     if (this.documents.length > 0) {
@@ -82,7 +124,6 @@ export class ClipboardComponent implements AfterViewInit {
     }
   }
 
-
   private updateButtonState(shouldbeEnabled: boolean) {
     for (const [key, value] of Object.entries(this.buttonStates)) {
       const _key = key as keyof ButtonStateInterface;
@@ -90,10 +131,7 @@ export class ClipboardComponent implements AfterViewInit {
     }
   }
 
-  private  isGeneratePDFActivated(): boolean {
-    return this.documents
-      .every(
-        (doc) => doc.key?.toLowerCase().indexOf(".pdf") !== -1
-      );
+  private isGeneratePDFActivated(): boolean {
+    return this.documents.every((doc) => doc.key?.toLowerCase().indexOf('.pdf') !== -1);
   }
 }

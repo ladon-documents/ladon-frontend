@@ -28,8 +28,8 @@ import { FilemanagerPaginationComponent } from '../pagination/pagination.compone
 import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 import { filemanagerHelper } from '../helper/helper';
 import { FileUploadDirective } from '../../shared/directive/file-upload.directive';
-import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.facade';
-import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
+import { FilemanagerContentFacade } from './filemanager-content.facade';
+import { FolderComponent } from '@ladon/shared';
 
 @Component({
   standalone: true,
@@ -41,7 +41,7 @@ import { UploadProgressComponent } from '../../shared/components/upload-progress
     FileiconPipe,
     FilemanagerPaginationComponent,
     FileUploadDirective,
-    UploadProgressComponent,
+    FolderComponent,
   ],
   providers: [
     provideIcons({

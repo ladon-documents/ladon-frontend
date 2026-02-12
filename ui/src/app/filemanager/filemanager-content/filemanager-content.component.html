@@ -40,22 +40,6 @@
   </div>
 </div>
 
-<ng-template #folder>
-  <div class="h-18 [&>svg]:h-full [&>svg]:mx-auto">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
-      <g>
-        <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" style="fill: #f29611"></rect>
-        <path
-          d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
-          style="fill: #ffb32c"></path>
-        <path
-          d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
-          style="fill: #f2a222"></path>
-      </g>
-    </svg>
-  </div>
-</ng-template>
-
 <ng-template #actions let-index="index" let-document="document">
   <div class="absolute top-2 end-2 transition-all duration-300 group-hover/fileitem:opacity-100">
     <div class="inline-flex relative">
@@ -64,7 +48,7 @@
           <div
             tabindex="0"
             role="button"
-            class="inline-flex items-center justify-center px-1.5 isolate relative before:content-[''] before:absolute before:-z-[1] before:rounded-full before:opacity-0 hover:before:opacity-100 [&.active]:before:opacity-100 [.active>&]:before:opacity-100 before:transition-all before:duration-300 before:-translate-x-1/2 before:-translate-y-1/2 before:top-1/2 before:left-1/2 focus-visible:outline-0 before:bg-gray-200 dark:before:bg-gray-900 text-slate-500 dark:text-slate-300 hover:text-slate-600 [&.active]:text-slate-600 [.active>&]:text-slate-600 [.active>&]:dark:text-slate-200 h-8 w-8 before:h-5 before:w-5 hover:before:h-8 hover:before:w-8 [&.active]:before:h-8 [&.active]:before:w-8 [.active>&]:before:h-8 [.active>&]:before:w-8"
+            class="inline-flex items-center justify-center px-1.5 isolate relative before:content-[''] before:absolute before:-z-[1] before:rounded-full before:opacity-0 hover:before:opacity-100 [&.active]:before:opacity-100 [.active>&]:before:opacity-100 before:transition-all before:duration-300 before:-translate-x-1/2 before:-translate-y-1/2 before:top-1/2 before:left-1/2 focus-visible:outline-0 before:bg-gray-200 dark:before:bg-gray-900 text-gray-500 [&.active]:text- 600 [.active>&]:text-gray-600 [.active>&]:dark:text-gray-200 h-8 w-8 before:h-5 before:w-5 hover:before:h-8 hover:before:w-8 [&.active]:before:h-8 [&.active]:before:w-8 [.active>&]:before:h-8 [.active>&]:before:w-8"
             [attr.popovertarget]="'popover-actions' + index"
             style="anchor-name: --anchor-1">
             <svg
@@ -189,20 +173,7 @@
               <td class="w-10">
                 @if (document.isFolder) {
                   <div class="w-6 h-6">
-                    <div class="h-6 [&>svg]:h-full [&>svg]:mx-auto">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
-                        <g>
-                          <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" style="fill: #f29611"></rect>
-                          <path
-                            d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
-                            style="fill: #ffb32c"></path>
-                          <path
-                            d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
-                            style="fill: #f2a222"></path>
-                        </g>
-                      </svg>
-                    </div>
-                    <!--  <ng-icon name="heroFolder" size="1.2em" class="text-yellow-500"></ng-icon>-->
+                    <app-folder></app-folder>
                   </div>
                 } @else {
                   <div class="w-6 h-6">
@@ -225,7 +196,7 @@
                 </div>
               </td>
 
-              <td class="text-slate-600">
+              <td class="text-gray-600">
                 @if (document.isFolder) {
                   <span class="text-xs badge badge-ghost">Ordner</span>
                 } @else {
@@ -233,11 +204,11 @@
                 }
               </td>
 
-              <td class="text-slate-600">
+              <td class="text-gray-600">
                 {{ document["last-modified"] | date: dateFormat }}
               </td>
 
-              <td class="text-slate-600">
+              <td class="text-gray-600">
                 {{ document.created | date: dateFormat }}
               </td>
 
@@ -298,7 +269,7 @@
 
       @if (documents().length === 0) {
         <div class="text-center py-12">
-          <div class="text-slate-400">
+          <div class="text-gray-400">
             <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
             @if (searchTerm()) {
               <p class="text-lg font-medium">Keine Ergebnisse gefunden</p>
@@ -324,29 +295,29 @@
           [class.shadow-lg]="isSelected(document)"
           [class.bg-base-300]="isSelected(document)">
           <span
-            class="flex flex-col pt-6 pb-4 cursor-pointer"
+            class="flex flex-col cursor-pointer p-4 gap-2 h-full justify-center"
             (dblclick)="navigateTo(document)"
             (click)="select(document)">
             @if (document.isFolder) {
-              <ng-container [ngTemplateOutlet]="folder"></ng-container>
+              <app-folder class="self-center" [style]="'--folder-size: 6rem'"></app-folder>
             } @else {
               @if (document.key) {
-                <img src="{{ document.key | fileicon }}" class="h-18 [&>svg]:h-full [&>svg]:mx-auto" />
+                <img src="{{ document.key | fileicon }}" class="h-18 [&>svg]:h-full [&>svg]:mx-auto mb-2" />
               }
             }
-            <div class="relative text-sm/snug text-center font-medium pt-4 px-5.5 mx-auto inline-flex justify-center">
+            <div class="relative text-sm/snug text-center break-all font-medium">
               <span class="line-clamp-1">{{ document.name }}</span>
               <div
-                class="inline-flex absolute end-0 group/asterisk cursor-pointer opacity-0 group-hover/fileitem:opacity-100">
+                class="inline-flex absolute end-0 top-0 group/asterisk cursor-pointer opacity-0 group-hover/fileitem:opacity-100">
                 <ng-icon name="heroStar" size="1.0em" class="text-primary"></ng-icon>
               </div>
             </div>
-            <ul class="flex items-center justify-center pt-1 gap-3">
-              <li class="text-xs/5 text-slate-400">
+            <ul class="flex items-center justify-center gap-3">
+              <li class="text-xs/5 text-gray-400">
                 {{ document.created | date: dateFormat }}
               </li>
               @if (!document.isFolder) {
-                <li class="text-xs/5 text-slate-400">
+                <li class="text-xs/5 text-gray-400">
                   {{ document.size | filesize }}
                 </li>
               }
@@ -363,7 +334,7 @@
     </div>
     @if (documents().length === 0) {
       <div class="text-center py-12">
-        <div class="text-slate-400">
+        <div class="text-gray-400">
           <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
           <p class="text-lg font-medium">Keine Dateien gefunden</p>
           <p class="text-sm">Dieser Ordner ist leer</p>

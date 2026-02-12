@@ -1,12 +1,6 @@
 @if (hasActiveUploads()) {
   <details class="dropdown dropdown-end">
     <summary class="btn btn-ghost m-1"><lib-spinner></lib-spinner></summary>
-    <ul class="menu dropdown-content bg-base-100 rounded-box z-1 mt-3 w-auto p-2 shadow-sm">
-      @for (upload of uploads(); track $index) {
-        <li>
-          <a>{{ upload }}</a>
-        </li>
-      }
-    </ul>
+    <lib-upload-progress></lib-upload-progress>
   </details>
 }

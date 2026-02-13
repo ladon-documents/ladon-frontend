@@ -1,5 +1,4 @@
 ---
-agent: agent
 description: 'Prompt and workflow for generating conventional commit messages using a structured XML format. Guides users to create standardized, descriptive commit messages in line with the Conventional Commits specification, including instructions, examples, and validation.'
 tools: ['execute/runInTerminal', 'execute/getTerminalOutput']
 ---

@@ -23,27 +23,25 @@ export class ConverterService {
   }
 
   public async downloadAsZip(file: string) {
-    // document path
-    /*
-         if (documentList && Array.isArray(documentList)) {
-          const documentKeys = documentList.map((doc) => {
-            return doc.path;
-          });
-          const data = JSON.stringify(documentKeys);
-          const event = new CustomEvent(eventName, { detail: data });
-          window.dispatchEvent(event);
-          this.loading$.next(true);
-        }
-     */
-
     if (this.converters.length === 0) {
       await this.getAvailableConverters();
     }
     if (this.checkConverterIsAvailable(this.zip)) {
       const payload: any = {
-        inputPaths: [file], //JSON.parse(files),
+        inputPaths: [file],
         type: 'applyandstore',
         converterId: this.zip,
+      };
+      await this.handleConverter(payload.inputPaths, payload.converterId, payload.type);
+    }
+  }
+
+  public async mergePdf(files: any) {
+    if (this.checkConverterIsAvailable(this.pdfmerge)) {
+      const payload: any = {
+        inputPaths: JSON.parse(files),
+        type: 'applyanddownload',
+        converterId: this.pdfmerge,
       };
       await this.handleConverter(payload.inputPaths, payload.converterId, payload.type);
     }
@@ -76,16 +74,18 @@ export class ConverterService {
     return this.converters.find((converter) => converter.id === converterId);
   }
 
-  private getFileName(result: any): string {
-    let filename;
-    if (result.headers['content-disposition'] && result.headers['content-disposition'].startsWith('attachment')) {
+  private getFileName(response: any): string {
+    const contentDisposition = response.headers.get('content-disposition');
+    let filename = 'filename';
+
+    if (contentDisposition) {
       const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-      const matches = filenameRegex.exec(result.headers['content-disposition']);
+      const matches = filenameRegex.exec(contentDisposition);
       if (matches != null && matches[1]) {
         filename = matches[1].replace(/['"]/g, '');
       }
     }
-    return filename ?? 'filename';
+    return filename;
   }
 
   private async handleConverter(inputPaths: Array<string>, converterId: string, type: converterType) {
@@ -107,30 +107,28 @@ export class ConverterService {
 
     if (type === 'applyanddownload') {
       try {
-        const result = await lastValueFrom(this.converterApi.applyAndDownload(data));
-        if (result) {
-          const fileName = this.getFileName(result);
-          const blob = URL.createObjectURL(new Blob([result]));
+        const response = await lastValueFrom(this.converterApi.applyAndDownload(data, 'response'));
+        if (response && response.body) {
+          const fileName = this.getFileName(response);
+          console.log(`Filename: ${fileName}`);
+          const blob = URL.createObjectURL(new Blob([response.body]));
           this.downloadURI(blob, fileName);
         }
       } catch (e) {
-        // this.errorDispatcher[converterId] && this.errorDispatcher[converterId](type, e);
+        // TODO: dispatch error event
       }
     } else {
       try {
         const result = await lastValueFrom(this.converterApi.applyConverterAndStore(data));
         if (result && converterId !== this.zipenc) {
           const url = Array.isArray(result) ? result[0] : result;
-          // this.successDispatcher[converterId] && this.successDispatcher[converterId](type, url);
+          // TODO: dispatch success event with zip file url
           const id = url.slice(url.lastIndexOf('/') + 1);
           const directUrl = this.getDirectLink('_tmp', id);
           window.open(directUrl);
         } else if (result && converterId === this.zipenc) {
           const url = Array.isArray(result) ? result[0] : result;
-          //this.successDispatcher[converterId] && this.successDispatcher[converterId](type, url);
-          // const _url = (window.location.host) + '/dl/' + filename;
-          //const dialogManager = new DialogManager(_url, otp);
-          //dialogManager.openDialog();
+          // TODO: dispatch success event with zip file url
         }
       } catch (e) {
         // this.errorDispatcher[converterId] && this.errorDispatcher[converterId](type, e);

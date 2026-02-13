@@ -1,12 +1,6 @@
-import { Component, ViewChild, AfterViewInit, inject } from '@angular/core';
+import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  CdkDrag,
-  CdkDragDrop,
-  CdkDropList,
-  copyArrayItem,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { ClipboardService } from './clipboard.service';
 import { DocumentModel } from '../../../../api';
 import { FileiconPipe } from '../../pipes/fileicon.pipe';
@@ -15,21 +9,11 @@ import { FilesizePipe } from '../../pipes/filesize.pipe';
 import { ClipboardStore } from '../../../store/clipboard.store';
 import {
   heroArchiveBox,
-  heroBars3,
-  heroBars3BottomLeft,
-  heroCalendarDays,
-  heroChevronDown,
-  heroChevronUp,
-  heroClock,
-  heroDocumentDuplicate,
+  heroClipboardDocumentList,
   heroDocumentPlus,
   heroDocumentText,
-  heroEye,
-  heroMagnifyingGlass,
-  heroPlus,
-  heroScale,
-  heroSquares2x2,
-  heroXMark,
+  heroInformationCircle,
+  heroTrash,
 } from '@ng-icons/heroicons/outline';
 
 interface ButtonStateInterface {
@@ -50,6 +34,9 @@ type ACTION = 'pdf' | 'zip';
       heroDocumentPlus,
       heroArchiveBox,
       heroDocumentText,
+      heroInformationCircle,
+      heroClipboardDocumentList,
+      heroTrash,
     }),
   ],
   templateUrl: './clipboard.component.html',
@@ -73,24 +60,10 @@ export class ClipboardComponent implements AfterViewInit {
     this.clipboardService.setClipboardList(this.dropList);
   }
 
-  /*
   drop(event: CdkDragDrop<DocumentModel[]>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-    }
-    this.handleButtonState();
-  }
-
-   */
-
-  drop(event: CdkDragDrop<DocumentModel[]>) {
-    if (event.previousContainer === event.container) {
-      // Dokumente innerhalb des Clipboards neu anordnen
       this.clipboardStore.reorderDocuments(event.previousIndex, event.currentIndex);
     } else {
-      // Dokument von außen ins Clipboard kopieren
       const document = event.previousContainer.data[event.previousIndex];
       this.clipboardStore.addDocument(document);
     }
@@ -106,32 +79,34 @@ export class ClipboardComponent implements AfterViewInit {
     this.clipboardStore.removeDocumentByIndex(index);
   }
 
-  action(type: ACTION) {
-    this.clipboardStore.setActionInProgress(true);
+  action(type: ACTION): void {
+    if (type === 'pdf') {
+      this.mergePdfs();
+    } else if (type === 'zip') {
+      this.createZip();
+    }
+  }
+
+  mergePdfs(): void {
+    if (!this.clipboardStore.canGeneratePdf()) {
+      console.warn('PDF-Merge nicht möglich: Nicht alle Dokumente sind PDFs oder weniger als 2 Dokumente');
+      return;
+    }
+    this.clipboardStore.mergePdfs();
+  }
+
+  createZip(): void {
+    if (!this.clipboardStore.canCreateZip()) {
+      console.warn('ZIP-Erstellung nicht möglich: Keine Dokumente ausgewählt');
+      return;
+    }
   }
 
   reset(): void {
     this.clipboardStore.clearDocuments();
   }
 
-  private handleButtonState() {
-    if (this.documents.length > 0) {
-      const isPdf = this.isGeneratePDFActivated();
-      this.updateButtonState(true);
-      this.buttonStates.pdf = isPdf;
-    } else {
-      this.updateButtonState(false);
-    }
-  }
-
-  private updateButtonState(shouldbeEnabled: boolean) {
-    for (const [key, value] of Object.entries(this.buttonStates)) {
-      const _key = key as keyof ButtonStateInterface;
-      this.buttonStates[_key] = shouldbeEnabled;
-    }
-  }
-
-  private isGeneratePDFActivated(): boolean {
-    return this.documents.every((doc) => doc.key?.toLowerCase().indexOf('.pdf') !== -1);
+  dismissError(): void {
+    this.clipboardStore.clearError();
   }
 }

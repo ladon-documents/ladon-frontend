@@ -16,14 +16,17 @@ tools: ['execute/runInTerminal', 'execute/getTerminalOutput']
 1. Run `git status` to review changed files.
 2. Run `git diff` or `git diff --cached` to inspect changes.
 3. Stage your changes with `git add <file>`.
-4. Construct your commit message using the following XML structure.
-5. After generating your commit message, Copilot will automatically run the following command in your integrated terminal (no confirmation needed):
+4. **Determine scope:** Check the current branch name for `lfa-` pattern (case-insensitive):
+   - If branch contains `LFA-XXX`, use `LFA-XXX` as scope (e.g., `LFA-33`)
+   - Otherwise, use a descriptive scope (e.g., `ui`, `api`, `store`, `filemanager`)
+5. Construct your commit message using the following XML structure.
+6. After generating your commit message, Copilot will automatically run the following command in your integrated terminal (no confirmation needed):
 
 ```bash
 git commit -m "type(scope): description"
 ```
 
-6. Just execute this prompt and Copilot will handle the commit for you in the terminal.
+7. Just execute this prompt and Copilot will handle the commit for you in the terminal.
 
 ### Commit Message Structure
 

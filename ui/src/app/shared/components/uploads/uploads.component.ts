@@ -1,17 +1,18 @@
-import { Component, computed, inject, input } from '@angular/core';
-import { SpinnerComponent } from '../spinner/spinner.component';
+import { Component, computed, inject } from '@angular/core';
 import { UploadProgressComponent } from '../upload-progress/upload-progress.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroDocumentArrowUp } from '@ng-icons/heroicons/outline';
 import { FilemanagerContentFacade } from '../../../filemanager/filemanager-content/filemanager-content.facade';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'lib-uploads',
-  imports: [SpinnerComponent, UploadProgressComponent],
+  imports: [UploadProgressComponent, NgIcon, SpinnerComponent],
   templateUrl: './uploads.component.html',
+  providers: [provideIcons({ heroDocumentArrowUp })],
   styleUrl: './uploads.component.scss',
 })
 export class UploadsComponent {
   protected readonly filemanagerContentFacade = inject(FilemanagerContentFacade);
-
   hasActiveUploads = computed(() => this.filemanagerContentFacade.hasActiveUploads());
-  uploads = input<string[]>();
 }

@@ -1,6 +1,16 @@
-@if (hasActiveUploads()) {
-  <details class="dropdown dropdown-end">
-    <summary class="btn btn-ghost m-1"><lib-spinner></lib-spinner></summary>
-    <lib-upload-progress></lib-upload-progress>
-  </details>
-}
+<details class="dropdown dropdown-end">
+  <summary class="btn btn-ghost m-1">
+    @if (hasActiveUploads()) {
+      <lib-spinner style="--spinner-size: 1.25rem"></lib-spinner>
+    } @else {
+      <ng-icon name="heroDocumentArrowUp"></ng-icon>
+    }
+  </summary>
+  <div class="toast toast-top toast-end z-500 space-y-2 min-w-100 absolute right-0">
+    @if (hasActiveUploads()) {
+      <lib-upload-progress></lib-upload-progress>
+    } @else {
+      <div class="flex items-center justify-center gap-2 alert alert-info shadow-lg">Keine aktiven Uploads</div>
+    }
+  </div>
+</details>

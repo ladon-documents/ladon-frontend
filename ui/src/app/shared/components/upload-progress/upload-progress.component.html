@@ -1,80 +1,76 @@
-<div class="toast toast-top toast-end z-50 space-y-2 min-w-100">
-  @for (upload of uploadProgress(); track upload.fileName) {
-    <div class="alert gap-2 grid-cols-1 shadow-lg bg-base-100 border border-base-300">
-      <div class="flex items-center justify-between w-full">
-        <div class="flex items-center gap-2 flex-1">
-          <div class="flex-shrink-0">
-            @if (upload.status === "uploading") {
-              <span class="loading loading-spinner loading-sm text-primary"></span>
-            }
-            @if (upload.status === "success") {
-              <ng-icon name="heroCheckCircle" style="--ng-icon__color: var(--color-success)"></ng-icon>
-            }
-            @if (upload.status === "error") {
-              <ng-icon name="heroXCircle" style="--ng-icon__color: var(--color-error)"></ng-icon>
-            }
-          </div>
+@for (upload of uploadProgress(); track upload.fileName) {
+  <div class="alert gap-2 grid-cols-1 shadow-lg bg-base-100 border border-base-300">
+    <div class="flex items-center justify-between w-full">
+      <div class="flex items-center gap-2 flex-1">
+        <div class="flex-shrink-0">
+          @if (upload.status === "uploading") {
+            <span class="loading loading-spinner loading-sm text-primary"></span>
+          }
+          @if (upload.status === "success") {
+            <ng-icon name="heroCheckCircle" style="--ng-icon__color: var(--color-success)"></ng-icon>
+          }
+          @if (upload.status === "error") {
+            <ng-icon name="heroXCircle" style="--ng-icon__color: var(--color-error)"></ng-icon>
+          }
+        </div>
 
-          <!-- Dateiname -->
-          <div class="flex-1">
-            <div class="font-medium text-sm" [title]="upload.fileName">
-              {{ upload.fileName }}
-            </div>
-            <div class="text-xs opacity-50">
-              {{ filemanagerContentFacade.getFileSize(upload.fileName) }}
-            </div>
+        <!-- Dateiname -->
+        <div class="flex-1">
+          <div class="font-medium text-sm" [title]="upload.fileName">
+            {{ upload.fileName }}
+          </div>
+          <div class="text-xs opacity-50">
+            {{ filemanagerContentFacade.getFileSize(upload.fileName) }}
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Progress Bar für aktive Uploads -->
-      @if (upload.status === "uploading") {
-        <div class="w-full">
-          <progress class="progress progress-primary w-full h-2" [value]="upload.progress" max="100"></progress>
-          <div class="flex gap-2 justify-between text-xs">
-            <span class="text-primary font-medium">{{ Math.round(upload.progress) }}%</span>
-            <span class="opacity-50">{{ filemanagerContentFacade.getUploadSpeed(upload) }}</span>
-          </div>
+    <!-- Progress Bar für aktive Uploads -->
+    @if (upload.status === "uploading") {
+      <div class="w-full">
+        <progress class="progress progress-primary w-full h-2" [value]="upload.progress" max="100"></progress>
+        <div class="flex gap-2 justify-between text-xs">
+          <span class="text-primary font-medium">{{ Math.round(upload.progress) }}%</span>
+          <span class="opacity-50">{{ filemanagerContentFacade.getUploadSpeed(upload) }}</span>
         </div>
-      }
+      </div>
+    }
 
-      <!-- Close Button für erfolgreiche/fehlerhafte Uploads -->
-      @if (upload.status !== "uploading") {
-        <button class="btn btn-sm btn-ghost" (click)="filemanagerContentFacade.removeUpload(upload)" title="Schließen">
-          <ng-icon name="heroXMark" style="color: currentColor"></ng-icon>
-        </button>
-      }
+    <!-- Close Button für erfolgreiche/fehlerhafte Uploads -->
+    @if (upload.status !== "uploading") {
+      <button class="btn btn-sm btn-ghost" (click)="filemanagerContentFacade.removeUpload(upload)" title="Schließen">
+        <ng-icon name="heroXMark" style="color: currentColor"></ng-icon>
+      </button>
+    }
 
-      <!-- Status Message -->
-      <!-- <div class="text-xs mt-1" [class]="filemanagerContentFacade.getStatusTextClass(upload.status)">
+    <!-- Status Message -->
+    <!-- <div class="text-xs mt-1" [class]="filemanagerContentFacade.getStatusTextClass(upload.status)">
         @if (upload.status === "uploading") {
           <span class="opacity-70"> • {{ filemanagerContentFacade.getRemainingTime(upload) }}</span>
         }
       </div> -->
-    </div>
-  }
-</div>
+  </div>
+}
 
 <!-- Upload Summary (falls mehrere Uploads gleichzeitig) -->
 @if (uploadProgress().length > 1 && filemanagerContentFacade.hasActiveUploads()) {
-  <div class="toast toast-bottom toast-end z-40">
-    <div class="alert alert-info shadow-lg">
-      <div class="flex items-center gap-2">
-        <span class="loading loading-spinner loading-sm"></span>
-        <div>
-          <div class="font-medium text-sm">
-            {{ filemanagerContentFacade.getActiveUploadsCount() }} Dateien werden hochgeladen
-          </div>
-          <div class="text-xs opacity-70">
-            Gesamt: {{ filemanagerContentFacade.getTotalProgress() }}% •
-            {{ filemanagerContentFacade.getTotalUploadSpeed() }}
-          </div>
+  <div class="alert alert-info shadow-lg">
+    <div class="flex items-center gap-2">
+      <span class="loading loading-spinner loading-sm"></span>
+      <div>
+        <div class="font-medium text-sm">
+          {{ filemanagerContentFacade.getActiveUploadsCount() }} Dateien werden hochgeladen
+        </div>
+        <div class="text-xs opacity-70">
+          Gesamt: {{ filemanagerContentFacade.getTotalProgress() }}% •
+          {{ filemanagerContentFacade.getTotalUploadSpeed() }}
         </div>
       </div>
-      <progress
-        class="progress progress-info w-full h-1 mt-2"
-        [value]="filemanagerContentFacade.getTotalProgress()"
-        max="100"></progress>
     </div>
+    <progress
+      class="progress progress-info w-full h-1 mt-2"
+      [value]="filemanagerContentFacade.getTotalProgress()"
+      max="100"></progress>
   </div>
 }

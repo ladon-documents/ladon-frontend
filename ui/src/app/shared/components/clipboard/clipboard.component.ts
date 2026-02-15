@@ -100,6 +100,8 @@ export class ClipboardComponent implements AfterViewInit {
       console.warn('ZIP-Erstellung nicht möglich: Keine Dokumente ausgewählt');
       return;
     }
+    this.clipboardStore.createZip();
+
   }
 
   reset(): void {

@@ -22,6 +22,7 @@ import {
   heroSquares2x2,
   heroXMark,
   heroCloudArrowUp,
+  heroClipboardDocumentList,
 } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
@@ -70,6 +71,7 @@ import { BucketUiItemModel } from '../../api';
       heroClock,
       heroCalendarDays,
       heroChevronUp,
+      heroClipboardDocumentList,
     }),
     FilesizePipe,
   ],
@@ -156,6 +158,7 @@ export class FilemanagerComponent implements OnInit {
       input.value = '';
     }
   }
+
 
   openSearchModal() {
     this.isSearchModalOpen.set(true);

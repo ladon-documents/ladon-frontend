@@ -33,7 +33,6 @@
     @if (viewMode() === "table") {
       <ng-container [ngTemplateOutlet]="tableView"></ng-container>
     }
-  </div>
 
   <div class="flex-shrink-0 border-t border-gray-500/40 px-4">
     <filemanager-pagination></filemanager-pagination>
@@ -225,7 +224,7 @@
                       tabindex="0"
                       class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
                       <li>
-                        <a>
+                        <a (click)="copy(document)">
                           <ng-icon name="heroDocumentDuplicate" size="1.0em" class="size-4"></ng-icon>
                           Kopieren
                         </a>

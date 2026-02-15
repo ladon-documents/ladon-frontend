@@ -38,6 +38,8 @@ import { FileUploadDirective } from '../../shared/directive/file-upload.directiv
 import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.facade';
 import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
 import { ClipboardService } from '../../shared/components/clipboard/clipboard.service';
+import { FileEditorDialogComponent } from '../file-editor-dialog/file-editor-dialog.component';
+import { ClipboardStore } from '../../store/clipboard.store';
 import { FolderComponent } from '@ladon/shared';
 
 
@@ -55,6 +57,7 @@ import { FolderComponent } from '@ladon/shared';
     UploadProgressComponent,
     CdkDropList,
     FolderComponent,
+    FileEditorDialogComponent,
   ],
   providers: [
     provideIcons({
@@ -86,7 +89,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   private readonly sidebarService = inject(SidebarService);
   private readonly pdfViewerFacade = inject(PdfViewerFacade);
   protected readonly clipboardList = inject(ClipboardService).clipboardList;
-
+  readonly clipboardStore = inject(ClipboardStore);
   documents: Signal<DocumentModel[]> = this.#facade.documents;
 
   #currentBucket: string | null = null;
@@ -126,6 +129,10 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     });
   }
 
+  getSelectedDocument(): DocumentModel | null {
+    return this.#selectedDocument;
+  }
+
   isSelected(document: DocumentModel): boolean {
     const selected = this.#facade.selectedDocument();
     return selected?.path === document.path && selected?.key === document.key;
@@ -136,6 +143,10 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       URL.revokeObjectURL(this.imageUrl);
     }
   }
+
+  copy(file: DocumentModel) {
+    this.clipboardStore.addDocument(file);
+  };
 
   async download(file: string | undefined) {
     if (!file) return;

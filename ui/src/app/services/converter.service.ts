@@ -29,7 +29,7 @@ export class ConverterService {
     if (this.checkConverterIsAvailable(this.zip)) {
       const payload: any = {
         inputPaths: [file],
-        type: 'applyandstore',
+        type: 'applyanddownload',
         converterId: this.zip,
       };
       await this.handleConverter(payload.inputPaths, payload.converterId, payload.type);

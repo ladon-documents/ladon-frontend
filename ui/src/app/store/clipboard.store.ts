@@ -38,21 +38,13 @@ export const ClipboardStore = signalStore(
     allDocumentsArePdf: computed(
       () =>
         store.selectedDocuments().length > 0 &&
-        store
-          .selectedDocuments()
-          .every(
-            (doc) => doc.key?.toLowerCase().endsWith('.pdf'),
-          ),
+        store.selectedDocuments().every((doc) => doc.key?.toLowerCase().endsWith('.pdf')),
     ),
 
     canGeneratePdf: computed(
       () =>
         store.selectedDocuments().length >= 2 &&
-        store
-          .selectedDocuments()
-          .every(
-            (doc) => doc.key?.toLowerCase().endsWith('.pdf'),
-          ),
+        store.selectedDocuments().every((doc) => doc.key?.toLowerCase().endsWith('.pdf')),
     ),
 
     canCreateZip: computed(() => store.selectedDocuments().length > 0),
@@ -255,19 +247,26 @@ export const ClipboardStore = signalStore(
             return EMPTY;
           }
 
-          // TODO: Implementiere ZIP-Erstellung
-          // const filesJson = JSON.stringify(paths);
-          // return converterService.createZip(filesJson)...
+          const filesJson = JSON.stringify(paths);
 
-          // Temporäre Implementierung
-          return new Promise<void>((resolve) => {
-            setTimeout(() => {
-              patchState(store, {
-                actionInProgress: false,
-                error: null,
+          return new Promise<void>((resolve, reject) => {
+            converterService
+              .downloadAsZip(filesJson)
+              .then(() => {
+                patchState(store, {
+                  actionInProgress: false,
+                  error: null,
+                  selectedDocuments: [],
+                });
+                resolve();
+              })
+              .catch((error) => {
+                patchState(store, {
+                  actionInProgress: false,
+                  error: error.message || 'Fehler beim Erstllen der Zip Datei',
+                });
+                reject(error);
               });
-              resolve();
-            }, 1000);
           });
         }),
         catchError((error) => {

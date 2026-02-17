@@ -1,16 +1,16 @@
 <div
-  class="h-full flex flex-col"
-  appFileUpload
-  [acceptedTypes]="allowedFileTypes"
-  [maxFileSize]="maxFileSize"
-  [allowMultiple]="true"
-  (filesDropped)="onFilesDropped($event)"
-  (filesHovered)="onFilesHovered($event)"
-  (filesRejected)="onFilesRejected($event)"
-  #dropZone>
+                                                                                    class="h-full flex flex-col"
+                                                                                    appFileUpload
+                                                                                    [acceptedTypes]="allowedFileTypes"
+                                                                                    [maxFileSize]="maxFileSize"
+                                                                                    [allowMultiple]="true"
+                                                                                    (filesDropped)="onFilesDropped($event)"
+                                                                                    (filesHovered)="onFilesHovered($event)"
+                                                                                    (filesRejected)="onFilesRejected($event)"
+                                                                                    #dropZone>
   @if (isDragOver()) {
     <div
-      class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center">
+                                                                                        class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center">
       <div class="card bg-base-100 shadow-2xl">
         <div class="card-body text-center max-w-sm">
           <div class="text-6xl mb-4 text-primary">
@@ -34,87 +34,87 @@
       <ng-container [ngTemplateOutlet]="tableView"></ng-container>
     }
 
-  <div class="flex-shrink-0 border-t border-gray-500/40 px-4">
-    <filemanager-pagination></filemanager-pagination>
+    <div class="flex-shrink-0 border-t border-gray-500/40 px-4">
+      <filemanager-pagination></filemanager-pagination>
+    </div>
   </div>
-</div>
 
-<ng-template #actions let-index="index" let-document="document">
-  <div class="absolute top-2 end-2 transition-all duration-300 group-hover/fileitem:opacity-100">
-    <div class="inline-flex relative">
-      <div disabled="false" aria-haspopup="menu" aria-expanded="false" class="inline-flex">
-        <div class="dropdown dropdown-start">
-          <div
-            tabindex="0"
-            role="button"
-            class="inline-flex items-center justify-center px-1.5 isolate relative before:content-[''] before:absolute before:-z-[1] before:rounded-full before:opacity-0 hover:before:opacity-100 [&.active]:before:opacity-100 [.active>&]:before:opacity-100 before:transition-all before:duration-300 before:-translate-x-1/2 before:-translate-y-1/2 before:top-1/2 before:left-1/2 focus-visible:outline-0 before:bg-gray-200 dark:before:bg-gray-900 text-gray-500 [&.active]:text- 600 [.active>&]:text-gray-600 [.active>&]:dark:text-gray-200 h-8 w-8 before:h-5 before:w-5 hover:before:h-8 hover:before:w-8 [&.active]:before:h-8 [&.active]:before:w-8 [.active>&]:before:h-8 [.active>&]:before:w-8"
-            [attr.popovertarget]="'popover-actions' + index"
-            style="anchor-name: --anchor-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-            </svg>
+  <ng-template #actions let-index="index" let-document="document">
+    <div class="absolute top-2 end-2 transition-all duration-300 group-hover/fileitem:opacity-100">
+      <div class="inline-flex relative">
+        <div disabled="false" aria-haspopup="menu" aria-expanded="false" class="inline-flex">
+          <div class="dropdown dropdown-start">
+            <div
+                                                                                                tabindex="0"
+                                                                                                role="button"
+                                                                                                class="inline-flex items-center justify-center px-1.5 isolate relative before:content-[''] before:absolute before:-z-[1] before:rounded-full before:opacity-0 hover:before:opacity-100 [&.active]:before:opacity-100 [.active>&]:before:opacity-100 before:transition-all before:duration-300 before:-translate-x-1/2 before:-translate-y-1/2 before:top-1/2 before:left-1/2 focus-visible:outline-0 before:bg-gray-200 dark:before:bg-gray-900 text-gray-500 [&.active]:text- 600 [.active>&]:text-gray-600 [.active>&]:dark:text-gray-200 h-8 w-8 before:h-5 before:w-5 hover:before:h-8 hover:before:w-8 [&.active]:before:h-8 [&.active]:before:w-8 [.active>&]:before:h-8 [.active>&]:before:w-8"
+                                                                                                [attr.popovertarget]="'popover-actions' + index"
+                                                                                                style="anchor-name: --anchor-1">
+              <svg
+                                                                                                  xmlns="http://www.w3.org/2000/svg"
+                                                                                                  fill="none"
+                                                                                                  viewBox="0 0 24 24"
+                                                                                                  stroke-width="1.5"
+                                                                                                  stroke="currentColor"
+                                                                                                  class="size-6">
+                <path
+                                                                                                    stroke-linecap="round"
+                                                                                                    stroke-linejoin="round"
+                                                                                                    d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/>
+              </svg>
+            </div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+              <li>
+                <a>
+                  <ng-icon name="heroDocumentDuplicate" size="1.0em" class="size-4"></ng-icon>
+                  Kopieren</a
+                >
+              </li>
+              <li>
+                <a>
+                  <ng-icon name="heroPencilSquare" size="1.0em" class="size-4"></ng-icon>
+                  Rename</a
+                >
+              </li>
+              <li>
+                <a>
+                  <ng-icon name="heroStar" size="1.0em" class="size-4"></ng-icon>
+                  Als Favorit markieren</a
+                >
+              </li>
+              <li>
+                <a (click)="download(document.path)">
+                  <ng-icon name="heroArrowDownTray" size="1.0em" class="size-4"></ng-icon>
+                  Download</a
+                >
+              </li>
+              <li>
+                <a>
+                  <ng-icon name="heroShare" size="1.0em" class="size-4"></ng-icon>
+                  Teilen</a
+                >
+              </li>
+              <li></li>
+              <li>
+                <a>
+                  <ng-icon name="heroTrash" size="1.0em" class="size-4" color="red"></ng-icon>
+                  <span class="text-red-400">Delete</span></a
+                >
+              </li>
+
+              <li></li>
+            </ul>
           </div>
-          <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-            <li>
-              <a>
-                <ng-icon name="heroDocumentDuplicate" size="1.0em" class="size-4"></ng-icon>
-                Kopieren</a
-              >
-            </li>
-            <li>
-              <a>
-                <ng-icon name="heroPencilSquare" size="1.0em" class="size-4"></ng-icon>
-                Rename</a
-              >
-            </li>
-            <li>
-              <a>
-                <ng-icon name="heroStar" size="1.0em" class="size-4"></ng-icon>
-                Als Favorit markieren</a
-              >
-            </li>
-            <li>
-              <a (click)="download(document.path)">
-                <ng-icon name="heroArrowDownTray" size="1.0em" class="size-4"></ng-icon>
-                Download</a
-              >
-            </li>
-            <li>
-              <a>
-                <ng-icon name="heroShare" size="1.0em" class="size-4"></ng-icon>
-                Teilen</a
-              >
-            </li>
-            <li></li>
-            <li>
-              <a>
-                <ng-icon name="heroTrash" size="1.0em" class="size-4" color="red"></ng-icon>
-                <span class="text-red-400">Delete</span></a
-              >
-            </li>
-
-            <li></li>
-          </ul>
         </div>
       </div>
     </div>
-  </div>
-</ng-template>
+  </ng-template>
 
-<ng-template #tableView>
-  @if (viewMode() === "table") {
-    <div class="overflow-x-auto">
-      <table class="table table-zebra w-full">
-        <thead>
+  <ng-template #tableView>
+    @if (viewMode() === "table") {
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
           <tr>
             <th class="w-10"></th>
             <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('name')">
@@ -122,8 +122,8 @@
                 Name
                 @if (sortConfig().field === "name") {
                   <ng-icon
-                    [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                    size="0.8em"></ng-icon>
+                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                                                                                                      size="0.8em"></ng-icon>
                 }
               </div>
             </th>
@@ -132,8 +132,8 @@
                 Größe
                 @if (sortConfig().field === "size") {
                   <ng-icon
-                    [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                    size="0.8em"></ng-icon>
+                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                                                                                                      size="0.8em"></ng-icon>
                 }
               </div>
             </th>
@@ -142,8 +142,8 @@
                 Geändert
                 @if (sortConfig().field === "last-modified") {
                   <ng-icon
-                    [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                    size="0.8em"></ng-icon>
+                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                                                                                                      size="0.8em"></ng-icon>
                 }
               </div>
             </th>
@@ -152,170 +152,174 @@
                 Erstellt
                 @if (sortConfig().field === "created") {
                   <ng-icon
-                    [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                    size="0.8em"></ng-icon>
+                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                                                                                                      size="0.8em"></ng-icon>
                 }
               </div>
             </th>
             <th class="w-16"></th>
           </tr>
-        </thead>
+          </thead>
 
-        <tbody  cdkDropList
-                [cdkDropListData]="documents()"
-                [cdkDropListConnectedTo]="[clipboardList()]"
-                cdkDropListHasAnchor>
-          @for (document of documents(); track document.path; let i = $index) {
-            <tr cdkDrag [cdkDragData]="document"
-              class="hover:bg-base cursor-pointer group/tablerow"
-              [class.border-l-4]="isSelected(document)"
-              [class.border-l-primary]="isSelected(document)"
-              (dblclick)="navigateTo(document)"
-              (click)="select(document)">
-              <td class="w-10">
-                @if (document.isFolder) {
-                  <div class="w-6 h-6">
-                    <app-folder></app-folder>
-                  </div>
-                } @else {
-                  <div class="w-6 h-6">
-                    @if (document.key) {
-                      <img src="{{ document.key | fileicon }}" class="w-6 h-6" />
-                    }
-                  </div>
-                }
-              </td>
-
-              <td class="font-medium">
-                <div class="flex items-center gap-2">
-                  <span class="truncate max-w-xs">{{ document.name }}</span>
-                  <div class="opacity-0 group-hover/tablerow:opacity-100 transition-opacity">
-                    <ng-icon
-                      name="heroStar"
-                      size="0.8em"
-                      class="text-primary cursor-pointer hover:text-primary-content"></ng-icon>
-                  </div>
-                </div>
-              </td>
-
-              <td class="text-gray-600">
-                @if (document.isFolder) {
-                  <span class="text-xs badge badge-ghost">Ordner</span>
-                } @else {
-                  {{ document.size | filesize }}
-                }
-              </td>
-
-              <td class="text-gray-600">
-                {{ document["last-modified"] | date: dateFormat }}
-              </td>
-
-              <td class="text-gray-600">
-                {{ document.created | date: dateFormat }}
-              </td>
-
-              <td class="w-16">
-                <div class="opacity-0 group-hover/tablerow:opacity-100 transition-opacity">
-                  <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs btn-square">
-                      <ng-icon name="heroEllipsisVertical" size="1.0em"></ng-icon>
+          <tbody cdkDropList
+                 [cdkDropListData]="documents()"
+                 [cdkDropListConnectedTo]="[clipboardList()]"
+                 cdkDropListHasAnchor>
+            @for (document of documents(); track document.path; let i = $index) {
+              <tr cdkDrag [cdkDragData]="document"
+                  class="hover:bg-base cursor-pointer group/tablerow"
+                  [class.border-l-4]="isSelected(document)"
+                  [class.border-l-primary]="isSelected(document)"
+                  (dblclick)="navigateTo(document)"
+                  (click)="select(document)">
+                <td class="w-10">
+                  @if (document.isFolder) {
+                    <div class="w-6 h-6">
+                      <app-folder></app-folder>
                     </div>
-                    <ul
-                      tabindex="0"
-                      class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
-                      <li>
-                        <a (click)="copy(document)">
-                          <ng-icon name="heroDocumentDuplicate" size="1.0em" class="size-4"></ng-icon>
-                          Kopieren
-                        </a>
-                      </li>
-                      <li>
-                        <a>
-                          <ng-icon name="heroPencilSquare" size="1.0em" class="size-4"></ng-icon>
-                          Umbenennen
-                        </a>
-                      </li>
-                      <li>
-                        <a>
-                          <ng-icon name="heroStar" size="1.0em" class="size-4"></ng-icon>
-                          Als Favorit markieren
-                        </a>
-                      </li>
-                      <li>
-                        <a (click)="download(document.path)">
-                          <ng-icon name="heroArrowDownTray" size="1.0em" class="size-4"></ng-icon>
-                          Herunterladen
-                        </a>
-                      </li>
-                      <li>
-                        <a>
-                          <ng-icon name="heroShare" size="1.0em" class="size-4"></ng-icon>
-                          Teilen
-                        </a>
-                      </li>
-                      <li><hr class="my-1" /></li>
-                      <li>
-                        <a class="text-error">
-                          <ng-icon name="heroTrash" size="1.0em" class="size-4"></ng-icon>
-                          Löschen
-                        </a>
-                      </li>
-                    </ul>
+                  } @else {
+                    <div class="w-6 h-6">
+                      @if (document.key) {
+                        <img src="{{ document.key | fileicon }}" class="w-6 h-6"/>
+                      }
+                    </div>
+                  }
+                </td>
+
+                <td class="font-medium">
+                  <div class="flex items-center gap-2">
+                    <span class="truncate max-w-xs">{{ document.name }}</span>
+                    <div class="opacity-0 group-hover/tablerow:opacity-100 transition-opacity">
+                      <ng-icon
+                                                                                                          name="heroStar"
+                                                                                                          size="0.8em"
+                                                                                                          class="text-primary cursor-pointer hover:text-primary-content"></ng-icon>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+                </td>
 
-      @if (documents().length === 0) {
-        <div class="text-center py-12">
-          <div class="text-gray-400">
-            <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
-            @if (searchTerm()) {
-              <p class="text-lg font-medium">Keine Ergebnisse gefunden</p>
-              <p class="text-sm">Keine Dateien entsprechen dem Suchbegriff "{{ searchTerm() }}"</p>
-            } @else {
-              <p class="text-lg font-medium">Keine Dateien gefunden</p>
-              <p class="text-sm">Dieser Ordner ist leer</p>
+                <td class="text-gray-600">
+                  @if (document.isFolder) {
+                    <span class="text-xs badge badge-ghost">Ordner</span>
+                  } @else {
+                    {{ document.size | filesize }}
+                  }
+                </td>
+
+                <td class="text-gray-600">
+                  {{ document["last-modified"] | date: dateFormat }}
+                </td>
+
+                <td class="text-gray-600">
+                  {{ document.created | date: dateFormat }}
+                </td>
+
+                <td class="w-16">
+                  <div class="opacity-0 group-hover/tablerow:opacity-100 transition-opacity">
+                    <div class="dropdown dropdown-end">
+                      <div tabindex="0" role="button" class="btn btn-ghost btn-xs btn-square">
+                        <ng-icon name="heroEllipsisVertical" size="1.0em"></ng-icon>
+                      </div>
+                      <ul
+                                                                                                          tabindex="0"
+                                                                                                          class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
+                        <li>
+                          <a (click)="copy(document)">
+                            <ng-icon name="heroDocumentDuplicate" size="1.0em" class="size-4"></ng-icon>
+                            Kopieren
+                          </a>
+                        </li>
+                        <li>
+                          <a>
+                            <ng-icon name="heroPencilSquare" size="1.0em" class="size-4"></ng-icon>
+                            Umbenennen
+                          </a>
+                        </li>
+                        <li>
+                          <a>
+                            <ng-icon name="heroStar" size="1.0em" class="size-4"></ng-icon>
+                            Als Favorit markieren
+                          </a>
+                        </li>
+                        <li>
+                          <a (click)="download(document.path)">
+                            <ng-icon name="heroArrowDownTray" size="1.0em" class="size-4"></ng-icon>
+                            Herunterladen
+                          </a>
+                        </li>
+                        <li>
+                          <a>
+                            <ng-icon name="heroShare" size="1.0em" class="size-4"></ng-icon>
+                            Teilen
+                          </a>
+                        </li>
+                        <li>
+                          <hr class="my-1"/>
+                        </li>
+                        <li>
+                          <a class="text-error">
+                            <ng-icon name="heroTrash" size="1.0em" class="size-4"></ng-icon>
+                            Löschen
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </td>
+              </tr>
             }
-          </div>
-        </div>
-      }
-    </div>
-  }
-</ng-template>
+          </tbody>
+        </table>
 
-<ng-template #gridView>
-  @if (viewMode() === "card") {
-    <div class="grid grid-flow-dense grid-cols-12 gap-4"
-         cdkDropList
-         [cdkDropListData]="documents()"
-         [cdkDropListConnectedTo]="[clipboardList()]"
-         cdkDropListHasAnchor
-    >
-      @for (document of documents(); track document.path; let i = $index) {
-        <div
-          class="group/fileitem relative border border-gray-500/40 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow"
-          [class.border-blue-700]="isSelected(document)"
-          [class.shadow-lg]="isSelected(document)"
-          [class.bg-base-300]="isSelected(document)">
+        @if (documents().length === 0) {
+          <div class="text-center py-12">
+            <div class="text-gray-400">
+              <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
+              @if (searchTerm()) {
+                <p class="text-lg font-medium">Keine Ergebnisse gefunden</p>
+                <p class="text-sm">Keine Dateien entsprechen dem Suchbegriff "{{ searchTerm() }}"</p>
+              } @else {
+                <p class="text-lg font-medium">Keine Dateien gefunden</p>
+                <p class="text-sm">Dieser Ordner ist leer</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </ng-template>
+
+  <ng-template #gridView>
+    @if (viewMode() === "card") {
+      <div class="grid grid-flow-dense grid-cols-12 gap-4"
+           cdkDropList
+           [cdkDropListData]="documents()"
+           [cdkDropListConnectedTo]="[clipboardList()]"
+           cdkDropListHasAnchor
+      >
+        @for (document of documents(); track document.path; let i = $index) {
+          <div
+                                                                                              cdkDrag
+                                                                                              [cdkDragData]="document"
+                                                                                              class="group/fileitem relative border border-gray-500/40 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow"
+                                                                                              [class.border-blue-700]="isSelected(document)"
+                                                                                              [class.shadow-lg]="isSelected(document)"
+                                                                                              [class.bg-base-300]="isSelected(document)">
           <span
-            class="flex flex-col cursor-pointer p-4 gap-2 h-full justify-center"
-            (dblclick)="navigateTo(document)"
-            (click)="select(document)">
+                                                                                              class="flex flex-col cursor-pointer p-4 gap-2 h-full justify-center"
+                                                                                              (dblclick)="navigateTo(document)"
+                                                                                              (click)="select(document)">
             @if (document.isFolder) {
               <app-folder class="self-center" [style]="'--folder-size: 6rem'"></app-folder>
             } @else {
               @if (document.key) {
-                <img src="{{ document.key | fileicon }}" class="h-18 [&>svg]:h-full [&>svg]:mx-auto mb-2" />
+                <img src="{{ document.key | fileicon }}" class="h-18 [&>svg]:h-full [&>svg]:mx-auto mb-2"/>
               }
             }
             <div class="relative text-sm/snug text-center break-all font-medium">
               <span class="line-clamp-1">{{ document.name }}</span>
               <div
-                class="inline-flex absolute end-0 top-0 group/asterisk cursor-pointer opacity-0 group-hover/fileitem:opacity-100">
+                                                                                                  class="inline-flex absolute end-0 top-0 group/asterisk cursor-pointer opacity-0 group-hover/fileitem:opacity-100">
                 <ng-icon name="heroStar" size="1.0em" class="text-primary"></ng-icon>
               </div>
             </div>
@@ -330,23 +334,23 @@
               }
             </ul>
           </span>
-          <ng-container
-            [ngTemplateOutlet]="actions"
-            [ngTemplateOutletContext]="{
+            <ng-container
+                                                                                                [ngTemplateOutlet]="actions"
+                                                                                                [ngTemplateOutletContext]="{
               index: i,
               document: document,
             }"></ng-container>
+          </div>
+        }
+      </div>
+      @if (documents().length === 0) {
+        <div class="text-center py-12">
+          <div class="text-gray-400">
+            <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
+            <p class="text-lg font-medium">Keine Dateien gefunden</p>
+            <p class="text-sm">Dieser Ordner ist leer</p>
+          </div>
         </div>
       }
-    </div>
-    @if (documents().length === 0) {
-      <div class="text-center py-12">
-        <div class="text-gray-400">
-          <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
-          <p class="text-lg font-medium">Keine Dateien gefunden</p>
-          <p class="text-sm">Dieser Ordner ist leer</p>
-        </div>
-      </div>
     }
-  }
-</ng-template>
+  </ng-template>

@@ -21,8 +21,6 @@ import {
   heroScale,
   heroSquares2x2,
   heroXMark,
-  heroCloudArrowUp,
-  heroClipboardDocumentList,
 } from '@ng-icons/heroicons/outline';
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
@@ -30,7 +28,6 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
-import { FileEditorDialogComponent } from './file-editor-dialog/file-editor-dialog.component';
 import { filemanagerRoutes } from './filemanager.routes';
 import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
 import { BucketUiItemModel } from '../../api';
@@ -46,7 +43,6 @@ import { BucketUiItemModel } from '../../api';
     FileUploaderComponent,
     CreateFolderComponent,
     SidebarComponent,
-    FileEditorDialogComponent,
     SearchModalComponent,
   ],
   providers: [
@@ -70,8 +66,7 @@ import { BucketUiItemModel } from '../../api';
       heroDocumentDuplicate,
       heroClock,
       heroCalendarDays,
-      heroChevronUp,
-      heroClipboardDocumentList,
+      heroChevronUp
     }),
     FilesizePipe,
   ],

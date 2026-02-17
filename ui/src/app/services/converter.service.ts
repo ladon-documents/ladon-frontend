@@ -22,13 +22,13 @@ export class ConverterService {
     this.getAvailableConverters();
   }
 
-  public async downloadAsZip(file: string) {
+  public async downloadAsZip(files: string) {
     if (this.converters.length === 0) {
       await this.getAvailableConverters();
     }
     if (this.checkConverterIsAvailable(this.zip)) {
       const payload: any = {
-        inputPaths: [file],
+        inputPaths: JSON.parse(files),
         type: 'applyanddownload',
         converterId: this.zip,
       };
@@ -95,7 +95,7 @@ export class ConverterService {
         {
           id: converterId,
           config: {
-            flatten: 'true',
+            prop: 'empty',
           },
         },
       ],

@@ -1,7 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarService } from './sidebar.service';
-import {  Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { MetaComponent } from '../meta/meta.component';
 import { MonacoEditorService } from '../../editor/editor.service';
@@ -35,6 +35,8 @@ export class SidebarComponent implements OnDestroy {
   selectedDocument = this.filemanagerFacade.selectedDocument;
   private subscriptions = new Subscription();
 
+  activeTab = signal<'clipboard' | 'meta'>('clipboard');
+
   get isOpen() {
     return this.sidebarService.isOpen();
   }
@@ -49,5 +51,9 @@ export class SidebarComponent implements OnDestroy {
 
   toggleSidebar() {
     this.sidebarService.toggleSidebar();
+  }
+
+  setActiveTab(tab: 'clipboard' | 'meta') {
+    this.activeTab.set(tab);
   }
 }

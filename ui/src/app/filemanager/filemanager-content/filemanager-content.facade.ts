@@ -1,6 +1,7 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, computed } from '@angular/core';
 import { FilemanagerService } from '../filemanager.service';
 import { FilemanagerFacade } from '../filemanager.facade';
+import { TaskStatusModel } from '../../../api';
 
 export interface UploadStatus {
   fileName: string;
@@ -11,6 +12,8 @@ export interface UploadStatus {
   fileSize?: number;
   uploadedBytes?: number;
   speed?: number; // Bytes pro Sekunde
+  taskId?: string; // For tracking tasks
+  isTask?: boolean; // Flag to distinguish tasks from file uploads
 }
 
 @Injectable({
@@ -18,11 +21,30 @@ export interface UploadStatus {
 })
 export class FilemanagerContentFacade {
   uploadProgress = signal<UploadStatus[]>([]);
+  activeTasks = signal<TaskStatusModel[] | undefined>(undefined);
+  computedProgress = computed(() => {
+    const activeTasks = this.activeTasks()?.map((task) => this.convertTaskToUploadStatus(task)) || [];
+    const activeUploads = this.uploadProgress().filter((u) => u.status === 'uploading' && !u.isTask);
+    return [...activeUploads, ...activeTasks];
+  });
 
   filemanagerService = inject(FilemanagerService);
   filemanagerFacade = inject(FilemanagerFacade);
 
-  constructor() {}
+  /**
+   * Convert a TaskStatusModel to UploadStatus format
+   */
+  private convertTaskToUploadStatus(task: TaskStatusModel): UploadStatus {
+    return {
+      fileName: task.name || 'Task',
+      status: task.running ? 'uploading' : 'success',
+      message: `${task.name}`,
+      progress: task.percent || 0,
+      startTime: Date.now(),
+      taskId: task.id,
+      isTask: true,
+    };
+  }
 
   getUploadAlertClass(status: string): string {
     const baseClasses = 'animate-in slide-in-from-right-4 duration-300';
@@ -52,8 +74,6 @@ export class FilemanagerContentFacade {
   }
 
   getFileSize(fileName: string): string {
-    // Hier könnten Sie die Dateigröße aus dem File-Objekt holen
-    // Für Demo-Zwecke ein Placeholder
     return '2.5 MB';
   }
 
@@ -90,19 +110,41 @@ export class FilemanagerContentFacade {
   }
 
   hasActiveUploads(): boolean {
-    return this.uploadProgress().some((upload) => upload.status === 'uploading');
+    return (
+      this.uploadProgress().some((upload) => upload.status === 'uploading') ||
+      this.activeTasks()?.some((task) => task.running) ||
+      false
+    );
   }
 
   getActiveUploadsCount(): number {
-    return this.uploadProgress().filter((upload) => upload.status === 'uploading').length;
+    return (
+      this.uploadProgress().filter((upload) => upload.status === 'uploading').length ||
+      this.activeTasks()?.filter((task) => task.running).length ||
+      0
+    );
   }
 
   getTotalProgress(): number {
     const activeUploads = this.uploadProgress().filter((upload) => upload.status === 'uploading');
-    if (activeUploads.length === 0) return 100;
+    const activeTasks = this.activeTasks()?.filter((task) => task.running) || [];
 
-    const totalProgress = activeUploads.reduce((sum, upload) => sum + upload.progress, 0);
-    return totalProgress / activeUploads.length;
+    // If no active uploads or tasks, return 100 (nothing to progress)
+    if (activeUploads.length === 0 && activeTasks.length === 0) return 100;
+
+    // Calculate progress from uploads
+    const uploadsProgress =
+      activeUploads.length > 0
+        ? activeUploads.reduce((sum, upload) => sum + upload.progress, 0) / activeUploads.length
+        : 0;
+
+    // Calculate progress from tasks
+    const tasksProgress =
+      activeTasks.length > 0 ? activeTasks.reduce((sum, task) => sum + (task.percent || 0), 0) / activeTasks.length : 0;
+
+    // Combine both progresses equally
+    const totalItems = (activeUploads.length > 0 ? 1 : 0) + (activeTasks.length > 0 ? 1 : 0);
+    return totalItems > 0 ? (uploadsProgress + tasksProgress) / totalItems : 100;
   }
 
   getTotalUploadSpeed(): string {
@@ -128,6 +170,7 @@ export class FilemanagerContentFacade {
       fileSize: file.size,
       uploadedBytes: 0,
       speed: 0,
+      isTask: false,
     };
 
     this.uploadProgress.update((current) => [...current, uploadStatus]);
@@ -145,7 +188,6 @@ export class FilemanagerContentFacade {
 
       this.refreshFileList();
 
-      // Success-Status nach 3 Sekunden automatisch entfernen
       setTimeout(() => {
         this.removeUpload(uploadStatus);
       }, 1500);
@@ -167,7 +209,6 @@ export class FilemanagerContentFacade {
       const startTime = Date.now();
 
       const interval = setInterval(() => {
-        const previousProgress = progress;
         progress += Math.random() * 12 + 3; // Zwischen 3-15% pro Update
 
         if (progress >= 100) {
@@ -179,21 +220,17 @@ export class FilemanagerContentFacade {
             key: fileName,
           };
 
-          // Hier würden Sie den echten Upload durchführen
           this.filemanagerService.saveDocument(document, file).subscribe({
             next: () => resolve(),
             error: (error) => reject(error),
           });
 
-          // Finaler Upload-Call
           setTimeout(() => resolve(), 500);
         }
 
         // Progress und Speed berechnen
         const currentTime = Date.now();
         const elapsedTime = (currentTime - startTime) / 1000; // in Sekunden
-        const progressDelta = progress - previousProgress;
-        const bytesDelta = (file.size * progressDelta) / 100;
 
         uploadStatus.progress = Math.min(progress, 99);
         uploadStatus.uploadedBytes = (file.size * uploadStatus.progress) / 100;

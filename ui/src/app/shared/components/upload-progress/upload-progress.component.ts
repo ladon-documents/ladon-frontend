@@ -14,5 +14,5 @@ import { heroCheckCircle, heroCloudArrowUp, heroXCircle, heroXMark } from '@ng-i
 export class UploadProgressComponent {
   protected readonly filemanagerContentFacade = inject(FilemanagerContentFacade);
   protected readonly Math = Math;
-  protected readonly uploadProgress = this.filemanagerContentFacade.uploadProgress;
+  protected readonly uploadProgress = this.filemanagerContentFacade.computedProgress;
 }

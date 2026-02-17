@@ -3,11 +3,11 @@ import { UploadProgressComponent } from '../upload-progress/upload-progress.comp
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroDocumentArrowUp } from '@ng-icons/heroicons/outline';
 import { FilemanagerContentFacade } from '../../../filemanager/filemanager-content/filemanager-content.facade';
-import { SpinnerComponent } from '../spinner/spinner.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'lib-uploads',
-  imports: [UploadProgressComponent, NgIcon, SpinnerComponent],
+  imports: [UploadProgressComponent, NgIcon, CommonModule],
   templateUrl: './uploads.component.html',
   providers: [provideIcons({ heroDocumentArrowUp })],
   styleUrl: './uploads.component.scss',

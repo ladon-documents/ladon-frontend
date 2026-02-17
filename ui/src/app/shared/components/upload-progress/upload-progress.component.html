@@ -1,11 +1,11 @@
 @for (upload of uploadProgress(); track upload.fileName) {
-  <div class="alert gap-2 grid-cols-1 shadow-lg bg-base-100 border border-base-300">
-    <div class="flex items-center justify-between w-full">
-      <div class="flex items-center gap-2 flex-1">
-        <div class="flex-shrink-0">
-          @if (upload.status === "uploading") {
+  <div class="alert mt-1 gap-4 grid-cols-[3fr_1fr] shadow-lg bg-base-100 border border-base-300">
+    <div class="flex justify-between w-full">
+      <div class="flex gap-2 flex-1">
+        <div class="shrink-0">
+          <!-- @if (upload.status === "uploading") {
             <span class="loading loading-spinner loading-sm text-primary"></span>
-          }
+          } -->
           @if (upload.status === "success") {
             <ng-icon name="heroCheckCircle" style="--ng-icon__color: var(--color-success)"></ng-icon>
           }
@@ -16,7 +16,7 @@
 
         <!-- Dateiname -->
         <div class="flex-1">
-          <div class="font-medium text-sm" [title]="upload.fileName">
+          <div class="font-medium text-sm break-all" [title]="upload.fileName">
             {{ upload.fileName }}
           </div>
           <div class="text-xs opacity-50">
@@ -55,22 +55,19 @@
 
 <!-- Upload Summary (falls mehrere Uploads gleichzeitig) -->
 @if (uploadProgress().length > 1 && filemanagerContentFacade.hasActiveUploads()) {
-  <div class="alert alert-info shadow-lg">
-    <div class="flex items-center gap-2">
-      <span class="loading loading-spinner loading-sm"></span>
-      <div>
-        <div class="font-medium text-sm">
-          {{ filemanagerContentFacade.getActiveUploadsCount() }} Dateien werden hochgeladen
-        </div>
-        <div class="text-xs opacity-70">
-          Gesamt: {{ filemanagerContentFacade.getTotalProgress() }}% •
+  <div class="alert shadow-lg mt-1 gap-4 grid-cols-[3fr_1fr]">
+    <div class="font-medium text-sm">{{ filemanagerContentFacade.getActiveUploadsCount() }} Prozesse in arbeit</div>
+    <div class="w-full">
+      <progress
+        class="progress progress-accent w-full h-2"
+        [value]="filemanagerContentFacade.getTotalProgress()"
+        max="100"></progress>
+      <div class="flex gap-2 justify-between text-xs opacity-70">
+        <span>{{ filemanagerContentFacade.getTotalProgress() }}%</span>
+        <span>
           {{ filemanagerContentFacade.getTotalUploadSpeed() }}
-        </div>
+        </span>
       </div>
     </div>
-    <progress
-      class="progress progress-info w-full h-1 mt-2"
-      [value]="filemanagerContentFacade.getTotalProgress()"
-      max="100"></progress>
   </div>
 }

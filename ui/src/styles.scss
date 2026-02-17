@@ -39,3 +39,17 @@
 .animate-fade-in-down {
   animation: fadeInDown 0.8s ease-out forwards;
 }
+/* Globale Styles für bessere Resize-Performance */
+.resizing-sidebar {
+  pointer-events: none;
+}
+
+.resizing-sidebar * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Sidebar-Element ohne Transitionen während des Resizings */
+.sidebar.resizing {
+  transition: none !important;
+}

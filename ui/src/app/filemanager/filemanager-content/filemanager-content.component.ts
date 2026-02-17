@@ -1,4 +1,11 @@
-import { Component, inject, OnDestroy, OnInit, signal, Signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, signal, Signal } from '@angular/core';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  CdkDropList,
+  copyArrayItem,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DocumentModel } from '../../../api';
@@ -28,8 +35,13 @@ import { FilemanagerPaginationComponent } from '../pagination/pagination.compone
 import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 import { filemanagerHelper } from '../helper/helper';
 import { FileUploadDirective } from '../../shared/directive/file-upload.directive';
-import { FilemanagerContentFacade } from './filemanager-content.facade';
+import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.facade';
+import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
+import { ClipboardService } from '../../shared/components/clipboard/clipboard.service';
+import { FileEditorDialogComponent } from '../file-editor-dialog/file-editor-dialog.component';
+import { ClipboardStore } from '../../store/clipboard.store';
 import { FolderComponent } from '@ladon/shared';
+
 
 @Component({
   standalone: true,
@@ -41,7 +53,11 @@ import { FolderComponent } from '@ladon/shared';
     FileiconPipe,
     FilemanagerPaginationComponent,
     FileUploadDirective,
+    CdkDrag,
+    UploadProgressComponent,
+    CdkDropList,
     FolderComponent,
+    FileEditorDialogComponent,
   ],
   providers: [
     provideIcons({
@@ -63,6 +79,7 @@ import { FolderComponent } from '@ladon/shared';
   ],
   templateUrl: './filemanager-content.component.html',
   styleUrl: './filemanager-content.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FilemanagerContentComponent implements OnDestroy, OnInit {
   public dateFormat = 'dd.MM.yyyy';
@@ -71,7 +88,8 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   private readonly converterService = inject(ConverterService);
   private readonly sidebarService = inject(SidebarService);
   private readonly pdfViewerFacade = inject(PdfViewerFacade);
-
+  protected readonly clipboardList = inject(ClipboardService).clipboardList;
+  readonly clipboardStore = inject(ClipboardStore);
   documents: Signal<DocumentModel[]> = this.#facade.documents;
 
   #currentBucket: string | null = null;
@@ -111,6 +129,10 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     });
   }
 
+  getSelectedDocument(): DocumentModel | null {
+    return this.#selectedDocument;
+  }
+
   isSelected(document: DocumentModel): boolean {
     const selected = this.#facade.selectedDocument();
     return selected?.path === document.path && selected?.key === document.key;
@@ -121,6 +143,10 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       URL.revokeObjectURL(this.imageUrl);
     }
   }
+
+  copy(file: DocumentModel) {
+    this.clipboardStore.addDocument(file);
+  };
 
   async download(file: string | undefined) {
     if (!file) return;

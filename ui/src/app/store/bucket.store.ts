@@ -1,7 +1,10 @@
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { inject } from '@angular/core';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { computed, inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, debounceTime, EMPTY, pipe, switchMap, tap } from 'rxjs';
+import { withEntities, addEntity, removeEntity, updateEntity } from '@ngrx/signals/entities';
+import { withRequestStatus, requestStatusHelpers } from './features/request-status.feature';
+
 import { BucketsService } from '../buckets/buckets.service';
 import { BucketUiItemModel } from '../../api';
 
@@ -70,7 +73,20 @@ const initialState: BucketsState = {
 
 export const BucketsStore = signalStore(
   { providedIn: 'root' },
+  withEntities<BucketUiItemModel>(),
+  withRequestStatus(),
   withState(initialState),
+  withComputed((store) => ({
+    hasData: computed(() => store.allBuckets().length > 0 && !store.isLoading()),
+    totalCount: computed(() => store.filteredBuckets().length),
+    isEmpty: computed(() => store.allBuckets().length === 0),
+    hasError: computed(() => store.error() !== null),
+    canNavigateNext: computed(() => store.pagination().hasNextPage),
+    canNavigatePrevious: computed(() => store.pagination().hasPreviousPage),
+    isSearchActive: computed(() => store.searchTerm().length > 0 || store.remoteSearchTerm().length > 0),
+    favoriteCount: computed(() => store.allBuckets().filter((b) => b.favourite).length),
+  })),
+
   withMethods((store, bucketsService = inject(BucketsService)) => {
     const methods = {
       resetBucketsStore() {

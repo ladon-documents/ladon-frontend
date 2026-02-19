@@ -1,8 +1,14 @@
 :host {
   // position is set by component on signal input logic
+  --spinner-size: 1.5rem;
   inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1001;
+
+  span {
+    width: var(--spinner-size);
+    aspect-ratio: 1;
+  }
 }

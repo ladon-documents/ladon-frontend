@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { TaskmanagerService } from './taskmanager.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroPlayCircle, heroStopCircle } from '@ng-icons/heroicons/outline';
@@ -18,6 +18,7 @@ import {
 } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { DocumentModel, TaskStatusModel } from '../../api';
+import { FilemanagerContentFacade } from '../filemanager/filemanager-content/filemanager-content.facade';
 
 @Component({
   selector: 'app-taskmanager',
@@ -40,8 +41,8 @@ export class TaskmanagerComponent implements OnInit {
 
   private readonly taskFilterQuery = 'Demo';
   private taskStatusSubject = new Subject<boolean>();
-
-  constructor(private taskmanagerService: TaskmanagerService) {}
+  private taskmanagerService = inject(TaskmanagerService);
+  private filemanagerContentFacade = inject(FilemanagerContentFacade);
 
   ngOnInit(): void {
     this.availableTasks$ = this.taskmanagerService.filterAvailableTasks(this.taskFilterQuery);
@@ -126,6 +127,9 @@ export class TaskmanagerComponent implements OnInit {
           if (tasks.length === 0) {
             this.taskStatusSubject.next(true);
           }
+        }),
+        tap((tasks) => {
+          this.filemanagerContentFacade.activeTasks.set(tasks);
         }),
       ),
     );

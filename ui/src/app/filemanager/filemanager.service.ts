@@ -27,6 +27,14 @@ export class FilemanagerService {
     return throwError(new Error('Not Found'));
   }
 
+  public deleteDocument(document: DocumentModel) {
+    const { bucket, key } = document;
+    if (bucket && key) {
+      return this.documentsService.deleteDocument(bucket, key);
+    }
+    return throwError(new Error('Not Found'));
+  }
+
   public loadDocumentList(document: DocumentModel, limit: number = 1000) {
     if (document && document.bucket) {
       return this.documentsService.listDocuments(

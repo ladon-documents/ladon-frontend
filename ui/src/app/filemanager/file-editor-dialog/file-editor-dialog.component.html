@@ -1,6 +1,6 @@
 @if (isOpen) {
-  <div class=" inset-0 z-50 overflow-y-auto" [class.hidden]="!isOpen">
-    <div class=" inset-0 bg-black bg-opacity-50 transition-opacity" (click)="closeDialog()"></div>
+  <div class="fixed inset-0 z-50 overflow-y-auto" [class.hidden]="!isOpen">
+    <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" (click)="closeDialog()"></div>
 
     <div class="relative min-h-screen flex items-center justify-center p-4">
       <div class="relative bg-base-100 rounded-lg shadow-xl w-full max-w-6xl h-[80vh] flex flex-col">

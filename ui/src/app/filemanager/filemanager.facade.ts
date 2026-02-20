@@ -23,7 +23,6 @@ export class FilemanagerFacade {
   readonly viewMode = this.#filemanagerStore.viewMode;
   readonly pagination = this.#filemanagerStore.pagination;
 
-  // Neue Such- und Sortier-Signale
   readonly searchTerm = this.#filemanagerStore.searchTerm;
   readonly sortConfig = this.#filemanagerStore.sort;
   readonly isLoading = this.#filemanagerStore.isLoading;
@@ -64,7 +63,6 @@ export class FilemanagerFacade {
   lastPage() {
     this.#filemanagerStore.lastPage();
   }
-  // Neue Such- und Sortiermethoden
   setSearchTerm(searchTerm: string) {
     this.#filemanagerStore.setSearchTerm(searchTerm);
   }
@@ -170,4 +168,6 @@ export class FilemanagerFacade {
   private getCurrentPath(): string | undefined {
     return this.#breadcrumbStore.currentPath()?.key;
   }
+
+
 }

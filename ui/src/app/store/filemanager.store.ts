@@ -8,6 +8,8 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { BreadcrumbStore } from './breadcrumb.store';
 import { filemanagerHelper } from '../filemanager/helper/helper';
+import { ToastService } from '../shared/services/toast.service';
+import { ConfirmationDialogService } from '../shared/services/confirmation-dialog.service';
 
 export interface PaginationState {
   currentPage: number;
@@ -74,6 +76,8 @@ export const FilemanagerStore = signalStore(
       filemanagerService = inject(FilemanagerService),
       ladonRouter = inject(LadonRouterService),
       breadcrumbStore = inject(BreadcrumbStore),
+      toastService = inject(ToastService),
+      confirmationDialog = inject(ConfirmationDialogService),
     ) => {
       const methods = {
         showRoot() {
@@ -272,7 +276,6 @@ export const FilemanagerStore = signalStore(
             ),
           ),
         ),
-
         loadDocumentList: rxMethod<any>(
           pipe(
             tap(() => {
@@ -438,6 +441,90 @@ export const FilemanagerStore = signalStore(
                     error: `Fehler beim Erstellen des Ordners: ${error.message || error}`,
                   }));
                   throw error;
+                }),
+              );
+            }),
+          ),
+        ),
+        deleteDocument: rxMethod<DocumentModel>(
+          pipe(
+            switchMap(async (document) => {
+              // Bestätigungs-Dialog anzeigen
+              const confirmed = await confirmationDialog.confirm({
+                title: document.isFolder ? 'Ordner löschen' : 'Datei löschen',
+                message: document.isFolder
+                  ? `Möchten Sie den Ordner "${document.name}" wirklich löschen? Alle enthaltenen Dateien werden ebenfalls gelöscht.`
+                  : `Möchten Sie die Datei "${document.name}" wirklich löschen?`,
+                confirmText: 'Löschen',
+                cancelText: 'Abbrechen',
+                danger: true,
+              });
+
+              return { document, confirmed };
+            }),
+            switchMap((result) => {
+              // Wenn nicht bestätigt, abbrechen
+              if (!result.confirmed) {
+                return EMPTY;
+              }
+
+              const document = result.document;
+              patchState(store, { isLoading: true, error: null });
+
+              return filemanagerService.deleteDocument(document).pipe(
+                switchMap(() => {
+                  // Nach dem Löschen die Liste neu laden
+                  const bucket = store.selectedBucket();
+                  const selectedDoc = store.selectedDocument();
+
+                  // Wenn wir in einem Unterordner sind, lade diesen neu
+                  if (selectedDoc && selectedDoc.path && selectedDoc.path !== document.path) {
+                    return filemanagerService.loadDocumentList(selectedDoc);
+                  } else if (bucket) {
+                    // Ansonsten lade den Root-Bucket
+                    return filemanagerService.loadBucket(bucket);
+                  }
+
+                  return EMPTY;
+                }),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, {
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  });
+
+                  // Erfolgs-Toast anzeigen
+                  toastService.success(
+                    document.isFolder
+                      ? `Ordner "${document.name}" wurde erfolgreich gelöscht`
+                      : `Datei "${document.name}" wurde erfolgreich gelöscht`,
+                  );
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isLoading: false,
+                    error: `Fehler beim Löschen: ${error.message || error}`,
+                  });
+
+                  // Fehler-Toast anzeigen
+                  toastService.error(
+                    `Fehler beim Löschen von "${document.name}": ${error.message || 'Unbekannter Fehler'}`,
+                  );
+
+                  return EMPTY;
                 }),
               );
             }),

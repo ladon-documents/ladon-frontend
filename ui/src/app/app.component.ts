@@ -1,6 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
 import { BucketsComponent } from './buckets/buckets.component';
 import { CommonModule } from '@angular/common';
@@ -20,6 +19,10 @@ import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
 import { DocumentModel } from '../api';
 import { SearchModalComponent } from './shared/components/search-modal/search-modal.component';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
+import { KeyboardShortcutsService } from './shared/services/keyboard-shortcuts.service';
+import { ContextMenuComponent } from './shared/components/context-menu/context-menu.component';
+import { ToastComponent } from './shared/components/toast/toast.component';
+import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   imports: [
@@ -31,6 +34,9 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
     PdfViewerComponent,
     SpinnerComponent,
     SearchModalComponent,
+    ContextMenuComponent,
+    ToastComponent,
+    ConfirmationDialogComponent
   ],
   standalone: true,
   selector: 'ldn-ui',
@@ -46,6 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isAuthenticating: Signal<boolean> = this.store.auth.isAuthenticating;
 
   public navigationEntries: Array<NavigationEntry> = [];
+  private keyboardShortcuts = inject(KeyboardShortcutsService);
 
   sidebarCollapsed: Signal<boolean> = this.store.ui.isSidenavClosed;
 
@@ -63,6 +70,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.checkAndSetPreferredColorScheme(this.mql.matches);
+    this.keyboardShortcuts.init();
   }
 
   ngOnDestroy(): void {

@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 import { FilemanagerFacade } from '../filemanager/filemanager.facade';
 import { ActivatedRoute } from '@angular/router';
 import { PdfViewerFacade } from './pdf-viewer.facade';
@@ -115,7 +115,7 @@ export class PdfViewerComponent implements OnInit {
     if (!document) return false;
 
     const contentType = document['content-type']?.toLowerCase();
-    const fileName = document.key || document.name || '';
+    const fileName = document.key || '';
     const fileExtension = fileName.split('.').pop()?.toLowerCase();
     return contentType === 'application/pdf' || fileExtension === 'pdf';
   }
@@ -246,7 +246,7 @@ export class PdfViewerComponent implements OnInit {
     const document = this.selectedDocument();
     if (!document) return 'Dokument';
 
-    return document.name || document.key || 'Unbekanntes Dokument';
+    return document.key || 'Unbekanntes Dokument';
   }
 
   formatFileSize(bytes: number): string {

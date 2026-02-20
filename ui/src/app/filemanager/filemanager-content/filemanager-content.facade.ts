@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { FilemanagerService } from '../filemanager.service';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { TaskStatusModel } from '../../../api';
+import { TaskStatusModel } from '@ladon/api';
 
 export interface UploadStatus {
   fileName: string;

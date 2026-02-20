@@ -1,12 +1,11 @@
-import {DocumentsApi} from "../fetch-client";
+import { DocumentsApi } from "../fetch-client";
 
 export class WebcomponentLoader {
-
   private readonly webcomponentTerm = "*/draco/**/wc-*.js";
   private documentApi: DocumentsApi;
 
   constructor() {
-    this.documentApi = new DocumentsApi( );
+    this.documentApi = new DocumentsApi();
   }
 
   public async initWebComponents() {
@@ -14,10 +13,10 @@ export class WebcomponentLoader {
       const result = await this.documentApi.findDocumentPath({
         bucket: "_ui",
         term: this.webcomponentTerm,
-        limit: 100
+        limit: 100,
       });
 
-      if (result  && Array.isArray(result)) {
+      if (result && Array.isArray(result)) {
         for (const webcomponent of result) {
           this.injectWebComponent(webcomponent);
         }
@@ -38,7 +37,6 @@ export class WebcomponentLoader {
     wcScriptElm.setAttribute("type", "module");
 
     document.body.appendChild(wcScriptElm);
-
   }
 }
 

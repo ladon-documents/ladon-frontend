@@ -1,5 +1,5 @@
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { PermissionModel, RoleEntryModel, RoleWrapperModel, UserEntryModel, UserWrapperModel } from '../../api';
+import { PermissionModel, RoleEntryModel, RoleWrapperModel, UserEntryModel, UserWrapperModel } from '@ladon/api';
 import { computed, inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
 import { filter, finalize, forkJoin, lastValueFrom, map, of, Subject } from 'rxjs';

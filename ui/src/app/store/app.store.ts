@@ -1,5 +1,5 @@
 import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
-import { LoginRequestModel, UserModel } from '../../api';
+import { LoginRequestModel, UserModel } from '@ladon/api';
 import { inject } from '@angular/core';
 import { catchError, of, pipe, switchMap, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';

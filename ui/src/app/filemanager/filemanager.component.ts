@@ -25,12 +25,11 @@ import {
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
-import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
 import { filemanagerRoutes } from './filemanager.routes';
 import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
-import { BucketUiItemModel } from '../../api';
+import { BucketUiItemModel } from '@ladon/api';
 
 @Component({
   standalone: true,
@@ -40,7 +39,6 @@ import { BucketUiItemModel } from '../../api';
     RouterModule,
     NgIconComponent,
     BreadcrumbComponent,
-    FileUploaderComponent,
     CreateFolderComponent,
     SidebarComponent,
     SearchModalComponent,

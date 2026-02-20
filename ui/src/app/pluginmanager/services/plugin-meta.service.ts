@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { PluginmanagerService } from '../../../api';
+import { PluginmanagerService } from '@ladon/api';
 import { pluginTestMock } from '@ladon/tests/plugin-test-object';
 
 @Injectable({

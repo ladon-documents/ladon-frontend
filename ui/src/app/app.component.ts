@@ -16,9 +16,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppStore } from './store/app.store';
 import { HeaderComponent } from './header/header.component';
 import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.component';
-import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
-import { DocumentModel } from '../api';
-import { SearchModalComponent } from './shared/components/search-modal/search-modal.component';
+import { DocumentModel } from '@ladon/api';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { KeyboardShortcutsService } from './shared/services/keyboard-shortcuts.service';
 import { ContextMenuComponent } from './shared/components/context-menu/context-menu.component';
@@ -32,9 +30,7 @@ import { ConfirmationDialogComponent } from './shared/components/confirmation-di
     TranslateModule,
     NavigationComponent,
     HeaderComponent,
-    PdfViewerComponent,
     SpinnerComponent,
-    SearchModalComponent,
     ContextMenuComponent,
     ToastComponent,
     ConfirmationDialogComponent
@@ -90,7 +86,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onPdfLoaded(event: { document: DocumentModel; totalPages: number }): void {
-    console.log(`PDF geladen: ${event.document.name} mit ${event.totalPages} Seiten`);
+    console.log(`PDF geladen: ${event.document.key} mit ${event.totalPages} Seiten`);
   }
 
   onPdfError(event: { document: DocumentModel | null; error: string }): void {
@@ -98,19 +94,19 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onPageChanged(event: { document: DocumentModel | null; page: number; totalPages: number }): void {
-    console.log(`Seite geändert: ${event.page}/${event.totalPages} für ${event.document?.name}`);
+    console.log(`Seite geändert: ${event.page}/${event.totalPages} für ${event.document?.key}`);
   }
 
   onDownloadRequested(event: { document: DocumentModel }): void {
-    console.log('Download angefordert für:', event.document.name);
+    console.log('Download angefordert für:', event.document.key);
   }
 
   onPrintRequested(event: { document: DocumentModel }): void {
-    console.log('Druck angefordert für:', event.document.name);
+    console.log('Druck angefordert für:', event.document.key);
   }
 
   onPdfClosed(event: { document: DocumentModel | null }): void {
-    console.log('PDF Viewer geschlossen für:', event.document?.name);
+    console.log('PDF Viewer geschlossen für:', event.document?.key);
   }
 }
 

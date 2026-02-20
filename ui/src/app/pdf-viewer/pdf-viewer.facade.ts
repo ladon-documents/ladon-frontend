@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { PdfViewerStore } from '../store/pdf-viewer.store';
 import { LadonRouterService } from '../services/ladon-router.service';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 
 @Injectable({ providedIn: 'root' })
 export class PdfViewerFacade {

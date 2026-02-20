@@ -5,7 +5,7 @@
     </li>
     @for (path of store.paths(); track path.key; let i = $index) {
       <li [class.cursor-pointer]="true" (click)="onNavigate(i)">
-        {{ path.name }}
+        {{ path.key }}
       </li>
     }
   </ul>

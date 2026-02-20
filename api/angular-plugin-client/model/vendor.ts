@@ -8,9 +8,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface VendorModel { 
-    name?: string;
-    url?: string;
+export interface VendorModel {
+  name?: string;
+  url?: string;
 }
-

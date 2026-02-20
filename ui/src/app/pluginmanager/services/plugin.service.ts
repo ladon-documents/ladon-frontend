@@ -16,12 +16,11 @@ import {
   throwError,
 } from 'rxjs';
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders } from '@angular/common/http';
-import { DocumentsService, TransactionService, ResponseSuccessModel } from '../../../api';
+import { DocumentsService, TransactionService, ResponseSuccessModel, plugin } from '@ladon/api';
 import { sortChannels } from '../helper/helper';
-import { V1Service, PluginModel } from '../../../plugin';
 import { PluginMetaService } from './plugin-meta.service';
 
-export interface PluginWithVersionStatus extends PluginModel {
+export interface PluginWithVersionStatus extends plugin.PluginModel {
   canInstall: boolean;
   canUpdate: boolean;
   canDeinstall: boolean;
@@ -48,7 +47,7 @@ export interface PluginInstallState {
   state: PluginState;
   content: any;
   transactionID?: string;
-  plugin?: PluginModel;
+  plugin?: plugin.PluginModel;
 }
 
 @Injectable({
@@ -87,7 +86,7 @@ export class PluginService {
 
   constructor(
     private httpClient: HttpClient,
-    private pluginmanagerService: V1Service,
+    private pluginmanagerService: plugin.V1Service,
     private pluginMetaService: PluginMetaService,
     private transactionService: TransactionService,
     private documentService: DocumentsService,
@@ -153,8 +152,8 @@ export class PluginService {
     };
 
     return this.pluginmanagerService.plugins(this.product, this.channel).pipe(
-      mergeMap((plugins: Array<PluginModel>) => {
-        const webbundlePlugin: any = plugins.find((item: PluginModel) => {
+      mergeMap((plugins: Array<plugin.PluginModel>) => {
+        const webbundlePlugin: any = plugins.find((item: plugin.PluginModel) => {
           return item.spec?.type === this.SPEC_TYPE_WEB_BUNDLE;
         });
         if (webbundlePlugin) {
@@ -162,7 +161,7 @@ export class PluginService {
           webbundlePlugin.canInstall = false;
           webbundlePlugin.current = webbundlePlugin.version;
           return this.pluginmanagerService.bundleContent(this.product, this.channel, webbundlePlugin.id).pipe(
-            mergeMap((bundlePlugins: Array<PluginModel>) => {
+            mergeMap((bundlePlugins: Array<plugin.PluginModel>) => {
               return this.pluginMetaService.setVersions(bundlePlugins);
             }),
             map((bundleContentWithVersions) => {
@@ -191,7 +190,7 @@ export class PluginService {
         take(1),
         mergeMap((bundleResults: PluginWithVersionStatus | undefined) => {
           return this.pluginmanagerService.plugins(this.product, this.channel).pipe(
-            map((plugins: Array<PluginModel>) => {
+            map((plugins: Array<plugin.PluginModel>) => {
               return {
                 plugins,
                 webbundle: bundleResults,
@@ -199,9 +198,9 @@ export class PluginService {
             }),
           );
         }),
-        mergeMap((result: { plugins: Array<PluginModel>; webbundle: PluginWithVersionStatus | undefined }) => {
+        mergeMap((result: { plugins: Array<plugin.PluginModel>; webbundle: PluginWithVersionStatus | undefined }) => {
           if (result.plugins && Array.isArray(result.plugins)) {
-            const filtered = result.plugins.filter((plugin: PluginModel) => {
+            const filtered = result.plugins.filter((plugin: plugin.PluginModel) => {
               return plugin.spec?.type !== this.SPEC_TYPE_WEB_BUNDLE;
             });
             return this.pluginMetaService.setVersions(filtered).pipe(
@@ -256,7 +255,7 @@ export class PluginService {
     }
   }
 
-  public installBundle(webBundle: PluginModel): Observable<any> {
+  public installBundle(webBundle: plugin.PluginModel): Observable<any> {
     const pluginsToBeUpdated: Array<PluginWithVersionStatus> = this.bundleContentWithVersions.filter((plugin) => {
       return plugin.canInstall || plugin.canUpdate;
     });
@@ -284,30 +283,30 @@ export class PluginService {
     return EMPTY;
   }
 
-  public deintallPlugin(plugin: PluginModel): Observable<any> {
-    if (!plugin || !plugin.name) {
+  public deintallPlugin(pluginItem: plugin.PluginModel): Observable<any> {
+    if (!pluginItem || !pluginItem.name) {
       return of(undefined);
     }
-    if (plugin.pluginId && !this.pluginMetaService.pluginCanDeinstalled(plugin.pluginId)) {
+    if (pluginItem.pluginId && !this.pluginMetaService.pluginCanDeinstalled(pluginItem.pluginId)) {
       return of(undefined);
     }
-    const pluginName = plugin.name;
+    const pluginName = pluginItem.name;
     const initialState: PluginInstallState = {
       state: 'PENDING',
       progress: 0,
       mode: 'DEINSTALL',
       content: null,
-      plugin,
+      plugin: pluginItem,
       transactionID: undefined,
     };
     const payload = {
       bucket: '_system',
-      prefix: `etc/plugins/static-web/${plugin.pluginId}`,
+      prefix: `etc/plugins/static-web/${pluginItem.pluginId}`,
       orderby: `created_desc`,
       key: '',
     };
     const params = new URLSearchParams();
-    params.set('prefix', `etc/plugins/static-web/${plugin.pluginId}`);
+    params.set('prefix', `etc/plugins/static-web/${pluginItem.pluginId}`);
     params.set('orderby', `created_desc`);
 
     return this.documentService.listDocumentJson(payload.bucket, payload.prefix, payload.orderby).pipe(
@@ -317,7 +316,7 @@ export class PluginService {
           this.currentInstallations$.next(this.currentInstallations);
           const newestVersion = result[0];
           const key = newestVersion.changetoken;
-          payload.key = `etc/plugins/static-web/${plugin.pluginId}/${key}.json`;
+          payload.key = `etc/plugins/static-web/${pluginItem.pluginId}/${key}.json`;
           return this.documentService.deleteDocument(payload.bucket, payload.key).pipe(
             tap((v) => {
               this.currentInstallations[pluginName] = {
@@ -340,15 +339,15 @@ export class PluginService {
     );
   }
 
-  public installPlugin(plugin: PluginModel): Observable<any> {
-    if (!plugin) {
+  public installPlugin(pluginItem: plugin.PluginModel): Observable<any> {
+    if (!pluginItem) {
       return of(undefined);
     }
 
-    return this.startInstallation(plugin).pipe(
+    return this.startInstallation(pluginItem).pipe(
       mergeMap((state: PluginInstallState | undefined) => {
-        if (state && plugin.name) {
-          this.currentInstallations[plugin.name] = null;
+        if (state && pluginItem.name) {
+          this.currentInstallations[pluginItem.name] = null;
           return this.downloadPlugin(state);
         } else {
           return throwError(() => new Error('Transaction failed'));
@@ -361,11 +360,11 @@ export class PluginService {
         return this.isPluginStateDone(pluginState) ? this.finishInstallation(pluginState) : of(pluginState);
       }),
       tap((pluginState: PluginInstallState | undefined) => {
-        if (plugin.name) {
-          this.currentInstallations[plugin.name] = pluginState;
+        if (pluginItem.name) {
+          this.currentInstallations[pluginItem.name] = pluginState;
           this.currentInstallations$.next(this.currentInstallations);
           if (pluginState && pluginState.state === 'FINISHED') {
-            this.pluginInstallFinished(plugin.name);
+            this.pluginInstallFinished(pluginItem.name);
           }
         }
       }),
@@ -376,12 +375,12 @@ export class PluginService {
           map((vlv) => {
             console.log('rollbackInstallation');
             console.dir(errorState);
-            if (plugin.name) {
-              this.currentInstallations[plugin.name] = {
-                ...this.currentInstallations[plugin.name],
+            if (pluginItem.name) {
+              this.currentInstallations[pluginItem.name] = {
+                ...this.currentInstallations[pluginItem.name],
                 state: 'ERROR',
               };
-              this.pluginInstallFinished(plugin.name);
+              this.pluginInstallFinished(pluginItem.name);
             }
             return of(errorState);
           }),
@@ -390,17 +389,17 @@ export class PluginService {
     );
   }
 
-  private installPluginFromBundle(plugin: PluginModel): Observable<any> {
-    console.log('invoking installPluginFromBundle ' + plugin.id);
-    if (plugin.name) {
-      this.currentInstallations[plugin.name] = null;
+  private installPluginFromBundle(pluginItem: plugin.PluginModel): Observable<any> {
+    console.log('invoking installPluginFromBundle ' + pluginItem.id);
+    if (pluginItem.name) {
+      this.currentInstallations[pluginItem.name] = null;
     }
     const initialState = {
       state: 'PENDING',
       progress: 0,
       mode: 'DOWNLOAD',
       content: null,
-      plugin,
+      plugin: pluginItem,
       transactionID: undefined,
     } as PluginInstallState;
 
@@ -412,18 +411,18 @@ export class PluginService {
         return this.isPluginStateDone(pluginState) ? of(this.transformToFinishedState(pluginState)) : of(pluginState);
       }),
       tap((pluginState: PluginInstallState) => {
-        if (plugin.name) {
-          this.currentInstallations[plugin.name] = pluginState;
+        if (pluginItem.name) {
+          this.currentInstallations[pluginItem.name] = pluginState;
           this.currentInstallations$.next(this.currentInstallations);
           if (pluginState.state === 'FINISHED') {
-            this.pluginInstallFinished(plugin.name);
+            this.pluginInstallFinished(pluginItem.name);
           }
         }
       }),
       tap((pluginState) => {
         console.log(pluginState);
-        if (plugin?.name) {
-          console.log(this.currentInstallations[plugin.name]);
+        if (pluginItem?.name) {
+          console.log(this.currentInstallations[pluginItem.name]);
         }
       }),
     );
@@ -448,7 +447,7 @@ export class PluginService {
         id,
         'events',
         true,
-      );
+      ) as Observable<HttpEvent<any>>;
       const updatedState: PluginInstallState = {
         ...state,
         mode: 'DOWNLOAD',
@@ -507,7 +506,7 @@ export class PluginService {
     }
   }
 
-  private startInstallation(plugin: PluginModel): Observable<PluginInstallState | undefined> {
+  private startInstallation(pluginItem: plugin.PluginModel): Observable<PluginInstallState | undefined> {
     return this.transactionService.startTransaction().pipe(
       map((response) => {
         if (response) {
@@ -516,7 +515,7 @@ export class PluginService {
             progress: 0,
             mode: 'DOWNLOAD',
             content: null,
-            plugin,
+            plugin: pluginItem,
             transactionID: response.txId,
           } as PluginInstallState;
         }
@@ -550,15 +549,15 @@ export class PluginService {
 
   // tslint:disable-next-line:max-line-length
   private installProgress(
-    source: Observable<HttpEvent<unknown>>,
-    plugin: PluginModel,
+    source: Observable<HttpEvent<any>>,
+    pluginItem: plugin.PluginModel,
     initialState: PluginInstallState,
   ): Observable<PluginInstallState> {
-    if (initialState.mode === 'DOWNLOAD' && plugin.name) {
-      this.currentInstallations[plugin.name] = null;
+    if (initialState.mode === 'DOWNLOAD' && pluginItem.name) {
+      this.currentInstallations[pluginItem.name] = null;
     }
     return source.pipe(
-      scan((pluginInstallState: PluginInstallState, event: HttpEvent<unknown>) => {
+      scan((pluginInstallState: PluginInstallState, event: HttpEvent<any>) => {
         if (event.type === HttpEventType.DownloadProgress || event.type === HttpEventType.UploadProgress) {
           return {
             progress: event.total ? Math.round((100 * event.loaded) / event.total) : pluginInstallState.progress,

@@ -17,7 +17,7 @@ import {
   filter,
 } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { DocumentModel, TaskStatusModel } from '../../api';
+import { DocumentModel, TaskStatusModel } from '@ladon/api';
 import { FilemanagerContentFacade } from '../filemanager/filemanager-content/filemanager-content.facade';
 
 @Component({

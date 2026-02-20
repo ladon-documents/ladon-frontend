@@ -7,7 +7,7 @@ import {
   DocumentsService,
   NewBucketModel,
   UIService,
-} from '../../api';
+} from '@ladon/api';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { LadonRouterService } from '../services/ladon-router.service';
 

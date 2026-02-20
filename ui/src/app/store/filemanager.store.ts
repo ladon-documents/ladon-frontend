@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
 import { FilemanagerService } from '../filemanager/filemanager.service';
@@ -453,8 +453,8 @@ export const FilemanagerStore = signalStore(
               const confirmed = await confirmationDialog.confirm({
                 title: document.isFolder ? 'Ordner löschen' : 'Datei löschen',
                 message: document.isFolder
-                  ? `Möchten Sie den Ordner "${document.name}" wirklich löschen? Alle enthaltenen Dateien werden ebenfalls gelöscht.`
-                  : `Möchten Sie die Datei "${document.name}" wirklich löschen?`,
+                  ? `Möchten Sie den Ordner "${document.key}" wirklich löschen? Alle enthaltenen Dateien werden ebenfalls gelöscht.`
+                  : `Möchten Sie die Datei "${document.key}" wirklich löschen?`,
                 confirmText: 'Löschen',
                 cancelText: 'Abbrechen',
                 danger: true,
@@ -509,8 +509,8 @@ export const FilemanagerStore = signalStore(
                   // Erfolgs-Toast anzeigen
                   toastService.success(
                     document.isFolder
-                      ? `Ordner "${document.name}" wurde erfolgreich gelöscht`
-                      : `Datei "${document.name}" wurde erfolgreich gelöscht`,
+                      ? `Ordner "${document.key}" wurde erfolgreich gelöscht`
+                      : `Datei "${document.key}" wurde erfolgreich gelöscht`,
                   );
                 }),
                 catchError((error) => {
@@ -521,7 +521,7 @@ export const FilemanagerStore = signalStore(
 
                   // Fehler-Toast anzeigen
                   toastService.error(
-                    `Fehler beim Löschen von "${document.name}": ${error.message || 'Unbekannter Fehler'}`,
+                    `Fehler beim Löschen von "${document.key}": ${error.message || 'Unbekannter Fehler'}`,
                   );
 
                   return EMPTY;

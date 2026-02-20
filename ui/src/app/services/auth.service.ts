@@ -1,7 +1,7 @@
 import { Inject, Injectable, isDevMode } from '@angular/core';
 import { mergeMap, tap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthenticationService, LoginRequestModel, UserModel, UsersService } from '../../api';
+import { AuthenticationService, LoginRequestModel, UserModel, UsersService } from '@ladon/api';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthStorageService } from './auth.storage.service';
 

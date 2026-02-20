@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject } from '@angular/core';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { SidebarService } from '../sidebar/sidebar.service';
 import { MonacoEditorService } from '../../editor/editor.service';
 import { filemanagerHelper } from '../helper/helper';
@@ -28,7 +28,7 @@ export class PreviewComponent {
     effect(() => {
       const document = this.selectedDocument();
       if (document) {
-        this.filename = document.name || '';
+        this.filename = document.key || '';
         if (!document.isFolder) {
           this.loadPreview(document);
         } else {

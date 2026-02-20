@@ -10,7 +10,7 @@ const extractFileType = (value: string): string | null => {
     return lastPathElement.slice(dotIndex + 1);
   }
   return null;
-}
+};
 
 export const fileiconPipeTransform = (payload: string): string => {
   const fileAssetPath = "/admin/api/filemanager/_system/icons/small/file";
@@ -28,4 +28,4 @@ export const fileiconPipeTransform = (payload: string): string => {
   }
 
   return `${fileAssetPath}/unknown.svg`;
-}
+};

@@ -2,7 +2,7 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 import { ConverterService } from '../services/converter.service';
 
 interface ClipboardState {

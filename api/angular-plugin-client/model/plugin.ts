@@ -7,14 +7,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SpecModel } from './spec';
+import { SpecModel } from "./spec";
 
-
-export interface PluginModel { 
-    id?: string;
-    file?: string;
-    name?: string;
-    pluginId?: string;
-    spec?: SpecModel;
+export interface PluginModel {
+  id?: string;
+  file?: string;
+  name?: string;
+  pluginId?: string;
+  spec?: SpecModel;
 }
-

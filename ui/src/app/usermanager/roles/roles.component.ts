@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { FilterComponent } from '../components/filter/filter.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { RoleEntryModel } from '../../../api';
+import { RoleEntryModel } from '@ladon/api';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { heroDocumentDuplicate, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';

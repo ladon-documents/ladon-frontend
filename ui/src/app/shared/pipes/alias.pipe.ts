@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { utility } from '@utility';
+import { utility } from '@ladon/utility';
 
 @Pipe({
   name: 'alias',

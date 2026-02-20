@@ -1,5 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 
 export interface BreadcrumbState {
   paths: DocumentModel[];

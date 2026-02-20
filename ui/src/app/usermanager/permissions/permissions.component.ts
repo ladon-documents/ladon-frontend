@@ -3,7 +3,7 @@ import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { FilterComponent } from '../components/filter/filter.component';
 import { UsermanagerStore } from '../../store/usermanager.store';
-import { PermissionModel } from '../../../api';
+import { PermissionModel } from '@ladon/api';
 import { heroPlus, heroTrash, heroDocumentDuplicate } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';

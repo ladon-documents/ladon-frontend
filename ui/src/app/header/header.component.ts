@@ -1,15 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SearchbarComponent } from '../searchbar/searchbar.component';
 import { AvatarComponent } from '../avatar/avatar.component';
 import { AppStore } from '../store/app.store';
 import { environment } from '../../environments/environment';
 import { UploadsComponent } from '@ladon/shared';
-import { UploadProgressComponent } from '../shared/components/upload-progress/upload-progress.component';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, SearchbarComponent, AvatarComponent, UploadsComponent, UploadProgressComponent],
+  imports: [CommonModule, AvatarComponent, UploadsComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })

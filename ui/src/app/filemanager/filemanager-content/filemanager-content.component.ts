@@ -8,7 +8,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   heroArrowDownTray,

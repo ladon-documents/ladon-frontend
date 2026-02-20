@@ -1,6 +1,6 @@
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
 import { computed } from '@angular/core';
-import { BucketUiItemModel } from '../../api';
+import { BucketUiItemModel } from '@ladon/api';
 
 export interface SearchItem {
   id: string;

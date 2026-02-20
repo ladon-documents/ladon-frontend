@@ -12,12 +12,7 @@ import { appRoutes } from './app.routes';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideNgIconsConfig } from '@ng-icons/core';
 import { APP_BASE_HREF } from '@angular/common';
-import { LadonApiModule, Configuration, ConfigurationParameters } from '../api/';
-import {
-  LadonApiModule as PluginApiModule,
-  Configuration as PluginApiConfiguration,
-  ConfigurationParameters as PluginApiConfigurationParameters,
-} from '../plugin';
+import { LadonApiModule, Configuration, ConfigurationParameters, plugin } from '@ladon/api';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { tokenInterceptor } from './interceptors/token.interceptor';
@@ -29,11 +24,11 @@ export function apiConfigFactory(): Configuration {
   };
   return new Configuration(params);
 }
-export function pluginApiConfigFactory(): PluginApiConfiguration {
-  const params: PluginApiConfigurationParameters = {
+export function pluginApiConfigFactory(): plugin.Configuration {
+  const params: plugin.ConfigurationParameters = {
     basePath: '/plugins',
   };
-  return new PluginApiConfiguration(params);
+  return new plugin.Configuration(params);
 }
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -61,7 +56,7 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     importProvidersFrom(LadonApiModule.forRoot(apiConfigFactory)),
-    importProvidersFrom(PluginApiModule),
+    importProvidersFrom(plugin.LadonApiModule),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

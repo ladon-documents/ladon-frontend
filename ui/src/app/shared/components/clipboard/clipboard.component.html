@@ -73,7 +73,7 @@
 
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-base-content truncate">
-                  {{ doc.name || doc.key }}
+                  {{ doc.key }}
                 </p>
                 <div class="flex items-center gap-2 mt-0.5">
                   @if (!doc.isFolder && doc.size) {
@@ -102,7 +102,7 @@
                     <img [src]="doc.key | fileicon" class="w-8 h-8 object-contain" alt="File icon" />
                   }
                 </div>
-                <span class="text-sm font-medium">{{ doc.name || doc.key }}</span>
+                <span class="text-sm font-medium">{{ doc.key }}</span>
               </div>
             </div>
           </div>

@@ -37,7 +37,7 @@ import { FilemanagerPaginationComponent } from '../pagination/pagination.compone
 import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 import { filemanagerHelper } from '../helper/helper';
 import { FileUploadDirective } from '../../shared/directive/file-upload.directive';
-import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.facade';
+import { FilemanagerContentFacade } from './filemanager-content.facade';
 import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
 import { ClipboardService } from '../../shared/components/clipboard/clipboard.service';
 import { FileEditorDialogComponent } from '../file-editor-dialog/file-editor-dialog.component';
@@ -58,10 +58,8 @@ import { FilemanagerContextMenuService } from '../filemanager-context-menu.servi
     FilemanagerPaginationComponent,
     FileUploadDirective,
     CdkDrag,
-    UploadProgressComponent,
     CdkDropList,
     FolderComponent,
-    FileEditorDialogComponent,
   ],
   providers: [
     provideIcons({

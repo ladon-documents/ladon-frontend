@@ -35,7 +35,7 @@ export class SidebarComponent implements OnDestroy {
   selectedDocument = this.filemanagerFacade.selectedDocument;
   private subscriptions = new Subscription();
 
-  activeTab = signal<'clipboard' | 'meta'>('clipboard');
+  activeTab = signal<'clipboard' | 'meta'>('meta');
 
   get isOpen() {
     return this.sidebarService.isOpen();

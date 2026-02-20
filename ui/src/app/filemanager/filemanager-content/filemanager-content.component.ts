@@ -17,6 +17,8 @@ import {
   heroCloudArrowUp,
   heroDocumentDuplicate,
   heroFolder,
+  heroInformationCircle,
+  heroLink,
   heroPencilSquare,
   heroPhoto,
   heroPlusCircle,
@@ -24,7 +26,7 @@ import {
   heroStar,
   heroTrash,
 } from '@ng-icons/heroicons/outline';
-import { heroFolderSolid } from '@ng-icons/heroicons/solid';
+import { heroFolderSolid, heroStarSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
 import { FileiconPipe } from '../../shared/pipes/fileicon.pipe';
 import { LadonRouterService } from '../../services/ladon-router.service';
@@ -39,8 +41,10 @@ import { FilemanagerContentFacade, UploadStatus } from './filemanager-content.fa
 import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
 import { ClipboardService } from '../../shared/components/clipboard/clipboard.service';
 import { FileEditorDialogComponent } from '../file-editor-dialog/file-editor-dialog.component';
-import { ClipboardStore } from '../../store/clipboard.store';
 import { FolderComponent } from '@ladon/shared';
+import { SelectionStore } from '../../store/selection.store';
+import { FavoritesStore } from '../../store/favorites.store';
+import { FilemanagerContextMenuService } from '../filemanager-context-menu.service';
 
 
 @Component({
@@ -74,6 +78,9 @@ import { FolderComponent } from '@ladon/shared';
       heroChevronUp,
       heroChevronDown,
       heroCloudArrowUp,
+      heroLink,
+      heroInformationCircle,
+      heroStarSolid,
     }),
     FilesizePipe,
   ],
@@ -88,8 +95,11 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   private readonly converterService = inject(ConverterService);
   private readonly sidebarService = inject(SidebarService);
   private readonly pdfViewerFacade = inject(PdfViewerFacade);
+  readonly filemanagerContextMenuService = inject(FilemanagerContextMenuService);
+  readonly selectionStore = inject(SelectionStore);
+  readonly favoritesStore = inject(FavoritesStore);
+
   protected readonly clipboardList = inject(ClipboardService).clipboardList;
-  readonly clipboardStore = inject(ClipboardStore);
   documents: Signal<DocumentModel[]> = this.#facade.documents;
 
   #currentBucket: string | null = null;
@@ -145,8 +155,8 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   }
 
   copy(file: DocumentModel) {
-    this.clipboardStore.addDocument(file);
-  };
+    console.log('copy');
+  }
 
   async download(file: string | undefined) {
     if (!file) return;
@@ -233,6 +243,33 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
     this.filemanagerContentFacade.showErrorToast(
       `${event.files.length} Datei(en) wurden abgelehnt: ${event.reasons.join(', ')}`,
     );
+  }
+
+  // kontext menu
+
+  onContextMenu(event: MouseEvent, document: DocumentModel) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.filemanagerContextMenuService.onContextMenu(event, document);
+  }
+
+  toggleSelection(document: DocumentModel, index: number, event: Event) {
+    const mouseEvent = event as MouseEvent;
+    this.selectionStore.toggleSelection(document, index, mouseEvent.shiftKey);
+  }
+
+  onItemClick(document: DocumentModel, index: number, event: MouseEvent) {
+    if (event.ctrlKey || event.metaKey) {
+      this.toggleSelection(document, index, event);
+    } else if (event.shiftKey) {
+      this.toggleSelection(document, index, event);
+    } else {
+      this.select(document);
+    }
+  }
+
+  toggleFavorite(document: DocumentModel) {
+    this.favoritesStore.toggleFavorite(document);
   }
 
   protected readonly Math = Math;

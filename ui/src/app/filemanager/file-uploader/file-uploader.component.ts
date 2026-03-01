@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { FileUploadDirective, FileUploadEvent } from '../../shared/directive/file-upload.directive';
 import { NgIcon } from '@ng-icons/core';
 
@@ -16,7 +16,6 @@ interface UploadStatus {
   styleUrl: './file-uploader.component.scss',
 })
 export class FileUploaderComponent {
-  // File Upload Properties
   acceptedFileTypes = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.jpeg', '.png', '.gif'];
   maxFileSize = 50 * 1024 * 1024; // 50MB
   isHovering = false;
@@ -57,22 +56,16 @@ export class FileUploaderComponent {
     this.uploadStatus.push(uploadStatus);
 
     try {
-      // Simuliere Upload (hier würdest du deine tatsächliche Upload-Logik implementieren)
       await this.simulateUpload(file, uploadStatus);
 
-      // Upload erfolgreich
       uploadStatus.status = 'success';
       uploadStatus.message = 'Upload erfolgreich';
-
-      // Statistiken neu laden
       // this.#facade.loadStats();
     } catch (error) {
       console.error('Upload failed:', error);
       uploadStatus.status = 'error';
       uploadStatus.message = 'Upload fehlgeschlagen';
     }
-
-    // Status nach 5 Sekunden entfernen
     setTimeout(() => {
       const index = this.uploadStatus.findIndex((s) => s === uploadStatus);
       if (index > -1) {
@@ -90,9 +83,7 @@ export class FileUploaderComponent {
           progress = 100;
           clearInterval(interval);
 
-          // Simuliere gelegentliche Fehler
           if (Math.random() < 0.1) {
-            // 10% Fehlerchance
             reject(new Error('Simulated upload error'));
           } else {
             resolve();

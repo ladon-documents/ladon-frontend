@@ -5,6 +5,7 @@ import { FilemanagerFacade } from '../filemanager.facade';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroFolder, heroXMark } from '@ng-icons/heroicons/outline';
 import { DialogComponent } from '@ladon/shared';
+import { InputDialogService } from '../../shared/services/input-dialog.service';
 
 @Component({
   selector: 'create-folder',
@@ -21,61 +22,32 @@ import { DialogComponent } from '@ladon/shared';
 export class CreateFolderComponent {
   @ViewChild(DialogComponent, { static: true }) createFolderDialog: DialogComponent | undefined;
   private readonly facade = inject(FilemanagerFacade);
+  private readonly inputDialogService = inject(InputDialogService);
 
-  isModalOpen = false;
-  folderName = '';
-  showError = false;
-  isCreating = false;
-
-  openModal() {
-    this.createFolderDialog?.openDialog();
-    this.folderName = '';
-    this.showError = false;
-    this.isCreating = false;
-
-    setTimeout(() => {
-      const input = document.getElementById('folderName') as HTMLInputElement;
-      if (input) {
-        input.focus();
-      }
-    }, 100);
-  }
-
-  closeDialog(): void {
-    this.folderName = '';
-    this.showError = false;
-    this.createFolderDialog?.closeDialog();
-  }
-
-  async onSubmit() {
-    if (!this.folderName.trim()) {
-      this.showError = true;
-      return;
-    }
+  async openModal() {
     const invalidChars = /[<>:"/\\|?*]/g;
-    if (invalidChars.test(this.folderName)) {
-      this.showError = true;
-      return;
-    }
-    this.isCreating = true;
-    this.showError = false;
 
-    try {
-      this.createFolder(this.folderName.trim());
+    const folderName = await this.inputDialogService.prompt({
+      title: 'Neuer Ordner',
+      label: 'Ordnername',
+      placeholder: 'Mein Ordner',
+      icon: 'heroFolder',
+      confirmText: 'Ordner erstellen',
+      cancelText: 'Abbrechen',
+      validator: (value) => !invalidChars.test(value),
+      errorMessage: 'Ungültige Zeichen im Ordnernamen (<>:"/\\|?*)',
+    });
 
-      this.closeDialog();
-    } catch (error) {
-      console.error('Fehler beim Erstellen des Ordners:', error);
-      this.showError = true;
-    } finally {
-      this.isCreating = false;
+    if (folderName) {
+      try {
+        this.inputDialogService.setProcessing(true);
+        this.facade.createFolder(folderName);
+      } catch (error) {
+        console.error('Fehler beim Erstellen des Ordners:', error);
+      } finally {
+        this.inputDialogService.setProcessing(false);
+      }
     }
   }
 
-  private createFolder(folderName: string) {
-    if (!folderName.trim()) {
-      return;
-    }
-    this.facade.createFolder(folderName.trim());
-  }
 }

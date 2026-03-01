@@ -65,6 +65,9 @@ export class PluginmanagerApi extends runtime.BaseAPI implements PluginmanagerAp
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/plugins/installed`,
             method: 'GET',
@@ -100,6 +103,9 @@ export class PluginmanagerApi extends runtime.BaseAPI implements PluginmanagerAp
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/plugins/uninstall`,
             method: 'DELETE',

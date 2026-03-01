@@ -524,6 +524,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const consumes: runtime.Consume[] = [
             { contentType: 'multipart/form-data' },
         ];
@@ -586,6 +589,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions/role/{roleId}`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
             method: 'PUT',
@@ -627,6 +633,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'PUT',
@@ -668,6 +677,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/roles/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'PUT',
@@ -700,6 +712,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/users`,
             method: 'POST',
@@ -734,6 +749,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions`,
             method: 'POST',
@@ -768,6 +786,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/roles`,
             method: 'POST',
@@ -799,6 +820,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/roles/{roleId}`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
             method: 'DELETE',
@@ -840,6 +864,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/roles/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'DELETE',
@@ -870,6 +897,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/users/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'DELETE',
@@ -893,6 +923,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions`,
             method: 'GET',
@@ -924,6 +957,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/logs/login/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'GET',
@@ -955,6 +991,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions/role/{roleId}`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
             method: 'GET',
@@ -986,6 +1025,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'GET',
@@ -1017,6 +1059,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/roles/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'GET',
@@ -1041,6 +1086,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/roles`,
             method: 'GET',
@@ -1072,6 +1120,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/users/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'GET',
@@ -1096,6 +1147,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/users`,
             method: 'GET',
@@ -1127,6 +1181,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/users/role/{roleId}`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
             method: 'GET',
@@ -1158,6 +1215,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions/{permissionId}`.replace(`{${"permissionId"}}`, encodeURIComponent(String(requestParameters['permissionId']))),
             method: 'DELETE',
@@ -1200,6 +1260,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions/role/{roleId}`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
             method: 'DELETE',
@@ -1241,6 +1304,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/permissions/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'DELETE',
@@ -1280,6 +1346,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/user/{userId}/credentials`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'POST',
@@ -1320,6 +1389,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/user/{userId}/credentials`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'PUT',
@@ -1360,6 +1432,9 @@ export class UsermanagerApi extends runtime.BaseAPI implements UsermanagerApiInt
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/usermanager/users/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'PUT',

@@ -9,14 +9,16 @@
  */
 import { VendorModel } from './vendor';
 
-export interface SpecModel {
-  category?: string;
-  deployTarget?: string;
-  descriptionFile?: string;
-  id?: string;
-  name?: string;
-  shortText?: string;
-  type?: string;
-  vendor?: VendorModel;
-  version?: string;
+
+export interface SpecModel { 
+    category?: string;
+    deployTarget?: string;
+    descriptionFile?: string;
+    id?: string;
+    name?: string;
+    shortText?: string;
+    type?: string;
+    vendor?: VendorModel;
+    version?: string;
 }
+

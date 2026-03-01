@@ -1,4 +1,16 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, signal, Signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  inject,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  signal,
+  Signal,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import {
   CdkDrag,
   CdkDragDrop,
@@ -45,6 +57,7 @@ import { FolderComponent } from '@ladon/shared';
 import { SelectionStore } from '../../store/selection.store';
 import { FavoritesStore } from '../../store/favorites.store';
 import { FilemanagerContextMenuService } from '../filemanager-context-menu.service';
+import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-dialog/move-or-copy-dialog.component';
 
 
 @Component({
@@ -60,6 +73,7 @@ import { FilemanagerContextMenuService } from '../filemanager-context-menu.servi
     CdkDrag,
     CdkDropList,
     FolderComponent,
+    MoveOrCopyDialogComponent,
   ],
   providers: [
     provideIcons({
@@ -86,7 +100,10 @@ import { FilemanagerContextMenuService } from '../filemanager-context-menu.servi
   styleUrl: './filemanager-content.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class FilemanagerContentComponent implements OnDestroy, OnInit {
+export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterViewInit {
+  @ViewChildren(CdkDropList) dropLists!: QueryList<CdkDropList>;
+  @ViewChild(MoveOrCopyDialogComponent) moveOrCopyDialogVC!: MoveOrCopyDialogComponent;
+
   public dateFormat = 'dd.MM.yyyy';
   readonly #facade = inject(FilemanagerFacade);
   readonly filemanagerContentFacade = inject(FilemanagerContentFacade);
@@ -96,8 +113,9 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   readonly filemanagerContextMenuService = inject(FilemanagerContextMenuService);
   readonly selectionStore = inject(SelectionStore);
   readonly favoritesStore = inject(FavoritesStore);
+  readonly clipboardService = inject(ClipboardService);
 
-  protected readonly clipboardList = inject(ClipboardService).clipboardList;
+  protected readonly clipboardList = this.clipboardService.clipboardList;
   documents: Signal<DocumentModel[]> = this.#facade.documents;
 
   #currentBucket: string | null = null;
@@ -110,7 +128,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   imageUrl: string | null = null;
 
   isDragOver = signal(false);
-  allowedFileTypes: string[] = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.png', '.gif'];
+  allowedFileTypes: string[] = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.png', '.gif', 'yaml', 'yml'];
   maxFileSize = 10 * 1024 * 1024; // 10MB
 
   constructor(
@@ -134,6 +152,13 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
       } else if (this.#currentBucket && this.#subfolder) {
         console.log(this.#subfolder);
       }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.updateOriginList();
+    this.dropLists.changes.subscribe(() => {
+      setTimeout(() => this.updateOriginList(), 0);
     });
   }
 
@@ -222,7 +247,6 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   }
 
   // ******** //
-
   onFilesHovered(isHovered: boolean): void {
     this.isDragOver.set(isHovered);
   }
@@ -237,13 +261,10 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   onFilesRejected(event: { files: File[]; reasons: string[] }): void {
     this.isDragOver.set(false);
     console.error('Dateien abgelehnt:', event.reasons);
-    // Optional: Toast-Notification implementieren
     this.filemanagerContentFacade.showErrorToast(
       `${event.files.length} Datei(en) wurden abgelehnt: ${event.reasons.join(', ')}`,
     );
   }
-
-  // kontext menu
 
   onContextMenu(event: MouseEvent, document: DocumentModel) {
     event.preventDefault();
@@ -271,4 +292,33 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit {
   }
 
   protected readonly Math = Math;
+
+  /* Clipboard */
+  private updateOriginList(): void {
+    const activeList = this.dropLists.find((list) => {
+      const element = list.element.nativeElement;
+      return element.offsetParent !== null;
+    });
+
+    if (activeList) {
+      this.clipboardService.setOriginList(activeList);
+    }
+  }
+
+  onDropFromClipboard(event: CdkDragDrop<DocumentModel[]>) {
+    if (event.previousContainer !== event.container) {
+      const droppedDocument = event.previousContainer.data[event.previousIndex];
+      this.showMoveOrCopyDialog(droppedDocument);
+    }
+  }
+
+  private async showMoveOrCopyDialog(document: DocumentModel) {
+    const action = await this.moveOrCopyDialogVC.openDialog(document);
+
+    if (action === 'move') {
+      this.#facade.moveDocument(document);
+    } else if (action === 'copy') {
+      this.#facade.copyDocument(document);
+    }
+  }
 }

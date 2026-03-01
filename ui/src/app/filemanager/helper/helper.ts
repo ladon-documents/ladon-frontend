@@ -62,6 +62,13 @@ export const isFolder = (document: DocumentModel) => {
   return document.path?.endsWith('/');
 };
 
+export const  buildTargetPath = (basePath: string, documentKey: string): string  => {
+  if (basePath === '') {
+    return documentKey;
+  }
+  return basePath.endsWith('/') ? `${basePath}${documentKey}` : `${basePath}/${documentKey}`;
+}
+
 export const isFile = (document: DocumentModel) => {
   return !document.path?.endsWith('/');
 };

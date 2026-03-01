@@ -55,6 +55,9 @@ export class StreamApi extends runtime.BaseAPI implements StreamApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/stream/put`,
             method: 'PUT',

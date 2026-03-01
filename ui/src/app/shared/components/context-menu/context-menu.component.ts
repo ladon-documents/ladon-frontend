@@ -69,7 +69,6 @@ export class ContextMenuComponent {
 
   @HostListener('document:contextmenu')
   onDocumentContextMenu() {
-    // Don't hide on contextmenu event itself, only on regular clicks
     return true;
   }
 

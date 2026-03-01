@@ -15,12 +15,21 @@
 
 import * as runtime from '../runtime';
 
-export interface DownloadsApiAddTextAsWatermarkGetRequest {
+export interface DownloadsApiAddTextAsWatermarkRequest {
     pdfPath: string;
     text: string;
 }
 
-export interface DownloadsApiMergePdfDocumentsGetRequest {
+export interface DownloadsApiAddTextAsWatermark1Request {
+    pdfPath: string;
+    text: string;
+}
+
+export interface DownloadsApiMergePdfDocumentsRequest {
+    paths: Array<string>;
+}
+
+export interface DownloadsApiMergePdfDocuments1Request {
     paths: Array<string>;
 }
 
@@ -28,7 +37,15 @@ export interface DownloadsApiMergePdfDocumentsPostRequest {
     requestBody: Array<string>;
 }
 
+export interface DownloadsApiMergePdfDocumentsPost1Request {
+    requestBody: Array<string>;
+}
+
 export interface DownloadsApiZipDownloadRequest {
+    paths: Array<string>;
+}
+
+export interface DownloadsApiZipDownload1Request {
     paths: Array<string>;
 }
 
@@ -36,7 +53,16 @@ export interface DownloadsApiZipDownloadPostRequest {
     requestBody: Array<string>;
 }
 
+export interface DownloadsApiZipDownloadPost1Request {
+    requestBody: Array<string>;
+}
+
 export interface DownloadsApiZipUploadRequest {
+    bucket: string;
+    content?: Blob;
+}
+
+export interface DownloadsApiZipUpload1Request {
     bucket: string;
     content?: Blob;
 }
@@ -56,11 +82,25 @@ export interface DownloadsApiInterface {
      * @throws {RequiredError}
      * @memberof DownloadsApiInterface
      */
-    addTextAsWatermarkGetRaw(requestParameters: DownloadsApiAddTextAsWatermarkGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+    addTextAsWatermarkRaw(requestParameters: DownloadsApiAddTextAsWatermarkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
 
     /**
      */
-    addTextAsWatermarkGet(requestParameters: DownloadsApiAddTextAsWatermarkGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+    addTextAsWatermark(requestParameters: DownloadsApiAddTextAsWatermarkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
+    /**
+     * 
+     * @param {string} pdfPath 
+     * @param {string} text 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DownloadsApiInterface
+     */
+    addTextAsWatermark1Raw(requestParameters: DownloadsApiAddTextAsWatermark1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    addTextAsWatermark1(requestParameters: DownloadsApiAddTextAsWatermark1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
 
     /**
      * 
@@ -69,11 +109,24 @@ export interface DownloadsApiInterface {
      * @throws {RequiredError}
      * @memberof DownloadsApiInterface
      */
-    mergePdfDocumentsGetRaw(requestParameters: DownloadsApiMergePdfDocumentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+    mergePdfDocumentsRaw(requestParameters: DownloadsApiMergePdfDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
 
     /**
      */
-    mergePdfDocumentsGet(requestParameters: DownloadsApiMergePdfDocumentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+    mergePdfDocuments(requestParameters: DownloadsApiMergePdfDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
+    /**
+     * 
+     * @param {Array<string>} paths 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DownloadsApiInterface
+     */
+    mergePdfDocuments1Raw(requestParameters: DownloadsApiMergePdfDocuments1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    mergePdfDocuments1(requestParameters: DownloadsApiMergePdfDocuments1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
 
     /**
      * 
@@ -90,6 +143,19 @@ export interface DownloadsApiInterface {
 
     /**
      * 
+     * @param {Array<string>} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DownloadsApiInterface
+     */
+    mergePdfDocumentsPost1Raw(requestParameters: DownloadsApiMergePdfDocumentsPost1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>>;
+
+    /**
+     */
+    mergePdfDocumentsPost1(requestParameters: DownloadsApiMergePdfDocumentsPost1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }>;
+
+    /**
+     * 
      * @param {Array<string>} paths 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -100,6 +166,19 @@ export interface DownloadsApiInterface {
     /**
      */
     zipDownload(requestParameters: DownloadsApiZipDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+
+    /**
+     * 
+     * @param {Array<string>} paths 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DownloadsApiInterface
+     */
+    zipDownload1Raw(requestParameters: DownloadsApiZipDownload1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+
+    /**
+     */
+    zipDownload1(requestParameters: DownloadsApiZipDownload1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
 
     /**
      * 
@@ -116,6 +195,19 @@ export interface DownloadsApiInterface {
 
     /**
      * 
+     * @param {Array<string>} requestBody 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DownloadsApiInterface
+     */
+    zipDownloadPost1Raw(requestParameters: DownloadsApiZipDownloadPost1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>>;
+
+    /**
+     */
+    zipDownloadPost1(requestParameters: DownloadsApiZipDownloadPost1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }>;
+
+    /**
+     * 
      * @param {string} bucket 
      * @param {Blob} [content] 
      * @param {*} [options] Override http request option.
@@ -128,6 +220,20 @@ export interface DownloadsApiInterface {
      */
     zipUpload(requestParameters: DownloadsApiZipUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: number; }>;
 
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {Blob} [content] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DownloadsApiInterface
+     */
+    zipUpload1Raw(requestParameters: DownloadsApiZipUpload1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: number; }>>;
+
+    /**
+     */
+    zipUpload1(requestParameters: DownloadsApiZipUpload1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: number; }>;
+
 }
 
 /**
@@ -137,18 +243,18 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
     /**
      */
-    async addTextAsWatermarkGetRaw(requestParameters: DownloadsApiAddTextAsWatermarkGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+    async addTextAsWatermarkRaw(requestParameters: DownloadsApiAddTextAsWatermarkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['pdfPath'] == null) {
             throw new runtime.RequiredError(
                 'pdfPath',
-                'Required parameter "pdfPath" was null or undefined when calling addTextAsWatermarkGet().'
+                'Required parameter "pdfPath" was null or undefined when calling addTextAsWatermark().'
             );
         }
 
         if (requestParameters['text'] == null) {
             throw new runtime.RequiredError(
                 'text',
-                'Required parameter "text" was null or undefined when calling addTextAsWatermarkGet().'
+                'Required parameter "text" was null or undefined when calling addTextAsWatermark().'
             );
         }
 
@@ -164,6 +270,58 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/filemanager/addTextAsWatermark`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     */
+    async addTextAsWatermark(requestParameters: DownloadsApiAddTextAsWatermarkRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+        const response = await this.addTextAsWatermarkRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async addTextAsWatermark1Raw(requestParameters: DownloadsApiAddTextAsWatermark1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+        if (requestParameters['pdfPath'] == null) {
+            throw new runtime.RequiredError(
+                'pdfPath',
+                'Required parameter "pdfPath" was null or undefined when calling addTextAsWatermark1().'
+            );
+        }
+
+        if (requestParameters['text'] == null) {
+            throw new runtime.RequiredError(
+                'text',
+                'Required parameter "text" was null or undefined when calling addTextAsWatermark1().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['pdfPath'] != null) {
+            queryParameters['pdfPath'] = requestParameters['pdfPath'];
+        }
+
+        if (requestParameters['text'] != null) {
+            queryParameters['text'] = requestParameters['text'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/addTextAsWatermark`,
             method: 'GET',
@@ -176,18 +334,18 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
     /**
      */
-    async addTextAsWatermarkGet(requestParameters: DownloadsApiAddTextAsWatermarkGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
-        const response = await this.addTextAsWatermarkGetRaw(requestParameters, initOverrides);
+    async addTextAsWatermark1(requestParameters: DownloadsApiAddTextAsWatermark1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+        const response = await this.addTextAsWatermark1Raw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async mergePdfDocumentsGetRaw(requestParameters: DownloadsApiMergePdfDocumentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+    async mergePdfDocumentsRaw(requestParameters: DownloadsApiMergePdfDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['paths'] == null) {
             throw new runtime.RequiredError(
                 'paths',
-                'Required parameter "paths" was null or undefined when calling mergePdfDocumentsGet().'
+                'Required parameter "paths" was null or undefined when calling mergePdfDocuments().'
             );
         }
 
@@ -199,6 +357,47 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/filemanager/mergepdfdocuments`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     */
+    async mergePdfDocuments(requestParameters: DownloadsApiMergePdfDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+        const response = await this.mergePdfDocumentsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async mergePdfDocuments1Raw(requestParameters: DownloadsApiMergePdfDocuments1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+        if (requestParameters['paths'] == null) {
+            throw new runtime.RequiredError(
+                'paths',
+                'Required parameter "paths" was null or undefined when calling mergePdfDocuments1().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['paths'] != null) {
+            queryParameters['paths'] = requestParameters['paths'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/mergepdfdocuments`,
             method: 'GET',
@@ -211,8 +410,8 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
     /**
      */
-    async mergePdfDocumentsGet(requestParameters: DownloadsApiMergePdfDocumentsGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
-        const response = await this.mergePdfDocumentsGetRaw(requestParameters, initOverrides);
+    async mergePdfDocuments1(requestParameters: DownloadsApiMergePdfDocuments1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+        const response = await this.mergePdfDocuments1Raw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -232,8 +431,11 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
-            path: `/api/rest/v1/content/mergepdfdocuments`,
+            path: `/api/filemanager/mergepdfdocuments`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -247,6 +449,43 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
      */
     async mergePdfDocumentsPost(requestParameters: DownloadsApiMergePdfDocumentsPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
         const response = await this.mergePdfDocumentsPostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async mergePdfDocumentsPost1Raw(requestParameters: DownloadsApiMergePdfDocumentsPost1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
+        if (requestParameters['requestBody'] == null) {
+            throw new runtime.RequiredError(
+                'requestBody',
+                'Required parameter "requestBody" was null or undefined when calling mergePdfDocumentsPost1().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/rest/v1/content/mergepdfdocuments`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['requestBody'],
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     */
+    async mergePdfDocumentsPost1(requestParameters: DownloadsApiMergePdfDocumentsPost1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
+        const response = await this.mergePdfDocumentsPost1Raw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -268,6 +507,9 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/zipdownload`,
             method: 'GET',
@@ -287,6 +529,44 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
     /**
      */
+    async zipDownload1Raw(requestParameters: DownloadsApiZipDownload1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+        if (requestParameters['paths'] == null) {
+            throw new runtime.RequiredError(
+                'paths',
+                'Required parameter "paths" was null or undefined when calling zipDownload1().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['paths'] != null) {
+            queryParameters['paths'] = requestParameters['paths'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/filemanager/zipdownload`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     */
+    async zipDownload1(requestParameters: DownloadsApiZipDownload1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+        const response = await this.zipDownload1Raw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
     async zipDownloadPostRaw(requestParameters: DownloadsApiZipDownloadPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
         if (requestParameters['requestBody'] == null) {
             throw new runtime.RequiredError(
@@ -301,6 +581,9 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/zipdownload`,
             method: 'POST',
@@ -321,6 +604,43 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
     /**
      */
+    async zipDownloadPost1Raw(requestParameters: DownloadsApiZipDownloadPost1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: string; }>> {
+        if (requestParameters['requestBody'] == null) {
+            throw new runtime.RequiredError(
+                'requestBody',
+                'Required parameter "requestBody" was null or undefined when calling zipDownloadPost1().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/filemanager/zipdownload`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['requestBody'],
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     */
+    async zipDownloadPost1(requestParameters: DownloadsApiZipDownloadPost1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: string; }> {
+        const response = await this.zipDownloadPost1Raw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
     async zipUploadRaw(requestParameters: DownloadsApiZipUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: number; }>> {
         if (requestParameters['bucket'] == null) {
             throw new runtime.RequiredError(
@@ -333,6 +653,9 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const consumes: runtime.Consume[] = [
             { contentType: 'multipart/form-data' },
         ];
@@ -368,6 +691,61 @@ export class DownloadsApi extends runtime.BaseAPI implements DownloadsApiInterfa
      */
     async zipUpload(requestParameters: DownloadsApiZipUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: number; }> {
         const response = await this.zipUploadRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async zipUpload1Raw(requestParameters: DownloadsApiZipUpload1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: number; }>> {
+        if (requestParameters['bucket'] == null) {
+            throw new runtime.RequiredError(
+                'bucket',
+                'Required parameter "bucket" was null or undefined when calling zipUpload1().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters['content'] != null) {
+            formParams.append('content', requestParameters['content'] as any);
+        }
+
+        const response = await this.request({
+            path: `/api/filemanager/zipupload/{bucket}`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     */
+    async zipUpload1(requestParameters: DownloadsApiZipUpload1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: number; }> {
+        const response = await this.zipUpload1Raw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -31,6 +31,13 @@ import {
     ZipUploadRequestToJSON,
 } from '../models/index';
 
+export interface DocumentsApiCopyDocumentRequest {
+    bucket: string;
+    key: string;
+    targetBucket: string;
+    targetKey: string;
+}
+
 export interface DocumentsApiDatepathsearchRequest {
     bucket: string;
     from: string;
@@ -43,6 +50,12 @@ export interface DocumentsApiDeleteDocumentRequest {
     bucket: string;
     key: string;
     version?: string;
+}
+
+export interface DocumentsApiDeleteDocumentBatchRequest {
+    antpattern: string;
+    securitykey: string;
+    dryrun: boolean;
 }
 
 export interface DocumentsApiFindDocumentPathRequest {
@@ -85,6 +98,13 @@ export interface DocumentsApiListDocumentsRequest {
     currentFolder?: boolean;
 }
 
+export interface DocumentsApiMoveDocumentRequest {
+    bucket: string;
+    key: string;
+    targetBucket: string;
+    targetKey: string;
+}
+
 export interface DocumentsApiPutDocumentRequest {
     bucket: string;
     key: string;
@@ -111,6 +131,22 @@ export interface DocumentsApiPutFolderRequest {
  * @interface DocumentsApiInterface
  */
 export interface DocumentsApiInterface {
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
+     * @param {string} targetBucket 
+     * @param {string} targetKey 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    copyDocumentRaw(requestParameters: DocumentsApiCopyDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>>;
+
+    /**
+     */
+    copyDocument(requestParameters: DocumentsApiCopyDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document>;
+
     /**
      * 
      * @param {string} bucket 
@@ -142,6 +178,21 @@ export interface DocumentsApiInterface {
     /**
      */
     deleteDocument(requestParameters: DocumentsApiDeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
+    /**
+     * 
+     * @param {string} antpattern 
+     * @param {string} securitykey 
+     * @param {boolean} dryrun 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    deleteDocumentBatchRaw(requestParameters: DocumentsApiDeleteDocumentBatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
+
+    /**
+     */
+    deleteDocumentBatch(requestParameters: DocumentsApiDeleteDocumentBatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
 
     /**
      * 
@@ -241,6 +292,22 @@ export interface DocumentsApiInterface {
      * 
      * @param {string} bucket 
      * @param {string} key 
+     * @param {string} targetBucket 
+     * @param {string} targetKey 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    moveDocumentRaw(requestParameters: DocumentsApiMoveDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>>;
+
+    /**
+     */
+    moveDocument(requestParameters: DocumentsApiMoveDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document>;
+
+    /**
+     * 
+     * @param {string} bucket 
+     * @param {string} key 
      * @param {string} [version] 
      * @param {ZipUploadRequest} [zipUploadRequest] 
      * @param {*} [options] Override http request option.
@@ -283,12 +350,91 @@ export interface DocumentsApiInterface {
      */
     putFolder(requestParameters: DocumentsApiPutFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document>;
 
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApiInterface
+     */
+    stopBatchDeleteRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>>;
+
+    /**
+     */
+    stopBatchDelete(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess>;
+
 }
 
 /**
  * 
  */
 export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterface {
+
+    /**
+     */
+    async copyDocumentRaw(requestParameters: DocumentsApiCopyDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
+        if (requestParameters['bucket'] == null) {
+            throw new runtime.RequiredError(
+                'bucket',
+                'Required parameter "bucket" was null or undefined when calling copyDocument().'
+            );
+        }
+
+        if (requestParameters['key'] == null) {
+            throw new runtime.RequiredError(
+                'key',
+                'Required parameter "key" was null or undefined when calling copyDocument().'
+            );
+        }
+
+        if (requestParameters['targetBucket'] == null) {
+            throw new runtime.RequiredError(
+                'targetBucket',
+                'Required parameter "targetBucket" was null or undefined when calling copyDocument().'
+            );
+        }
+
+        if (requestParameters['targetKey'] == null) {
+            throw new runtime.RequiredError(
+                'targetKey',
+                'Required parameter "targetKey" was null or undefined when calling copyDocument().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['key'] != null) {
+            queryParameters['key'] = requestParameters['key'];
+        }
+
+        if (requestParameters['targetBucket'] != null) {
+            queryParameters['targetBucket'] = requestParameters['targetBucket'];
+        }
+
+        if (requestParameters['targetKey'] != null) {
+            queryParameters['targetKey'] = requestParameters['targetKey'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/rest/v1/content/buckets/{bucket}/documents/copy`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DocumentFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async copyDocument(requestParameters: DocumentsApiCopyDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
+        const response = await this.copyDocumentRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */
@@ -334,6 +480,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets/{bucket}/datepathsearch`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -380,6 +529,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/buckets/{bucket}/documents`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'DELETE',
@@ -394,6 +546,66 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
      */
     async deleteDocument(requestParameters: DocumentsApiDeleteDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
         const response = await this.deleteDocumentRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async deleteDocumentBatchRaw(requestParameters: DocumentsApiDeleteDocumentBatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
+        if (requestParameters['antpattern'] == null) {
+            throw new runtime.RequiredError(
+                'antpattern',
+                'Required parameter "antpattern" was null or undefined when calling deleteDocumentBatch().'
+            );
+        }
+
+        if (requestParameters['securitykey'] == null) {
+            throw new runtime.RequiredError(
+                'securitykey',
+                'Required parameter "securitykey" was null or undefined when calling deleteDocumentBatch().'
+            );
+        }
+
+        if (requestParameters['dryrun'] == null) {
+            throw new runtime.RequiredError(
+                'dryrun',
+                'Required parameter "dryrun" was null or undefined when calling deleteDocumentBatch().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['antpattern'] != null) {
+            queryParameters['antpattern'] = requestParameters['antpattern'];
+        }
+
+        if (requestParameters['securitykey'] != null) {
+            queryParameters['securitykey'] = requestParameters['securitykey'];
+        }
+
+        if (requestParameters['dryrun'] != null) {
+            queryParameters['dryrun'] = requestParameters['dryrun'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/rest/v1/content/management/batchdelete`,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseSuccessFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async deleteDocumentBatch(requestParameters: DocumentsApiDeleteDocumentBatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
+        const response = await this.deleteDocumentBatchRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -426,6 +638,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets/{bucket}/pathsearch`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -472,6 +687,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/buckets/{bucket}/documents`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -514,6 +732,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets/{bucket}/documents`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -561,6 +782,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/buckets/{bucket}/jsonlist`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -607,6 +831,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets/{bucket}/documentversions`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -662,6 +889,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets/{bucket}/documentlist`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -676,6 +906,73 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
      */
     async listDocuments(requestParameters: DocumentsApiListDocumentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Document>> {
         const response = await this.listDocumentsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async moveDocumentRaw(requestParameters: DocumentsApiMoveDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Document>> {
+        if (requestParameters['bucket'] == null) {
+            throw new runtime.RequiredError(
+                'bucket',
+                'Required parameter "bucket" was null or undefined when calling moveDocument().'
+            );
+        }
+
+        if (requestParameters['key'] == null) {
+            throw new runtime.RequiredError(
+                'key',
+                'Required parameter "key" was null or undefined when calling moveDocument().'
+            );
+        }
+
+        if (requestParameters['targetBucket'] == null) {
+            throw new runtime.RequiredError(
+                'targetBucket',
+                'Required parameter "targetBucket" was null or undefined when calling moveDocument().'
+            );
+        }
+
+        if (requestParameters['targetKey'] == null) {
+            throw new runtime.RequiredError(
+                'targetKey',
+                'Required parameter "targetKey" was null or undefined when calling moveDocument().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters['key'] != null) {
+            queryParameters['key'] = requestParameters['key'];
+        }
+
+        if (requestParameters['targetBucket'] != null) {
+            queryParameters['targetBucket'] = requestParameters['targetBucket'];
+        }
+
+        if (requestParameters['targetKey'] != null) {
+            queryParameters['targetKey'] = requestParameters['targetKey'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/rest/v1/content/buckets/{bucket}/documents/move`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => DocumentFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async moveDocument(requestParameters: DocumentsApiMoveDocumentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
+        const response = await this.moveDocumentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -708,8 +1005,11 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/octet-stream';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/buckets/{bucket}/documents`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'PUT',
@@ -766,6 +1066,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets/{bucket}/documents`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'PUT',
@@ -809,6 +1112,9 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/content/buckets/{bucket}/folders`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'PUT',
@@ -823,6 +1129,33 @@ export class DocumentsApi extends runtime.BaseAPI implements DocumentsApiInterfa
      */
     async putFolder(requestParameters: DocumentsApiPutFolderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Document> {
         const response = await this.putFolderRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async stopBatchDeleteRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResponseSuccess>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+        const response = await this.request({
+            path: `/api/rest/v1/content/management/batchdelete/stop`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResponseSuccessFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async stopBatchDelete(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResponseSuccess> {
+        const response = await this.stopBatchDeleteRaw(initOverrides);
         return await response.value();
     }
 

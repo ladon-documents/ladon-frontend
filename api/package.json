@@ -5,8 +5,8 @@
   "scripts": {
     "test": "ts-node node_modules/jasmine/bin/jasmine.js",
     "clean": "rimraf ./fetch-client",
-    "generate:client:ts": "rimraf ./fetch-client; openapi-generator-cli generate -i ../spec/ladon.yml -g typescript-fetch -o fetch-client --additional-properties=supportsES6=false,disallowAdditionalPropertiesIfNotPresent=false,withSeparateModelsAndApi=false,prefixParameterInterfaces=true,withInterfaces=true",
-    "generate:client:ng": "rimraf ./angular-client; openapi-generator-cli generate -i  ../spec/ladon.yml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
+    "generate:client:ts": "rimraf ./fetch-client; openapi-generator-cli generate -i ../spec/api.yaml -g typescript-fetch -o fetch-client --additional-properties=supportsES6=false,disallowAdditionalPropertiesIfNotPresent=false,withSeparateModelsAndApi=false,prefixParameterInterfaces=true,withInterfaces=true",
+    "generate:client:ng": "rimraf ./angular-client; openapi-generator-cli generate -i  ../spec/api.yaml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
     "generate:plugin:ng": "rimraf ./angular-plugin-client; openapi-generator-cli generate -i  ../spec/plugin-v1.yaml -g typescript-angular -o angular-plugin-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
     "generate:apis": "npm run generate:client:ts & npm run generate:client:ng & npm run generate:plugin:ng",
     "copy-ng": "node -e \"require('fs').cpSync('angular-client/', '../ui/src/api', {recursive: true});\"",

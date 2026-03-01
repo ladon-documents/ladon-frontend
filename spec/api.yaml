@@ -9,6 +9,10 @@ externalDocs:
 servers:
   - url: /admin
     description: Generated server url
+
+security:
+  - basicAuth: []
+  - jwtCookie: []
 tags:
   - name: Actions
     description: Ladon Actions API
@@ -56,7 +60,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/UserDataWrapper'
     put:
@@ -145,7 +149,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -201,7 +205,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -257,7 +261,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -318,7 +322,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/DataResponse'
   /api/rest/v1/stream/put:
@@ -330,7 +334,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/ResponseSuccess'
   /api/rest/v1/meta/buckets:
@@ -522,7 +526,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/octet-stream":
               schema:
                 type: string
                 format: binary
@@ -548,7 +552,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json:
+          application/octet-stream:
             schema:
               type: object
               properties:
@@ -589,6 +593,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseSuccess'
+
+  /api/rest/v1/content/buckets/{bucket}/documents/copy:
+    post:
+      tags:
+        - Documents
+      operationId: copyDocument
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: targetBucket
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: targetKey
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+
+  /api/rest/v1/content/buckets/{bucket}/documents/move:
+    post:
+      tags:
+        - Documents
+      operationId: moveDocument
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: targetBucket
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: targetKey
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
   /api/rest/v1/actions/bucket/{bucket}:
     get:
       tags:
@@ -657,7 +729,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/FileEntry'
     post:
@@ -679,7 +751,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -703,7 +775,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -723,7 +795,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -747,7 +819,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -799,7 +871,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/Tag'
     delete:
@@ -816,7 +888,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -842,7 +914,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/Unit'
     delete:
@@ -859,7 +931,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/DataResponse'
   /auth/logout:
@@ -871,7 +943,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
     post:
@@ -882,7 +954,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
   /auth/login:
@@ -900,7 +972,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
   /api/usermanager/users:
@@ -912,7 +984,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -931,7 +1003,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -975,7 +1047,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1002,7 +1074,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1021,7 +1093,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/Unit'
   /api/ui/v1/meta/buckets:
@@ -1039,7 +1111,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -1064,7 +1136,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/DataResponse'
   /api/rest/v1/taskmanager/stop:
@@ -1180,7 +1252,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1200,7 +1272,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: string
                 format: binary
@@ -1719,7 +1791,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1734,7 +1806,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/User'
   /user/allowableactions:
@@ -1746,7 +1818,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -1766,7 +1838,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -1786,7 +1858,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -2188,7 +2260,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -2233,7 +2305,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -2355,7 +2427,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: array
                 items:
@@ -2375,7 +2447,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: string
                 format: binary
@@ -2479,7 +2551,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 type: object
                 additionalProperties:
@@ -2832,7 +2904,7 @@ paths:
         '200':
           description: OK
           content:
-            '*/*':
+            "application/json":
               schema:
                 $ref: '#/components/schemas/Unit'
   /api/rest/v1/transaction/rollback:
@@ -2897,6 +2969,28 @@ paths:
         '200':
           description: OK
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    jwtCookie:
+      type: apiKey
+      in: cookie
+      name: auth_token
+      description: >
+        JWT wird als Cookie übertragen.
+
+  parameters:
+    TenantId:
+      name: X-Tenant-Id
+      in: header
+      required: false
+      schema:
+        type: string
+      description: >
+        Optionaler Mandanten-Kontext (abwärtskompatibel). Wenn vorhanden, wird dieser Tenant verwendet.
+        Bei JWT kann der Tenant alternativ/zusätzlich aus einem Claim (z. B. `tenant`) abgeleitet werden.
+
   schemas:
     UserDataWrapper:
       type: object

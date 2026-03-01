@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { ConverterInfoModel, ConverterService as ConverterServiceApi, DocumentModel } from '../../api';
+import {
+  ConverterInfoModel,
+  ConverterJobModel,
+  ConverterService as ConverterServiceApi,
+  DocumentModel,
+} from '../../api';
 import { lastValueFrom } from 'rxjs';
-import { ConverterJob } from '../../../../api/fetch-client';
 
 type converterType = 'applyandstore' | 'applyanddownload';
 
@@ -49,7 +53,7 @@ export class ConverterService {
 
   public async getPreview(document: DocumentModel) {
     if (!document.path) return null;
-    const data: ConverterJob = {
+    const data: ConverterJobModel = {
       inputPaths: [document.path],
       converters: [
         {
@@ -89,7 +93,7 @@ export class ConverterService {
   }
 
   private async handleConverter(inputPaths: Array<string>, converterId: string, type: converterType) {
-    const data: ConverterJob = {
+    const data: ConverterJobModel = {
       inputPaths,
       converters: [
         {

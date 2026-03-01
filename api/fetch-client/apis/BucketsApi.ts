@@ -52,7 +52,7 @@ export interface BucketsApiGetBucketActionsRequest {
     bucket: string;
 }
 
-export interface BucketsApiListBucketsRequest {
+export interface BucketsApiListBuckets1Request {
     limit?: number;
     search?: string;
 }
@@ -138,11 +138,11 @@ export interface BucketsApiInterface {
      * @throws {RequiredError}
      * @memberof BucketsApiInterface
      */
-    listBucketsRaw(requestParameters: BucketsApiListBucketsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Bucket>>>;
+    listBuckets1Raw(requestParameters: BucketsApiListBuckets1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Bucket>>>;
 
     /**
      */
-    listBuckets(requestParameters: BucketsApiListBucketsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Bucket>>;
+    listBuckets1(requestParameters: BucketsApiListBuckets1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Bucket>>;
 
 }
 
@@ -174,6 +174,9 @@ export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/actions/bucket/{bucket}`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'PUT',
@@ -208,6 +211,9 @@ export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets`,
             method: 'PUT',
@@ -240,6 +246,9 @@ export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets/{bucket}`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'DELETE',
@@ -271,6 +280,9 @@ export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/buckets/{bucket}`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -302,6 +314,9 @@ export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/actions/bucket/{bucket}`.replace(`{${"bucket"}}`, encodeURIComponent(String(requestParameters['bucket']))),
             method: 'GET',
@@ -321,7 +336,7 @@ export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
 
     /**
      */
-    async listBucketsRaw(requestParameters: BucketsApiListBucketsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Bucket>>> {
+    async listBuckets1Raw(requestParameters: BucketsApiListBuckets1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<Bucket>>> {
         const queryParameters: any = {};
 
         if (requestParameters['limit'] != null) {
@@ -334,6 +349,9 @@ export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/bucketlist`,
             method: 'GET',
@@ -346,8 +364,8 @@ export class BucketsApi extends runtime.BaseAPI implements BucketsApiInterface {
 
     /**
      */
-    async listBuckets(requestParameters: BucketsApiListBucketsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Bucket>> {
-        const response = await this.listBucketsRaw(requestParameters, initOverrides);
+    async listBuckets1(requestParameters: BucketsApiListBuckets1Request = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<Bucket>> {
+        const response = await this.listBuckets1Raw(requestParameters, initOverrides);
         return await response.value();
     }
 

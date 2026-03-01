@@ -115,6 +115,9 @@ export class TransactionApi extends runtime.BaseAPI implements TransactionApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/transaction/commit`,
             method: 'GET',
@@ -139,6 +142,9 @@ export class TransactionApi extends runtime.BaseAPI implements TransactionApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/transaction/active`,
             method: 'GET',
@@ -178,6 +184,9 @@ export class TransactionApi extends runtime.BaseAPI implements TransactionApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/transaction/rollback`,
             method: 'DELETE',
@@ -202,6 +211,9 @@ export class TransactionApi extends runtime.BaseAPI implements TransactionApiInt
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/transaction/start`,
             method: 'GET',

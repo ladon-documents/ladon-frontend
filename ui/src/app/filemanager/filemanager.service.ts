@@ -19,7 +19,7 @@ export class FilemanagerService {
     return throwError(new Error('Not Found'));
   }
 
-  public saveDocument(document: DocumentModel, content: Blob) {
+  public saveDocument(document: DocumentModel, content: any) {
     const { bucket, key } = document;
     if (bucket && key) {
       return this.documentsService.putDocument(bucket, key, undefined, content);
@@ -31,6 +31,22 @@ export class FilemanagerService {
     const { bucket, key } = document;
     if (bucket && key) {
       return this.documentsService.deleteDocument(bucket, key);
+    }
+    return throwError(new Error('Not Found'));
+  }
+
+  public moveDocument(document: DocumentModel, targetBucket: string, targetKey: string) {
+    const { bucket, key } = document;
+    if (bucket && key && targetBucket && targetKey) {
+      return this.documentsService.moveDocument(bucket, key, targetBucket, targetKey);
+    }
+    return throwError(new Error('Not Found'));
+  }
+
+  public copyDocument(document: DocumentModel, targetBucket: string, targetKey: string) {
+    const { bucket, key } = document;
+    if (bucket && key && targetBucket && targetKey) {
+      return this.documentsService.copyDocument(bucket, key, targetBucket, targetKey);
     }
     return throwError(new Error('Not Found'));
   }
@@ -54,8 +70,8 @@ export class FilemanagerService {
     return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
   }
 
-  public createNewFile(bucket: string, key: string, content: any) {
-    return this.documentsService.putDocument(bucket, key);
+  public createNewFile(bucket: string, key: string, content: any | null) {
+    return this.documentsService.putDocument(bucket, key, undefined, content);
   }
 
   public createNewFolder(bucket: string, key: string) {

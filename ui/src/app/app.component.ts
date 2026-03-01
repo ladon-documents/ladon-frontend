@@ -24,6 +24,7 @@ import { KeyboardShortcutsService } from './shared/services/keyboard-shortcuts.s
 import { ContextMenuComponent } from './shared/components/context-menu/context-menu.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
+import { InputDialogComponent } from './shared/components/input-dialog/input-dialog.component';
 
 @Component({
   imports: [
@@ -37,7 +38,8 @@ import { ConfirmationDialogComponent } from './shared/components/confirmation-di
     SearchModalComponent,
     ContextMenuComponent,
     ToastComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    InputDialogComponent
   ],
   standalone: true,
   selector: 'ldn-ui',

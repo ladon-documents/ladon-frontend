@@ -7,7 +7,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { StringsModel } from './strings';
 
 
 export interface TaskStatusModel { 
@@ -17,6 +16,6 @@ export interface TaskStatusModel {
     percent: number;
     result: string;
     success?: boolean;
-    exception?: StringsModel;
+    exception?: string;
 }
 

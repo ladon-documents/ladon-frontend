@@ -1,1 +1,31 @@
-<p>confirmation-dialog works!</p>
+<app-dialog [title]="confirmationDialogService.state().config?.title || ''">
+  @if (confirmationDialogService.state().visible) {
+    <div class="space-y-4">
+      <div class="flex items-start gap-4">
+        @if (confirmationDialogService.state().config?.danger) {
+          <div class="flex-shrink-0">
+            <ng-icon name="heroExclamationTriangle" size="2em" class="text-error"></ng-icon>
+          </div>
+        }
+        <div class="flex-1">
+          <p class="text-base-content/80">
+            {{ confirmationDialogService.state().config?.message }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-2">
+        <button class="btn btn-outline" (click)="onCancel()">
+          {{ confirmationDialogService.state().config?.cancelText || 'Abbrechen' }}
+        </button>
+        <button
+                                                                                            class="btn"
+                                                                                            [class.btn-error]="confirmationDialogService.state().config?.danger"
+                                                                                            [class.btn-primary]="!confirmationDialogService.state().config?.danger"
+                                                                                            (click)="onConfirm()">
+          {{ confirmationDialogService.state().config?.confirmText || 'Bestätigen' }}
+        </button>
+      </div>
+    </div>
+  }
+</app-dialog>

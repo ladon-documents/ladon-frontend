@@ -1,0 +1,31 @@
+<app-dialog title="Aktion auswählen">
+  <div class="space-y-4">
+    <p class="text-base-content/80">
+      Was möchten Sie mit <span class="font-semibold">"{{ document()?.name }}"</span> tun?
+    </p>
+
+    <div class="flex justify-end gap-3 pt-4">
+      <button class="btn btn-primary btn-outline btn-block grow"
+              (click)="onAction('copy')">
+        <ng-icon name="heroDocumentDuplicate" size="1.2em"></ng-icon>
+        <div class="text-left">
+          <div class="font-semibold">Kopieren</div>
+        </div>
+      </button>
+
+      <button class="btn btn-error btn-outline btn-block grow"
+              (click)="onAction('move')">
+        <ng-icon name="heroArrowRight" size="1.2em"></ng-icon>
+        <div class="text-left">
+          <div class="font-semibold">Verschieben</div>
+        </div>
+      </button>
+      <button class="btn btn-ghost btn-block grow"
+              (click)="closeDialog()">
+        Abbrechen
+      </button>
+    </div>
+
+
+  </div>
+</app-dialog>

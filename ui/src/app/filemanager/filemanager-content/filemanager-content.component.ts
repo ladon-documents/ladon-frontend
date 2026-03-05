@@ -58,6 +58,8 @@ import { SelectionStore } from '../../store/selection.store';
 import { FavoritesStore } from '../../store/favorites.store';
 import { FilemanagerContextMenuService } from '../filemanager-context-menu.service';
 import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-dialog/move-or-copy-dialog.component';
+import { ImageEditorDialogComponent } from '../image-editor-dialog/image-editor-dialog.component';
+import { InputDialogService } from '../../shared/services/input-dialog.service';
 
 
 @Component({
@@ -74,6 +76,7 @@ import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-
     CdkDropList,
     FolderComponent,
     MoveOrCopyDialogComponent,
+    ImageEditorDialogComponent,
   ],
   providers: [
     provideIcons({
@@ -103,6 +106,7 @@ import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-
 export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChildren(CdkDropList) dropLists!: QueryList<CdkDropList>;
   @ViewChild(MoveOrCopyDialogComponent) moveOrCopyDialogVC!: MoveOrCopyDialogComponent;
+  @ViewChild(ImageEditorDialogComponent) imageEditorDialogVC!: ImageEditorDialogComponent;
 
   public dateFormat = 'dd.MM.yyyy';
   readonly #facade = inject(FilemanagerFacade);
@@ -114,6 +118,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   readonly selectionStore = inject(SelectionStore);
   readonly favoritesStore = inject(FavoritesStore);
   readonly clipboardService = inject(ClipboardService);
+  readonly inputDialogService = inject(InputDialogService);
 
   protected readonly clipboardList = this.clipboardService.clipboardList;
   documents: Signal<DocumentModel[]> = this.#facade.documents;
@@ -269,7 +274,9 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   onContextMenu(event: MouseEvent, document: DocumentModel) {
     event.preventDefault();
     event.stopPropagation();
-    this.filemanagerContextMenuService.onContextMenu(event, document);
+    this.filemanagerContextMenuService.onContextMenu(event, document, {
+      editImage: () => this.openImageEditor(document),
+    });
   }
 
   toggleSelection(document: DocumentModel, index: number, event: Event) {
@@ -319,6 +326,36 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
       this.#facade.moveDocument(document);
     } else if (action === 'copy') {
       this.#facade.copyDocument(document);
+    }
+  }
+
+  private openImageEditor(document: DocumentModel): void {
+    this.imageEditorDialogVC.openDialog(document);
+  }
+
+  async createFileFromEmptyState(): Promise<void> {
+    const invalidChars = /[<>:"/\\|?*]/g;
+
+    const fileName = await this.inputDialogService.prompt({
+      title: 'Neue Datei',
+      label: 'Dateiname',
+      placeholder: 'dokument.txt',
+      icon: 'heroDocument',
+      confirmText: 'Datei erstellen',
+      cancelText: 'Abbrechen',
+      validator: (value) => !invalidChars.test(value),
+      errorMessage: 'Ungültige Zeichen im Dateinamen (<>:"/\\|?*)',
+    });
+
+    if (!fileName) {
+      return;
+    }
+
+    try {
+      this.inputDialogService.setProcessing(true);
+      this.#facade.createEmptyFile(fileName);
+    } finally {
+      this.inputDialogService.setProcessing(false);
     }
   }
 }

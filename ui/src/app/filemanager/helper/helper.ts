@@ -246,10 +246,25 @@ const isAudio = (document: DocumentModel | null): boolean => {
   );
 };
 
+const isImage = (document: DocumentModel | null): boolean => {
+  if (!document || document.isFolder) {
+    return false;
+  }
+
+  if (document['content-type']?.startsWith('image/')) {
+    return true;
+  }
+
+  const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg'];
+  const extension = document.path?.split('.').pop()?.toLowerCase();
+  return !!extension && imageExtensions.includes(extension);
+};
+
 export const filemanagerHelper = {
   isEditableFile,
   isPdf,
   isAudio,
+  isImage,
   filterDocuments,
   calculatePaginationState,
   sortDocuments,

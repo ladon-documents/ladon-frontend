@@ -51,6 +51,11 @@
             } @else {
               <p class="text-lg font-medium">Keine Dateien gefunden</p>
               <p class="text-sm">Dieser Ordner ist leer</p>
+              <div class="mt-5">
+                <button class="btn btn-primary btn-sm" (click)="createFileFromEmptyState()">
+                  Neue Datei erstellen
+                </button>
+              </div>
             }
           </div>
         </div>
@@ -243,5 +248,6 @@
   </ng-template>
 
   <move-or-copy-dialog></move-or-copy-dialog>
+  <app-image-editor-dialog></app-image-editor-dialog>
 
 </div>

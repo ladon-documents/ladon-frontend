@@ -1,0 +1,181 @@
+@if (isOpen) {
+  <div class="fixed inset-0 z-50 overflow-y-auto">
+    <div class="fixed inset-0 bg-black/60" (click)="closeDialog()"></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div class="relative bg-base-100 rounded-lg shadow-xl w-full max-w-7xl h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between p-4 border-b border-gray-500/40">
+          <h3 class="text-lg font-semibold">Bildbearbeitung</h3>
+          <button class="btn btn-ghost btn-square btn-sm" (click)="closeDialog()">
+            <ng-icon name="heroXMark"></ng-icon>
+          </button>
+        </div>
+
+        @if (error) {
+          <div class="alert alert-error m-4">
+            <span>{{ error }}</span>
+          </div>
+        }
+
+        <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[320px_1fr]">
+          <aside class="border-r border-gray-500/40 p-4 overflow-auto space-y-4">
+            <div class="grid grid-cols-2 gap-2">
+              <button class="btn btn-outline btn-sm" (click)="undo()" [disabled]="!canUndo">Undo</button>
+              <button class="btn btn-outline btn-sm" (click)="redo()" [disabled]="!canRedo">Redo</button>
+            </div>
+
+            <div class="flex gap-2">
+              <button class="btn btn-outline btn-sm flex-1" (click)="rotateLeft()">
+                <ng-icon name="heroArrowUturnLeft"></ng-icon>
+                Links
+              </button>
+              <button class="btn btn-outline btn-sm flex-1" (click)="rotateRight()">
+                <ng-icon name="heroArrowUturnRight"></ng-icon>
+                Rechts
+              </button>
+            </div>
+
+            <button class="btn btn-outline btn-sm w-full" [class.btn-info]="isCropMode" (click)="toggleCropMode()">
+              <ng-icon name="heroScissors"></ng-icon>
+              Crop {{ isCropMode ? 'aktiv' : 'starten' }}
+            </button>
+
+            @if (isCropMode) {
+              <p class="text-xs opacity-70">Mit der Maus auf dem Bild eine Auswahl ziehen.</p>
+            }
+
+            <div class="space-y-3">
+              <label class="text-sm font-medium block">Helligkeit: {{ brightness }}%</label>
+              <input
+                type="range"
+                min="0"
+                max="200"
+                [(ngModel)]="brightness"
+                (input)="onFilterPreview()"
+                (change)="onFilterCommit()"
+                class="range range-xs" />
+
+              <label class="text-sm font-medium block">Kontrast: {{ contrast }}%</label>
+              <input
+                type="range"
+                min="0"
+                max="200"
+                [(ngModel)]="contrast"
+                (input)="onFilterPreview()"
+                (change)="onFilterCommit()"
+                class="range range-xs" />
+
+              <label class="text-sm font-medium block">Sättigung: {{ saturate }}%</label>
+              <input
+                type="range"
+                min="0"
+                max="200"
+                [(ngModel)]="saturate"
+                (input)="onFilterPreview()"
+                (change)="onFilterCommit()"
+                class="range range-xs" />
+
+              <label class="text-sm font-medium block">Graustufen: {{ grayscale }}%</label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                [(ngModel)]="grayscale"
+                (input)="onFilterPreview()"
+                (change)="onFilterCommit()"
+                class="range range-xs" />
+
+              <label class="text-sm font-medium block">Sepia: {{ sepia }}%</label>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                [(ngModel)]="sepia"
+                (input)="onFilterPreview()"
+                (change)="onFilterCommit()"
+                class="range range-xs" />
+            </div>
+
+            <div class="space-y-2 pt-2 border-t border-gray-500/30">
+              <label class="label cursor-pointer justify-start gap-2">
+                <input
+                  type="checkbox"
+                  class="checkbox checkbox-sm"
+                  [(ngModel)]="compareMode"
+                  (change)="onCompareChange()" />
+                <span class="label-text">Vorher/Nachher</span>
+              </label>
+
+              @if (compareMode) {
+                <label class="text-sm font-medium block">Split: {{ comparePosition }}%</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  [(ngModel)]="comparePosition"
+                  (input)="onCompareChange()"
+                  class="range range-xs" />
+              }
+            </div>
+
+            <div class="space-y-2 pt-2 border-t border-gray-500/30">
+              <label class="text-sm font-medium block">Output-Format</label>
+              <select class="select select-bordered select-sm w-full" [(ngModel)]="outputFormat">
+                <option value="original">Original</option>
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+                <option value="webp">WebP</option>
+              </select>
+
+              @if (showQualityControl) {
+                <label class="text-sm font-medium block">Qualität: {{ quality }}%</label>
+                <input type="range" min="40" max="100" [(ngModel)]="quality" class="range range-xs" />
+              }
+            </div>
+
+            <div class="space-y-2 pt-2 border-t border-gray-500/30">
+              <label class="label cursor-pointer justify-start gap-2">
+                <input type="checkbox" class="checkbox checkbox-sm" [(ngModel)]="saveAsEnabled" />
+                <span class="label-text">Speichern unter</span>
+              </label>
+
+              @if (saveAsEnabled) {
+                <input
+                  class="input input-bordered input-sm w-full"
+                  placeholder="Dateiname"
+                  [(ngModel)]="saveAsFileName" />
+              }
+            </div>
+
+            <button class="btn btn-ghost btn-sm w-full" (click)="resetAdjustments()">
+              <ng-icon name="heroArrowPath"></ng-icon>
+              Zurücksetzen
+            </button>
+          </aside>
+
+          <main class="p-4 overflow-auto flex items-center justify-center bg-base-200/40">
+            @if (isLoading) {
+              <span class="loading loading-spinner loading-lg"></span>
+            } @else {
+              <canvas
+                #canvas
+                class="editor-canvas"
+                [class.crop-active]="isCropMode"
+                (mousedown)="onCanvasMouseDown($event)"
+                (mousemove)="onCanvasMouseMove($event)"
+                (mouseup)="onCanvasMouseUp()"
+                (mouseleave)="onCanvasMouseUp()"></canvas>
+            }
+          </main>
+        </div>
+
+        <div class="p-4 border-t border-gray-500/40 flex justify-end gap-2">
+          <button class="btn btn-ghost" (click)="closeDialog()" [disabled]="isSaving">Abbrechen</button>
+          <button class="btn btn-primary" (click)="save()" [disabled]="isSaving || isLoading">
+            <ng-icon name="heroCheck"></ng-icon>
+            {{ isSaving ? 'Speichert...' : (saveAsEnabled ? 'Speichern unter' : 'Speichern') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,5 +1,13 @@
 import { DocumentModel } from '../../../api';
 import { PaginationState, SortConfig } from '../../store/filemanager.store';
+import {
+  buildTargetPath as utilityBuildTargetPath,
+  encodePath as utilityEncodePath,
+  getFileExtension,
+  isAudioDocument,
+  isImageDocument,
+  isPdfDocument as isUtilityPdfDocument,
+} from '@utility';
 
 const storageKey = `mf-ladon-docmanager:view`;
 
@@ -34,10 +42,7 @@ export const encodeRFC5987ValueChars = (url: string) => {
 };
 
 export const encodePath = (path: string) => {
-  return path
-    .split('/')
-    .map((v: string) => encodeURIComponent(v))
-    .join('/');
+  return utilityEncodePath(path);
 };
 
 export const getBucketNameFromUrlPath = () => {
@@ -62,12 +67,9 @@ export const isFolder = (document: DocumentModel) => {
   return document.path?.endsWith('/');
 };
 
-export const  buildTargetPath = (basePath: string, documentKey: string): string  => {
-  if (basePath === '') {
-    return documentKey;
-  }
-  return basePath.endsWith('/') ? `${basePath}${documentKey}` : `${basePath}/${documentKey}`;
-}
+export const buildTargetPath = (basePath: string, documentKey: string): string => {
+  return utilityBuildTargetPath(basePath, documentKey);
+};
 
 export const isFile = (document: DocumentModel) => {
   return !document.path?.endsWith('/');
@@ -188,8 +190,8 @@ const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): Docu
         bValue = b.size || 0;
         break;
       case 'type':
-        aValue = a.isFolder ? 'folder' : (a.key?.split('.').pop() || '').toLowerCase();
-        bValue = b.isFolder ? 'folder' : (b.key?.split('.').pop() || '').toLowerCase();
+        aValue = a.isFolder ? 'folder' : getFileExtension(a.key || a.path || a.name || '') || '';
+        bValue = b.isFolder ? 'folder' : getFileExtension(b.key || b.path || b.name || '') || '';
         break;
       case 'last-modified':
         aValue = new Date(a['last-modified'] || 0).getTime();
@@ -231,33 +233,15 @@ const applyFiltersAndPagination = (
 };
 
 const isPdf = (document: DocumentModel | null): boolean => {
-  return !!(
-    document &&
-    !document.isFolder &&
-    (document['content-type'] === 'application/pdf' || document.path?.endsWith('.pdf'))
-  );
+  return isUtilityPdfDocument(document);
 };
 
 const isAudio = (document: DocumentModel | null): boolean => {
-  return !!(
-    document &&
-    !document.isFolder &&
-    (document['content-type'] === 'audio/mpeg' || document.path?.endsWith('.mp3'))
-  );
+  return isAudioDocument(document);
 };
 
 const isImage = (document: DocumentModel | null): boolean => {
-  if (!document || document.isFolder) {
-    return false;
-  }
-
-  if (document['content-type']?.startsWith('image/')) {
-    return true;
-  }
-
-  const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg'];
-  const extension = document.path?.split('.').pop()?.toLowerCase();
-  return !!extension && imageExtensions.includes(extension);
+  return isImageDocument(document);
 };
 
 export const filemanagerHelper = {

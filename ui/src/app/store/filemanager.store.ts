@@ -7,7 +7,8 @@ import { FilemanagerService } from '../filemanager/filemanager.service';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { BreadcrumbStore } from './breadcrumb.store';
-import { buildTargetPath, filemanagerHelper } from '../filemanager/helper/helper';
+import { filemanagerHelper } from '../filemanager/helper/helper';
+import { buildTargetPath } from '@utility';
 import { ToastService } from '../shared/services/toast.service';
 import { ConfirmationDialogService } from '../shared/services/confirmation-dialog.service';
 

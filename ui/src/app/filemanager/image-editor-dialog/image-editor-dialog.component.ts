@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DocumentModel } from '../../../api';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { firstValueFrom } from 'rxjs';
+import { ensureFileExtension, getFileExtension } from '@utility';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroArrowPath,
@@ -308,7 +309,7 @@ export class ImageEditorDialogComponent implements AfterViewInit {
 
     const sanitizedFileName = rawFileName.replace(/^\/+/, '');
     const extension = this.getExtensionForMimeType(mimeType);
-    const fileName = this.ensureFileExtension(sanitizedFileName, extension);
+    const fileName = ensureFileExtension(sanitizedFileName, extension);
 
     const currentKey = this.document.key || this.document.path || '';
     const lastSlash = currentKey.lastIndexOf('/');
@@ -346,7 +347,7 @@ export class ImageEditorDialogComponent implements AfterViewInit {
     }
 
     const key = this.document?.key || this.document?.path || '';
-    const extension = key.split('.').pop()?.toLowerCase();
+    const extension = getFileExtension(key);
 
     switch (extension) {
       case 'jpg':
@@ -376,18 +377,6 @@ export class ImageEditorDialogComponent implements AfterViewInit {
       default:
         return 'png';
     }
-  }
-
-  private ensureFileExtension(fileName: string, extension: string): string {
-    if (!extension) {
-      return fileName;
-    }
-
-    if (fileName.toLowerCase().endsWith(`.${extension}`)) {
-      return fileName;
-    }
-
-    return `${fileName}.${extension}`;
   }
 
   private renderPreview(): void {

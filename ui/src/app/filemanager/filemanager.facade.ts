@@ -20,6 +20,7 @@ export class FilemanagerFacade {
   readonly error = this.#filemanagerStore.error;
   readonly statistics = this.#filemanagerStore.statistics;
   readonly selectedDocument = this.#filemanagerStore.selectedDocument;
+  readonly currentFolder = this.#filemanagerStore.currentFolder;
   readonly viewMode = this.#filemanagerStore.viewMode;
   readonly pagination = this.#filemanagerStore.pagination;
 
@@ -90,6 +91,22 @@ export class FilemanagerFacade {
   reloadBucket() {
     if (this.selectedBucket() === undefined) return;
     this.#filemanagerStore.loadBucket(this.selectedBucket());
+  }
+
+  reloadCurrentLocation() {
+    const currentFolder = this.currentFolder();
+    if (currentFolder) {
+      this.#filemanagerStore.loadDocumentList({
+        document: currentFolder,
+        updateBreadcrumb: false,
+      });
+      return;
+    }
+
+    const currentBucket = this.selectedBucket();
+    if (currentBucket) {
+      this.#filemanagerStore.loadBucket(currentBucket);
+    }
   }
 
   loadStats() {

@@ -29,6 +29,7 @@
     "@ngrx/signals": "^19.1.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
+    "marked": "^17.0.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -39,6 +40,7 @@
     "@angular/compiler-cli": "^19.2.8",
     "@types/jasmine": "~5.1.0",
     "@types/lodash": "^4.17.14",
+    "@types/marked": "^5.0.2",
     "autoprefixer": "^10.4.20",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",

@@ -183,7 +183,7 @@ export class FilemanagerContentFacade {
       const bucket = this.filemanagerFacade.selectedBucket();
       const fileKey = currentPath ? `${currentPath}/${file.name}` : file.name;
 
-      await this.uploadWithProgress(bucket as string, file.name, file, uploadStatus);
+      await this.uploadWithProgress(bucket as string, fileKey, file, uploadStatus);
 
       uploadStatus.status = 'success';
       uploadStatus.message = 'Upload erfolgreich abgeschlossen';
@@ -256,10 +256,10 @@ export class FilemanagerContentFacade {
   }
 
   private getCurrentPath(): string {
-    return ''; // Placeholder
+    return this.filemanagerFacade.currentFolder()?.key || '';
   }
 
   private refreshFileList(): void {
-    this.filemanagerFacade.reloadBucket();
+    this.filemanagerFacade.reloadCurrentLocation();
   }
 }

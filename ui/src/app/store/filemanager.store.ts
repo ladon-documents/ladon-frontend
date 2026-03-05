@@ -32,6 +32,7 @@ export interface FilemanagerState {
   allDocuments: DocumentModel[];
   filteredDocuments: DocumentModel[];
   statistics: BucketStatsExtended | null;
+  currentFolder: DocumentModel | null;
   selectedDocument: DocumentModel | null;
   isLoading: boolean;
   error: string | null;
@@ -47,6 +48,7 @@ const initialState: FilemanagerState = {
   allDocuments: [],
   filteredDocuments: [],
   statistics: null,
+  currentFolder: null,
   selectedDocument: null,
   selectedBucket: null,
   isLoading: false,
@@ -79,6 +81,36 @@ export const FilemanagerStore = signalStore(
       toastService = inject(ToastService),
       confirmationDialog = inject(ConfirmationDialogService),
     ) => {
+      const reloadCurrentList = () => {
+        const currentFolder = store.currentFolder();
+        if (currentFolder?.bucket && currentFolder.key) {
+          return filemanagerService.loadDocumentList(currentFolder);
+        }
+
+        const bucket = store.selectedBucket();
+        if (bucket) {
+          return filemanagerService.loadBucket(bucket);
+        }
+
+        return EMPTY;
+      };
+
+      const resolveLoadDocumentListInput = (
+        input: DocumentModel | { document: DocumentModel; updateBreadcrumb?: boolean },
+      ) => {
+        if ('document' in input) {
+          return {
+            document: input.document,
+            updateBreadcrumb: input.updateBreadcrumb ?? true,
+          };
+        }
+
+        return {
+          document: input,
+          updateBreadcrumb: true,
+        };
+      };
+
       const methods = {
         showRoot() {
           methods.loadBucket(store.selectedBucket());
@@ -244,6 +276,7 @@ export const FilemanagerStore = signalStore(
             switchMap((bucket) =>
               filemanagerService.loadBucket(bucket, 1000).pipe(
                 tap((documents) => {
+                  breadcrumbStore.reset();
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
                       documents,
@@ -258,6 +291,7 @@ export const FilemanagerStore = signalStore(
                     selectedBucket: bucket,
                     isLoading: false,
                     allDocuments: documents,
+                    currentFolder: null,
                     filteredDocuments,
                     selectedDocument: documents[0],
                     documents: paginatedDocuments,
@@ -276,7 +310,7 @@ export const FilemanagerStore = signalStore(
             ),
           ),
         ),
-        loadDocumentList: rxMethod<any>(
+        loadDocumentList: rxMethod<DocumentModel | { document: DocumentModel; updateBreadcrumb?: boolean }>(
           pipe(
             tap(() => {
               patchState(store, (state) => ({
@@ -285,10 +319,11 @@ export const FilemanagerStore = signalStore(
                 isLoading: true,
               }));
             }),
-            switchMap((document) =>
-              filemanagerService.loadDocumentList(document).pipe(
+            switchMap((input) => {
+              const { document, updateBreadcrumb } = resolveLoadDocumentListInput(input);
+              return filemanagerService.loadDocumentList(document).pipe(
                 tap((documents) => {
-                  if (document) {
+                  if (updateBreadcrumb && document) {
                     breadcrumbStore.addPath(document);
                   }
                   const { filteredDocuments, paginatedDocuments, paginationState } =
@@ -304,6 +339,7 @@ export const FilemanagerStore = signalStore(
                     ...state,
                     isLoading: false,
                     allDocuments: documents,
+                    currentFolder: document,
                     filteredDocuments,
                     selectedDocument: documents[0],
                     documents: paginatedDocuments,
@@ -318,8 +354,8 @@ export const FilemanagerStore = signalStore(
                   }));
                   throw error;
                 }),
-              ),
-            ),
+              );
+            }),
           ),
         ),
         createFolder: rxMethod<{ folderName: string; currentPath?: string }>(
@@ -340,18 +376,7 @@ export const FilemanagerStore = signalStore(
                 ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${folderName}/`
                 : `${folderName}/`;
               return filemanagerService.createNewFolder(bucket, folderPath).pipe(
-                switchMap(() => {
-                  if (currentPath) {
-                    const currentDocument: DocumentModel = {
-                      path: currentPath,
-                      bucket: store.selectedBucket() ?? undefined,
-                      key: currentPath,
-                    };
-                    return filemanagerService.loadDocumentList(currentDocument);
-                  } else {
-                    return filemanagerService.loadBucket(bucket);
-                  }
-                }),
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
@@ -402,18 +427,7 @@ export const FilemanagerStore = signalStore(
                 ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${fileName}`
                 : `${fileName}`;
               return filemanagerService.createNewFile(bucket, folderPath, null).pipe(
-                switchMap(() => {
-                  if (currentPath) {
-                    const currentDocument: DocumentModel = {
-                      path: currentPath,
-                      bucket: store.selectedBucket() ?? undefined,
-                      key: currentPath,
-                    };
-                    return filemanagerService.loadDocumentList(currentDocument);
-                  } else {
-                    return filemanagerService.loadBucket(bucket);
-                  }
-                }),
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
@@ -464,18 +478,7 @@ export const FilemanagerStore = signalStore(
                 ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${folderName}/`
                 : `${folderName}/`;
               return filemanagerService.createNewFile(bucket, folderPath, null ).pipe(
-                switchMap(() => {
-                  if (currentPath) {
-                    const currentDocument: DocumentModel = {
-                      path: currentPath,
-                      bucket: store.selectedBucket() ?? undefined,
-                      key: currentPath,
-                    };
-                    return filemanagerService.loadDocumentList(currentDocument);
-                  } else {
-                    return filemanagerService.loadBucket(bucket);
-                  }
-                }),
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
@@ -532,19 +535,7 @@ export const FilemanagerStore = signalStore(
               patchState(store, { isLoading: true, error: null });
 
               return filemanagerService.deleteDocument(document).pipe(
-                switchMap(() => {
-                  const bucket = store.selectedBucket();
-                  const selectedDoc = store.selectedDocument();
-
-                  if (selectedDoc && selectedDoc.path && selectedDoc.path !== document.path) {
-
-                    return filemanagerService.loadDocumentList(selectedDoc);
-                  } else if (bucket) {
-                    return filemanagerService.loadBucket(bucket);
-                  }
-
-                  return EMPTY;
-                }),
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
@@ -600,13 +591,7 @@ export const FilemanagerStore = signalStore(
               const targetKey = buildTargetPath(targetPath, document.key);
 
               return filemanagerService.moveDocument(document, targetBucket, targetKey).pipe(
-                switchMap(() => {
-                  const _documentModel = {
-                    bucket: targetBucket,
-                    key: targetPath,
-                  };
-                  return filemanagerService.loadDocumentList(_documentModel);
-                }),
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
@@ -653,14 +638,7 @@ export const FilemanagerStore = signalStore(
               const targetKey = buildTargetPath(targetPath, document.key);
 
               return filemanagerService.copyDocument(document, targetBucket, targetKey).pipe(
-                switchMap(() => {
-                  const _documentModel = {
-                    bucket: targetBucket,
-                    key: targetPath,
-                  };
-                  return filemanagerService.loadDocumentList(_documentModel);
-
-                }),
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(

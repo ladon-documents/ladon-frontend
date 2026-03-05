@@ -18,6 +18,7 @@ wc_directories=(
   "clipboard"
   "editor"
   "pdfviewer"
+  "audioplayer"
 )
 
 log_message() {

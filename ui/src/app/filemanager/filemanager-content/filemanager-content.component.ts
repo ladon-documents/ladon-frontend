@@ -15,8 +15,6 @@ import {
   CdkDrag,
   CdkDragDrop,
   CdkDropList,
-  copyArrayItem,
-  moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -53,13 +51,23 @@ import { FilemanagerContentFacade } from './filemanager-content.facade';
 import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
 import { ClipboardService } from '../../shared/components/clipboard/clipboard.service';
 import { FileEditorDialogComponent } from '../file-editor-dialog/file-editor-dialog.component';
+import { MonacoEditorService } from '../../editor/editor.service';
 import { FolderComponent } from '@ladon/shared';
 import { SelectionStore } from '../../store/selection.store';
 import { FavoritesStore } from '../../store/favorites.store';
 import { FilemanagerContextMenuService } from '../filemanager-context-menu.service';
 import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-dialog/move-or-copy-dialog.component';
-import { ImageEditorDialogComponent } from '../image-editor-dialog/image-editor-dialog.component';
 import { InputDialogService } from '../../shared/services/input-dialog.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
+import { isWebComponentRegistered } from '@utility';
+
+interface ImageEditorSaveEventDetail {
+  blob: Blob;
+  fileName: string;
+  mimeType: string;
+  saveAs: boolean;
+}
 
 
 @Component({
@@ -76,7 +84,7 @@ import { InputDialogService } from '../../shared/services/input-dialog.service';
     CdkDropList,
     FolderComponent,
     MoveOrCopyDialogComponent,
-    ImageEditorDialogComponent,
+    FileEditorDialogComponent,
   ],
   providers: [
     provideIcons({
@@ -106,7 +114,6 @@ import { InputDialogService } from '../../shared/services/input-dialog.service';
 export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChildren(CdkDropList) dropLists!: QueryList<CdkDropList>;
   @ViewChild(MoveOrCopyDialogComponent) moveOrCopyDialogVC!: MoveOrCopyDialogComponent;
-  @ViewChild(ImageEditorDialogComponent) imageEditorDialogVC!: ImageEditorDialogComponent;
 
   public dateFormat = 'dd.MM.yyyy';
   readonly #facade = inject(FilemanagerFacade);
@@ -119,9 +126,12 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   readonly favoritesStore = inject(FavoritesStore);
   readonly clipboardService = inject(ClipboardService);
   readonly inputDialogService = inject(InputDialogService);
+  readonly monacoEditorService = inject(MonacoEditorService);
+  readonly isEditorOpen = toSignal(this.monacoEditorService.editorOpen$, { initialValue: false });
 
   protected readonly clipboardList = this.clipboardService.clipboardList;
   documents: Signal<DocumentModel[]> = this.#facade.documents;
+  readonly selectedDocument = this.#facade.selectedDocument;
 
   #currentBucket: string | null = null;
   #subfolder: string | null = null;
@@ -130,7 +140,13 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   readonly searchTerm = this.#facade.searchTerm;
   readonly sortConfig = this.#facade.sortConfig;
 
-  imageUrl: string | null = null;
+  readonly isImageEditorOpen = signal(false);
+  imageEditorSourceUrl: string | null = null;
+  imageEditorFileName = '';
+  imageEditorMimeType = 'image/png';
+  private imageEditorDocument: DocumentModel | null = null;
+  private readonly imageEditorTagName = 'ladon-image-editor';
+  private readonly audioPlayerTagName = 'ladon-audioplayer';
 
   isDragOver = signal(false);
   allowedFileTypes: string[] = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.png', '.gif', 'yaml', 'yml'];
@@ -177,9 +193,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   }
 
   ngOnDestroy(): void {
-    if (this.imageUrl) {
-      URL.revokeObjectURL(this.imageUrl);
-    }
+    this.revokeImageEditorSourceUrl();
   }
 
   copy(file: DocumentModel) {
@@ -274,8 +288,25 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   onContextMenu(event: MouseEvent, document: DocumentModel) {
     event.preventDefault();
     event.stopPropagation();
+
+    const imageEditorAction =
+      filemanagerHelper.isImage(document) && this.isImageEditorPluginInstalled()
+        ? () => {
+            void this.openImageEditor(document);
+          }
+        : undefined;
+    const openAudioAction =
+      filemanagerHelper.isAudio(document) && this.isAudioPlayerPluginInstalled()
+        ? () => {
+            this.openAudioPlayerFromContextMenu(document);
+          }
+        : undefined;
+
     this.filemanagerContextMenuService.onContextMenu(event, document, {
-      editImage: () => this.openImageEditor(document),
+      editImage: imageEditorAction,
+      openEditor: this.monacoEditorService.isEditableFile(document.key) ? () => this.openTextEditor(document) : undefined,
+      openPdf: filemanagerHelper.isPdf(document) ? () => this.openPdfFromContextMenu(document) : undefined,
+      openAudio: openAudioAction,
     });
   }
 
@@ -329,8 +360,60 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
     }
   }
 
-  private openImageEditor(document: DocumentModel): void {
-    this.imageEditorDialogVC.openDialog(document);
+  private async openImageEditor(document: DocumentModel): Promise<void> {
+    try {
+      const response = await firstValueFrom(this.#facade.getDocument(document));
+      const blob = response instanceof Blob ? response : new Blob([response]);
+
+      this.revokeImageEditorSourceUrl();
+      this.imageEditorSourceUrl = URL.createObjectURL(blob);
+      this.imageEditorFileName = this.extractFileName(document);
+      this.imageEditorMimeType = document['content-type'] || blob.type || 'image/png';
+      this.imageEditorDocument = document;
+      this.isImageEditorOpen.set(true);
+    } catch (error) {
+      this.filemanagerContentFacade.showErrorToast(`Bild konnte nicht geladen werden: ${String(error)}`);
+    }
+  }
+
+  closeImageEditor(): void {
+    this.isImageEditorOpen.set(false);
+    this.imageEditorDocument = null;
+    this.imageEditorFileName = '';
+    this.imageEditorMimeType = 'image/png';
+    this.revokeImageEditorSourceUrl();
+  }
+
+  async onImageEditorSave(event: Event): Promise<void> {
+    const detail = (event as CustomEvent<ImageEditorSaveEventDetail>).detail;
+    if (!detail?.blob || !this.imageEditorDocument) {
+      return;
+    }
+
+    const targetDocument = this.buildTargetDocumentForImageSave(this.imageEditorDocument, detail.fileName);
+
+    try {
+      await firstValueFrom(this.#facade.saveDocument(targetDocument, detail.blob));
+      this.#facade.reloadCurrentLocation();
+      this.closeImageEditor();
+    } catch (error) {
+      this.filemanagerContentFacade.showErrorToast(`Bild konnte nicht gespeichert werden: ${String(error)}`);
+    }
+  }
+
+  private openTextEditor(document: DocumentModel): void {
+    this.#facade.setSelectedDocument(document);
+    this.monacoEditorService.open();
+  }
+
+  private async openPdfFromContextMenu(document: DocumentModel): Promise<void> {
+    this.#facade.setSelectedDocument(document);
+    await this.pdfViewerFacade.navigateToPdfViewer(document);
+  }
+
+  private openAudioPlayerFromContextMenu(document: DocumentModel): void {
+    this.#facade.setSelectedDocument(document);
+    this.openPreviewSidebar();
   }
 
   async createFileFromEmptyState(): Promise<void> {
@@ -357,5 +440,56 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
     } finally {
       this.inputDialogService.setProcessing(false);
     }
+  }
+
+  private buildTargetDocumentForImageSave(document: DocumentModel, fileName: string): DocumentModel {
+    const normalizedFileName = fileName.trim().replace(/^\/+/, '');
+    if (!normalizedFileName) {
+      return document;
+    }
+
+    const currentKey = document.key || document.path || '';
+    const lastSlash = currentKey.lastIndexOf('/');
+    const directory = lastSlash >= 0 ? currentKey.substring(0, lastSlash + 1) : '';
+    const targetKey = `${directory}${normalizedFileName}`;
+
+    return {
+      ...document,
+      key: targetKey,
+      path: targetKey,
+      name: normalizedFileName,
+      'content-type': document['content-type'],
+    };
+  }
+
+  private extractFileName(document: DocumentModel): string {
+    const key = document.key || document.path || document.name || 'edited-image';
+    const lastSlash = key.lastIndexOf('/');
+    return lastSlash >= 0 ? key.substring(lastSlash + 1) : key;
+  }
+
+  private revokeImageEditorSourceUrl(): void {
+    if (!this.imageEditorSourceUrl) {
+      return;
+    }
+    URL.revokeObjectURL(this.imageEditorSourceUrl);
+    this.imageEditorSourceUrl = null;
+  }
+
+  private isImageEditorPluginInstalled(): boolean {
+    return isWebComponentRegistered(this.imageEditorTagName);
+  }
+
+  private isAudioPlayerPluginInstalled(): boolean {
+    return isWebComponentRegistered(this.audioPlayerTagName);
+  }
+
+  private openPreviewSidebar(): void {
+    if (this.sidebarService.mode() !== 'preview') {
+      this.sidebarService.togglePreviewMode();
+      return;
+    }
+
+    this.sidebarService.openSidebar();
   }
 }

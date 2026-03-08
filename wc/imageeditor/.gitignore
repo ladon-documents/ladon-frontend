@@ -2,16 +2,12 @@
 
 # Compiled output
 /dist
-/**/dist
 /tmp
 /out-tsc
 /bazel-out
-*.tgz
-**/*.tgz
 
 # Node
 /node_modules
-/**/node_modules
 npm-debug.log
 yarn-error.log
 
@@ -25,7 +21,6 @@ yarn-error.log
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -45,10 +40,3 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-#release
-release
-
-.junie/
-.aiassistant
-.agents

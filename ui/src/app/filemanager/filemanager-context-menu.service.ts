@@ -17,7 +17,11 @@ export class FilemanagerContextMenuService {
 
   constructor() {}
 
-  onContextMenu(event: MouseEvent, document: DocumentModel, actions?: { editImage?: () => void }) {
+  onContextMenu(
+    event: MouseEvent,
+    document: DocumentModel,
+    actions?: { editImage?: () => void; openEditor?: () => void; openPdf?: () => void; openAudio?: () => void },
+  ) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -42,6 +46,33 @@ export class FilemanagerContextMenuService {
         icon: 'heroLink',
         action: () => this.copyLink(document),
       },
+      ...(actions?.openEditor
+        ? [
+            {
+              label: 'Im Editor öffnen',
+              icon: 'heroPencilSquare',
+              action: actions.openEditor,
+            },
+          ]
+        : []),
+      ...(actions?.openPdf
+        ? [
+            {
+              label: 'PDF anzeigen',
+              icon: 'heroEye',
+              action: actions.openPdf,
+            },
+          ]
+        : []),
+      ...(actions?.openAudio
+        ? [
+            {
+              label: 'Audio abspielen',
+              icon: 'heroEye',
+              action: actions.openAudio,
+            },
+          ]
+        : []),
       ...(filemanagerHelper.isImage(document) && actions?.editImage
         ? [
             {

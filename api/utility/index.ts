@@ -5,6 +5,13 @@ import { filenamePipeTransform } from './filename.pipe';
 import { Initalizer } from './initalizer';
 import { buildTargetPath, encodePath, ensureFileExtension } from './path';
 import { getFileExtension, isAudioDocument, isImageDocument, isPdfDocument } from './document-type';
+import { isWebComponentRegistered } from './webcomponent';
+export type {
+  WebComponentLoaderOptions,
+  WebComponentLocalConfig,
+  WebComponentServerConfig,
+  WebComponentSource,
+} from './webcomponent-loader';
 
 export {
   filesizePipeTransform,
@@ -20,6 +27,7 @@ export {
   isPdfDocument,
   isAudioDocument,
   isImageDocument,
+  isWebComponentRegistered,
 };
 
 export const utility = {
@@ -36,4 +44,5 @@ export const utility = {
   isPdfDocument,
   isAudioDocument,
   isImageDocument,
+  isWebComponentRegistered,
 };

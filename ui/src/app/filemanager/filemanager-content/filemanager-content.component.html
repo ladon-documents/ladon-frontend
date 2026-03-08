@@ -1,6 +1,5 @@
 <div class="h-full flex flex-col">
 
-  <!-- File Upload Overlay (nur für File-Drag) -->
   @if (isDragOver()) {
     <div
                                                                                         class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center pointer-events-none">
@@ -19,14 +18,35 @@
     </div>
   }
 
-  <div class="flex-1 min-h-0 overflow-y-auto p-4"
-       appFileUpload
-       [acceptedTypes]="allowedFileTypes"
-       [maxFileSize]="maxFileSize"
-       [allowMultiple]="true"
-       (filesDropped)="onFilesDropped($event)"
-       (filesHovered)="onFilesHovered($event)"
-       (filesRejected)="onFilesRejected($event)">
+  @if (isEditorOpen()) {
+    <div class="flex-1 min-h-0 p-4">
+      <file-editor-dialog
+        [displayMode]="'inline'"
+        [config]="{
+          readOnly: false,
+          fileName: selectedDocument()?.key || selectedDocument()?.name || '',
+        }">
+      </file-editor-dialog>
+    </div>
+  } @else if (isImageEditorOpen()) {
+    <div class="flex-1 min-h-0 p-4">
+      <ladon-image-editor
+        [attr.image-src]="imageEditorSourceUrl"
+        [attr.file-name]="imageEditorFileName"
+        [attr.mime-type]="imageEditorMimeType"
+        (editor-close)="closeImageEditor()"
+        (editor-save)="onImageEditorSave($event)">
+      </ladon-image-editor>
+    </div>
+  } @else {
+    <div class="flex-1 min-h-0 overflow-y-auto p-4"
+         appFileUpload
+         [acceptedTypes]="allowedFileTypes"
+         [maxFileSize]="maxFileSize"
+         [allowMultiple]="true"
+         (filesDropped)="onFilesDropped($event)"
+         (filesHovered)="onFilesHovered($event)"
+         (filesRejected)="onFilesRejected($event)">
 
     @if (viewMode() === "card") {
       <ng-container [ngTemplateOutlet]="gridView"></ng-container>
@@ -65,13 +85,13 @@
     <div class="flex-shrink-0 border-t border-gray-500/40 px-4">
       <filemanager-pagination></filemanager-pagination>
     </div>
-  </div>
+    </div>
+  }
 
   <ng-template #tableView>
     @if (viewMode() === "table") {
       <div class="overflow-x-auto">
         <table class="table table-zebra w-full">
-          <!-- ... existing table header ... -->
           <thead>
           <tr>
             <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('name')">
@@ -248,6 +268,5 @@
   </ng-template>
 
   <move-or-copy-dialog></move-or-copy-dialog>
-  <app-image-editor-dialog></app-image-editor-dialog>
 
 </div>

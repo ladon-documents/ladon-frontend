@@ -42,6 +42,7 @@ export class FileEditorDialogComponent implements OnDestroy {
     readOnly: boolean;
     fileName: string;
   }>();
+  displayMode = input<'modal' | 'inline'>('modal');
 
   @Output() closeEvent = new EventEmitter<void>();
   @Output() saveEvent = new EventEmitter<string>();

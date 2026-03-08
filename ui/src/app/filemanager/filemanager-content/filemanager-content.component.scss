@@ -115,6 +115,12 @@
   animation: spin 1s linear infinite;
 }
 
+ladon-image-editor {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
 // Responsive Anpassungen
 @media (max-width: 640px) {
   .toast {

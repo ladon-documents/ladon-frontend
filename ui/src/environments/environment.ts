@@ -1,4 +1,9 @@
 import packageJson from '../../../package.json';
+import type { WebComponentLoaderOptions } from '@utility';
+
+const webComponents: WebComponentLoaderOptions = {
+  source: 'server',
+};
 
 export const environment = {
   version: packageJson.version,
@@ -13,6 +18,7 @@ export const environment = {
     fileLimit: 167777216,
     acceptedFiles: ['jpg', 'jpeg', 'png', 'pdf'],
   },
+  webComponents,
   storage: 'sessionStorage',
   production: true,
 };

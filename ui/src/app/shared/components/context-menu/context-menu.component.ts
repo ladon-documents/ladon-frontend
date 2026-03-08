@@ -10,6 +10,7 @@ import {
   heroInformationCircle,
   heroLink,
   heroStar,
+  heroEye,
 } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -25,6 +26,7 @@ import {
       heroInformationCircle,
       heroLink,
       heroStar,
+      heroEye,
     }),
   ],
   template: `

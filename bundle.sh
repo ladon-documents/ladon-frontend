@@ -18,6 +18,8 @@ wc_directories=(
   "clipboard"
   "editor"
   "pdfviewer"
+  "audioplayer"
+  "imageeditor"
 )
 
 log_message() {

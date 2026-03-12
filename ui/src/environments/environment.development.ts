@@ -1,4 +1,13 @@
 import packageJson from '../../../package.json';
+import type { WebComponentLoaderOptions } from '@utility';
+
+const webComponents: WebComponentLoaderOptions = {
+  source: 'local',
+  local: {
+    basePath: '/public/dev-wc',
+    manifestPath: '/public/dev-wc/manifest.json',
+  },
+};
 
 export const environment = {
   version: packageJson.version,
@@ -13,6 +22,7 @@ export const environment = {
     fileLimit: 167777216,
     acceptedFiles: ['jpg', 'jpeg', 'png', 'pdf'],
   },
+  webComponents,
   storage: 'sessionStorage',
   production: false,
 };

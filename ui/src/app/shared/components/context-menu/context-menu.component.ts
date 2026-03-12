@@ -10,6 +10,7 @@ import {
   heroInformationCircle,
   heroLink,
   heroStar,
+  heroEye,
 } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -25,6 +26,7 @@ import {
       heroInformationCircle,
       heroLink,
       heroStar,
+      heroEye,
     }),
   ],
   template: `
@@ -69,7 +71,6 @@ export class ContextMenuComponent {
 
   @HostListener('document:contextmenu')
   onDocumentContextMenu() {
-    // Don't hide on contextmenu event itself, only on regular clicks
     return true;
   }
 

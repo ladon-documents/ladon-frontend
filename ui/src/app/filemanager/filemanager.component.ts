@@ -25,11 +25,13 @@ import {
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
 import { filemanagerRoutes } from './filemanager.routes';
 import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
-import { BucketUiItemModel } from '@ladon/api';
+import { BucketUiItemModel } from '../../api';
+import { CreateNewFileComponent } from './create-new-file/create-new-file.component';
 
 @Component({
   standalone: true,
@@ -39,9 +41,11 @@ import { BucketUiItemModel } from '@ladon/api';
     RouterModule,
     NgIconComponent,
     BreadcrumbComponent,
+    FileUploaderComponent,
     CreateFolderComponent,
     SidebarComponent,
     SearchModalComponent,
+    CreateNewFileComponent,
   ],
   providers: [
     provideNgIconsConfig({
@@ -64,7 +68,7 @@ import { BucketUiItemModel } from '@ladon/api';
       heroDocumentDuplicate,
       heroClock,
       heroCalendarDays,
-      heroChevronUp
+      heroChevronUp,
     }),
     FilesizePipe,
   ],
@@ -151,7 +155,6 @@ export class FilemanagerComponent implements OnInit {
       input.value = '';
     }
   }
-
 
   openSearchModal() {
     this.isSearchModalOpen.set(true);

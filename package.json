@@ -10,6 +10,7 @@
     "build:ui": "npm  --prefix ./ui run build",
     "build:cpliboard": "npm  --prefix ./wc/clipboard run build",
     "build:pdfviewer": "npm  --prefix ./wc/pdfviewer run build",
+    "sync:wc:local": "node ./scripts/sync-local-webcomponents.mjs",
     "serve:ui": "npm  --prefix ./ui run start",
     "build:all": "npm run build:api && npm run build:globals && npm run build:styles && npm run build:ui",
     "release": "./bundle.sh"

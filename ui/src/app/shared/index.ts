@@ -9,3 +9,4 @@ export * from './components/pill/pill.component';
 export * from './components/dialog/dialog.component';
 export * from './components/uploads/uploads.component';
 export * from './components/calendar/calendar.component';
+export * from './components/markdown-viewer/markdown-viewer.component';

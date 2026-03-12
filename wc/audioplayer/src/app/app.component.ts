@@ -21,7 +21,7 @@ import {
   heroBackward,
   heroForward
 } from '@ng-icons/heroicons/outline';
-import {formatFileSize} from "../../../../api/utility/filesize.pipe";
+import { formatFileSize } from '../../../../api/utility';
 
 @Component({
   selector: 'ladon-audio-player',

@@ -3,7 +3,6 @@ import { FilemanagerComponent } from './filemanager.component';
 import { FilemanagerContentComponent } from './filemanager-content/filemanager-content.component';
 import { FilemanagerBucketResolver, FilemanagerFolderResolver } from './filemanager-bucket.resolver';
 import { FilemanagerDynamicRedirectResolver } from './filemanager-dynamic-redirect.resolver';
-import { FileEditorDialogComponent } from './file-editor-dialog/file-editor-dialog.component';
 
 export const filemanagerRoutes: Routes = [
   {

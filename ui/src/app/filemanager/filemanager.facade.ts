@@ -20,6 +20,7 @@ export class FilemanagerFacade {
   readonly error = this.#filemanagerStore.error;
   readonly statistics = this.#filemanagerStore.statistics;
   readonly selectedDocument = this.#filemanagerStore.selectedDocument;
+  readonly currentFolder = this.#filemanagerStore.currentFolder;
   readonly viewMode = this.#filemanagerStore.viewMode;
   readonly pagination = this.#filemanagerStore.pagination;
 
@@ -92,6 +93,22 @@ export class FilemanagerFacade {
     this.#filemanagerStore.loadBucket(this.selectedBucket());
   }
 
+  reloadCurrentLocation() {
+    const currentFolder = this.currentFolder();
+    if (currentFolder) {
+      this.#filemanagerStore.loadDocumentList({
+        document: currentFolder,
+        updateBreadcrumb: false,
+      });
+      return;
+    }
+
+    const currentBucket = this.selectedBucket();
+    if (currentBucket) {
+      this.#filemanagerStore.loadBucket(currentBucket);
+    }
+  }
+
   loadStats() {
     this.#filemanagerStore.loadStats(this.selectedBucket());
   }
@@ -124,7 +141,7 @@ export class FilemanagerFacade {
 
   createEmptyFile(fileName: string) {
     const currentPath = this.getCurrentPath();
-    //  this.#filemanagerStore.createNewFile({ fileName, currentPath });
+    this.#filemanagerStore.createFile({ fileName, currentPath });
   }
 
   createFolder(folderName: string) {
@@ -144,8 +161,24 @@ export class FilemanagerFacade {
 
   setCurrentFolder(document: DocumentModel) {}
 
-  delete(document: DocumentModel): void {}
+  delete(document: DocumentModel): void {
+    this.#filemanagerStore.deleteDocument(document);
+  }
+  moveDocument(documentModel: DocumentModel): void {
+    const targetPath = this.getCurrentPath() ?? '';
+    this.#filemanagerStore.moveDocument({
+      document: documentModel,
+      targetPath,
+    });
+  }
 
+  copyDocument(documentModel: DocumentModel): void {
+    const targetPath = this.getCurrentPath() ?? '';
+    this.#filemanagerStore.copyDocument({
+      document: documentModel,
+      targetPath,
+    });
+  }
   updateFolder(document: DocumentModel): void {}
 
   updateFile(document: DocumentModel): void {
@@ -168,6 +201,4 @@ export class FilemanagerFacade {
   private getCurrentPath(): string | undefined {
     return this.#breadcrumbStore.currentPath()?.key;
   }
-
-
 }

@@ -2,7 +2,8 @@ import { computed, inject } from '@angular/core';
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY, of, delay } from 'rxjs';
-import { DocumentModel } from '@ladon/api';
+import { DocumentModel } from '../../api';
+import { isPdfDocument } from '@utility';
 
 interface PdfViewerState {
   selectedDocument: DocumentModel | null;
@@ -61,16 +62,6 @@ const initialState: PdfViewerState = {
   isDownloading: false,
   isPrinting: false,
 };
-
-function isPdfDocument(document: DocumentModel): boolean {
-  if (!document) return false;
-
-  const contentType = document['content-type']?.toLowerCase();
-  const fileName = document.key || '';
-  const fileExtension = fileName.split('.').pop()?.toLowerCase();
-
-  return contentType === 'application/pdf' || fileExtension === 'pdf';
-}
 
 export const PdfViewerStore = signalStore(
   { providedIn: 'root' },
@@ -394,7 +385,7 @@ export const PdfViewerStore = signalStore(
     documentDisplayName: computed(() => {
       const doc = store.selectedDocument();
       if (!doc) return 'Dokument';
-      return doc.key || 'Unbekanntes Dokument';
+      return doc.name || doc.key || 'Unbekanntes Dokument';
     }),
 
     // Progress Information

@@ -1,7 +1,8 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { FilemanagerService } from '../filemanager.service';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { TaskStatusModel } from '@ladon/api';
+import { TaskStatusModel } from '../../../api';
+import { ToastService } from '../../shared/services/toast.service';
 
 export interface UploadStatus {
   fileName: string;
@@ -20,6 +21,8 @@ export interface UploadStatus {
   providedIn: 'root',
 })
 export class FilemanagerContentFacade {
+  readonly toastService = inject(ToastService);
+
   uploadProgress = signal<UploadStatus[]>([]);
   activeTasks = signal<TaskStatusModel[] | undefined>(undefined);
   computedProgress = computed(() => {
@@ -180,7 +183,7 @@ export class FilemanagerContentFacade {
       const bucket = this.filemanagerFacade.selectedBucket();
       const fileKey = currentPath ? `${currentPath}/${file.name}` : file.name;
 
-      await this.uploadWithProgress(bucket as string, file.name, file, uploadStatus);
+      await this.uploadWithProgress(bucket as string, fileKey, file, uploadStatus);
 
       uploadStatus.status = 'success';
       uploadStatus.message = 'Upload erfolgreich abgeschlossen';
@@ -249,18 +252,14 @@ export class FilemanagerContentFacade {
   }
 
   showErrorToast(message: string): void {
-    // Implementieren Sie Toast-Benachrichtigungen
-    console.error(message);
-    // Optional: Integration mit einem Toast-Service
+    this.toastService.error(message);
   }
 
   private getCurrentPath(): string {
-    // Implementieren Sie diese Methode basierend auf Ihrer Router-Logik
-    // Beispiel: return this.router.url.split('/').slice(2).join('/');
-    return ''; // Placeholder
+    return this.filemanagerFacade.currentFolder()?.key || '';
   }
 
   private refreshFileList(): void {
-    this.filemanagerFacade.reloadBucket();
+    this.filemanagerFacade.reloadCurrentLocation();
   }
 }

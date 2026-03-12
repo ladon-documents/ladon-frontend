@@ -17,6 +17,7 @@
   }
   <div class="flex-1 overflow-y-auto">
     <div cdkDropList
+         [cdkDropListConnectedTo]="originList() ? [originList()] : []"
          #clipboardList="cdkDropList"
          [cdkDropListData]="clipboardStore.selectedDocuments()"
          (cdkDropListDropped)="drop($event)"
@@ -40,6 +41,7 @@
       <div class="space-y-2 p-2">
         @for (doc of clipboardStore.selectedDocuments(); track doc.key; let i = $index) {
           <div cdkDrag
+               [cdkDragData]="doc"
                class="group relative bg-base-100 rounded-lg border border-base-300 hover:border-primary/50 hover:shadow-md transition-all duration-200 cursor-move">
 
             <div class="flex items-center gap-3 p-3">

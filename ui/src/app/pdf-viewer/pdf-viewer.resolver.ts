@@ -4,7 +4,8 @@ import { Observable, of } from 'rxjs';
 import { AppStore } from '../store/app.store';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { PdfViewerStore } from '../store/pdf-viewer.store';
-import { DocumentModel } from '@ladon/api';
+import { DocumentModel } from '../../api';
+import { isPdfDocument } from '@utility';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,7 @@ export class PdfViewerResolver implements Resolve<undefined | DocumentModel> {
 
   resolve(): Observable<undefined | DocumentModel> {
     const selectedDocument = this.#pdfViewerStore.selectedDocument();
-    if (selectedDocument && selectedDocument.path && selectedDocument.path.endsWith('.pdf')) {
+    if (selectedDocument && isPdfDocument(selectedDocument)) {
       //this.#router.navigateToPdfViewer(selectedDocument.path);
       return of(selectedDocument);
     }

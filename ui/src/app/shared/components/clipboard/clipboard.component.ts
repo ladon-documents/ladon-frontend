@@ -9,11 +9,14 @@ import { FilesizePipe } from '../../pipes/filesize.pipe';
 import { ClipboardStore } from '../../../store/clipboard.store';
 import {
   heroArchiveBox,
+  heroBars3,
   heroClipboardDocumentList,
   heroDocumentPlus,
   heroDocumentText,
+  heroExclamationTriangle,
   heroInformationCircle,
   heroTrash,
+  heroXMark,
 } from '@ng-icons/heroicons/outline';
 
 interface ButtonStateInterface {
@@ -37,13 +40,16 @@ type ACTION = 'pdf' | 'zip';
       heroInformationCircle,
       heroClipboardDocumentList,
       heroTrash,
+      heroBars3,
+      heroXMark,
+      heroExclamationTriangle,
     }),
   ],
   templateUrl: './clipboard.component.html',
   styleUrls: ['./clipboard.component.scss'],
 })
 export class ClipboardComponent implements AfterViewInit {
-  @ViewChild(CdkDropList) dropList!: CdkDropList;
+  @ViewChild('clipboardList', { read: CdkDropList }) dropList!: CdkDropList;
   public buttonStates: ButtonStateInterface = {
     pdf: false,
     zip: false,
@@ -52,6 +58,7 @@ export class ClipboardComponent implements AfterViewInit {
     reset: false,
   };
   readonly clipboardStore = inject(ClipboardStore);
+  protected readonly originList = inject(ClipboardService).originList;
 
   constructor(private clipboardService: ClipboardService) {}
   documents: Array<DocumentModel> = [];
@@ -101,7 +108,6 @@ export class ClipboardComponent implements AfterViewInit {
       return;
     }
     this.clipboardStore.createZip();
-
   }
 
   reset(): void {

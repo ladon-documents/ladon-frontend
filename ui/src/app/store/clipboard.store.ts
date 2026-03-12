@@ -3,7 +3,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
 import { DocumentModel } from '../../api';
-import { isPdfDocument } from '@utility';
+import { isPdfDocument } from '@ladon/utility';
 import { ConverterService } from '../services/converter.service';
 
 interface ClipboardState {

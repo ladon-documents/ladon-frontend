@@ -7,7 +7,7 @@ import {
   isAudioDocument,
   isImageDocument,
   isPdfDocument as isUtilityPdfDocument,
-} from '@utility';
+} from '@ladon/utility';
 
 const storageKey = `mf-ladon-docmanager:view`;
 

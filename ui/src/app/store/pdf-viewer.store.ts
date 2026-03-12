@@ -3,7 +3,7 @@ import { signalStore, withState, withMethods, withComputed, patchState } from '@
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY, of, delay } from 'rxjs';
 import { DocumentModel } from '../../api';
-import { isPdfDocument } from '@utility';
+import { isPdfDocument } from '@ladon/utility';
 
 interface PdfViewerState {
   selectedDocument: DocumentModel | null;

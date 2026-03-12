@@ -8,7 +8,7 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { BreadcrumbStore } from './breadcrumb.store';
 import { filemanagerHelper } from '../filemanager/helper/helper';
-import { buildTargetPath } from '@utility';
+import { buildTargetPath } from '@ladon/utility';
 import { ToastService } from '../shared/services/toast.service';
 import { ConfirmationDialogService } from '../shared/services/confirmation-dialog.service';
 import { ClipboardStore } from './clipboard.store';

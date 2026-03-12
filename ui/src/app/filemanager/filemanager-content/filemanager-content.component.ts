@@ -56,7 +56,7 @@ import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-
 import { InputDialogService } from '../../shared/services/input-dialog.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { firstValueFrom } from 'rxjs';
-import { isWebComponentRegistered } from '@utility';
+import { isWebComponentRegistered } from '@ladon/utility';
 
 interface ImageEditorSaveEventDetail {
   blob: Blob;

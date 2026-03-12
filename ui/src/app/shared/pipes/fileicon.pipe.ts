@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { fileiconPipeTransform } from '@utility';
+import { fileiconPipeTransform } from '@ladon/utility';
 
 @Pipe({
   name: 'fileicon',

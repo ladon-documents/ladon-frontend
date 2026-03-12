@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DocumentModel } from '../../../api';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { firstValueFrom } from 'rxjs';
-import { ensureFileExtension, getFileExtension } from '@utility';
+import { ensureFileExtension, getFileExtension } from '@ladon/utility';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroArrowPath,

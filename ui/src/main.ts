@@ -1,6 +1,6 @@
 const fetchNavigation = fetch('/ui/draco/ladon-core/public/navigation.json');
 import { isDevMode } from '@angular/core';
-import * as api from '@utility';
+import * as api from '@ladon/utility';
 import { environment } from './environments/environment';
 export let navigationConfig: Array<any> = [];
 

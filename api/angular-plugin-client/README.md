@@ -46,10 +46,10 @@ npm link
 In your project:
 
 ```console
-npm link
+npm link 
 ```
 
-**Note for Windows users:** The Angular CLI has troubles to use linked npm packages.
+__Note for Windows users:__ The Angular CLI has troubles to use linked npm packages.
 Please refer to this issue <https://github.com/angular/angular-cli/issues/8284> for a solution / workaround.
 Published packages are not effected by this issue.
 
@@ -59,72 +59,73 @@ In your Angular project:
 
 ```typescript
 // without configuring providers
-import { LadonApiModule } from "";
-import { HttpClientModule } from "@angular/common/http";
+import { LadonApiModule } from '';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  imports: [
-    LadonApiModule,
-    // make sure to import the HttpClientModule in the AppModule only,
-    // see https://github.com/angular/angular/issues/20575
-    HttpClientModule,
-  ],
-  declarations: [AppComponent],
-  providers: [],
-  bootstrap: [AppComponent],
+    imports: [
+        LadonApiModule,
+        // make sure to import the HttpClientModule in the AppModule only,
+        // see https://github.com/angular/angular/issues/20575
+        HttpClientModule
+    ],
+    declarations: [ AppComponent ],
+    providers: [],
+    bootstrap: [ AppComponent ]
 })
 export class AppModule {}
 ```
 
 ```typescript
 // configuring providers
-import { LadonApiModule, Configuration, ConfigurationParameters } from "";
+import { LadonApiModule, Configuration, ConfigurationParameters } from '';
 
-export function apiConfigFactory(): Configuration {
+export function apiConfigFactory (): Configuration {
   const params: ConfigurationParameters = {
     // set configuration parameters here.
-  };
+  }
   return new Configuration(params);
 }
 
 @NgModule({
-  imports: [LadonApiModule.forRoot(apiConfigFactory)],
-  declarations: [AppComponent],
-  providers: [],
-  bootstrap: [AppComponent],
+    imports: [ LadonApiModule.forRoot(apiConfigFactory) ],
+    declarations: [ AppComponent ],
+    providers: [],
+    bootstrap: [ AppComponent ]
 })
 export class AppModule {}
 ```
 
 ```typescript
 // configuring providers with an authentication service that manages your access tokens
-import { LadonApiModule, Configuration } from "";
+import { LadonApiModule, Configuration } from '';
 
 @NgModule({
-  imports: [LadonApiModule],
-  declarations: [AppComponent],
-  providers: [
-    {
-      provide: Configuration,
-      useFactory: (authService: AuthService) =>
-        new Configuration({
-          basePath: environment.apiUrl,
-          accessToken: authService.getAccessToken.bind(authService),
-        }),
-      deps: [AuthService],
-      multi: false,
-    },
-  ],
-  bootstrap: [AppComponent],
+    imports: [ LadonApiModule ],
+    declarations: [ AppComponent ],
+    providers: [
+      {
+        provide: Configuration,
+        useFactory: (authService: AuthService) => new Configuration(
+          {
+            basePath: environment.apiUrl,
+            accessToken: authService.getAccessToken.bind(authService)
+          }
+        ),
+        deps: [AuthService],
+        multi: false
+      }
+    ],
+    bootstrap: [ AppComponent ]
 })
 export class AppModule {}
 ```
 
 ```typescript
-import { DefaultApi } from "";
+import { DefaultApi } from '';
 
 export class AppComponent {
-  constructor(private apiGateway: DefaultApi) {}
+    constructor(private apiGateway: DefaultApi) { }
 }
 ```
 
@@ -138,9 +139,9 @@ you can create an alias name when importing the modules
 in order to avoid naming conflicts:
 
 ```typescript
-import { LadonApiModule } from "my-api-path";
-import { LadonApiModule as OtherApiModule } from "my-other-api-path";
-import { HttpClientModule } from "@angular/common/http";
+import { LadonApiModule } from 'my-api-path';
+import { LadonApiModule as OtherApiModule } from 'my-other-api-path';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -148,10 +149,12 @@ import { HttpClientModule } from "@angular/common/http";
     OtherApiModule,
     // make sure to import the HttpClientModule in the AppModule only,
     // see https://github.com/angular/angular/issues/20575
-    HttpClientModule,
-  ],
+    HttpClientModule
+  ]
 })
-export class AppModule {}
+export class AppModule {
+
+}
 ```
 
 ### Set service base path
@@ -159,10 +162,10 @@ export class AppModule {}
 If different than the generated base path, during app bootstrap, you can provide the base path to your service.
 
 ```typescript
-import { BASE_PATH } from "";
+import { BASE_PATH } from '';
 
 bootstrap(AppComponent, [
-  { provide: BASE_PATH, useValue: "https://your-web-service.com" },
+    { provide: BASE_PATH, useValue: 'https://your-web-service.com' },
 ]);
 ```
 
@@ -187,23 +190,25 @@ First extend your `src/environments/*.ts` files by adding the corresponding base
 ```typescript
 export const environment = {
   production: false,
-  API_BASE_PATH: "http://127.0.0.1:8080",
+  API_BASE_PATH: 'http://127.0.0.1:8080'
 };
 ```
 
 In the src/app/app.module.ts:
 
 ```typescript
-import { BASE_PATH } from "";
-import { environment } from "../environments/environment";
+import { BASE_PATH } from '';
+import { environment } from '../environments/environment';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [],
+  declarations: [
+    AppComponent
+  ],
+  imports: [ ],
   providers: [{ provide: BASE_PATH, useValue: environment.API_BASE_PATH }],
-  bootstrap: [AppComponent],
+  bootstrap: [ AppComponent ]
 })
-export class AppModule {}
+export class AppModule { }
 ```
 
 ### Customizing path parameter encoding
@@ -222,8 +227,8 @@ Example value for use in your Configuration-Provider:
 
 ```typescript
 new Configuration({
-  encodeParam: (param: Param) => myFancyParamEncoder(param),
-});
+    encodeParam: (param: Param) => myFancyParamEncoder(param),
+})
 ```
 
 [parameter-locations-url]: https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#parameter-locations

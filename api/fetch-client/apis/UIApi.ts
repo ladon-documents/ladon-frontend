@@ -15,14 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
-    AllBucketStats,
-    BucketStatistics,
-    BucketUiItem,
-    Change,
-    ChartData,
-    DataResponse,
-    Document, MultiValueMapStringString,
-    NewBucket,
+  AllBucketStats,
+  BucketStatistics,
+  BucketUiItem,
+  Change,
+  ChartData,
+  DataResponse,
+  Document,
+  NewBucket,
 } from '../models/index';
 import {
     AllBucketStatsFromJSON,

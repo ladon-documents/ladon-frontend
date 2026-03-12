@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { firstValueFrom } from 'rxjs';
 import { ensureFileExtension, getFileExtension } from '@ladon/utility';

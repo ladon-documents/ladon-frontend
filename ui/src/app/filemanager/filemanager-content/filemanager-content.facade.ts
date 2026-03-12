@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { FilemanagerService } from '../filemanager.service';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { TaskStatusModel } from '../../../api';
+import { TaskStatusModel } from '@ladon/api';
 import { ToastService } from '../../shared/services/toast.service';
 
 export interface UploadStatus {
@@ -225,7 +225,7 @@ export class FilemanagerContentFacade {
 
           this.filemanagerService.saveDocument(document, file).subscribe({
             next: () => resolve(),
-            error: (error) => reject(error),
+            error: (error: unknown) => reject(error),
           });
 
           setTimeout(() => resolve(), 500);

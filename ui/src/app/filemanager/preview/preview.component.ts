@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject, signal, untracked } from '@angular/core';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { MonacoEditorService } from '../../editor/editor.service';
 import { filemanagerHelper } from '../helper/helper';
 import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';

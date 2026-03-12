@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 import { isPdfDocument } from '@ladon/utility';
 import { FilemanagerFacade } from '../filemanager/filemanager.facade';
 import { ActivatedRoute } from '@angular/router';

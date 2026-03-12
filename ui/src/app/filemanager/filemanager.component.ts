@@ -30,7 +30,7 @@ import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
 import { filemanagerRoutes } from './filemanager.routes';
 import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
-import { BucketUiItemModel } from '../../api';
+import { BucketUiItemModel } from '@ladon/api';
 import { CreateNewFileComponent } from './create-new-file/create-new-file.component';
 
 @Component({

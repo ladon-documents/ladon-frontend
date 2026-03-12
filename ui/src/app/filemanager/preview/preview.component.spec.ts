@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
 import { heroTrash } from '@ng-icons/heroicons/outline';
-import { DocumentModel, TagModel } from '../../../api';
+import { DocumentModel, TagModel } from '@ladon/api';
 
 import { PreviewComponent } from './preview.component';
 import { FilemanagerFacade } from '../filemanager.facade';

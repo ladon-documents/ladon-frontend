@@ -2,7 +2,7 @@ import { computed, inject } from '@angular/core';
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY, of, delay } from 'rxjs';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 import { isPdfDocument } from '@ladon/utility';
 
 interface PdfViewerState {

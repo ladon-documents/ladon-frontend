@@ -9,11 +9,9 @@
     "generate:client:ng": "rimraf ./angular-client; openapi-generator-cli generate -i  ../spec/api.yaml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
     "generate:plugin:ng": "rimraf ./angular-plugin-client; openapi-generator-cli generate -i  ../spec/plugin-v1.yaml -g typescript-angular -o angular-plugin-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
     "generate:apis": "npm run generate:client:ts & npm run generate:client:ng & npm run generate:plugin:ng",
-    "copy-ng": "node -e \"require('fs').cpSync('angular-client/', '../ui/src/api', {recursive: true});\"",
-    "copy-plugin-ng": "node -e \"require('fs').cpSync('angular-plugin-client/', '../ui/src/plugin', {recursive: true});\"",
     "build:fetch": "esbuild fetch-client/index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api/ladon-api-fetch-client.mjs",
     "build:utility": "esbuild index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api/ladon-api.mjs",
-    "build:all": "npm run generate:apis && npm run copy-ng && npm run copy-plugin-ng  && npm run build:utility",
+    "build:all": "npm run generate:apis && npm run build:utility",
     "serve": "esbuild index.ts --outdir=www/ --bundle --servedir=www --platform=neutral"
   },
   "author": "",
@@ -38,5 +36,11 @@
   },
   "publishConfig": {
     "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
+  },
+  "peerDependencies": {
+    "@angular/common": "^21.2.4",
+    "@angular/core": "^21.2.4",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.8.1"
   }
 }

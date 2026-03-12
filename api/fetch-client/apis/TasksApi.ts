@@ -120,6 +120,9 @@ export class TasksApi extends runtime.BaseAPI implements TasksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/taskmanager/active`,
             method: 'GET',
@@ -144,6 +147,9 @@ export class TasksApi extends runtime.BaseAPI implements TasksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/taskmanager/available`,
             method: 'GET',
@@ -188,6 +194,9 @@ export class TasksApi extends runtime.BaseAPI implements TasksApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/taskmanager/start`,
             method: 'POST',
@@ -224,6 +233,9 @@ export class TasksApi extends runtime.BaseAPI implements TasksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/taskmanager/status`,
             method: 'GET',
@@ -259,6 +271,9 @@ export class TasksApi extends runtime.BaseAPI implements TasksApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/taskmanager/stop`,
             method: 'POST',

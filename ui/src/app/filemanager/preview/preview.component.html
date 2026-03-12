@@ -40,4 +40,43 @@
   @if (filemanagerHelper.isAudio(selectedDocument())) {
     <ladon-audioplayer [document]="selectedDocument()"></ladon-audioplayer>
   }
+
+  @if (!selectedDocument()?.isFolder) {
+    <div class="mt-6 border-t border-gray-500/40 pt-4">
+      <h3 class="text-lg font-semibold mb-3">Tags</h3>
+
+      <div class="mb-3">
+        <input
+          type="text"
+          class="input input-bordered w-full"
+          placeholder="Tag hinzufügen..."
+          [value]="tagInput()"
+          (input)="onTagInput($event)"
+          (keydown)="onTagKeydown($event)"
+          [disabled]="isTagsMutating() || !tagsDocumentId()" />
+      </div>
+
+      @if (tagsError()) {
+        <p class="text-sm text-error mb-3">{{ tagsError() }}</p>
+      }
+
+      @if (isTagsLoading()) {
+        <div class="flex items-center gap-2 text-sm text-gray-500">
+          <span class="loading loading-spinner loading-sm"></span>
+          <span>Tags werden geladen...</span>
+        </div>
+      } @else {
+        @if (tags().length === 0) {
+          <p class="text-sm text-gray-500">Noch keine Tags</p>
+        } @else {
+          <div class="flex flex-wrap gap-2">
+            @for (tag of tags(); track tag.id) {
+              <app-pill [label]="tag.value || tag.name" [isDeletable]="true" (deleteEmit)="deleteTag(tag.id)">
+              </app-pill>
+            }
+          </div>
+        }
+      }
+    </div>
+  }
 }

@@ -4,6 +4,7 @@ import { FavoritesStore } from '../store/favorites.store';
 import { ContextMenuService } from '../shared/services/context-menu.service';
 import { ClipboardStore } from '../store/clipboard.store';
 import { FilemanagerStore } from '../store/filemanager.store';
+import { filemanagerHelper } from './helper/helper';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,11 @@ export class FilemanagerContextMenuService {
 
   constructor() {}
 
-  onContextMenu(event: MouseEvent, document: DocumentModel) {
+  onContextMenu(
+    event: MouseEvent,
+    document: DocumentModel,
+    actions?: { editImage?: () => void; openEditor?: () => void; openPdf?: () => void; openAudio?: () => void },
+  ) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -41,6 +46,42 @@ export class FilemanagerContextMenuService {
         icon: 'heroLink',
         action: () => this.copyLink(document),
       },
+      ...(actions?.openEditor
+        ? [
+            {
+              label: 'Im Editor öffnen',
+              icon: 'heroPencilSquare',
+              action: actions.openEditor,
+            },
+          ]
+        : []),
+      ...(actions?.openPdf
+        ? [
+            {
+              label: 'PDF anzeigen',
+              icon: 'heroEye',
+              action: actions.openPdf,
+            },
+          ]
+        : []),
+      ...(actions?.openAudio
+        ? [
+            {
+              label: 'Audio abspielen',
+              icon: 'heroEye',
+              action: actions.openAudio,
+            },
+          ]
+        : []),
+      ...(filemanagerHelper.isImage(document) && actions?.editImage
+        ? [
+            {
+              label: 'Bild bearbeiten',
+              icon: 'heroPencilSquare',
+              action: actions.editImage,
+            },
+          ]
+        : []),
       { divider: true, label: '1', icon: '', action: () => {} },
       {
         label: this.favoritesStore.isFavorite(document) ? 'Von Favoriten entfernen' : 'Zu Favoriten',

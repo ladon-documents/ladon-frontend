@@ -130,28 +130,36 @@ export class MonacoEditorService {
     return editableExtensions.includes(extension || '');
   }
 
-  async saveFileContent(content: string) {
-    const document = this.selectedDocument();
-    if (!document?.key) return;
+  async saveFileContent(content: string, document?: DocumentModel): Promise<void> {
+    const doc = document || this.selectedDocument();
+    if (!doc?.key) {
+      console.warn('Kein Dokument zum Speichern vorhanden');
+      return;
+    }
+
     try {
       const blob = new Blob([content], { type: 'text/plain' });
-
-      await this.saveFileToServer(document, blob);
-      console.log('Datei gespeichert:', document.key);
+      await this.saveFileToServer(doc, blob);
+      console.log('Datei gespeichert:', doc.key);
     } catch (error) {
       console.error('Fehler beim Speichern der Datei:', error);
+      throw error;
     }
   }
 
-  async loadFileContent(): Promise<any> {
+  async loadFileContent(document?: DocumentModel): Promise<string | undefined> {
     try {
-      const document = this.selectedDocument();
-      if (document) {
-        const blob = await lastValueFrom(this.filemanagerFacade.getDocument(document));
-        return await this.convertBlobToString(blob);
+      const doc = document || this.selectedDocument();
+      if (!doc) {
+        console.warn('Kein Dokument zum Laden vorhanden');
+        return undefined;
       }
+
+      const blob = await lastValueFrom(this.filemanagerFacade.getDocument(doc));
+      return await this.convertBlobToString(blob);
     } catch (error) {
       console.error('Fehler beim Laden der Datei:', error);
+      throw error;
     }
   }
 

@@ -104,6 +104,9 @@ export class ActionsApi extends runtime.BaseAPI implements ActionsApiInterface {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/actions`,
             method: 'POST',
@@ -151,6 +154,9 @@ export class ActionsApi extends runtime.BaseAPI implements ActionsApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/meta/actions`,
             method: 'GET',

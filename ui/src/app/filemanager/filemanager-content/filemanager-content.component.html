@@ -1,17 +1,8 @@
+<div class="h-full flex flex-col">
 
-<div
-                                                                                    class="h-full flex flex-col"
-                                                                                    appFileUpload
-                                                                                    [acceptedTypes]="allowedFileTypes"
-                                                                                    [maxFileSize]="maxFileSize"
-                                                                                    [allowMultiple]="true"
-                                                                                    (filesDropped)="onFilesDropped($event)"
-                                                                                    (filesHovered)="onFilesHovered($event)"
-                                                                                    (filesRejected)="onFilesRejected($event)"
-                                                                                    #dropZone>
   @if (isDragOver()) {
     <div
-                                                                                        class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center">
+                                                                                        class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center pointer-events-none">
       <div class="card bg-base-100 shadow-2xl">
         <div class="card-body text-center max-w-sm">
           <div class="text-6xl mb-4 text-primary">
@@ -26,7 +17,37 @@
       </div>
     </div>
   }
-  <div class="flex-1 min-h-0 overflow-y-auto p-4">
+
+  @if (isEditorOpen()) {
+    <div class="flex-1 min-h-0 p-4">
+      <file-editor-dialog
+        [displayMode]="'inline'"
+        [config]="{
+          readOnly: false,
+          fileName: selectedDocument()?.key || selectedDocument()?.name || '',
+        }">
+      </file-editor-dialog>
+    </div>
+  } @else if (isImageEditorOpen()) {
+    <div class="flex-1 min-h-0 p-4">
+      <ladon-image-editor
+        [attr.image-src]="imageEditorSourceUrl"
+        [attr.file-name]="imageEditorFileName"
+        [attr.mime-type]="imageEditorMimeType"
+        (editor-close)="closeImageEditor()"
+        (editor-save)="onImageEditorSave($event)">
+      </ladon-image-editor>
+    </div>
+  } @else {
+    <div class="flex-1 min-h-0 overflow-y-auto p-4"
+         appFileUpload
+         [acceptedTypes]="allowedFileTypes"
+         [maxFileSize]="maxFileSize"
+         [allowMultiple]="true"
+         (filesDropped)="onFilesDropped($event)"
+         (filesHovered)="onFilesHovered($event)"
+         (filesRejected)="onFilesRejected($event)">
+
     @if (viewMode() === "card") {
       <ng-container [ngTemplateOutlet]="gridView"></ng-container>
     }
@@ -34,10 +55,38 @@
       <ng-container [ngTemplateOutlet]="tableView"></ng-container>
     }
 
+    @if (documents().length === 0) {
+      <div cdkDropList
+           #emptyList="cdkDropList"
+           [cdkDropListData]="documents()"
+           [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
+           (cdkDropListDropped)="onDropFromClipboard($event)">
+
+        <div class="text-center py-12">
+          <div class="text-gray-400">
+            <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
+            @if (searchTerm()) {
+              <p class="text-lg font-medium">Keine Ergebnisse gefunden</p>
+              <p class="text-sm">Keine Dateien entsprechen dem Suchbegriff "{{ searchTerm() }}"</p>
+            } @else {
+              <p class="text-lg font-medium">Keine Dateien gefunden</p>
+              <p class="text-sm">Dieser Ordner ist leer</p>
+              <div class="mt-5">
+                <button class="btn btn-primary btn-sm" (click)="createFileFromEmptyState()">
+                  Neue Datei erstellen
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
     <div class="flex-shrink-0 border-t border-gray-500/40 px-4">
       <filemanager-pagination></filemanager-pagination>
     </div>
-  </div>
+    </div>
+  }
 
   <ng-template #tableView>
     @if (viewMode() === "table") {
@@ -90,28 +139,19 @@
           </thead>
 
           <tbody cdkDropList
+                 #tableList="cdkDropList"
                  [cdkDropListData]="documents()"
-                 [cdkDropListConnectedTo]="[clipboardList()]"
-                 cdkDropListHasAnchor>
+                 [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
+                 (cdkDropListDropped)="onDropFromClipboard($event)">
             @for (document of documents(); track document.path; let i = $index) {
-              <tr cdkDrag [cdkDragData]="document"
+              <tr cdkDrag
+                  [cdkDragData]="document"
                   class="hover:bg-base cursor-pointer group/tablerow"
                   [class.border-l-4]="isSelected(document)"
                   [class.border-l-primary]="isSelected(document)"
                   (dblclick)="navigateTo(document)"
                   (click)="onItemClick(document, i, $event)"
                   (contextmenu)="onContextMenu($event, document)">
-
-                <!-- Neu: Checkbox für einzelne Zeile
-                <td class="w-10" (click)="$event.stopPropagation()">
-                  <input
-                                                                                                      type="checkbox"
-                                                                                                      class="checkbox checkbox-primary checkbox-sm"
-                                                                                                      [checked]="selectionStore.isSelected(document)"
-                                                                                                      (change)="toggleSelection(document, i, $event)"
-                  />
-                </td>
-                -->
 
                 <td>
                   <div class="flex items-center gap-2">
@@ -157,28 +197,12 @@
                                                                                                           size="1.0em">
                       </ng-icon>
                     </button>
-
                   </div>
                 </td>
               </tr>
             }
           </tbody>
         </table>
-
-        @if (documents().length === 0) {
-          <div class="text-center py-12">
-            <div class="text-gray-400">
-              <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
-              @if (searchTerm()) {
-                <p class="text-lg font-medium">Keine Ergebnisse gefunden</p>
-                <p class="text-sm">Keine Dateien entsprechen dem Suchbegriff "{{ searchTerm() }}"</p>
-              } @else {
-                <p class="text-lg font-medium">Keine Dateien gefunden</p>
-                <p class="text-sm">Dieser Ordner ist leer</p>
-              }
-            </div>
-          </div>
-        }
       </div>
     }
   </ng-template>
@@ -187,9 +211,10 @@
     @if (viewMode() === "card") {
       <div class="grid grid-flow-dense grid-cols-12 gap-4"
            cdkDropList
+           #gridList="cdkDropList"
            [cdkDropListData]="documents()"
-           [cdkDropListConnectedTo]="[clipboardList()]"
-           cdkDropListHasAnchor>
+           [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
+           (cdkDropListDropped)="onDropFromClipboard($event)">
         @for (document of documents(); track document.path; let i = $index) {
           <div
                                                                                               cdkDrag
@@ -202,16 +227,6 @@
                                                                                               (click)="onItemClick(document, i, $event)"
                                                                                               (contextmenu)="onContextMenu($event, document)">
 
-            <!--
-            <div class="absolute top-2 left-2 z-10" (click)="$event.stopPropagation()">
-              <input
-                                                                                                  type="checkbox"
-                                                                                                  class="checkbox checkbox-primary checkbox-sm"
-                                                                                                  [checked]="selectionStore.isSelected(document)"
-                                                                                                  (change)="toggleSelection(document, i, $event)"
-              />
-            </div>
-          -->
             <div class="absolute top-2 right-2 z-10 opacity-0 group-hover/fileitem:opacity-100 transition-opacity">
               <button
                                                                                                   class="btn btn-ghost btn-xs btn-square"
@@ -249,68 +264,9 @@
           </div>
         }
       </div>
-      @if (documents().length === 0) {
-        <div class="text-center py-12">
-          <div class="text-gray-400">
-            <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
-            <p class="text-lg font-medium">Keine Dateien gefunden</p>
-            <p class="text-sm">Dieser Ordner ist leer</p>
-          </div>
-        </div>
-      }
     }
   </ng-template>
 
-  <ng-template #contextMenu; let-document="document">
-    <div class="opacity-0 group-hover/tablerow:opacity-100 transition-opacity">
-      <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="btn btn-ghost btn-xs btn-square">
-          <ng-icon name="heroEllipsisVertical" size="1.0em"></ng-icon>
-        </div>
-        <ul
-                                                                                            tabindex="0"
-                                                                                            class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg border">
-          <li>
-            <a (click)="copy(document)">
-              <ng-icon name="heroDocumentDuplicate" size="1.0em" class="size-4"></ng-icon>
-              Kopieren
-            </a>
-          </li>
-          <li>
-            <a>
-              <ng-icon name="heroPencilSquare" size="1.0em" class="size-4"></ng-icon>
-              Umbenennen
-            </a>
-          </li>
-          <li>
-            <a>
-              <ng-icon name="heroStar" size="1.0em" class="size-4"></ng-icon>
-              Als Favorit markieren
-            </a>
-          </li>
-          <li>
-            <a (click)="download(document.path)">
-              <ng-icon name="heroArrowDownTray" size="1.0em" class="size-4"></ng-icon>
-              Herunterladen
-            </a>
-          </li>
-          <li>
-            <a>
-              <ng-icon name="heroShare" size="1.0em" class="size-4"></ng-icon>
-              Teilen
-            </a>
-          </li>
-          <li>
-            <hr class="my-1"/>
-          </li>
-          <li>
-            <a class="text-error">
-              <ng-icon name="heroTrash" size="1.0em" class="size-4"></ng-icon>
-              Löschen
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </ng-template>
+  <move-or-copy-dialog></move-or-copy-dialog>
+
 </div>

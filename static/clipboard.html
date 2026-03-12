@@ -6,8 +6,8 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <script type="module" src="../wc/clipboard/dist/wc-ladon-clipboard.js"></script>
-  <link rel="stylesheet" href="../wc/clipboard/dist/styles.css">
+  <script type="module" src="../release/webcomponents/wc-clipboard/wc-ladon-clipboard.js"></script>
+  <link rel="stylesheet" href="../release/webcomponents/wc-clipboard/styles.css">
 </head>
 <body>
 <script type="module">
@@ -148,7 +148,8 @@
     };
 </script>
 <div id="grid">
-  <ladon-clipboard filemode="store"></ladon-clipboard>
+
+  <ladon-clipboard></ladon-clipboard>
   <div draggable="true" ondragstart="MFdragstart_handler(event);" ondragend="MFdragend_handler(event);">
     Ladon Doc <strong>FooBar</strong>.
   </div>

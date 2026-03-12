@@ -9,10 +9,12 @@
  */
 import { SpecModel } from './spec';
 
-export interface PluginModel {
-  id?: string;
-  file?: string;
-  name?: string;
-  pluginId?: string;
-  spec?: SpecModel;
+
+export interface PluginModel { 
+    id?: string;
+    file?: string;
+    name?: string;
+    pluginId?: string;
+    spec?: SpecModel;
 }
+

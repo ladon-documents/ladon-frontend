@@ -22,22 +22,22 @@ import {
     UserToJSON,
 } from '../models/index';
 
-export interface UsersApiGetPictureRequest {
+export interface UserControllerApiGetPictureRequest {
     userId: string;
 }
 
 /**
- * UsersApi - interface
+ * UserControllerApi - interface
  * 
  * @export
- * @interface UsersApiInterface
+ * @interface UserControllerApiInterface
  */
-export interface UsersApiInterface {
+export interface UserControllerApiInterface {
     /**
      * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof UsersApiInterface
+     * @memberof UserControllerApiInterface
      */
     getAllowableActionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: object; }>>;
 
@@ -49,7 +49,7 @@ export interface UsersApiInterface {
      * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof UsersApiInterface
+     * @memberof UserControllerApiInterface
      */
     getCurrentUserRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<User>>;
 
@@ -62,20 +62,20 @@ export interface UsersApiInterface {
      * @param {string} userId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof UsersApiInterface
+     * @memberof UserControllerApiInterface
      */
-    getPictureRaw(requestParameters: UsersApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
+    getPictureRaw(requestParameters: UserControllerApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>>;
 
     /**
      */
-    getPicture(requestParameters: UsersApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
+    getPicture(requestParameters: UserControllerApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>>;
 
 }
 
 /**
  * 
  */
-export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
+export class UserControllerApi extends runtime.BaseAPI implements UserControllerApiInterface {
 
     /**
      */
@@ -84,6 +84,9 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/user/allowableactions`,
             method: 'GET',
@@ -108,6 +111,9 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/user/me`,
             method: 'GET',
@@ -127,7 +133,7 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
     /**
      */
-    async getPictureRaw(requestParameters: UsersApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
+    async getPictureRaw(requestParameters: UserControllerApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -139,6 +145,9 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/user/{userId}/picture`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
             method: 'GET',
@@ -151,7 +160,7 @@ export class UsersApi extends runtime.BaseAPI implements UsersApiInterface {
 
     /**
      */
-    async getPicture(requestParameters: UsersApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
+    async getPicture(requestParameters: UserControllerApiGetPictureRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
         const response = await this.getPictureRaw(requestParameters, initOverrides);
         return await response.value();
     }

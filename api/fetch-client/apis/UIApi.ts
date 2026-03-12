@@ -15,14 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
-  AllBucketStats,
-  BucketStatistics,
-  BucketUiItem,
-  Change,
-  ChartData,
-  DataResponse,
-  Document,
-  NewBucket,
+    AllBucketStats,
+    BucketStatistics,
+    BucketUiItem,
+    Change,
+    ChartData,
+    DataResponse,
+    Document, MultiValueMapStringString,
+    NewBucket,
 } from '../models/index';
 import {
     AllBucketStatsFromJSON,
@@ -272,6 +272,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/meta/buckets`,
             method: 'POST',
@@ -296,6 +299,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/dashboard/buckets/favourite`,
             method: 'GET',
@@ -320,6 +326,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/dashboard/buckets/chart`,
             method: 'GET',
@@ -344,6 +353,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/dashboard/documents/favourite`,
             method: 'GET',
@@ -368,6 +380,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/dashboard/documents/recent`,
             method: 'GET',
@@ -403,6 +418,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/dashboard/documents/search`,
             method: 'GET',
@@ -434,6 +452,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/dashboard/changes/{yyyyMMdd}`.replace(`{${"yyyyMMdd"}}`, encodeURIComponent(String(requestParameters['yyyyMMdd']))),
             method: 'GET',
@@ -469,6 +490,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/meta/bucketstats`,
             method: 'GET',
@@ -493,6 +517,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/meta/bucketsize`,
             method: 'GET',
@@ -517,6 +544,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/dashboard/user/activity`,
             method: 'GET',
@@ -549,6 +579,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/meta/bucketlist`,
             method: 'GET',
@@ -595,6 +628,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/meta/buckets/favourite`,
             method: 'POST',
@@ -637,6 +673,9 @@ export class UIApi extends runtime.BaseAPI implements UIApiInterface {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/ui/v1/meta/buckets/{name}`.replace(`{${"name"}}`, encodeURIComponent(String(requestParameters['name']))),
             method: 'PUT',

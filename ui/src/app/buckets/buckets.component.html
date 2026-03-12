@@ -368,14 +368,15 @@
 </main>
 
 <app-dialog title="Neues Verzeichnis anlegen">
+
   <form [formGroup]="bucketAddGroup" class="flex flex-col gap-4" (ngSubmit)="onAddBucket()">
-    <label class="input" for="bucket">
+    <label class="input w-full" for="bucket">
       <span class="label">Verzeichnisname*</span>
       <input type="text" id="bucket" required formControlName="bucket" />
     </label>
     <div class="flex justify-around items-center gap-4">
-      <button class="btn btn-outline grow" type="reset" (click)="closeDialog()">Abbrechen</button>
-      <button class="btn grow btn-primary" type="submit">Erstellen</button>
+      <button class="btn btn-ghost grow" type="reset" (click)="closeDialog()">Abbrechen</button>
+      <button class="btn btn-primary grow" type="submit">Erstellen</button>
     </div>
   </form>
 </app-dialog>

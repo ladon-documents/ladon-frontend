@@ -1,5 +1,6 @@
 import {Injectable, inject} from '@angular/core';
 import {AudioPlayerStore, DocumentModel} from "./store/audio-player.store";
+import { isAudioDocument } from '../../../../api/utility/document-type';
 
 @Injectable({
   providedIn: 'root'
@@ -7,8 +8,7 @@ import {AudioPlayerStore, DocumentModel} from "./store/audio-player.store";
 export class AudioPlayerService {
   private readonly store = inject(AudioPlayerStore);
   private audioElement: HTMLAudioElement | null = null;
-  private readonly supportedFormats = ['mp3', 'wav', 'ogg', 'm4a', 'aac'];
-
+  
   constructor() {
     this.initializeAudioElement();
   }
@@ -159,10 +159,7 @@ export class AudioPlayerService {
   }
 
   private isAudioFile(document: DocumentModel): boolean {
-    if (!document.key) return false;
-
-    const extension = document.key.split('.').pop()?.toLowerCase();
-    return extension ? this.supportedFormats.includes(extension) : false;
+    return isAudioDocument(document);
   }
 
   destroy(): void {

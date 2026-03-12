@@ -8,8 +8,10 @@ import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { BreadcrumbStore } from './breadcrumb.store';
 import { filemanagerHelper } from '../filemanager/helper/helper';
+import { buildTargetPath } from '@utility';
 import { ToastService } from '../shared/services/toast.service';
 import { ConfirmationDialogService } from '../shared/services/confirmation-dialog.service';
+import { ClipboardStore } from './clipboard.store';
 
 export interface PaginationState {
   currentPage: number;
@@ -32,6 +34,7 @@ export interface FilemanagerState {
   allDocuments: DocumentModel[];
   filteredDocuments: DocumentModel[];
   statistics: BucketStatsExtended | null;
+  currentFolder: DocumentModel | null;
   selectedDocument: DocumentModel | null;
   isLoading: boolean;
   error: string | null;
@@ -47,6 +50,7 @@ const initialState: FilemanagerState = {
   allDocuments: [],
   filteredDocuments: [],
   statistics: null,
+  currentFolder: null,
   selectedDocument: null,
   selectedBucket: null,
   isLoading: false,
@@ -78,7 +82,38 @@ export const FilemanagerStore = signalStore(
       breadcrumbStore = inject(BreadcrumbStore),
       toastService = inject(ToastService),
       confirmationDialog = inject(ConfirmationDialogService),
+      clipboardStore = inject(ClipboardStore),
     ) => {
+      const reloadCurrentList = () => {
+        const currentFolder = store.currentFolder();
+        if (currentFolder?.bucket && currentFolder.key) {
+          return filemanagerService.loadDocumentList(currentFolder);
+        }
+
+        const bucket = store.selectedBucket();
+        if (bucket) {
+          return filemanagerService.loadBucket(bucket);
+        }
+
+        return EMPTY;
+      };
+
+      const resolveLoadDocumentListInput = (
+        input: DocumentModel | { document: DocumentModel; updateBreadcrumb?: boolean },
+      ) => {
+        if ('document' in input) {
+          return {
+            document: input.document,
+            updateBreadcrumb: input.updateBreadcrumb ?? true,
+          };
+        }
+
+        return {
+          document: input,
+          updateBreadcrumb: true,
+        };
+      };
+
       const methods = {
         showRoot() {
           methods.loadBucket(store.selectedBucket());
@@ -244,6 +279,7 @@ export const FilemanagerStore = signalStore(
             switchMap((bucket) =>
               filemanagerService.loadBucket(bucket, 1000).pipe(
                 tap((documents) => {
+                  breadcrumbStore.reset();
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
                       documents,
@@ -258,6 +294,7 @@ export const FilemanagerStore = signalStore(
                     selectedBucket: bucket,
                     isLoading: false,
                     allDocuments: documents,
+                    currentFolder: null,
                     filteredDocuments,
                     selectedDocument: documents[0],
                     documents: paginatedDocuments,
@@ -276,7 +313,7 @@ export const FilemanagerStore = signalStore(
             ),
           ),
         ),
-        loadDocumentList: rxMethod<any>(
+        loadDocumentList: rxMethod<DocumentModel | { document: DocumentModel; updateBreadcrumb?: boolean }>(
           pipe(
             tap(() => {
               patchState(store, (state) => ({
@@ -285,10 +322,11 @@ export const FilemanagerStore = signalStore(
                 isLoading: true,
               }));
             }),
-            switchMap((document) =>
-              filemanagerService.loadDocumentList(document).pipe(
+            switchMap((input) => {
+              const { document, updateBreadcrumb } = resolveLoadDocumentListInput(input);
+              return filemanagerService.loadDocumentList(document).pipe(
                 tap((documents) => {
-                  if (document) {
+                  if (updateBreadcrumb && document) {
                     breadcrumbStore.addPath(document);
                   }
                   const { filteredDocuments, paginatedDocuments, paginationState } =
@@ -304,6 +342,7 @@ export const FilemanagerStore = signalStore(
                     ...state,
                     isLoading: false,
                     allDocuments: documents,
+                    currentFolder: document,
                     filteredDocuments,
                     selectedDocument: documents[0],
                     documents: paginatedDocuments,
@@ -318,8 +357,8 @@ export const FilemanagerStore = signalStore(
                   }));
                   throw error;
                 }),
-              ),
-            ),
+              );
+            }),
           ),
         ),
         createFolder: rxMethod<{ folderName: string; currentPath?: string }>(
@@ -340,18 +379,7 @@ export const FilemanagerStore = signalStore(
                 ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${folderName}/`
                 : `${folderName}/`;
               return filemanagerService.createNewFolder(bucket, folderPath).pipe(
-                switchMap(() => {
-                  if (currentPath) {
-                    const currentDocument: DocumentModel = {
-                      path: currentPath,
-                      bucket: store.selectedBucket() ?? undefined,
-                      key: currentPath,
-                    };
-                    return filemanagerService.loadDocumentList(currentDocument);
-                  } else {
-                    return filemanagerService.loadBucket(bucket);
-                  }
-                }),
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
@@ -384,6 +412,57 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
+        createFile: rxMethod<{ fileName: string; currentPath?: string }>(
+          pipe(
+            tap(() => {
+              patchState(store, (state) => ({
+                ...state,
+                isLoading: true,
+                error: null,
+              }));
+            }),
+            switchMap(({ fileName, currentPath }) => {
+              const bucket = store.selectedBucket();
+              if (!bucket) {
+                throw new Error('Kein Bucket ausgewählt');
+              }
+              const folderPath = currentPath
+                ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${fileName}`
+                : `${fileName}`;
+              return filemanagerService.createNewFile(bucket, folderPath, null).pipe(
+                switchMap(() => reloadCurrentList()),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  }));
+                }),
+                catchError((error) => {
+                  patchState(store, (state) => ({
+                    ...state,
+                    isLoading: false,
+                    error: `Fehler beim Erstellen einer neuen Datei: ${error.message || error}`,
+                  }));
+                  throw error;
+                }),
+              );
+            }),
+          ),
+        ),
         uploadFile: rxMethod<{ folderName: string; currentPath?: string; content: any }>(
           pipe(
             tap(() => {
@@ -401,19 +480,8 @@ export const FilemanagerStore = signalStore(
               const folderPath = currentPath
                 ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${folderName}/`
                 : `${folderName}/`;
-              return filemanagerService.createNewFile(bucket, folderPath, content).pipe(
-                switchMap(() => {
-                  if (currentPath) {
-                    const currentDocument: DocumentModel = {
-                      path: currentPath,
-                      bucket: store.selectedBucket() ?? undefined,
-                      key: currentPath,
-                    };
-                    return filemanagerService.loadDocumentList(currentDocument);
-                  } else {
-                    return filemanagerService.loadBucket(bucket);
-                  }
-                }),
+              return filemanagerService.createNewFile(bucket, folderPath, null).pipe(
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
@@ -449,7 +517,6 @@ export const FilemanagerStore = signalStore(
         deleteDocument: rxMethod<DocumentModel>(
           pipe(
             switchMap(async (document) => {
-              // Bestätigungs-Dialog anzeigen
               const confirmed = await confirmationDialog.confirm({
                 title: document.isFolder ? 'Ordner löschen' : 'Datei löschen',
                 message: document.isFolder
@@ -463,7 +530,6 @@ export const FilemanagerStore = signalStore(
               return { document, confirmed };
             }),
             switchMap((result) => {
-              // Wenn nicht bestätigt, abbrechen
               if (!result.confirmed) {
                 return EMPTY;
               }
@@ -472,21 +538,7 @@ export const FilemanagerStore = signalStore(
               patchState(store, { isLoading: true, error: null });
 
               return filemanagerService.deleteDocument(document).pipe(
-                switchMap(() => {
-                  // Nach dem Löschen die Liste neu laden
-                  const bucket = store.selectedBucket();
-                  const selectedDoc = store.selectedDocument();
-
-                  // Wenn wir in einem Unterordner sind, lade diesen neu
-                  if (selectedDoc && selectedDoc.path && selectedDoc.path !== document.path) {
-                    return filemanagerService.loadDocumentList(selectedDoc);
-                  } else if (bucket) {
-                    // Ansonsten lade den Root-Bucket
-                    return filemanagerService.loadBucket(bucket);
-                  }
-
-                  return EMPTY;
-                }),
+                switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
                     filemanagerHelper.applyFiltersAndPagination(
@@ -506,7 +558,6 @@ export const FilemanagerStore = signalStore(
                     error: null,
                   });
 
-                  // Erfolgs-Toast anzeigen
                   toastService.success(
                     document.isFolder
                       ? `Ordner "${document.name}" wurde erfolgreich gelöscht`
@@ -519,11 +570,107 @@ export const FilemanagerStore = signalStore(
                     error: `Fehler beim Löschen: ${error.message || error}`,
                   });
 
-                  // Fehler-Toast anzeigen
                   toastService.error(
                     `Fehler beim Löschen von "${document.name}": ${error.message || 'Unbekannter Fehler'}`,
                   );
 
+                  return EMPTY;
+                }),
+              );
+            }),
+          ),
+        ),
+        moveDocument: rxMethod<{ document: DocumentModel; targetPath: string }>(
+          pipe(
+            tap(() => {
+              patchState(store, { isLoading: true, error: null });
+            }),
+            switchMap(({ document, targetPath }) => {
+              const targetBucket = store.selectedBucket();
+              if (!targetBucket || !document.bucket || !document.key) {
+                throw new Error('Fehlende Parameter für Verschieben');
+              }
+
+              const targetKey = buildTargetPath(targetPath, document.key);
+
+              return filemanagerService.moveDocument(document, targetBucket, targetKey).pipe(
+                switchMap(() => reloadCurrentList()),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, {
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  });
+                  // @ts-ignore
+                  clipboardStore.removeDocument(document.key);
+                  toastService.success(`"${document.name}" wurde erfolgreich verschoben`);
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isLoading: false,
+                    error: `Fehler beim Verschieben: ${error.message || error}`,
+                  });
+                  toastService.error(`Fehler beim Verschieben: ${error.message || 'Unbekannter Fehler'}`);
+                  return EMPTY;
+                }),
+              );
+            }),
+          ),
+        ),
+        copyDocument: rxMethod<{ document: DocumentModel; targetPath: string }>(
+          pipe(
+            tap(() => {
+              patchState(store, { isLoading: true, error: null });
+            }),
+            switchMap(({ document, targetPath }) => {
+              const targetBucket = store.selectedBucket();
+              if (!targetBucket || !document.bucket || !document.key) {
+                throw new Error('Fehlende Parameter für Kopieren');
+              }
+              const targetKey = buildTargetPath(targetPath, document.key);
+
+              return filemanagerService.copyDocument(document, targetBucket, targetKey).pipe(
+                switchMap(() => reloadCurrentList()),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, {
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  });
+                  // @ts-ignore
+                  clipboardStore.removeDocument(document.key);
+                  toastService.success(`"${document.name}" wurde erfolgreich kopiert`);
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isLoading: false,
+                    error: `Fehler beim Kopieren: ${error.message || error}`,
+                  });
+                  toastService.error(`Fehler beim Kopieren: ${error.message || 'Unbekannter Fehler'}`);
                   return EMPTY;
                 }),
               );

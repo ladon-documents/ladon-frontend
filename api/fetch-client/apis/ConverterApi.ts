@@ -118,6 +118,9 @@ export class ConverterApi extends runtime.BaseAPI implements ConverterApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/converters/applyanddownload`,
             method: 'POST',
@@ -154,6 +157,9 @@ export class ConverterApi extends runtime.BaseAPI implements ConverterApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/converters/getdocument`,
             method: 'GET',
@@ -187,6 +193,9 @@ export class ConverterApi extends runtime.BaseAPI implements ConverterApiInterfa
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/converters/applyandstore`,
             method: 'POST',
@@ -212,6 +221,9 @@ export class ConverterApi extends runtime.BaseAPI implements ConverterApiInterfa
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/api/rest/v1/converters/meta`,
             method: 'GET',

@@ -22,35 +22,35 @@ import {
     LoginRequestToJSON,
 } from '../models/index';
 
-export interface AuthenticationApiAuthenticateUserRequest {
+export interface AuthControllerApiAuthenticateUserRequest {
     loginRequest: LoginRequest;
 }
 
 /**
- * AuthenticationApi - interface
+ * AuthControllerApi - interface
  * 
  * @export
- * @interface AuthenticationApiInterface
+ * @interface AuthControllerApiInterface
  */
-export interface AuthenticationApiInterface {
+export interface AuthControllerApiInterface {
     /**
      * 
      * @param {LoginRequest} loginRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof AuthenticationApiInterface
+     * @memberof AuthControllerApiInterface
      */
-    authenticateUserRaw(requestParameters: AuthenticationApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    authenticateUserRaw(requestParameters: AuthControllerApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
 
     /**
      */
-    authenticateUser(requestParameters: AuthenticationApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    authenticateUser(requestParameters: AuthControllerApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
 
     /**
      * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof AuthenticationApiInterface
+     * @memberof AuthControllerApiInterface
      */
     logoutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
 
@@ -62,7 +62,7 @@ export interface AuthenticationApiInterface {
      * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof AuthenticationApiInterface
+     * @memberof AuthControllerApiInterface
      */
     logoutGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
 
@@ -75,11 +75,11 @@ export interface AuthenticationApiInterface {
 /**
  * 
  */
-export class AuthenticationApi extends runtime.BaseAPI implements AuthenticationApiInterface {
+export class AuthControllerApi extends runtime.BaseAPI implements AuthControllerApiInterface {
 
     /**
      */
-    async authenticateUserRaw(requestParameters: AuthenticationApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async authenticateUserRaw(requestParameters: AuthControllerApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['loginRequest'] == null) {
             throw new runtime.RequiredError(
                 'loginRequest',
@@ -93,6 +93,9 @@ export class AuthenticationApi extends runtime.BaseAPI implements Authentication
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/auth/login`,
             method: 'POST',
@@ -106,7 +109,7 @@ export class AuthenticationApi extends runtime.BaseAPI implements Authentication
 
     /**
      */
-    async authenticateUser(requestParameters: AuthenticationApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async authenticateUser(requestParameters: AuthControllerApiAuthenticateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.authenticateUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -118,6 +121,9 @@ export class AuthenticationApi extends runtime.BaseAPI implements Authentication
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/auth/logout`,
             method: 'POST',
@@ -142,6 +148,9 @@ export class AuthenticationApi extends runtime.BaseAPI implements Authentication
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
         const response = await this.request({
             path: `/auth/logout`,
             method: 'GET',

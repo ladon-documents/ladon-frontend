@@ -31,6 +31,7 @@ import { SidebarService } from './sidebar/sidebar.service';
 import { filemanagerRoutes } from './filemanager.routes';
 import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
 import { BucketUiItemModel } from '../../api';
+import { CreateNewFileComponent } from './create-new-file/create-new-file.component';
 
 @Component({
   standalone: true,
@@ -44,6 +45,7 @@ import { BucketUiItemModel } from '../../api';
     CreateFolderComponent,
     SidebarComponent,
     SearchModalComponent,
+    CreateNewFileComponent,
   ],
   providers: [
     provideNgIconsConfig({
@@ -66,7 +68,7 @@ import { BucketUiItemModel } from '../../api';
       heroDocumentDuplicate,
       heroClock,
       heroCalendarDays,
-      heroChevronUp
+      heroChevronUp,
     }),
     FilesizePipe,
   ],
@@ -153,7 +155,6 @@ export class FilemanagerComponent implements OnInit {
       input.value = '';
     }
   }
-
 
   openSearchModal() {
     this.isSearchModalOpen.set(true);

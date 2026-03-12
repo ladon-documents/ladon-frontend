@@ -520,8 +520,8 @@ export const FilemanagerStore = signalStore(
               const confirmed = await confirmationDialog.confirm({
                 title: document.isFolder ? 'Ordner löschen' : 'Datei löschen',
                 message: document.isFolder
-                  ? `Möchten Sie den Ordner "${document.key}" wirklich löschen? Alle enthaltenen Dateien werden ebenfalls gelöscht.`
-                  : `Möchten Sie die Datei "${document.key}" wirklich löschen?`,
+                  ? `Möchten Sie den Ordner "${document.name}" wirklich löschen? Alle enthaltenen Dateien werden ebenfalls gelöscht.`
+                  : `Möchten Sie die Datei "${document.name}" wirklich löschen?`,
                 confirmText: 'Löschen',
                 cancelText: 'Abbrechen',
                 danger: true,
@@ -560,8 +560,8 @@ export const FilemanagerStore = signalStore(
 
                   toastService.success(
                     document.isFolder
-                      ? `Ordner "${document.key}" wurde erfolgreich gelöscht`
-                      : `Datei "${document.key}" wurde erfolgreich gelöscht`,
+                      ? `Ordner "${document.name}" wurde erfolgreich gelöscht`
+                      : `Datei "${document.name}" wurde erfolgreich gelöscht`,
                   );
                 }),
                 catchError((error) => {

@@ -5,7 +5,7 @@
       <div class="spinner"></div>
       <p>PDF wird geladen... {{ loadingProgress() }}%</p>
       @if (selectedDocument()) {
-        <p>{{ selectedDocument()?.key }}</p>
+        <p>{{ selectedDocument()?.key || selectedDocument()?.name }}</p>
       }
     </div>
   }
@@ -16,7 +16,7 @@
       <h3>Fehler beim Laden der PDF</h3>
       <p>{{ errorMessage() }}</p>
       @if (selectedDocument()) {
-        <p>Dokument: {{ selectedDocument()?.key }}</p>
+        <p>Dokument: {{ selectedDocument()?.key || selectedDocument()?.name }}</p>
       }
       <button (click)="retryLoad()" class="retry-button">Erneut versuchen</button>
     </div>

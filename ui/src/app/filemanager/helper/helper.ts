@@ -169,7 +169,7 @@ const filterDocuments = (documents: DocumentModel[], searchTerm: string): Docume
   }
 
   const term = searchTerm.toLowerCase().trim();
-  return documents.filter((doc) => doc.key?.toLowerCase().includes(term));
+  return documents.filter((doc) => doc.name?.toLowerCase().includes(term) || doc.key?.toLowerCase().includes(term));
 };
 
 const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): DocumentModel[] => {
@@ -182,8 +182,8 @@ const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): Docu
 
     switch (sortConfig.field) {
       case 'name':
-        aValue = (a.key || '').toLowerCase();
-        bValue = (b.key || '').toLowerCase();
+        aValue = (a.name || '').toLowerCase();
+        bValue = (b.name || '').toLowerCase();
         break;
       case 'size':
         aValue = a.size || 0;

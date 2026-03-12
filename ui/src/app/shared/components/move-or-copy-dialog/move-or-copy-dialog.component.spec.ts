@@ -8,9 +8,8 @@ describe('MoveOrCopyDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MoveOrCopyDialogComponent]
-    })
-    .compileComponents();
+      imports: [MoveOrCopyDialogComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MoveOrCopyDialogComponent);
     component = fixture.componentInstance;

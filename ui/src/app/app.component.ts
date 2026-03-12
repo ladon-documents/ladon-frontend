@@ -35,7 +35,7 @@ import { InputDialogComponent } from './shared/components/input-dialog/input-dia
     ContextMenuComponent,
     ToastComponent,
     ConfirmationDialogComponent,
-    InputDialogComponent
+    InputDialogComponent,
   ],
   standalone: true,
   selector: 'ldn-ui',

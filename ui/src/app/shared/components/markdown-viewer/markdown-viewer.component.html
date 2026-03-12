@@ -2,12 +2,12 @@
   <div class="containers">
     @if (isLoading) {
     } @else {
-    <div class="container">
-      <textarea [innerHtml]="content" class="inputPane"></textarea>
-    </div>
-    <div class="container">
-      <div class="pane" [innerHTML]="renderedMarkdown"></div>
-    </div>
+      <div class="container">
+        <textarea [innerHtml]="content" class="inputPane"></textarea>
+      </div>
+      <div class="container">
+        <div class="pane" [innerHTML]="renderedMarkdown"></div>
+      </div>
     }
   </div>
 </div>

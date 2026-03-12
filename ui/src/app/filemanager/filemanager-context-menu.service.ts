@@ -115,7 +115,7 @@ export class FilemanagerContextMenuService {
   }
 
   private download(document: DocumentModel) {
-  //  this.filemanagerStore.get(document);
+    //  this.filemanagerStore.get(document);
   }
 
   private copyLink(document: DocumentModel) {

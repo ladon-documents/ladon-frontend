@@ -37,15 +37,11 @@ export const ClipboardStore = signalStore(
     isEmpty: computed(() => store.selectedDocuments().length === 0),
 
     allDocumentsArePdf: computed(
-      () =>
-        store.selectedDocuments().length > 0 &&
-        store.selectedDocuments().every((doc) => isPdfDocument(doc)),
+      () => store.selectedDocuments().length > 0 && store.selectedDocuments().every((doc) => isPdfDocument(doc)),
     ),
 
     canGeneratePdf: computed(
-      () =>
-        store.selectedDocuments().length >= 2 &&
-        store.selectedDocuments().every((doc) => isPdfDocument(doc)),
+      () => store.selectedDocuments().length >= 2 && store.selectedDocuments().every((doc) => isPdfDocument(doc)),
     ),
 
     canCreateZip: computed(() => store.selectedDocuments().length > 0),

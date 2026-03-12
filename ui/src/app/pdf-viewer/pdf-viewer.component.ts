@@ -116,7 +116,6 @@ export class PdfViewerComponent implements OnInit {
     return isPdfDocument(document);
   }
 
-
   private resetState(): void {
     this.pdfFacade.resetState();
   }

@@ -32,4 +32,22 @@ export * from './userController.service';
 import { UserControllerService } from './userController.service';
 export * from './usermanager.service';
 import { UsermanagerService } from './usermanager.service';
-export const APIS = [ActionsService, AuthControllerService, BucketsService, ConverterService, DocumentsService, DownloadsService, FilemanagerService, NodeInfoService, OsgiService, PluginmanagerService, StreamService, TagmanagerService, TasksService, TransactionService, UIService, UserControllerService, UsermanagerService];
+export const APIS = [
+  ActionsService,
+  AuthControllerService,
+  BucketsService,
+  ConverterService,
+  DocumentsService,
+  DownloadsService,
+  FilemanagerService,
+  NodeInfoService,
+  OsgiService,
+  PluginmanagerService,
+  StreamService,
+  TagmanagerService,
+  TasksService,
+  TransactionService,
+  UIService,
+  UserControllerService,
+  UsermanagerService,
+];

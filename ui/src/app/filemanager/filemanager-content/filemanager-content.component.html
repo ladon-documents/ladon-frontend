@@ -1,8 +1,7 @@
 <div class="h-full flex flex-col">
-
   @if (isDragOver()) {
     <div
-                                                                                        class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center pointer-events-none">
+      class="fixed inset-0 z-50 bg-primary/10 backdrop-blur-sm border-4 border-dashed border-primary/50 flex items-center justify-center pointer-events-none">
       <div class="card bg-base-100 shadow-2xl">
         <div class="card-body text-center max-w-sm">
           <div class="text-6xl mb-4 text-primary">
@@ -39,52 +38,52 @@
       </ladon-image-editor>
     </div>
   } @else {
-    <div class="flex-1 min-h-0 overflow-y-auto p-4"
-         appFileUpload
-         [acceptedTypes]="allowedFileTypes"
-         [maxFileSize]="maxFileSize"
-         [allowMultiple]="true"
-         (filesDropped)="onFilesDropped($event)"
-         (filesHovered)="onFilesHovered($event)"
-         (filesRejected)="onFilesRejected($event)">
+    <div
+      class="flex-1 min-h-0 overflow-y-auto p-4"
+      appFileUpload
+      [acceptedTypes]="allowedFileTypes"
+      [maxFileSize]="maxFileSize"
+      [allowMultiple]="true"
+      (filesDropped)="onFilesDropped($event)"
+      (filesHovered)="onFilesHovered($event)"
+      (filesRejected)="onFilesRejected($event)">
+      @if (viewMode() === "card") {
+        <ng-container [ngTemplateOutlet]="gridView"></ng-container>
+      }
+      @if (viewMode() === "table") {
+        <ng-container [ngTemplateOutlet]="tableView"></ng-container>
+      }
 
-    @if (viewMode() === "card") {
-      <ng-container [ngTemplateOutlet]="gridView"></ng-container>
-    }
-    @if (viewMode() === "table") {
-      <ng-container [ngTemplateOutlet]="tableView"></ng-container>
-    }
-
-    @if (documents().length === 0) {
-      <div cdkDropList
-           #emptyList="cdkDropList"
-           [cdkDropListData]="documents()"
-           [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
-           (cdkDropListDropped)="onDropFromClipboard($event)">
-
-        <div class="text-center py-12">
-          <div class="text-gray-400">
-            <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
-            @if (searchTerm()) {
-              <p class="text-lg font-medium">Keine Ergebnisse gefunden</p>
-              <p class="text-sm">Keine Dateien entsprechen dem Suchbegriff "{{ searchTerm() }}"</p>
-            } @else {
-              <p class="text-lg font-medium">Keine Dateien gefunden</p>
-              <p class="text-sm">Dieser Ordner ist leer</p>
-              <div class="mt-5">
-                <button class="btn btn-primary btn-sm" (click)="createFileFromEmptyState()">
-                  Neue Datei erstellen
-                </button>
-              </div>
-            }
+      @if (documents().length === 0) {
+        <div
+          cdkDropList
+          #emptyList="cdkDropList"
+          [cdkDropListData]="documents()"
+          [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
+          (cdkDropListDropped)="onDropFromClipboard($event)">
+          <div class="text-center py-12">
+            <div class="text-gray-400">
+              <ng-icon name="heroFolderOpen" size="3em" class="mx-auto mb-4"></ng-icon>
+              @if (searchTerm()) {
+                <p class="text-lg font-medium">Keine Ergebnisse gefunden</p>
+                <p class="text-sm">Keine Dateien entsprechen dem Suchbegriff "{{ searchTerm() }}"</p>
+              } @else {
+                <p class="text-lg font-medium">Keine Dateien gefunden</p>
+                <p class="text-sm">Dieser Ordner ist leer</p>
+                <div class="mt-5">
+                  <button class="btn btn-primary btn-sm" (click)="createFileFromEmptyState()">
+                    Neue Datei erstellen
+                  </button>
+                </div>
+              }
+            </div>
           </div>
         </div>
-      </div>
-    }
+      }
 
-    <div class="flex-shrink-0 border-t border-gray-500/40 px-4">
-      <filemanager-pagination></filemanager-pagination>
-    </div>
+      <div class="flex-shrink-0 border-t border-gray-500/40 px-4">
+        <filemanager-pagination></filemanager-pagination>
+      </div>
     </div>
   }
 
@@ -93,66 +92,67 @@
       <div class="overflow-x-auto">
         <table class="table table-zebra w-full">
           <thead>
-          <tr>
-            <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('name')">
-              <div class="flex items-center gap-1">
-                Name
-                @if (sortConfig().field === "name") {
-                  <ng-icon
-                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                                                                                                      size="0.8em"></ng-icon>
-                }
-              </div>
-            </th>
-            <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('size')">
-              <div class="flex items-center gap-1">
-                Größe
-                @if (sortConfig().field === "size") {
-                  <ng-icon
-                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                                                                                                      size="0.8em"></ng-icon>
-                }
-              </div>
-            </th>
-            <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('last-modified')">
-              <div class="flex items-center gap-1">
-                Geändert
-                @if (sortConfig().field === "last-modified") {
-                  <ng-icon
-                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                                                                                                      size="0.8em"></ng-icon>
-                }
-              </div>
-            </th>
-            <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('created')">
-              <div class="flex items-center gap-1">
-                Erstellt
-                @if (sortConfig().field === "created") {
-                  <ng-icon
-                                                                                                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                                                                                                      size="0.8em"></ng-icon>
-                }
-              </div>
-            </th>
-            <th class="w-16"></th>
-          </tr>
+            <tr>
+              <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('name')">
+                <div class="flex items-center gap-1">
+                  Name
+                  @if (sortConfig().field === "name") {
+                    <ng-icon
+                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                      size="0.8em"></ng-icon>
+                  }
+                </div>
+              </th>
+              <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('size')">
+                <div class="flex items-center gap-1">
+                  Größe
+                  @if (sortConfig().field === "size") {
+                    <ng-icon
+                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                      size="0.8em"></ng-icon>
+                  }
+                </div>
+              </th>
+              <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('last-modified')">
+                <div class="flex items-center gap-1">
+                  Geändert
+                  @if (sortConfig().field === "last-modified") {
+                    <ng-icon
+                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                      size="0.8em"></ng-icon>
+                  }
+                </div>
+              </th>
+              <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('created')">
+                <div class="flex items-center gap-1">
+                  Erstellt
+                  @if (sortConfig().field === "created") {
+                    <ng-icon
+                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                      size="0.8em"></ng-icon>
+                  }
+                </div>
+              </th>
+              <th class="w-16"></th>
+            </tr>
           </thead>
 
-          <tbody cdkDropList
-                 #tableList="cdkDropList"
-                 [cdkDropListData]="documents()"
-                 [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
-                 (cdkDropListDropped)="onDropFromClipboard($event)">
+          <tbody
+            cdkDropList
+            #tableList="cdkDropList"
+            [cdkDropListData]="documents()"
+            [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
+            (cdkDropListDropped)="onDropFromClipboard($event)">
             @for (document of documents(); track document.path; let i = $index) {
-              <tr cdkDrag
-                  [cdkDragData]="document"
-                  class="hover:bg-base cursor-pointer group/tablerow"
-                  [class.border-l-4]="isSelected(document)"
-                  [class.border-l-primary]="isSelected(document)"
-                  (dblclick)="navigateTo(document)"
-                  (click)="onItemClick(document, i, $event)"
-                  (contextmenu)="onContextMenu($event, document)">
-
+              <tr
+                cdkDrag
+                [cdkDragData]="document"
+                class="hover:bg-base cursor-pointer group/tablerow"
+                [class.border-l-4]="isSelected(document)"
+                [class.border-l-primary]="isSelected(document)"
+                (dblclick)="navigateTo(document)"
+                (click)="onItemClick(document, i, $event)"
+                (contextmenu)="onContextMenu($event, document)">
                 <td>
                   <div class="flex items-center gap-2">
                     @if (document.isFolder) {
@@ -162,7 +162,7 @@
                     } @else {
                       <div class="w-6 h-6">
                         @if (document.key) {
-                          <img src="{{ document.key | fileicon }}" class="w-6 h-6"/>
+                          <img src="{{ document.key | fileicon }}" class="w-6 h-6" />
                         }
                       </div>
                     }
@@ -189,12 +189,12 @@
                 <td class="w-16">
                   <div class="flex items-center gap-2 opacity-0 group-hover/tablerow:opacity-100 transition-opacity">
                     <button
-                                                                                                        class="btn btn-ghost btn-xs btn-square"
-                                                                                                        (click)="toggleFavorite(document); $event.stopPropagation()">
+                      class="btn btn-ghost btn-xs btn-square"
+                      (click)="toggleFavorite(document); $event.stopPropagation()">
                       <ng-icon
-                                                                                                          [name]="favoritesStore.isFavorite(document) ? 'heroStarSolid' : 'heroStar'"
-                                                                                                          [class.text-warning]="favoritesStore.isFavorite(document)"
-                                                                                                          size="1.0em">
+                        [name]="favoritesStore.isFavorite(document) ? 'heroStarSolid' : 'heroStar'"
+                        [class.text-warning]="favoritesStore.isFavorite(document)"
+                        size="1.0em">
                       </ng-icon>
                     </button>
                   </div>
@@ -209,32 +209,32 @@
 
   <ng-template #gridView>
     @if (viewMode() === "card") {
-      <div class="grid grid-flow-dense grid-cols-12 gap-4"
-           cdkDropList
-           #gridList="cdkDropList"
-           [cdkDropListData]="documents()"
-           [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
-           (cdkDropListDropped)="onDropFromClipboard($event)">
+      <div
+        class="grid grid-flow-dense grid-cols-12 gap-4"
+        cdkDropList
+        #gridList="cdkDropList"
+        [cdkDropListData]="documents()"
+        [cdkDropListConnectedTo]="clipboardList() ? [clipboardList()] : []"
+        (cdkDropListDropped)="onDropFromClipboard($event)">
         @for (document of documents(); track document.path; let i = $index) {
           <div
-                                                                                              cdkDrag
-                                                                                              [cdkDragData]="document"
-                                                                                              class="group/fileitem relative border border-gray-500/40 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow"
-                                                                                              [class.border-blue-700]="isSelected(document)"
-                                                                                              [class.shadow-lg]="isSelected(document)"
-                                                                                              [class.bg-base-300]="isSelected(document)"
-                                                                                              (dblclick)="navigateTo(document)"
-                                                                                              (click)="onItemClick(document, i, $event)"
-                                                                                              (contextmenu)="onContextMenu($event, document)">
-
+            cdkDrag
+            [cdkDragData]="document"
+            class="group/fileitem relative border border-gray-500/40 rounded col-span-12 xs:col-span-6 sm:col-span-4 xl:col-span-3 2xl:col-span-2 hover:shadow-md transition-shadow"
+            [class.border-blue-700]="isSelected(document)"
+            [class.shadow-lg]="isSelected(document)"
+            [class.bg-base-300]="isSelected(document)"
+            (dblclick)="navigateTo(document)"
+            (click)="onItemClick(document, i, $event)"
+            (contextmenu)="onContextMenu($event, document)">
             <div class="absolute top-2 right-2 z-10 opacity-0 group-hover/fileitem:opacity-100 transition-opacity">
               <button
-                                                                                                  class="btn btn-ghost btn-xs btn-square"
-                                                                                                  (click)="toggleFavorite(document); $event.stopPropagation()">
+                class="btn btn-ghost btn-xs btn-square"
+                (click)="toggleFavorite(document); $event.stopPropagation()">
                 <ng-icon
-                                                                                                    [name]="favoritesStore.isFavorite(document) ? 'heroStarSolid' : 'heroStar'"
-                                                                                                    [class.text-warning]="favoritesStore.isFavorite(document)"
-                                                                                                    size="1.2em">
+                  [name]="favoritesStore.isFavorite(document) ? 'heroStarSolid' : 'heroStar'"
+                  [class.text-warning]="favoritesStore.isFavorite(document)"
+                  size="1.2em">
                 </ng-icon>
               </button>
             </div>
@@ -244,7 +244,7 @@
                 <app-folder class="self-center" [style]="'--folder-size: 6rem'"></app-folder>
               } @else {
                 @if (document.key) {
-                  <img src="{{ document.key | fileicon }}" class="h-18 [&>svg]:h-full [&>svg]:mx-auto mb-2"/>
+                  <img src="{{ document.key | fileicon }}" class="h-18 [&>svg]:h-full [&>svg]:mx-auto mb-2" />
                 }
               }
               <div class="relative text-sm/snug text-center break-all font-medium">
@@ -268,5 +268,4 @@
   </ng-template>
 
   <move-or-copy-dialog></move-or-copy-dialog>
-
 </div>

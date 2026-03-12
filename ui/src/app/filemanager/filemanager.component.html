@@ -109,10 +109,10 @@
 
           <div class="flex items-center gap-2">
             <button
-                                                                                                class="btn btn-square btn-outline btn-sm btn-primary"
-                                                                                                (click)="toggleViewMode()"
-                                                                                                [title]="viewMode() === 'card' ? 'Zur Tabellenansicht wechseln' : 'Zur Card-Ansicht wechseln'">
-              @if (viewMode() === 'card') {
+              class="btn btn-square btn-outline btn-sm btn-primary"
+              (click)="toggleViewMode()"
+              [title]="viewMode() === 'card' ? 'Zur Tabellenansicht wechseln' : 'Zur Card-Ansicht wechseln'">
+              @if (viewMode() === "card") {
                 <ng-icon name="heroBars3" size="1.2em" class="size-5"></ng-icon>
               } @else {
                 <ng-icon name="heroSquares2x2" size="1.2em" class="size-5"></ng-icon>
@@ -136,9 +136,11 @@
                 <ul
                   tabindex="0"
                   class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
-                  <li><a>
-                    <create-new-file></create-new-file>
-                  </a></li>
+                  <li>
+                    <a>
+                      <create-new-file></create-new-file>
+                    </a>
+                  </li>
                   <li>
                     <a>
                       <create-folder></create-folder>
@@ -165,17 +167,15 @@
     </div>
 
     <div
-                                                                                        class="grid gap-0 h-[calc(100%-4.5rem)] transition-all duration-300 ease-in-out"[style.grid-template-columns]="sidebarService.isOpen()
-    ? '1fr ' + sidebarService.width() + 'px'
-    : '1fr 0px'">
+      class="grid gap-0 h-[calc(100%-4.5rem)] transition-all duration-300 ease-in-out"
+      [style.grid-template-columns]="sidebarService.isOpen() ? '1fr ' + sidebarService.width() + 'px' : '1fr 0px'">
       <div class="min-w-0 overflow-hidden">
         <div class="h-full overflow-y-auto">
           <router-outlet></router-outlet>
         </div>
       </div>
 
-      <div
-        class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-500/40">
+      <div class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-500/40">
         <filemanager-sidebar></filemanager-sidebar>
       </div>
     </div>

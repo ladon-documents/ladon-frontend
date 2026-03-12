@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 export type SidebarMode = 'preview' | 'clipboard';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SidebarService {
   private _isOpen = signal(false);
@@ -16,7 +16,6 @@ export class SidebarService {
   mode = this._mode.asReadonly();
   width = this._width.asReadonly();
 
-
   get minWidth() {
     return this._minWidth;
   }
@@ -25,9 +24,8 @@ export class SidebarService {
     return this._maxWidth;
   }
 
-
   toggleSidebar() {
-    this._isOpen.update(isOpen => !isOpen);
+    this._isOpen.update((isOpen) => !isOpen);
   }
 
   openSidebar() {
@@ -59,5 +57,4 @@ export class SidebarService {
     const clampedWidth = Math.min(Math.max(width, this._minWidth), this._maxWidth);
     this._width.set(clampedWidth);
   }
-
 }

@@ -15,7 +15,7 @@ import { DocumentModel } from '../../../../api';
       heroArrowRight,
     }),
   ],
-  templateUrl: './move-or-copy-dialog.component.html'
+  templateUrl: './move-or-copy-dialog.component.html',
 })
 export class MoveOrCopyDialogComponent {
   @ViewChild(DialogComponent, { static: true }) dialog: DialogComponent | undefined;

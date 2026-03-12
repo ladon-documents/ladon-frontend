@@ -1,41 +1,42 @@
 @if (isOpen) {
-  <div class="bg-base-100 h-full flex flex-col relative"
-       [style.width.px]="sidebarService.width()">
+  <div class="bg-base-100 h-full flex flex-col relative" [style.width.px]="sidebarService.width()">
     <sidebar-resizer></sidebar-resizer>
 
-
-    @if (sidebarService.mode() === 'preview') {
+    @if (sidebarService.mode() === "preview") {
       <div class="flex border-b border-gray-500/40 flex-shrink-0">
         <button
-                                                                                            class="flex-1 px-4 py-3 text-sm font-medium transition-colors duration-200"
-                                                                                            [class]="activeTab() === 'meta'
-            ? 'border-b-2 border-primary text-primary'
-            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                                                                            (click)="setActiveTab('meta')">
+          class="flex-1 px-4 py-3 text-sm font-medium transition-colors duration-200"
+          [class]="
+            activeTab() === 'meta'
+              ? 'border-b-2 border-primary text-primary'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          "
+          (click)="setActiveTab('meta')">
           Metadaten
         </button>
         <button
-                                                                                            class="flex-1 px-4 py-3 text-sm font-medium transition-colors duration-200"
-                                                                                            [class]="activeTab() === 'clipboard'
-            ? 'border-b-2 border-primary text-primary'
-            : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                                                                            (click)="setActiveTab('clipboard')">
+          class="flex-1 px-4 py-3 text-sm font-medium transition-colors duration-200"
+          [class]="
+            activeTab() === 'clipboard'
+              ? 'border-b-2 border-primary text-primary'
+              : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+          "
+          (click)="setActiveTab('clipboard')">
           Clipboard
           <span class="ml-2 badge badge-primary badge-sm">
             {{ clipboardStore.documentCount() }}
           </span>
         </button>
-
       </div>
     }
 
     <div class="flex-1 overflow-y-auto">
       <div class="p-4">
-        @if (sidebarService.mode() === 'clipboard') {
+        @if (sidebarService.mode() === "clipboard") {
           <ladon-clip-board></ladon-clip-board>
         } @else {
           <!-- Tab Content -->
-          @if (activeTab() === 'clipboard') {
+          @if (activeTab() === "clipboard") {
             <ladon-clip-board></ladon-clip-board>
           } @else {
             <filemanager-preview></filemanager-preview>

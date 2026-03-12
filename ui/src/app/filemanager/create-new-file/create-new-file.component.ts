@@ -1,7 +1,7 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import {DialogComponent} from "@ladon/shared";
-import {FormsModule} from "@angular/forms";
-import {NgIconComponent, provideIcons } from "@ng-icons/core";
+import { DialogComponent } from '@ladon/shared';
+import { FormsModule } from '@angular/forms';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { heroDocument, heroXMark } from '@ng-icons/heroicons/outline';
 import { InputDialogService } from '../../shared/services/input-dialog.service';

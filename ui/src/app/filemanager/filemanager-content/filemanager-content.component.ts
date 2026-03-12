@@ -11,11 +11,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import {
-  CdkDrag,
-  CdkDragDrop,
-  CdkDropList,
-} from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DocumentModel } from '@ladon/api';
@@ -68,7 +64,6 @@ interface ImageEditorSaveEventDetail {
   mimeType: string;
   saveAs: boolean;
 }
-
 
 @Component({
   standalone: true,
@@ -304,7 +299,9 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
 
     this.filemanagerContextMenuService.onContextMenu(event, document, {
       editImage: imageEditorAction,
-      openEditor: this.monacoEditorService.isEditableFile(document.key) ? () => this.openTextEditor(document) : undefined,
+      openEditor: this.monacoEditorService.isEditableFile(document.key)
+        ? () => this.openTextEditor(document)
+        : undefined,
       openPdf: filemanagerHelper.isPdf(document) ? () => this.openPdfFromContextMenu(document) : undefined,
       openAudio: openAudioAction,
     });

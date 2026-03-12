@@ -136,10 +136,12 @@ export const FilemanagerTagsStore = signalStore(
             }
 
             const normalizedValue = normalizeTag(trimmedValue);
-            const duplicateExists = store.tags().some(
-              (tag) =>
-                normalizeTag(tag.value ?? '') === normalizedValue || normalizeTag(tag.name ?? '') === normalizedValue,
-            );
+            const duplicateExists = store
+              .tags()
+              .some(
+                (tag) =>
+                  normalizeTag(tag.value ?? '') === normalizedValue || normalizeTag(tag.name ?? '') === normalizedValue,
+              );
 
             if (duplicateExists) {
               patchState(store, { error: 'Tag existiert bereits' });

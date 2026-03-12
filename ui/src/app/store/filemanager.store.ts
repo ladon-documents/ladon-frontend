@@ -11,6 +11,7 @@ import { filemanagerHelper } from '../filemanager/helper/helper';
 import { buildTargetPath } from '@utility';
 import { ToastService } from '../shared/services/toast.service';
 import { ConfirmationDialogService } from '../shared/services/confirmation-dialog.service';
+import { ClipboardStore } from './clipboard.store';
 
 export interface PaginationState {
   currentPage: number;
@@ -81,6 +82,7 @@ export const FilemanagerStore = signalStore(
       breadcrumbStore = inject(BreadcrumbStore),
       toastService = inject(ToastService),
       confirmationDialog = inject(ConfirmationDialogService),
+      clipboardStore = inject(ClipboardStore),
     ) => {
       const reloadCurrentList = () => {
         const currentFolder = store.currentFolder();
@@ -478,7 +480,7 @@ export const FilemanagerStore = signalStore(
               const folderPath = currentPath
                 ? `${currentPath.endsWith('/') ? currentPath : currentPath + '/'}${folderName}/`
                 : `${folderName}/`;
-              return filemanagerService.createNewFile(bucket, folderPath, null ).pipe(
+              return filemanagerService.createNewFile(bucket, folderPath, null).pipe(
                 switchMap(() => reloadCurrentList()),
                 tap((documents) => {
                   const { filteredDocuments, paginatedDocuments, paginationState } =
@@ -611,7 +613,8 @@ export const FilemanagerStore = signalStore(
                     pagination: paginationState,
                     error: null,
                   });
-
+                  // @ts-ignore
+                  clipboardStore.removeDocument(document.key);
                   toastService.success(`"${document.name}" wurde erfolgreich verschoben`);
                 }),
                 catchError((error) => {
@@ -658,7 +661,8 @@ export const FilemanagerStore = signalStore(
                     pagination: paginationState,
                     error: null,
                   });
-
+                  // @ts-ignore
+                  clipboardStore.removeDocument(document.key);
                   toastService.success(`"${document.name}" wurde erfolgreich kopiert`);
                 }),
                 catchError((error) => {

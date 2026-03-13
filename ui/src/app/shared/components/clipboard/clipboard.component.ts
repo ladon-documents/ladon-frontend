@@ -7,6 +7,7 @@ import { FileiconPipe } from '../../pipes/fileicon.pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { FilesizePipe } from '../../pipes/filesize.pipe';
 import { ClipboardStore } from '../../../store/clipboard.store';
+import { SelectionStore } from '../../../store/selection.store';
 import {
   heroArchiveBox,
   heroBars3,
@@ -58,6 +59,7 @@ export class ClipboardComponent implements AfterViewInit {
     reset: false,
   };
   readonly clipboardStore = inject(ClipboardStore);
+  readonly selectionStore = inject(SelectionStore);
   protected readonly originList = inject(ClipboardService).originList;
 
   constructor(private clipboardService: ClipboardService) {}
@@ -71,9 +73,38 @@ export class ClipboardComponent implements AfterViewInit {
     if (event.previousContainer === event.container) {
       this.clipboardStore.reorderDocuments(event.previousIndex, event.currentIndex);
     } else {
-      const document = event.previousContainer.data[event.previousIndex];
-      this.clipboardStore.addDocument(document);
+      const documents = this.resolveDragDocuments(event);
+      if (documents.length > 0) {
+        this.clipboardStore.addDocuments(documents);
+      }
     }
+  }
+
+  onItemClick(document: DocumentModel, index: number, event: MouseEvent): void {
+    if (event.shiftKey) {
+      this.selectionStore.selectRange(this.clipboardStore.selectedDocuments(), index);
+      return;
+    }
+
+    if (event.ctrlKey || event.metaKey) {
+      this.selectionStore.toggleSelection(document, index);
+      return;
+    }
+
+    this.selectionStore.selectSingle(document, index);
+  }
+
+  getDragPayload(document: DocumentModel): DocumentModel[] {
+    if (!this.selectionStore.isSelected(document)) {
+      return [document];
+    }
+
+    const clipboardDocumentIds = new Set(this.clipboardStore.selectedDocuments().map((doc) => this.documentId(doc)));
+    const selectedClipboardDocuments = this.selectionStore
+      .selectedDocuments()
+      .filter((selectedDocument) => clipboardDocumentIds.has(this.documentId(selectedDocument)));
+
+    return selectedClipboardDocuments.length > 1 ? selectedClipboardDocuments : [document];
   }
 
   remove(doc: DocumentModel): void {
@@ -116,5 +147,19 @@ export class ClipboardComponent implements AfterViewInit {
 
   dismissError(): void {
     this.clipboardStore.clearError();
+  }
+
+  private resolveDragDocuments(event: CdkDragDrop<DocumentModel[]>): DocumentModel[] {
+    const dragData = event.item.data;
+    if (Array.isArray(dragData)) {
+      return dragData;
+    }
+
+    const fallbackDocument = event.previousContainer.data[event.previousIndex];
+    return fallbackDocument ? [fallbackDocument] : [];
+  }
+
+  private documentId(document: DocumentModel): string {
+    return `${document.bucket || ''}::${document.key || document.path || document.name || ''}`;
   }
 }

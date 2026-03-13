@@ -188,8 +188,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   }
 
   isSelected(document: DocumentModel): boolean {
-    const selected = this.#facade.selectedDocument();
-    return selected?.path === document.path && selected?.key === document.key;
+    return this.selectionStore.isSelected(document);
   }
 
   ngOnDestroy(): void {
@@ -312,16 +311,21 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
 
   toggleSelection(document: DocumentModel, index: number, event: Event) {
     const mouseEvent = event as MouseEvent;
-    this.selectionStore.toggleSelection(document, index, mouseEvent.shiftKey);
+    if (mouseEvent.shiftKey) {
+      this.selectionStore.selectRange(this.documents(), index);
+      return;
+    }
+
+    this.selectionStore.toggleSelection(document, index);
   }
 
   onItemClick(document: DocumentModel, index: number, event: MouseEvent) {
-    if (event.ctrlKey || event.metaKey) {
+    if (event.shiftKey || event.ctrlKey || event.metaKey) {
       this.toggleSelection(document, index, event);
-    } else if (event.shiftKey) {
-      this.toggleSelection(document, index, event);
+      this.#facade.setSelectedDocument(document);
     } else {
-      this.select(document);
+      this.selectionStore.selectSingle(document, index);
+      void this.select(document);
     }
   }
 
@@ -345,18 +349,48 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
 
   onDropFromClipboard(event: CdkDragDrop<DocumentModel[]>) {
     if (event.previousContainer !== event.container) {
-      const droppedDocument = event.previousContainer.data[event.previousIndex];
-      this.showMoveOrCopyDialog(droppedDocument);
+      const droppedDocuments = this.resolveDroppedDocuments(event);
+      if (droppedDocuments.length > 0) {
+        void this.showMoveOrCopyDialog(droppedDocuments);
+      }
     }
   }
 
-  private async showMoveOrCopyDialog(document: DocumentModel) {
-    const action = await this.moveOrCopyDialogVC.openDialog(document);
+  getDragPayload(document: DocumentModel): DocumentModel[] {
+    const visibleDocumentsById = new Set(this.documents().map((doc) => this.documentId(doc)));
+    const visibleSelection = this.selectionStore
+      .selectedDocuments()
+      .filter((selectedDoc) => visibleDocumentsById.has(this.documentId(selectedDoc)));
+
+    if (visibleSelection.length > 1 && this.selectionStore.isSelected(document)) {
+      return visibleSelection;
+    }
+
+    return [document];
+  }
+
+  private resolveDroppedDocuments(event: CdkDragDrop<DocumentModel[]>): DocumentModel[] {
+    const dragData = event.item.data;
+    if (Array.isArray(dragData)) {
+      return dragData;
+    }
+
+    const fallbackDocument = event.previousContainer.data[event.previousIndex];
+    return fallbackDocument ? [fallbackDocument] : [];
+  }
+
+  private async showMoveOrCopyDialog(documents: DocumentModel[]) {
+    const representativeDocument = documents[0];
+    if (!representativeDocument) {
+      return;
+    }
+
+    const action = await this.moveOrCopyDialogVC.openDialog(representativeDocument);
 
     if (action === 'move') {
-      this.#facade.moveDocument(document);
+      this.#facade.moveDocuments(documents);
     } else if (action === 'copy') {
-      this.#facade.copyDocument(document);
+      this.#facade.copyDocuments(documents);
     }
   }
 
@@ -491,5 +525,9 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
     }
 
     this.sidebarService.openSidebar();
+  }
+
+  private documentId(document: DocumentModel): string {
+    return `${document.bucket || ''}::${document.key || document.path || document.name || ''}`;
   }
 }

@@ -24,12 +24,15 @@
     "releasenotes.md"
   ],
   "devDependencies": {
+    "@angular/common": "^21.2.4",
+    "@angular/core": "^21.2.4",
     "@openapitools/openapi-generator-cli": "^2.15.3",
     "@types/jasmine": "^5.1.5",
     "esbuild": "0.24.2",
     "jasmine": "^5.5.0",
     "jasmine-core": "^5.5.0",
     "rimraf": "^6.0.1",
+    "rxjs": "^7.8.2",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "5.7.3"

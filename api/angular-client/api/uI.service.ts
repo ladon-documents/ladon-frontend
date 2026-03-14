@@ -31,6 +31,8 @@ import { DataResponseModel } from '../model/dataResponse';
 // @ts-ignore
 import { DocumentModel } from '../model/document';
 // @ts-ignore
+import { MultiValueMapStringStringModel } from '../model/multiValueMapStringString';
+// @ts-ignore
 import { NewBucketModel } from '../model/newBucket';
 
 // @ts-ignore

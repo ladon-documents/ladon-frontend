@@ -22,6 +22,7 @@ import type {
   ChartData,
   DataResponse,
   Document,
+  MultiValueMapStringString,
   NewBucket,
 } from '../models/index';
 import {

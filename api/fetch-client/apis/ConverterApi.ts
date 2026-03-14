@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   ConverterInfo,
   ConverterJob,
+  MultiValueMapStringString,
 } from '../models/index';
 import {
     ConverterInfoFromJSON,

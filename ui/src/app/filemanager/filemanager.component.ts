@@ -25,7 +25,6 @@ import {
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
-import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
 import { filemanagerRoutes } from './filemanager.routes';
@@ -41,7 +40,6 @@ import { CreateNewFileComponent } from './create-new-file/create-new-file.compon
     RouterModule,
     NgIconComponent,
     BreadcrumbComponent,
-    FileUploaderComponent,
     CreateFolderComponent,
     SidebarComponent,
     SearchModalComponent,

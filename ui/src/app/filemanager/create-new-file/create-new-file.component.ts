@@ -1,5 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
-import { DialogComponent } from '@ladon/shared';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { FilemanagerFacade } from '../filemanager.facade';
@@ -9,7 +8,7 @@ import { InputDialogService } from '../../shared/services/input-dialog.service';
 @Component({
   selector: 'create-new-file',
   standalone: true,
-  imports: [DialogComponent, FormsModule, NgIconComponent, FormsModule],
+  imports: [FormsModule, NgIconComponent],
   providers: [
     provideIcons({
       heroDocument,

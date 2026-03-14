@@ -88,7 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onPdfLoaded(event: { document: DocumentModel; totalPages: number }): void {
-    console.log(`PDF geladen: ${event.document.key} mit ${event.totalPages} Seiten`);
+    console.log(`PDF geladen: ${event.document.name} mit ${event.totalPages} Seiten`);
   }
 
   onPdfError(event: { document: DocumentModel | null; error: string }): void {
@@ -96,19 +96,19 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onPageChanged(event: { document: DocumentModel | null; page: number; totalPages: number }): void {
-    console.log(`Seite geändert: ${event.page}/${event.totalPages} für ${event.document?.key}`);
+    console.log(`Seite geändert: ${event.page}/${event.totalPages} für ${event.document?.name}`);
   }
 
   onDownloadRequested(event: { document: DocumentModel }): void {
-    console.log('Download angefordert für:', event.document.key);
+    console.log('Download angefordert für:', event.document.name);
   }
 
   onPrintRequested(event: { document: DocumentModel }): void {
-    console.log('Druck angefordert für:', event.document.key);
+    console.log('Druck angefordert für:', event.document.name);
   }
 
   onPdfClosed(event: { document: DocumentModel | null }): void {
-    console.log('PDF Viewer geschlossen für:', event.document?.key);
+    console.log('PDF Viewer geschlossen für:', event.document?.name);
   }
 }
 

@@ -571,7 +571,7 @@ export const FilemanagerStore = signalStore(
                   });
 
                   toastService.error(
-                    `Fehler beim Löschen von "${document.key}": ${error.message || 'Unbekannter Fehler'}`,
+                    `Fehler beim Löschen von "${document.name}": ${error.message || 'Unbekannter Fehler'}`,
                   );
 
                   return EMPTY;

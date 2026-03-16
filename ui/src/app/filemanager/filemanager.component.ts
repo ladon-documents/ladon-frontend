@@ -10,12 +10,11 @@ import {
   heroCalendarDays,
   heroChevronDown,
   heroChevronUp,
+  heroCloudArrowUp,
   heroClock,
-  heroDocument,
   heroDocumentDuplicate,
   heroDocumentText,
   heroEye,
-  heroFolder,
   heroMagnifyingGlass,
   heroPlus,
   heroScale,
@@ -28,10 +27,11 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
-import { filemanagerRoutes } from './filemanager.routes';
 import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
 import { BucketUiItemModel } from '../../api';
 import { CreateNewFileComponent } from './create-new-file/create-new-file.component';
+import { FilemanagerWorkspaceService } from './filemanager-workspace.service';
+import { FilemanagerWorkspaceViewComponent } from './workspace-view/workspace-view.component';
 
 @Component({
   standalone: true,
@@ -46,6 +46,7 @@ import { CreateNewFileComponent } from './create-new-file/create-new-file.compon
     SidebarComponent,
     SearchModalComponent,
     CreateNewFileComponent,
+    FilemanagerWorkspaceViewComponent,
   ],
   providers: [
     provideNgIconsConfig({
@@ -54,8 +55,6 @@ import { CreateNewFileComponent } from './create-new-file/create-new-file.compon
     }),
     provideIcons({
       heroPlus,
-      heroDocument,
-      heroFolder,
       heroEye,
       heroBars3,
       heroSquares2x2,
@@ -63,6 +62,7 @@ import { CreateNewFileComponent } from './create-new-file/create-new-file.compon
       heroXMark,
       heroBars3BottomLeft,
       heroChevronDown,
+      heroCloudArrowUp,
       heroDocumentText,
       heroScale,
       heroDocumentDuplicate,
@@ -78,6 +78,7 @@ import { CreateNewFileComponent } from './create-new-file/create-new-file.compon
 })
 export class FilemanagerComponent implements OnInit {
   private readonly filemanagerFacade = inject(FilemanagerFacade);
+  readonly workspaceService = inject(FilemanagerWorkspaceService);
   sidebarService = inject(SidebarService);
 
   readonly selectedBucket: Signal<string | null> = this.filemanagerFacade.selectedBucket;
@@ -89,6 +90,7 @@ export class FilemanagerComponent implements OnInit {
   readonly searchTerm = this.filemanagerFacade.searchTerm;
   readonly sortConfig = this.filemanagerFacade.sortConfig;
   readonly pagination = this.filemanagerFacade.pagination;
+  readonly workspaceMode = this.workspaceService.mode;
 
   constructor(
     private router: Router,
@@ -168,7 +170,4 @@ export class FilemanagerComponent implements OnInit {
     console.log('Selected bucket:', bucket);
     this.filemanagerFacade.loadBucket(bucket.id as string);
   }
-
-  protected readonly heroDocument = heroDocument;
-  protected readonly heroFolder = heroFolder;
 }

@@ -20,32 +20,52 @@ export class FilemanagerContextMenuService {
   onContextMenu(
     event: MouseEvent,
     document: DocumentModel,
-    actions?: { editImage?: () => void; openEditor?: () => void; openPdf?: () => void; openAudio?: () => void },
+    actions?: {
+      editImage?: () => void;
+      openEditor?: () => void;
+      openPdf?: () => void;
+      openAudio?: () => void;
+      openMedia?: () => void;
+    },
+    contextDocuments: DocumentModel[] = [document],
   ) {
     event.preventDefault();
     event.stopPropagation();
 
+    const targetDocuments = contextDocuments.length > 0 ? contextDocuments : [document];
+    const primaryDocument = targetDocuments[0] ?? document;
+    const isMultiSelection = targetDocuments.length > 1;
+    const allTargetsAreFavorites = targetDocuments.every((item) => this.favoritesStore.isFavorite(item));
+
     const menuItems = [
+      ...(!isMultiSelection
+        ? [
+            {
+              label: 'Download',
+              icon: 'heroPencilSquare',
+              action: () => this.download(primaryDocument),
+            },
+          ]
+        : []),
       {
-        label: 'Download',
-        icon: 'heroPencilSquare',
-        action: () => this.download(document),
-      },
-      {
-        label: 'Kopieren',
+        label: isMultiSelection ? `Kopieren (${targetDocuments.length})` : 'Kopieren',
         icon: 'heroDocumentDuplicate',
-        action: () => this.copy(document),
+        action: () => this.copy(targetDocuments),
       },
-      {
-        label: 'Umbenennen',
-        icon: 'heroPencilSquare',
-        action: () => this.rename(document),
-      },
-      {
-        label: 'Link kopieren',
-        icon: 'heroLink',
-        action: () => this.copyLink(document),
-      },
+      ...(!isMultiSelection
+        ? [
+            {
+              label: 'Umbenennen',
+              icon: 'heroPencilSquare',
+              action: () => this.rename(primaryDocument),
+            },
+            {
+              label: 'Link kopieren',
+              icon: 'heroLink',
+              action: () => this.copyLink(primaryDocument),
+            },
+          ]
+        : []),
       ...(actions?.openEditor
         ? [
             {
@@ -73,7 +93,16 @@ export class FilemanagerContextMenuService {
             },
           ]
         : []),
-      ...(filemanagerHelper.isImage(document) && actions?.editImage
+      ...(actions?.openMedia
+        ? [
+            {
+              label: 'Im Media Player öffnen',
+              icon: 'heroEye',
+              action: actions.openMedia,
+            },
+          ]
+        : []),
+      ...(!isMultiSelection && filemanagerHelper.isImage(primaryDocument) && actions?.editImage
         ? [
             {
               label: 'Bild bearbeiten',
@@ -84,22 +113,26 @@ export class FilemanagerContextMenuService {
         : []),
       { divider: true, label: '1', icon: '', action: () => {} },
       {
-        label: this.favoritesStore.isFavorite(document) ? 'Von Favoriten entfernen' : 'Zu Favoriten',
+        label: allTargetsAreFavorites ? 'Von Favoriten entfernen' : 'Zu Favoriten hinzufügen',
         icon: 'heroStar',
-        action: () => this.favoritesStore.toggleFavorite(document),
+        action: () => this.toggleFavorites(targetDocuments),
       },
-      { divider: true, label: '2', icon: '', action: () => {} },
+      ...(!isMultiSelection
+        ? [
+            { divider: true, label: '2', icon: '', action: () => {} },
+            {
+              label: 'Eigenschaften',
+              icon: 'heroInformationCircle',
+              action: () => this.showProperties(primaryDocument),
+            },
+            { divider: true, label: '3', icon: '', action: () => {} },
+          ]
+        : []),
       {
-        label: 'Eigenschaften',
-        icon: 'heroInformationCircle',
-        action: () => this.showProperties(document),
-      },
-      { divider: true, label: '3', icon: '', action: () => {} },
-      {
-        label: 'Löschen',
+        label: isMultiSelection ? `Löschen (${targetDocuments.length})` : 'Löschen',
         icon: 'heroTrash',
         danger: true,
-        action: () => this.deleteDocument(document),
+        action: () => this.delete(targetDocuments),
       },
     ];
 
@@ -110,8 +143,8 @@ export class FilemanagerContextMenuService {
     console.log('Rename:', document.key);
   }
 
-  private copy(document: DocumentModel) {
-    this.clipboardStore.addDocument(document);
+  private copy(documents: DocumentModel[]) {
+    this.clipboardStore.addDocuments(documents);
   }
 
   private download(document: DocumentModel) {
@@ -128,5 +161,37 @@ export class FilemanagerContextMenuService {
 
   private deleteDocument(document: DocumentModel) {
     this.filemanagerStore.deleteDocument(document);
+  }
+
+  private deleteDocuments(documents: DocumentModel[]) {
+    this.filemanagerStore.deleteDocuments(documents);
+  }
+
+  private delete(documents: DocumentModel[]) {
+    if (documents.length > 1) {
+      this.deleteDocuments(documents);
+      return;
+    }
+
+    const singleDocument = documents[0];
+    if (singleDocument) {
+      this.deleteDocument(singleDocument);
+    }
+  }
+
+  private toggleFavorites(documents: DocumentModel[]) {
+    if (documents.length === 0) {
+      return;
+    }
+
+    const allFavorites = documents.every((item) => this.favoritesStore.isFavorite(item));
+
+    documents.forEach((item) => {
+      if (allFavorites) {
+        this.favoritesStore.removeFavorite(item);
+      } else if (!this.favoritesStore.isFavorite(item)) {
+        this.favoritesStore.addFavorite(item);
+      }
+    });
   }
 }

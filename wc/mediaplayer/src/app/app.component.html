@@ -1,0 +1,255 @@
+<div class="flex min-h-[460px] w-full flex-col overflow-hidden rounded-xl border border-base-300 bg-base-100 text-base-content">
+  <header class="flex items-start justify-between gap-4 border-b border-base-300 bg-gradient-to-r from-base-200 to-base-100 px-5 py-4">
+    <div>
+      <h3 class="m-0 text-base font-bold">Global Media Player</h3>
+      <p class="mt-1 text-xs opacity-70">Audio, Video und Bilder mit Vorschau, Waveform und Metadaten</p>
+    </div>
+
+    <div class="flex flex-wrap justify-end gap-2">
+      <span class="badge badge-neutral">{{ resolvedMediaType() }}</span>
+      @if (fileName) {
+        <span class="badge badge-outline">{{ fileName }}</span>
+      }
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="alert alert-error mx-4 mt-3">
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <section class="grid min-h-0 flex-1 grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+    <main class="flex min-h-0 flex-col gap-3 border-b border-base-300 p-4 xl:border-b-0 xl:border-r xl:border-base-300">
+      @if (!mediaSrc) {
+        <div class="grid min-h-[280px] place-items-center rounded-xl border border-dashed border-base-300 p-4 text-center text-sm opacity-70">
+          <p>Keine Datei gesetzt. Bitte `media-src` übergeben.</p>
+        </div>
+      }
+
+      @if (mediaSrc && resolvedMediaType() === 'image') {
+        <div class="flex flex-col gap-3">
+          <img
+            [src]="mediaSrc"
+            [alt]="fileName || 'Bildvorschau'"
+            class="max-h-[min(60vh,520px)] w-full rounded-xl border border-base-300 bg-base-200 object-contain" />
+        </div>
+      }
+
+      @if (mediaSrc && resolvedMediaType() === 'video') {
+        <div class="flex flex-col gap-3">
+          <video
+            #videoEl
+            [src]="mediaSrc"
+            controls
+            preload="metadata"
+            class="max-h-[min(60vh,520px)] w-full rounded-xl border border-base-300 bg-base-200 object-contain"
+            (loadedmetadata)="onVideoMetadataLoaded()"
+            (timeupdate)="onVideoTimeUpdate()">
+          </video>
+
+          <div class="rounded-xl border border-base-300 bg-base-100 p-3">
+            <div class="flex justify-between text-xs opacity-75">
+              <span>{{ formatDuration(videoCurrentTime()) }}</span>
+              <span>{{ formatDuration(videoDuration()) }}</span>
+            </div>
+
+            <div class="relative mt-1">
+              <input
+                type="range"
+                class="range range-primary w-full"
+                min="0"
+                [max]="videoDuration()"
+                step="0.1"
+                [value]="videoCurrentTime()"
+                (input)="onVideoSeekInput($event)"
+                (mousemove)="onVideoTimelineHover($event)"
+                (mouseleave)="hideVideoTimelinePreview()" />
+
+              @if (timelinePreview()) {
+                <div
+                  class="pointer-events-none absolute bottom-[calc(100%+8px)] flex min-w-[110px] -translate-x-1/2 flex-col items-center gap-1 rounded-md border border-base-300 bg-base-100 p-1.5 shadow-lg"
+                  [style.left.%]="timelinePreview()!.positionPercent">
+                  @if (timelinePreview()!.imageUrl) {
+                    <img [src]="timelinePreview()!.imageUrl!" alt="Timeline Preview" class="h-[58px] w-[104px] rounded object-cover" />
+                  }
+                  <span class="text-[0.72rem] font-semibold">{{ formatDuration(timelinePreview()!.time) }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="mt-3 grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-1.5">
+              @if (isGeneratingVideoThumbnails()) {
+                <span class="loading loading-spinner loading-sm"></span>
+              }
+
+              @for (thumbnail of videoThumbnails(); track thumbnail.time) {
+                <button
+                  type="button"
+                  class="overflow-hidden rounded-lg border border-base-300 bg-base-100 p-0 transition duration-150 hover:-translate-y-px hover:border-primary"
+                  [class.border-primary]="isThumbnailActive(thumbnail)"
+                  [class.ring-1]="isThumbnailActive(thumbnail)"
+                  [class.ring-primary]="isThumbnailActive(thumbnail)"
+                  (click)="seekVideo(thumbnail.time)">
+                  <img
+                    [src]="thumbnail.dataUrl"
+                    [alt]="'Thumbnail ' + formatDuration(thumbnail.time)"
+                    class="block aspect-video w-full object-cover" />
+                  <span class="block p-1 text-[0.7rem]">{{ formatDuration(thumbnail.time) }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (mediaSrc && resolvedMediaType() === 'audio') {
+        <div class="flex flex-col gap-3">
+          <audio
+            #audioEl
+            [src]="mediaSrc"
+            controls
+            preload="metadata"
+            class="w-full"
+            (loadedmetadata)="onAudioMetadataLoaded()"
+            (timeupdate)="onAudioTimeUpdate()">
+          </audio>
+
+          <div class="flex justify-between text-xs opacity-75">
+            <span>{{ formatDuration(audioCurrentTime()) }}</span>
+            <span>{{ formatDuration(audioDuration()) }}</span>
+          </div>
+
+          <input
+            type="range"
+            class="range range-secondary w-full"
+            min="0"
+            [max]="audioDuration()"
+            step="0.1"
+            [value]="audioCurrentTime()"
+            (input)="onAudioSeekInput($event)" />
+
+          <div
+            class="mt-2 flex h-[92px] items-end gap-[2px] overflow-hidden rounded-lg border border-base-300 bg-gradient-to-b from-info/10 to-transparent p-2"
+            [class.justify-center]="waveformPeaks().length === 0"
+            [class.items-center]="waveformPeaks().length === 0">
+            @for (peak of waveformPeaks(); track $index; let i = $index) {
+              <span
+                class="min-w-[2px] flex-1 rounded-full bg-base-300 transition-colors"
+                [class.bg-secondary]="i <= waveformPlayedIndex()"
+                [style.height.%]="peak * 100"></span>
+            }
+
+            @if (waveformPeaks().length === 0) {
+              <p class="m-0 text-sm opacity-60">Waveform nicht verfügbar.</p>
+            }
+          </div>
+        </div>
+      }
+
+      @if (mediaSrc && resolvedMediaType() === 'unknown') {
+        <div class="grid min-h-[280px] place-items-center rounded-xl border border-dashed border-base-300 p-4 text-center text-sm opacity-70">
+          <p>Medientyp konnte nicht erkannt werden. Setze optional `media-type` auf `audio`, `video` oder `image`.</p>
+        </div>
+      }
+    </main>
+
+    <aside class="flex flex-col gap-3 overflow-auto p-4">
+      <h4 class="m-0 text-[0.95rem] font-semibold">EXIF / Metadaten Editor</h4>
+
+      <div class="form-control">
+        <label>Titel</label>
+        <input
+          class="input input-bordered input-sm"
+          [ngModel]="metadataDraft().title"
+          (ngModelChange)="updateMetadataField('title', $event)"
+          type="text" />
+      </div>
+
+      <div class="form-control">
+        <label>Beschreibung</label>
+        <textarea
+          class="textarea textarea-bordered textarea-sm"
+          [ngModel]="metadataDraft().description"
+          (ngModelChange)="updateMetadataField('description', $event)"></textarea>
+      </div>
+
+      <div class="form-control">
+        <label>Tags (CSV)</label>
+        <input
+          class="input input-bordered input-sm"
+          [ngModel]="metadataDraft().tags"
+          (ngModelChange)="updateMetadataField('tags', $event)"
+          type="text"
+          placeholder="urlaub, sommer, drone" />
+      </div>
+
+      <div class="divider">Kamera</div>
+
+      <div class="form-control">
+        <label>Hersteller</label>
+        <input
+          class="input input-bordered input-sm"
+          [ngModel]="metadataDraft().cameraMake"
+          (ngModelChange)="updateMetadataField('cameraMake', $event)"
+          type="text"
+          placeholder="Canon" />
+      </div>
+
+      <div class="form-control">
+        <label>Modell</label>
+        <input
+          class="input input-bordered input-sm"
+          [ngModel]="metadataDraft().cameraModel"
+          (ngModelChange)="updateMetadataField('cameraModel', $event)"
+          type="text"
+          placeholder="EOS R6" />
+      </div>
+
+      <div class="form-control">
+        <label>Aufnahmedatum</label>
+        <input
+          class="input input-bordered input-sm"
+          [ngModel]="metadataDraft().capturedAt"
+          (ngModelChange)="updateMetadataField('capturedAt', $event)"
+          type="text"
+          placeholder="2026-03-13T09:30:00" />
+      </div>
+
+      <div class="divider">Geo-Tags</div>
+
+      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div class="form-control">
+          <label>Latitude</label>
+          <input
+            class="input input-bordered input-sm"
+            [ngModel]="metadataDraft().latitude"
+            (ngModelChange)="updateMetadataField('latitude', $event)"
+            type="text"
+            placeholder="52.520008" />
+        </div>
+
+        <div class="form-control">
+          <label>Longitude</label>
+          <input
+            class="input input-bordered input-sm"
+            [ngModel]="metadataDraft().longitude"
+            (ngModelChange)="updateMetadataField('longitude', $event)"
+            type="text"
+            placeholder="13.404954" />
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <button class="btn btn-outline btn-sm" type="button" (click)="useCurrentLocationAsGeoTag()">
+          Aktuellen Standort
+        </button>
+        <button class="btn btn-ghost btn-sm" type="button" (click)="clearGeoTags()">Geo löschen</button>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <button class="btn btn-primary btn-sm" type="button" (click)="saveMetadata()">Metadaten speichern</button>
+      </div>
+    </aside>
+  </section>
+</div>

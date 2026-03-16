@@ -2,7 +2,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { DocumentModel } from '../../api';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, forkJoin, pipe, switchMap, tap } from 'rxjs';
 import { FilemanagerService } from '../filemanager/filemanager.service';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { LadonRouterService } from '../services/ladon-router.service';
@@ -580,6 +580,76 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
+        deleteDocuments: rxMethod<DocumentModel[]>(
+          pipe(
+            switchMap(async (documents) => {
+              const validDocuments = documents.filter(
+                (document) => !!document.bucket && !!document.key,
+              ) as Array<DocumentModel & { key: string; bucket: string }>;
+
+              if (validDocuments.length === 0) {
+                return { documents: validDocuments, confirmed: false };
+              }
+
+              const hasFolders = validDocuments.some((document) => document.isFolder);
+              const confirmed = await confirmationDialog.confirm({
+                title: `${validDocuments.length} Element(e) löschen`,
+                message: hasFolders
+                  ? `Möchten Sie ${validDocuments.length} Elemente wirklich löschen? Enthaltene Dateien in Ordnern werden ebenfalls gelöscht.`
+                  : `Möchten Sie ${validDocuments.length} Dateien wirklich löschen?`,
+                confirmText: 'Löschen',
+                cancelText: 'Abbrechen',
+                danger: true,
+              });
+
+              return { documents: validDocuments, confirmed };
+            }),
+            switchMap((result) => {
+              if (!result.confirmed || result.documents.length === 0) {
+                return EMPTY;
+              }
+
+              patchState(store, { isLoading: true, error: null });
+
+              const deleteRequests = result.documents.map((document) => filemanagerService.deleteDocument(document));
+
+              return forkJoin(deleteRequests).pipe(
+                switchMap(() => reloadCurrentList()),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, {
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  });
+
+                  toastService.success(`${result.documents.length} Dokument(e) wurden erfolgreich gelöscht`);
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isLoading: false,
+                    error: `Fehler beim Löschen: ${error.message || error}`,
+                  });
+
+                  toastService.error(`Fehler beim Löschen: ${error.message || 'Unbekannter Fehler'}`);
+
+                  return EMPTY;
+                }),
+              );
+            }),
+          ),
+        ),
         moveDocument: rxMethod<{ document: DocumentModel; targetPath: string }>(
           pipe(
             tap(() => {
@@ -613,9 +683,69 @@ export const FilemanagerStore = signalStore(
                     pagination: paginationState,
                     error: null,
                   });
-                  // @ts-ignore
-                  clipboardStore.removeDocument(document.key);
+                  if (document.key) {
+                    clipboardStore.removeDocument(document.key);
+                  }
                   toastService.success(`"${document.name}" wurde erfolgreich verschoben`);
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isLoading: false,
+                    error: `Fehler beim Verschieben: ${error.message || error}`,
+                  });
+                  toastService.error(`Fehler beim Verschieben: ${error.message || 'Unbekannter Fehler'}`);
+                  return EMPTY;
+                }),
+              );
+            }),
+          ),
+        ),
+        moveDocuments: rxMethod<{ documents: DocumentModel[]; targetPath: string }>(
+          pipe(
+            tap(() => {
+              patchState(store, { isLoading: true, error: null });
+            }),
+            switchMap(({ documents: documentsToMove, targetPath }) => {
+              const targetBucket = store.selectedBucket();
+              const validDocuments = documentsToMove.filter(
+                (document) => !!document.bucket && !!document.key,
+              ) as Array<DocumentModel & { key: string; bucket: string }>;
+
+              if (!targetBucket || validDocuments.length === 0) {
+                patchState(store, {
+                  isLoading: false,
+                  error: 'Fehlende Parameter für Verschieben',
+                });
+                return EMPTY;
+              }
+
+              const moveRequests = validDocuments.map((document) =>
+                filemanagerService.moveDocument(document, targetBucket, buildTargetPath(targetPath, document.key)),
+              );
+
+              return forkJoin(moveRequests).pipe(
+                switchMap(() => reloadCurrentList()),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, {
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  });
+
+                  validDocuments.forEach((document) => clipboardStore.removeDocument(document.key));
+                  toastService.success(`${validDocuments.length} Dokument(e) wurden erfolgreich verschoben`);
                 }),
                 catchError((error) => {
                   patchState(store, {
@@ -661,9 +791,69 @@ export const FilemanagerStore = signalStore(
                     pagination: paginationState,
                     error: null,
                   });
-                  // @ts-ignore
-                  clipboardStore.removeDocument(document.key);
+                  if (document.key) {
+                    clipboardStore.removeDocument(document.key);
+                  }
                   toastService.success(`"${document.name}" wurde erfolgreich kopiert`);
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isLoading: false,
+                    error: `Fehler beim Kopieren: ${error.message || error}`,
+                  });
+                  toastService.error(`Fehler beim Kopieren: ${error.message || 'Unbekannter Fehler'}`);
+                  return EMPTY;
+                }),
+              );
+            }),
+          ),
+        ),
+        copyDocuments: rxMethod<{ documents: DocumentModel[]; targetPath: string }>(
+          pipe(
+            tap(() => {
+              patchState(store, { isLoading: true, error: null });
+            }),
+            switchMap(({ documents: documentsToCopy, targetPath }) => {
+              const targetBucket = store.selectedBucket();
+              const validDocuments = documentsToCopy.filter(
+                (document) => !!document.bucket && !!document.key,
+              ) as Array<DocumentModel & { key: string; bucket: string }>;
+
+              if (!targetBucket || validDocuments.length === 0) {
+                patchState(store, {
+                  isLoading: false,
+                  error: 'Fehlende Parameter für Kopieren',
+                });
+                return EMPTY;
+              }
+
+              const copyRequests = validDocuments.map((document) =>
+                filemanagerService.copyDocument(document, targetBucket, buildTargetPath(targetPath, document.key)),
+              );
+
+              return forkJoin(copyRequests).pipe(
+                switchMap(() => reloadCurrentList()),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, {
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  });
+
+                  validDocuments.forEach((document) => clipboardStore.removeDocument(document.key));
+                  toastService.success(`${validDocuments.length} Dokument(e) wurden erfolgreich kopiert`);
                 }),
                 catchError((error) => {
                   patchState(store, {

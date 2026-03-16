@@ -41,8 +41,12 @@
       <div class="space-y-2 p-2">
         @for (doc of clipboardStore.selectedDocuments(); track doc.key; let i = $index) {
           <div cdkDrag
-               [cdkDragData]="doc"
-               class="group relative bg-base-100 rounded-lg border border-base-300 hover:border-primary/50 hover:shadow-md transition-all duration-200 cursor-move">
+               [cdkDragData]="getDragPayload(doc)"
+               class="group relative bg-base-100 rounded-lg border border-base-300 hover:border-primary/50 hover:shadow-md transition-all duration-200 cursor-move"
+               [class.border-primary]="selectionStore.isSelected(doc)"
+               [class.shadow-md]="selectionStore.isSelected(doc)"
+               [class.bg-base-200]="selectionStore.isSelected(doc)"
+               (click)="onItemClick(doc, i, $event)">
 
             <div class="flex items-center gap-3 p-3">
               <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
@@ -90,7 +94,7 @@
               </div>
 
               <!-- Remove Button -->
-              <button (click)="removeByIndex(i)"
+              <button (click)="removeByIndex(i); $event.stopPropagation()"
                       class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Entfernen">
                 <ng-icon name="heroXMark" size="1rem"></ng-icon>

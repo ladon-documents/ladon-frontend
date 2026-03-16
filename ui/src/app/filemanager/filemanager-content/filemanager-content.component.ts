@@ -1,9 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  CUSTOM_ELEMENTS_SCHEMA,
   inject,
-  OnDestroy,
   OnInit,
   QueryList,
   signal,
@@ -16,7 +14,7 @@ import {
   CdkDragDrop,
   CdkDropList,
 } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DocumentModel } from '../../../api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -39,18 +37,13 @@ import {
 import { heroFolderSolid, heroStarSolid } from '@ng-icons/heroicons/solid';
 import { FilesizePipe } from '../../shared/pipes/filesize.pipe';
 import { FileiconPipe } from '../../shared/pipes/fileicon.pipe';
-import { LadonRouterService } from '../../services/ladon-router.service';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { ConverterService } from '../../services/converter.service';
-import { SidebarService } from '../sidebar/sidebar.service';
 import { FilemanagerPaginationComponent } from '../pagination/pagination.component';
-import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
 import { filemanagerHelper } from '../helper/helper';
 import { FileUploadDirective } from '../../shared/directive/file-upload.directive';
 import { FilemanagerContentFacade } from './filemanager-content.facade';
-import { UploadProgressComponent } from '../../shared/components/upload-progress/upload-progress.component';
 import { ClipboardService } from '../../shared/components/clipboard/clipboard.service';
-import { FileEditorDialogComponent } from '../file-editor-dialog/file-editor-dialog.component';
 import { MonacoEditorService } from '../../editor/editor.service';
 import { FolderComponent } from '@ladon/shared';
 import { SelectionStore } from '../../store/selection.store';
@@ -58,16 +51,8 @@ import { FavoritesStore } from '../../store/favorites.store';
 import { FilemanagerContextMenuService } from '../filemanager-context-menu.service';
 import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-dialog/move-or-copy-dialog.component';
 import { InputDialogService } from '../../shared/services/input-dialog.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { firstValueFrom } from 'rxjs';
 import { isWebComponentRegistered } from '@utility';
-
-interface ImageEditorSaveEventDetail {
-  blob: Blob;
-  fileName: string;
-  mimeType: string;
-  saveAs: boolean;
-}
+import { FilemanagerWorkspaceService } from '../filemanager-workspace.service';
 
 
 @Component({
@@ -84,7 +69,6 @@ interface ImageEditorSaveEventDetail {
     CdkDropList,
     FolderComponent,
     MoveOrCopyDialogComponent,
-    FileEditorDialogComponent,
   ],
   providers: [
     provideIcons({
@@ -109,9 +93,8 @@ interface ImageEditorSaveEventDetail {
   ],
   templateUrl: './filemanager-content.component.html',
   styleUrl: './filemanager-content.component.scss',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterViewInit {
+export class FilemanagerContentComponent implements OnInit, AfterViewInit {
   @ViewChildren(CdkDropList) dropLists!: QueryList<CdkDropList>;
   @ViewChild(MoveOrCopyDialogComponent) moveOrCopyDialogVC!: MoveOrCopyDialogComponent;
 
@@ -119,19 +102,16 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   readonly #facade = inject(FilemanagerFacade);
   readonly filemanagerContentFacade = inject(FilemanagerContentFacade);
   private readonly converterService = inject(ConverterService);
-  private readonly sidebarService = inject(SidebarService);
-  private readonly pdfViewerFacade = inject(PdfViewerFacade);
+  private readonly workspaceService = inject(FilemanagerWorkspaceService);
   readonly filemanagerContextMenuService = inject(FilemanagerContextMenuService);
   readonly selectionStore = inject(SelectionStore);
   readonly favoritesStore = inject(FavoritesStore);
   readonly clipboardService = inject(ClipboardService);
   readonly inputDialogService = inject(InputDialogService);
   readonly monacoEditorService = inject(MonacoEditorService);
-  readonly isEditorOpen = toSignal(this.monacoEditorService.editorOpen$, { initialValue: false });
 
   protected readonly clipboardList = this.clipboardService.clipboardList;
   documents: Signal<DocumentModel[]> = this.#facade.documents;
-  readonly selectedDocument = this.#facade.selectedDocument;
 
   #currentBucket: string | null = null;
   #subfolder: string | null = null;
@@ -140,23 +120,15 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   readonly searchTerm = this.#facade.searchTerm;
   readonly sortConfig = this.#facade.sortConfig;
 
-  readonly isImageEditorOpen = signal(false);
-  imageEditorSourceUrl: string | null = null;
-  imageEditorFileName = '';
-  imageEditorMimeType = 'image/png';
-  private imageEditorDocument: DocumentModel | null = null;
   private readonly imageEditorTagName = 'ladon-image-editor';
-  private readonly audioPlayerTagName = 'ladon-audioplayer';
+  private readonly mediaPlayerTagName = 'ladon-media-player';
+  private readonly pdfViewerTagName = 'ladon-pdfviewer';
 
   isDragOver = signal(false);
-  allowedFileTypes: string[] = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.png', '.gif', 'yaml', 'yml'];
-  maxFileSize = 10 * 1024 * 1024; // 10MB
+  allowedFileTypes: string[] = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.png', '.gif', '.yaml', '.yml', '.mp4'];
+  maxFileSize = 50 * 1024 * 1024; // 50MB
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private ladonRouterService: LadonRouterService,
-  ) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.route.data.subscribe((data) => {
@@ -188,12 +160,7 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
   }
 
   isSelected(document: DocumentModel): boolean {
-    const selected = this.#facade.selectedDocument();
-    return selected?.path === document.path && selected?.key === document.key;
-  }
-
-  ngOnDestroy(): void {
-    this.revokeImageEditorSourceUrl();
+    return this.selectionStore.isSelected(document);
   }
 
   copy(file: DocumentModel) {
@@ -255,13 +222,6 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
       this.#facade.load(this.#selectedDocument);
     } else {
       await this.select(document);
-      await this.handleDoubleClickForDocument(document);
-    }
-  }
-
-  private async handleDoubleClickForDocument(document: DocumentModel) {
-    if (filemanagerHelper.isPdf(document)) {
-      await this.pdfViewerFacade.navigateToPdfViewer(document);
     }
   }
 
@@ -285,43 +245,89 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
     );
   }
 
-  onContextMenu(event: MouseEvent, document: DocumentModel) {
+  onContextMenu(event: MouseEvent, document: DocumentModel, index: number) {
     event.preventDefault();
     event.stopPropagation();
 
+    const contextDocuments = this.resolveContextDocuments(document, index);
+    const contextDocument = contextDocuments[0] ?? document;
+    const isSingleDocumentContext = contextDocuments.length === 1;
+
     const imageEditorAction =
-      filemanagerHelper.isImage(document) && this.isImageEditorPluginInstalled()
+      isSingleDocumentContext && filemanagerHelper.isImage(contextDocument) && this.isImageEditorPluginInstalled()
         ? () => {
-            void this.openImageEditor(document);
+            void this.workspaceService.openImageEditor(contextDocument);
           }
         : undefined;
-    const openAudioAction =
-      filemanagerHelper.isAudio(document) && this.isAudioPlayerPluginInstalled()
+    const openMediaAction =
+      isSingleDocumentContext &&
+      (filemanagerHelper.isImage(contextDocument) ||
+        filemanagerHelper.isAudio(contextDocument) ||
+        filemanagerHelper.isVideo(contextDocument)) &&
+      this.isMediaPlayerPluginInstalled()
         ? () => {
-            this.openAudioPlayerFromContextMenu(document);
+            void this.workspaceService.openMediaPlayer(contextDocument);
           }
+        : undefined;
+    const openEditorAction =
+      isSingleDocumentContext && this.monacoEditorService.isEditableFile(contextDocument.key)
+        ? () => this.workspaceService.openEditor(contextDocument)
+        : undefined;
+    const openPdfAction =
+      isSingleDocumentContext && filemanagerHelper.isPdf(contextDocument) && this.isPdfViewerPluginInstalled()
+        ? () => this.workspaceService.openPdfViewer(contextDocument)
         : undefined;
 
-    this.filemanagerContextMenuService.onContextMenu(event, document, {
-      editImage: imageEditorAction,
-      openEditor: this.monacoEditorService.isEditableFile(document.key) ? () => this.openTextEditor(document) : undefined,
-      openPdf: filemanagerHelper.isPdf(document) ? () => this.openPdfFromContextMenu(document) : undefined,
-      openAudio: openAudioAction,
-    });
+    this.filemanagerContextMenuService.onContextMenu(
+      event,
+      contextDocument,
+      {
+        editImage: imageEditorAction,
+        openEditor: openEditorAction,
+        openPdf: openPdfAction,
+        openAudio: undefined,
+        openMedia: openMediaAction,
+      },
+      contextDocuments,
+    );
+  }
+
+  private resolveContextDocuments(document: DocumentModel, index: number): DocumentModel[] {
+    const visibleDocumentsById = new Set(this.documents().map((doc) => this.documentId(doc)));
+    const visibleSelection = this.selectionStore
+      .selectedDocuments()
+      .filter((selectedDoc) => visibleDocumentsById.has(this.documentId(selectedDoc)));
+
+    const clickedDocumentId = this.documentId(document);
+    const clickedDocumentIsInVisibleSelection = visibleSelection.some(
+      (selectedDoc) => this.documentId(selectedDoc) === clickedDocumentId,
+    );
+
+    if (visibleSelection.length > 1 && clickedDocumentIsInVisibleSelection) {
+      return visibleSelection;
+    }
+
+    this.selectionStore.selectSingle(document, index);
+    return [document];
   }
 
   toggleSelection(document: DocumentModel, index: number, event: Event) {
     const mouseEvent = event as MouseEvent;
-    this.selectionStore.toggleSelection(document, index, mouseEvent.shiftKey);
+    if (mouseEvent.shiftKey) {
+      this.selectionStore.selectRange(this.documents(), index);
+      return;
+    }
+
+    this.selectionStore.toggleSelection(document, index);
   }
 
   onItemClick(document: DocumentModel, index: number, event: MouseEvent) {
-    if (event.ctrlKey || event.metaKey) {
+    if (event.shiftKey || event.ctrlKey || event.metaKey) {
       this.toggleSelection(document, index, event);
-    } else if (event.shiftKey) {
-      this.toggleSelection(document, index, event);
+      this.#facade.setSelectedDocument(document);
     } else {
-      this.select(document);
+      this.selectionStore.selectSingle(document, index);
+      void this.select(document);
     }
   }
 
@@ -345,75 +351,49 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
 
   onDropFromClipboard(event: CdkDragDrop<DocumentModel[]>) {
     if (event.previousContainer !== event.container) {
-      const droppedDocument = event.previousContainer.data[event.previousIndex];
-      this.showMoveOrCopyDialog(droppedDocument);
+      const droppedDocuments = this.resolveDroppedDocuments(event);
+      if (droppedDocuments.length > 0) {
+        void this.showMoveOrCopyDialog(droppedDocuments);
+      }
     }
   }
 
-  private async showMoveOrCopyDialog(document: DocumentModel) {
-    const action = await this.moveOrCopyDialogVC.openDialog(document);
+  getDragPayload(document: DocumentModel): DocumentModel[] {
+    const visibleDocumentsById = new Set(this.documents().map((doc) => this.documentId(doc)));
+    const visibleSelection = this.selectionStore
+      .selectedDocuments()
+      .filter((selectedDoc) => visibleDocumentsById.has(this.documentId(selectedDoc)));
 
-    if (action === 'move') {
-      this.#facade.moveDocument(document);
-    } else if (action === 'copy') {
-      this.#facade.copyDocument(document);
+    if (visibleSelection.length > 1 && this.selectionStore.isSelected(document)) {
+      return visibleSelection;
     }
+
+    return [document];
   }
 
-  private async openImageEditor(document: DocumentModel): Promise<void> {
-    try {
-      const response = await firstValueFrom(this.#facade.getDocument(document));
-      const blob = response instanceof Blob ? response : new Blob([response]);
-
-      this.revokeImageEditorSourceUrl();
-      this.imageEditorSourceUrl = URL.createObjectURL(blob);
-      this.imageEditorFileName = this.extractFileName(document);
-      this.imageEditorMimeType = document['content-type'] || blob.type || 'image/png';
-      this.imageEditorDocument = document;
-      this.isImageEditorOpen.set(true);
-    } catch (error) {
-      this.filemanagerContentFacade.showErrorToast(`Bild konnte nicht geladen werden: ${String(error)}`);
+  private resolveDroppedDocuments(event: CdkDragDrop<DocumentModel[]>): DocumentModel[] {
+    const dragData = event.item.data;
+    if (Array.isArray(dragData)) {
+      return dragData;
     }
+
+    const fallbackDocument = event.previousContainer.data[event.previousIndex];
+    return fallbackDocument ? [fallbackDocument] : [];
   }
 
-  closeImageEditor(): void {
-    this.isImageEditorOpen.set(false);
-    this.imageEditorDocument = null;
-    this.imageEditorFileName = '';
-    this.imageEditorMimeType = 'image/png';
-    this.revokeImageEditorSourceUrl();
-  }
-
-  async onImageEditorSave(event: Event): Promise<void> {
-    const detail = (event as CustomEvent<ImageEditorSaveEventDetail>).detail;
-    if (!detail?.blob || !this.imageEditorDocument) {
+  private async showMoveOrCopyDialog(documents: DocumentModel[]) {
+    const representativeDocument = documents[0];
+    if (!representativeDocument) {
       return;
     }
 
-    const targetDocument = this.buildTargetDocumentForImageSave(this.imageEditorDocument, detail.fileName);
+    const action = await this.moveOrCopyDialogVC.openDialog(representativeDocument);
 
-    try {
-      await firstValueFrom(this.#facade.saveDocument(targetDocument, detail.blob));
-      this.#facade.reloadCurrentLocation();
-      this.closeImageEditor();
-    } catch (error) {
-      this.filemanagerContentFacade.showErrorToast(`Bild konnte nicht gespeichert werden: ${String(error)}`);
+    if (action === 'move') {
+      this.#facade.moveDocuments(documents);
+    } else if (action === 'copy') {
+      this.#facade.copyDocuments(documents);
     }
-  }
-
-  private openTextEditor(document: DocumentModel): void {
-    this.#facade.setSelectedDocument(document);
-    this.monacoEditorService.open();
-  }
-
-  private async openPdfFromContextMenu(document: DocumentModel): Promise<void> {
-    this.#facade.setSelectedDocument(document);
-    await this.pdfViewerFacade.navigateToPdfViewer(document);
-  }
-
-  private openAudioPlayerFromContextMenu(document: DocumentModel): void {
-    this.#facade.setSelectedDocument(document);
-    this.openPreviewSidebar();
   }
 
   async createFileFromEmptyState(): Promise<void> {
@@ -442,54 +422,19 @@ export class FilemanagerContentComponent implements OnDestroy, OnInit, AfterView
     }
   }
 
-  private buildTargetDocumentForImageSave(document: DocumentModel, fileName: string): DocumentModel {
-    const normalizedFileName = fileName.trim().replace(/^\/+/, '');
-    if (!normalizedFileName) {
-      return document;
-    }
-
-    const currentKey = document.key || document.path || '';
-    const lastSlash = currentKey.lastIndexOf('/');
-    const directory = lastSlash >= 0 ? currentKey.substring(0, lastSlash + 1) : '';
-    const targetKey = `${directory}${normalizedFileName}`;
-
-    return {
-      ...document,
-      key: targetKey,
-      path: targetKey,
-      name: normalizedFileName,
-      'content-type': document['content-type'],
-    };
-  }
-
-  private extractFileName(document: DocumentModel): string {
-    const key = document.key || document.path || document.name || 'edited-image';
-    const lastSlash = key.lastIndexOf('/');
-    return lastSlash >= 0 ? key.substring(lastSlash + 1) : key;
-  }
-
-  private revokeImageEditorSourceUrl(): void {
-    if (!this.imageEditorSourceUrl) {
-      return;
-    }
-    URL.revokeObjectURL(this.imageEditorSourceUrl);
-    this.imageEditorSourceUrl = null;
-  }
-
   private isImageEditorPluginInstalled(): boolean {
     return isWebComponentRegistered(this.imageEditorTagName);
   }
 
-  private isAudioPlayerPluginInstalled(): boolean {
-    return isWebComponentRegistered(this.audioPlayerTagName);
+  private isMediaPlayerPluginInstalled(): boolean {
+    return isWebComponentRegistered(this.mediaPlayerTagName);
   }
 
-  private openPreviewSidebar(): void {
-    if (this.sidebarService.mode() !== 'preview') {
-      this.sidebarService.togglePreviewMode();
-      return;
-    }
+  private isPdfViewerPluginInstalled(): boolean {
+    return isWebComponentRegistered(this.pdfViewerTagName);
+  }
 
-    this.sidebarService.openSidebar();
+  private documentId(document: DocumentModel): string {
+    return `${document.bucket || ''}::${document.key || document.path || document.name || ''}`;
   }
 }

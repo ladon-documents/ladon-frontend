@@ -1,36 +1,33 @@
 {
-  "name": "@ladon/pdfviewer",
+  "name": "ladon-mediaplayer",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "dist:clear": "rimraf ./dist/{polyfills,main}.js",
     "build": "ng build --output-hashing none",
-    "postbuild": "webpack",
     "watch": "ng build --watch --configuration development",
+    "dist:clear": "rimraf ./dist/{polyfills,main}.js",
+    "postbuild": "webpack",
     "test": "ng test"
   },
-  "files": [
-    "dist/",
-    "ladon-plugin.json",
-    "ladon-plugin.md",
-    "releasenotes.md"
-  ],
   "private": true,
   "dependencies": {
     "@angular/animations": "^19.0.0",
     "@angular/common": "^19.0.0",
     "@angular/compiler": "^19.0.0",
     "@angular/core": "^19.0.0",
-    "@angular/elements": "^19.0.6",
+    "@angular/elements": "^19.2.16",
     "@angular/forms": "^19.0.0",
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
-    "ngx-extended-pdf-viewer": "25.6.0-rc.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.15.0",
+    "@ng-icons/core": "^30.2.0",
+    "@ng-icons/heroicons": "^30.2.0",
+    "@ngrx/signals": "^19.1.0",
+    "rimraf": "^6.0.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.0.7",
@@ -43,12 +40,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "rimraf": "^6.0.1",
     "typescript": "~5.6.2",
-    "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1"
-  },
-  "publishConfig": {
-    "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
   }
 }

@@ -18,35 +18,14 @@
     </div>
   }
 
-  @if (isEditorOpen()) {
-    <div class="flex-1 min-h-0 p-4">
-      <file-editor-dialog
-        [displayMode]="'inline'"
-        [config]="{
-          readOnly: false,
-          fileName: selectedDocument()?.key || selectedDocument()?.name || '',
-        }">
-      </file-editor-dialog>
-    </div>
-  } @else if (isImageEditorOpen()) {
-    <div class="flex-1 min-h-0 p-4">
-      <ladon-image-editor
-        [attr.image-src]="imageEditorSourceUrl"
-        [attr.file-name]="imageEditorFileName"
-        [attr.mime-type]="imageEditorMimeType"
-        (editor-close)="closeImageEditor()"
-        (editor-save)="onImageEditorSave($event)">
-      </ladon-image-editor>
-    </div>
-  } @else {
-    <div class="flex-1 min-h-0 overflow-y-auto p-4"
-         appFileUpload
-         [acceptedTypes]="allowedFileTypes"
-         [maxFileSize]="maxFileSize"
-         [allowMultiple]="true"
-         (filesDropped)="onFilesDropped($event)"
-         (filesHovered)="onFilesHovered($event)"
-         (filesRejected)="onFilesRejected($event)">
+  <div class="flex-1 min-h-0 overflow-y-auto p-4"
+       appFileUpload
+       [acceptedTypes]="allowedFileTypes"
+       [maxFileSize]="maxFileSize"
+       [allowMultiple]="true"
+       (filesDropped)="onFilesDropped($event)"
+       (filesHovered)="onFilesHovered($event)"
+       (filesRejected)="onFilesRejected($event)">
 
     @if (viewMode() === "card") {
       <ng-container [ngTemplateOutlet]="gridView"></ng-container>
@@ -85,8 +64,7 @@
     <div class="flex-shrink-0 border-t border-gray-500/40 px-4">
       <filemanager-pagination></filemanager-pagination>
     </div>
-    </div>
-  }
+  </div>
 
   <ng-template #tableView>
     @if (viewMode() === "table") {
@@ -151,7 +129,7 @@
                   [class.border-l-primary]="isSelected(document)"
                   (dblclick)="navigateTo(document)"
                   (click)="onItemClick(document, i, $event)"
-                  (contextmenu)="onContextMenu($event, document)">
+                  (contextmenu)="onContextMenu($event, document, i)">
 
                 <td>
                   <div class="flex items-center gap-2">
@@ -225,7 +203,7 @@
                                                                                               [class.bg-base-300]="isSelected(document)"
                                                                                               (dblclick)="navigateTo(document)"
                                                                                               (click)="onItemClick(document, i, $event)"
-                                                                                              (contextmenu)="onContextMenu($event, document)">
+                                                                                              (contextmenu)="onContextMenu($event, document, i)">
 
             <div class="absolute top-2 right-2 z-10 opacity-0 group-hover/fileitem:opacity-100 transition-opacity">
               <button

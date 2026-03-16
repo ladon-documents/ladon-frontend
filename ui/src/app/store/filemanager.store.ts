@@ -580,6 +580,76 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
+        deleteDocuments: rxMethod<DocumentModel[]>(
+          pipe(
+            switchMap(async (documents) => {
+              const validDocuments = documents.filter(
+                (document) => !!document.bucket && !!document.key,
+              ) as Array<DocumentModel & { key: string; bucket: string }>;
+
+              if (validDocuments.length === 0) {
+                return { documents: validDocuments, confirmed: false };
+              }
+
+              const hasFolders = validDocuments.some((document) => document.isFolder);
+              const confirmed = await confirmationDialog.confirm({
+                title: `${validDocuments.length} Element(e) löschen`,
+                message: hasFolders
+                  ? `Möchten Sie ${validDocuments.length} Elemente wirklich löschen? Enthaltene Dateien in Ordnern werden ebenfalls gelöscht.`
+                  : `Möchten Sie ${validDocuments.length} Dateien wirklich löschen?`,
+                confirmText: 'Löschen',
+                cancelText: 'Abbrechen',
+                danger: true,
+              });
+
+              return { documents: validDocuments, confirmed };
+            }),
+            switchMap((result) => {
+              if (!result.confirmed || result.documents.length === 0) {
+                return EMPTY;
+              }
+
+              patchState(store, { isLoading: true, error: null });
+
+              const deleteRequests = result.documents.map((document) => filemanagerService.deleteDocument(document));
+
+              return forkJoin(deleteRequests).pipe(
+                switchMap(() => reloadCurrentList()),
+                tap((documents) => {
+                  const { filteredDocuments, paginatedDocuments, paginationState } =
+                    filemanagerHelper.applyFiltersAndPagination(
+                      documents,
+                      store.searchTerm(),
+                      store.sort(),
+                      store.pagination().currentPage,
+                      store.pagination().pageSize,
+                    );
+
+                  patchState(store, {
+                    isLoading: false,
+                    allDocuments: documents,
+                    filteredDocuments,
+                    documents: paginatedDocuments,
+                    pagination: paginationState,
+                    error: null,
+                  });
+
+                  toastService.success(`${result.documents.length} Dokument(e) wurden erfolgreich gelöscht`);
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isLoading: false,
+                    error: `Fehler beim Löschen: ${error.message || error}`,
+                  });
+
+                  toastService.error(`Fehler beim Löschen: ${error.message || 'Unbekannter Fehler'}`);
+
+                  return EMPTY;
+                }),
+              );
+            }),
+          ),
+        ),
         moveDocument: rxMethod<{ document: DocumentModel; targetPath: string }>(
           pipe(
             tap(() => {

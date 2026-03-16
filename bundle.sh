@@ -20,6 +20,7 @@ wc_directories=(
   "pdfviewer"
   "audioplayer"
   "imageeditor"
+  "mediaplayer"
 )
 
 log_message() {

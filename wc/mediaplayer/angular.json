@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "wc-ladon-audioplayer": {
+    "wc-ladon-media-player": {
       "projectType": "library",
       "schematics": {
         "@schematics/angular:component": {
@@ -22,6 +22,7 @@
               "browser": ""
             },
             "index": "src/index.html",
+            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -32,7 +33,6 @@
                 "inlineCritical": true
               }
             },
-            "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -74,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "wc-ladon-audioplayer:build:production"
+              "buildTarget": "wc-ladon-media-player:build:production"
             },
             "development": {
-              "buildTarget": "wc-ladon-audioplayer:build:development"
+              "buildTarget": "wc-ladon-media-player:build:development"
             }
           },
           "defaultConfiguration": "development"

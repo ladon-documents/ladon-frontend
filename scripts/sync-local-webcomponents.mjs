@@ -31,7 +31,7 @@ async function collectConfiguredBundles() {
       continue;
     }
 
-    const configuredBundleNames = [...webpackConfig.matchAll(/"(wc-[^"]+\.js)"/g)].map((match) => match[1]);
+    const configuredBundleNames = [...webpackConfig.matchAll(/['"](wc-[^'"]+\.js)['"]/g)].map((match) => match[1]);
 
     for (const bundleName of configuredBundleNames) {
       const sourcePath = path.join(distDir, bundleName);

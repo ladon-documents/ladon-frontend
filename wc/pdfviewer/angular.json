@@ -22,6 +22,9 @@
               "browser": ""
             },
             "index": "src/index.html",
+            "polyfills": [
+              "zone.js"
+            ],
             "optimization": {
               "scripts": false,
               "styles": {
@@ -31,7 +34,6 @@
             },
             "outputHashing": "none",
             "browser": "src/main.ts",
-
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [

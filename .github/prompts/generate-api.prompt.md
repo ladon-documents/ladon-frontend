@@ -66,6 +66,7 @@ Classify each issue:
 | Type mismatch | Adapt the consuming code to match the new type |
 | Unused import / variable | Remove it |
 | Generated file error | **Do NOT edit** files under `api/angular-client/`, `api/angular-plugin-client/`, or `api/fetch-client/` — fix the OpenAPI spec or generator config instead |
+| Specs files in  `spec/` | **Do not edit** yaml files |
 
 ---
 

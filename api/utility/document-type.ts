@@ -62,6 +62,23 @@ export const isAudioDocument = (
   return !!extension && supportedFormats.includes(extension);
 };
 
+export const isVideoDocument = (
+  document?: UtilityDocumentLike | null,
+  supportedFormats: string[] = ['mp4', 'webm', 'mov', 'm4v', 'ogv', 'avi'],
+): boolean => {
+  if (!document || document.isFolder) {
+    return false;
+  }
+
+  const contentType = document['content-type']?.toLowerCase();
+  if (contentType?.startsWith('video/')) {
+    return true;
+  }
+
+  const extension = getDocumentExtension(document);
+  return !!extension && supportedFormats.includes(extension);
+};
+
 export const isImageDocument = (document?: UtilityDocumentLike | null): boolean => {
   if (!document || document.isFolder) {
     return false;

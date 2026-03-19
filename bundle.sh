@@ -20,6 +20,7 @@ wc_directories=(
   "pdfviewer"
   "audioplayer"
   "imageeditor"
+  "mediaplayer"
 )
 
 log_message() {
@@ -37,6 +38,18 @@ log_warning() {
 OUTPUT_DIR="dist"
 RELEASE_DIR="release"
 
+install_dependencies() {
+  local target_dir="$1"
+
+  if [ -f "./$target_dir/package-lock.json" ]; then
+    log_message "Installiere Abhängigkeiten für ./$target_dir mit npm ci ..."
+    npm ci --prefix "./$target_dir"
+  else
+    log_message "Installiere Abhängigkeiten für ./$target_dir mit npm install ..."
+    npm install --prefix "./$target_dir"
+  fi
+}
+
 check_directories() {
   for dir in "${directories[@]}"; do
     if [ ! -d "./$dir" ]; then
@@ -49,8 +62,13 @@ check_directories() {
 check_for_node_modules() {
   for dir in "${directories[@]}"; do
     if [ ! -d "./$dir/node_modules" ]; then
-      log_message "Verzeichnis ./$dir/node_modules nicht gefunden. Module werden installiert …"
-      npm install --prefix "./$dir"
+      install_dependencies "$dir"
+    fi
+  done
+
+  for wc_dir in "${wc_directories[@]}"; do
+    if [ -d "./wc/$wc_dir" ] && [ ! -d "./wc/$wc_dir/node_modules" ]; then
+      install_dependencies "wc/$wc_dir"
     fi
   done
 }
@@ -80,36 +98,39 @@ build_webcomponents() {
 
 build_all() {
   log_message "Starte den Build-Prozess für alle Projekte..."
-  
+
   log_message "Baue globals..."
   npm --prefix ./globals run build
-  
+
   log_message "Baue styles..."
   npm --prefix ./style run build
-  
-  log_message "Baue API..."
+
+  log_message "Baue API Fetch-Client..."
   npm --prefix ./api run build:fetch
-  
+
+  log_message "Baue API Utility..."
+  npm --prefix ./api run build:utility
+
   log_message "Baue UI..."
   npm --prefix ./ui run build
-  
+
   log_message "Alle Projekte erfolgreich gebaut!"
 }
 
 create_release_package() {
   log_message "Erstelle Release-Paket..."
-  
-  rm -rf $RELEASE_DIR
-  mkdir -p $RELEASE_DIR
-  
+
+  rm -rf "$RELEASE_DIR"
+  mkdir -p "$RELEASE_DIR"
+
   log_message "Kopiere Distributionsdateien..."
-  
+
   if [ -d "./api/dist" ]; then
     cp -r ./api/dist/* "$RELEASE_DIR/"
   else
     log_warning "API dist-Verzeichnis nicht gefunden"
   fi
-  
+
   if [ -d "./ui/dist" ]; then
     cp -r ./ui/dist/* "$RELEASE_DIR/"
   else
@@ -122,22 +143,20 @@ create_release_package() {
     log_warning "Style dist-Verzeichnis nicht gefunden"
   fi
 
-  # Kopiere WebComponents
-    if [ -d "./wc" ]; then
-      log_message "Kopiere WebComponents..."
-      mkdir -p "$RELEASE_DIR/webcomponents"
+  if [ -d "./wc" ]; then
+    log_message "Kopiere WebComponents..."
+    mkdir -p "$RELEASE_DIR/webcomponents"
 
-      for wc_dir in "${wc_directories[@]}"; do
-        if [ -d "./wc/$wc_dir/dist" ]; then
-          log_message "Kopiere WebComponent $wc_dir nach wc-$wc_dir..."
-          mkdir -p "$RELEASE_DIR/webcomponents/wc-$wc_dir"
-          cp -r "./wc/$wc_dir/dist/"* "$RELEASE_DIR/webcomponents/wc-$wc_dir/"
-        else
-          log_warning "WebComponent dist-Verzeichnis ./wc/$wc_dir/dist nicht gefunden"
-        fi
-      done
-    fi
-
+    for wc_dir in "${wc_directories[@]}"; do
+      if [ -d "./wc/$wc_dir/dist" ]; then
+        log_message "Kopiere WebComponent $wc_dir nach wc-$wc_dir..."
+        mkdir -p "$RELEASE_DIR/webcomponents/wc-$wc_dir"
+        cp -r "./wc/$wc_dir/dist/"* "$RELEASE_DIR/webcomponents/wc-$wc_dir/"
+      else
+        log_warning "WebComponent dist-Verzeichnis ./wc/$wc_dir/dist nicht gefunden"
+      fi
+    done
+  fi
 
   cp package.json "$RELEASE_DIR/"
   cp ladon-plugin.json "$RELEASE_DIR/"
@@ -151,40 +170,40 @@ create_release_package() {
   if [ -f "README.md" ]; then
     cp README.md "$RELEASE_DIR/"
   fi
-  
+
   log_message "Release-Paket erfolgreich erstellt in $RELEASE_DIR"
 }
 
 package_release() {
-    log_message "🔧 Starte Paketierung des Release-Verzeichnisses..."
-    if [ ! -d "$RELEASE_DIR" ]; then
-        log_error "❌ Fehler: Release-Verzeichnis '$RELEASE_DIR' nicht gefunden."
-        log_error "   Bitte führen Sie zuerst den Build-Prozess aus"
-        exit 1
-    fi
+  log_message "🔧 Starte Paketierung des Release-Verzeichnisses..."
+  if [ ! -d "$RELEASE_DIR" ]; then
+    log_error "❌ Fehler: Release-Verzeichnis '$RELEASE_DIR' nicht gefunden."
+    log_error "   Bitte führen Sie zuerst den Build-Prozess aus"
+    exit 1
+  fi
 
-    log_message "📦 Führe npm pack im Verzeichnis '$RELEASE_DIR' aus..."
-    cd "$RELEASE_DIR" || { log_error "❌ Fehler: Konnte nicht ins Verzeichnis wechseln"; exit 1; }
+  log_message "📦 Führe npm pack im Verzeichnis '$RELEASE_DIR' aus..."
+  cd "$RELEASE_DIR" || { log_error "❌ Fehler: Konnte nicht ins Verzeichnis wechseln"; exit 1; }
 
-    PACKAGE_FILE=$(npm pack | tail -n 1)
+  PACKAGE_FILE=$(npm pack | tail -n 1)
 
-    log_message "✅ Paketierung abgeschlossen: $PACKAGE_FILE wurde erstellt."
-    log_message "   Vollständiger Pfad: $(pwd)/$PACKAGE_FILE"
+  log_message "✅ Paketierung abgeschlossen: $PACKAGE_FILE wurde erstellt."
+  log_message "   Vollständiger Pfad: $(pwd)/$PACKAGE_FILE"
 
-    cd - > /dev/null
+  cd - > /dev/null
 
-    log_message "🔄 Verschiebe Paket ins Hauptverzeichnis..."
-    mv "$RELEASE_DIR/$PACKAGE_FILE" .
-    log_message "🎉 Fertig! Paket befindet sich nun im Hauptverzeichnis: $PACKAGE_FILE"
-
+  log_message "🔄 Verschiebe Paket ins Hauptverzeichnis..."
+  mv "$RELEASE_DIR/$PACKAGE_FILE" .
+  log_message "🎉 Fertig! Paket befindet sich nun im Hauptverzeichnis: $PACKAGE_FILE"
 }
 
 main() {
   log_message "Starte Bundling-Prozess für ladon-frontend..."
-  
+
   check_directories
   check_for_node_modules
   build_all
+  build_webcomponents
   create_release_package
   # package_release
 

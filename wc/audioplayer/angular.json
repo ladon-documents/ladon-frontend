@@ -22,7 +22,6 @@
               "browser": ""
             },
             "index": "src/index.html",
-            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -33,6 +32,7 @@
                 "inlineCritical": true
               }
             },
+            "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [

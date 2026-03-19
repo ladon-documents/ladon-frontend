@@ -4,7 +4,7 @@ import { fileiconPipeTransform } from './fileicon.pipe';
 import { filenamePipeTransform } from './filename.pipe';
 import { Initalizer } from './initalizer';
 import { buildTargetPath, encodePath, ensureFileExtension } from './path';
-import { getFileExtension, isAudioDocument, isImageDocument, isPdfDocument } from './document-type';
+import { getFileExtension, isAudioDocument, isImageDocument, isPdfDocument, isVideoDocument } from './document-type';
 import { isWebComponentRegistered } from './webcomponent';
 export type {
   WebComponentLoaderOptions,
@@ -26,6 +26,7 @@ export {
   getFileExtension,
   isPdfDocument,
   isAudioDocument,
+  isVideoDocument,
   isImageDocument,
   isWebComponentRegistered,
 };
@@ -43,6 +44,7 @@ export const utility = {
   getFileExtension,
   isPdfDocument,
   isAudioDocument,
+  isVideoDocument,
   isImageDocument,
   isWebComponentRegistered,
 };

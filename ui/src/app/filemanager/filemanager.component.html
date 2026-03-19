@@ -1,8 +1,7 @@
-<main class="flex-grow bg-base-100 h-full">
+<main class="h-full flex-grow bg-base-100">
   @if (error()) {
-    <div class="bg-red-50 border-red-200 text-red-800 p-6" role="alert">
+    <div class="bg-red-50 p-6 text-red-800" role="alert">
       <div class="flex">
-        <div class="flex-shrink-0"></div>
         <div class="ml-3">
           <p class="text-red-400">
             {{ error() }}
@@ -11,131 +10,130 @@
       </div>
     </div>
   } @else {
-    <div class="sticky top-0 z-10 bg-base-100 border-b border-gray-500/40 dark:border-gray-500/40">
-      <div class="flex items-center justify-between p-4">
-        <app-breadcrumb></app-breadcrumb>
+    @if (workspaceMode() === 'browser') {
+      <div class="sticky top-0 z-10 border-b border-gray-500/40 bg-base-100 dark:border-gray-500/40">
+        <div class="flex items-center justify-between p-4">
+          <app-breadcrumb></app-breadcrumb>
 
-        <div class="flex items-center gap-4">
-          <div class="relative">
-            <input
-              type="text"
-              placeholder="Dateien filtern..."
-              class="input input-secondary input-sm w-64 pr-8 focus:ring-0"
-              [value]="searchTerm()"
-              (input)="onSearchChange($event)"
-              (keyup.escape)="clearSearch()" />
-            @if (searchTerm()) {
-              <button
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                (click)="clearSearch()">
-                <ng-icon name="heroXMark" size="1em"></ng-icon>
-              </button>
-            } @else {
-              <ng-icon
-                name="heroMagnifyingGlass"
-                size="1em"
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"></ng-icon>
-            }
-          </div>
-
-          <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-outline btn-sm gap-1 btn-primary">
-              <ng-icon name="heroBars3BottomLeft" size="1em"></ng-icon>
-              Sortieren
-              @if (sortConfig().direction === "desc") {
-                <ng-icon name="heroChevronDown" size="0.8em"></ng-icon>
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <input
+                type="text"
+                placeholder="Dateien filtern..."
+                class="input input-secondary input-sm w-64 pr-8 focus:ring-0"
+                [value]="searchTerm()"
+                (input)="onSearchChange($event)"
+                (keyup.escape)="clearSearch()" />
+              @if (searchTerm()) {
+                <button
+                  class="absolute right-2 top-1/2 -translate-y-1/2 transform text-gray-400 hover:text-gray-600"
+                  (click)="clearSearch()">
+                  <ng-icon name="heroXMark" size="1em"></ng-icon>
+                </button>
               } @else {
-                <ng-icon name="heroChevronUp" size="0.8em"></ng-icon>
+                <ng-icon
+                  name="heroMagnifyingGlass"
+                  size="1em"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 transform text-gray-400"></ng-icon>
               }
             </div>
-            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
-              <li>
-                <a (click)="toggleSort('name')" [class.active]="sortConfig().field === 'name'">
-                  <ng-icon name="heroDocumentText" size="1em"></ng-icon>
-                  Name
-                  @if (sortConfig().field === "name") {
-                    <ng-icon
-                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                      size="0.8em"></ng-icon>
-                  }
-                </a>
-              </li>
-              <li>
-                <a (click)="toggleSort('size')" [class.active]="sortConfig().field === 'size'">
-                  <ng-icon name="heroScale" size="1em"></ng-icon>
-                  Größe
-                  @if (sortConfig().field === "size") {
-                    <ng-icon
-                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                      size="0.8em"></ng-icon>
-                  }
-                </a>
-              </li>
-              <li>
-                <a (click)="toggleSort('type')" [class.active]="sortConfig().field === 'type'">
-                  <ng-icon name="heroDocumentDuplicate" size="1em"></ng-icon>
-                  Typ
-                  @if (sortConfig().field === "type") {
-                    <ng-icon
-                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                      size="0.8em"></ng-icon>
-                  }
-                </a>
-              </li>
-              <li>
-                <a (click)="toggleSort('last-modified')" [class.active]="sortConfig().field === 'last-modified'">
-                  <ng-icon name="heroClock" size="1em"></ng-icon>
-                  Geändert
-                  @if (sortConfig().field === "last-modified") {
-                    <ng-icon
-                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                      size="0.8em"></ng-icon>
-                  }
-                </a>
-              </li>
-              <li>
-                <a (click)="toggleSort('created')" [class.active]="sortConfig().field === 'created'">
-                  <ng-icon name="heroCalendarDays" size="1em"></ng-icon>
-                  Erstellt
-                  @if (sortConfig().field === "created") {
-                    <ng-icon
-                      [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
-                      size="0.8em"></ng-icon>
-                  }
-                </a>
-              </li>
-            </ul>
-          </div>
 
-          <div class="flex items-center gap-2">
-            <button
-              class="btn btn-square btn-outline btn-sm btn-primary"
-              (click)="toggleViewMode()"
-              [title]="viewMode() === 'card' ? 'Zur Tabellenansicht wechseln' : 'Zur Card-Ansicht wechseln'">
-              @if (viewMode() === "card") {
-                <ng-icon name="heroBars3" size="1.2em" class="size-5"></ng-icon>
-              } @else {
-                <ng-icon name="heroSquares2x2" size="1.2em" class="size-5"></ng-icon>
-              }
-            </button>
+            <div class="dropdown dropdown-end">
+              <div tabindex="0" role="button" class="btn btn-outline btn-sm btn-primary gap-1">
+                <ng-icon name="heroBars3BottomLeft" size="1em"></ng-icon>
+                Sortieren
+                @if (sortConfig().direction === "desc") {
+                  <ng-icon name="heroChevronDown" size="0.8em"></ng-icon>
+                } @else {
+                  <ng-icon name="heroChevronUp" size="0.8em"></ng-icon>
+                }
+              </div>
+              <ul tabindex="0" class="dropdown-content menu z-10 w-52 rounded-box bg-base-100 p-2 text-primary shadow-lg">
+                <li>
+                  <a (click)="toggleSort('name')" [class.active]="sortConfig().field === 'name'">
+                    <ng-icon name="heroDocumentText" size="1em"></ng-icon>
+                    Name
+                    @if (sortConfig().field === "name") {
+                      <ng-icon
+                        [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                        size="0.8em"></ng-icon>
+                    }
+                  </a>
+                </li>
+                <li>
+                  <a (click)="toggleSort('size')" [class.active]="sortConfig().field === 'size'">
+                    <ng-icon name="heroScale" size="1em"></ng-icon>
+                    Größe
+                    @if (sortConfig().field === "size") {
+                      <ng-icon
+                        [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                        size="0.8em"></ng-icon>
+                    }
+                  </a>
+                </li>
+                <li>
+                  <a (click)="toggleSort('type')" [class.active]="sortConfig().field === 'type'">
+                    <ng-icon name="heroDocumentDuplicate" size="1em"></ng-icon>
+                    Typ
+                    @if (sortConfig().field === "type") {
+                      <ng-icon
+                        [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                        size="0.8em"></ng-icon>
+                    }
+                  </a>
+                </li>
+                <li>
+                  <a (click)="toggleSort('last-modified')" [class.active]="sortConfig().field === 'last-modified'">
+                    <ng-icon name="heroClock" size="1em"></ng-icon>
+                    Geändert
+                    @if (sortConfig().field === "last-modified") {
+                      <ng-icon
+                        [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                        size="0.8em"></ng-icon>
+                    }
+                  </a>
+                </li>
+                <li>
+                  <a (click)="toggleSort('created')" [class.active]="sortConfig().field === 'created'">
+                    <ng-icon name="heroCalendarDays" size="1em"></ng-icon>
+                    Erstellt
+                    @if (sortConfig().field === "created") {
+                      <ng-icon
+                        [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
+                        size="0.8em"></ng-icon>
+                    }
+                  </a>
+                </li>
+              </ul>
+            </div>
 
-            <button
-              class="btn btn-square btn-outline btn-sm btn-primary"
-              (click)="togglePreviewMode()"
-              title="Vorschau ein-/ausblenden">
-              <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
-            </button>
-          </div>
-          <div class="relative">
-            <div>
+            <div class="flex items-center gap-2">
+              <button
+                class="btn btn-square btn-outline btn-sm btn-primary"
+                (click)="toggleViewMode()"
+                [title]="viewMode() === 'card' ? 'Zur Tabellenansicht wechseln' : 'Zur Card-Ansicht wechseln'">
+                @if (viewMode() === 'card') {
+                  <ng-icon name="heroBars3" size="1.2em" class="size-5"></ng-icon>
+                } @else {
+                  <ng-icon name="heroSquares2x2" size="1.2em" class="size-5"></ng-icon>
+                }
+              </button>
+
+              <button
+                class="btn btn-square btn-outline btn-sm btn-primary"
+                (click)="togglePreviewMode()"
+                title="Vorschau ein-/ausblenden">
+                <ng-icon name="heroEye" size="1.2em" class="size-5"></ng-icon>
+              </button>
+            </div>
+
+            <div class="relative">
               <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-primary btn-sm gap-1">
                   <ng-icon name="heroPlus" size="1.0em"></ng-icon>
                   Hinzufügen
                 </div>
-                <ul
-                  tabindex="0"
-                  class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow-lg text-primary">
+                <ul tabindex="0" class="dropdown-content menu z-10 w-52 rounded-box bg-base-100 p-2 text-primary shadow-lg">
                   <li>
                     <a>
                       <create-new-file></create-new-file>
@@ -147,7 +145,7 @@
                     </a>
                   </li>
                   <li>
-                    <label class="cursor-pointer flex items-center gap-2">
+                    <label class="flex cursor-pointer items-center gap-2">
                       <input
                         type="file"
                         multiple
@@ -164,22 +162,25 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div
-      class="grid gap-0 h-[calc(100%-4.5rem)] transition-all duration-300 ease-in-out"
-      [style.grid-template-columns]="sidebarService.isOpen() ? '1fr ' + sidebarService.width() + 'px' : '1fr 0px'">
-      <div class="min-w-0 overflow-hidden">
-        <div class="h-full overflow-y-auto">
-          <router-outlet></router-outlet>
+      <div
+        class="grid h-[calc(100%-4.5rem)] gap-0 transition-all duration-300 ease-in-out"
+        [style.grid-template-columns]="sidebarService.isOpen() ? '1fr ' + sidebarService.width() + 'px' : '1fr 0px'">
+        <div class="min-w-0 overflow-hidden">
+          <div class="h-full overflow-y-auto">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+
+        <div class="overflow-hidden border-l border-gray-500/40 transition-all duration-300 ease-in-out">
+          <filemanager-sidebar></filemanager-sidebar>
         </div>
       </div>
-
-      <div class="overflow-hidden transition-all duration-300 ease-in-out border-l border-gray-500/40">
-        <filemanager-sidebar></filemanager-sidebar>
-      </div>
-    </div>
+    } @else {
+      <filemanager-workspace-view></filemanager-workspace-view>
+    }
   }
+
   <app-search-modal
     [isOpen]="isSearchModalOpen()"
     (close)="closeSearchModal()"

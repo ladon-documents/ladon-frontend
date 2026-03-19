@@ -172,10 +172,34 @@ export class FilemanagerFacade {
     });
   }
 
+  moveDocuments(documentModels: DocumentModel[]): void {
+    if (documentModels.length === 0) {
+      return;
+    }
+
+    const targetPath = this.getCurrentPath() ?? '';
+    this.#filemanagerStore.moveDocuments({
+      documents: documentModels,
+      targetPath,
+    });
+  }
+
   copyDocument(documentModel: DocumentModel): void {
     const targetPath = this.getCurrentPath() ?? '';
     this.#filemanagerStore.copyDocument({
       document: documentModel,
+      targetPath,
+    });
+  }
+
+  copyDocuments(documentModels: DocumentModel[]): void {
+    if (documentModels.length === 0) {
+      return;
+    }
+
+    const targetPath = this.getCurrentPath() ?? '';
+    this.#filemanagerStore.copyDocuments({
+      documents: documentModels,
       targetPath,
     });
   }

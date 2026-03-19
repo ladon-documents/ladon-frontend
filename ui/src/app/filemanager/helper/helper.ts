@@ -7,6 +7,7 @@ import {
   isAudioDocument,
   isImageDocument,
   isPdfDocument as isUtilityPdfDocument,
+  isVideoDocument,
 } from '@ladon/utility';
 
 const storageKey = `mf-ladon-docmanager:view`;
@@ -244,10 +245,15 @@ const isImage = (document: DocumentModel | null): boolean => {
   return isImageDocument(document);
 };
 
+const isVideo = (document: DocumentModel | null): boolean => {
+  return isVideoDocument(document);
+};
+
 export const filemanagerHelper = {
   isEditableFile,
   isPdf,
   isAudio,
+  isVideo,
   isImage,
   filterDocuments,
   calculatePaginationState,

@@ -1,0 +1,69 @@
+<div class="flex h-full flex-col">
+  <div class="flex items-center justify-between border-b border-gray-500/40 px-4 py-3">
+    <div class="flex items-center gap-2">
+      <button class="btn btn-ghost btn-sm btn-square" (click)="closeWorkspaceView()" title="Zurück">
+        <ng-icon name="heroArrowLeft" size="1.1em"></ng-icon>
+      </button>
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/80">
+        @if (workspaceMode() === 'editor') {
+          Editor
+        } @else if (workspaceMode() === 'image-editor') {
+          Image Editor
+        } @else if (workspaceMode() === 'pdf-viewer') {
+          PDF Viewer
+        } @else if (workspaceMode() === 'media-player') {
+          Media Player
+        }
+      </h2>
+    </div>
+  </div>
+
+  <div class="flex-1 min-h-0 overflow-auto p-4">
+    @if (workspaceIsPreparing()) {
+      <div class="flex h-full items-center justify-center">
+        <span class="loading loading-spinner loading-lg"></span>
+      </div>
+    } @else {
+      @if (workspaceMode() === 'editor') {
+        <div class="h-full min-h-0">
+          <file-editor-dialog
+            [displayMode]="'inline'"
+            [config]="{
+              readOnly: false,
+              fileName: selectedDocument()?.key || selectedDocument()?.name || '',
+            }">
+          </file-editor-dialog>
+        </div>
+      }
+
+      @if (workspaceMode() === 'image-editor' && workspaceService.imageEditorSourceUrl()) {
+        <div class="h-full min-h-0">
+          <ladon-image-editor
+            [attr.image-src]="workspaceService.imageEditorSourceUrl()"
+            [attr.file-name]="workspaceService.imageEditorFileName()"
+            [attr.mime-type]="workspaceService.imageEditorMimeType()"
+            (editor-close)="closeWorkspaceView()"
+            (editor-save)="onImageEditorSave($event)">
+          </ladon-image-editor>
+        </div>
+      }
+
+      @if (workspaceMode() === 'media-player' && workspaceService.mediaPlayerSourceUrl()) {
+        <div class="h-full min-h-0">
+          <ladon-media-player
+            [attr.media-src]="workspaceService.mediaPlayerSourceUrl()"
+            [attr.media-type]="workspaceService.mediaPlayerType()"
+            [attr.file-name]="workspaceService.mediaPlayerFileName()">
+          </ladon-media-player>
+        </div>
+      }
+
+      @if (workspaceMode() === 'pdf-viewer' && workspaceService.pdfSource()) {
+        <div class="h-full min-h-0">
+          <pdf-viewer></pdf-viewer>
+          <!--<ladon-pdfviewer class="block h-full w-full" [attr.pdf]="workspaceService.pdfSource()"></ladon-pdfviewer> -->
+        </div>
+      }
+    }
+  </div>
+</div>

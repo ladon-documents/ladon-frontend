@@ -104,8 +104,10 @@ export class PdfViewerComponent implements OnInit {
         }
       } else {
         const storeDocument = this.filemanagerFacade.selectedDocument();
-        if (storeDocument && this.isPdfDocument(storeDocument)) {
+        if (storeDocument && this.isPdfDocument(storeDocument) && storeDocument.path) {
           this._selectedDocument.set(storeDocument);
+          this.pdfName.set(storeDocument.path);
+
           this.loadPdf();
         }
       }

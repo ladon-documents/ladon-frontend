@@ -6,25 +6,15 @@ import { DocumentModel, TagModel } from '@ladon/api';
 
 import { PreviewComponent } from './preview.component';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { MonacoEditorService } from '../../editor/editor.service';
-import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
-import { FilemanagerTagsFacade } from '../tags/filemanager-tags.facade';
+import { DocumentTagsFacade } from '../../shared/services/document-tags.facade';
+import { FilemanagerWorkspaceService } from '../filemanager-workspace.service';
 
 class FilemanagerFacadeMock {
   selectedDocument = signal<DocumentModel | null>(null);
   getImagePreviewUrll = jasmine.createSpy('getImagePreviewUrll').and.resolveTo(null);
 }
 
-class MonacoEditorServiceMock {
-  isEditableFile = jasmine.createSpy('isEditableFile').and.returnValue(false);
-  open = jasmine.createSpy('open');
-}
-
-class PdfViewerFacadeMock {
-  navigateToPdfViewer = jasmine.createSpy('navigateToPdfViewer');
-}
-
-class FilemanagerTagsFacadeMock {
+class DocumentTagsFacadeMock {
   documentId = signal<string | null>('doc-path');
   tags = signal<TagModel[]>([]);
   isLoading = signal(false);
@@ -37,11 +27,16 @@ class FilemanagerTagsFacadeMock {
   clearState = jasmine.createSpy('clearState');
 }
 
+class FilemanagerWorkspaceServiceMock {
+  openEditor = jasmine.createSpy('openEditor');
+  openPdfViewer = jasmine.createSpy('openPdfViewer');
+}
+
 describe('PreviewComponent', () => {
   let component: PreviewComponent;
   let fixture: ComponentFixture<PreviewComponent>;
   let filemanagerFacade: FilemanagerFacadeMock;
-  let tagsFacade: FilemanagerTagsFacadeMock;
+  let workspaceService: FilemanagerWorkspaceServiceMock;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -49,16 +44,15 @@ describe('PreviewComponent', () => {
       providers: [
         provideIcons({ heroTrash }),
         { provide: FilemanagerFacade, useClass: FilemanagerFacadeMock },
-        { provide: MonacoEditorService, useClass: MonacoEditorServiceMock },
-        { provide: PdfViewerFacade, useClass: PdfViewerFacadeMock },
-        { provide: FilemanagerTagsFacade, useClass: FilemanagerTagsFacadeMock },
+        { provide: DocumentTagsFacade, useClass: DocumentTagsFacadeMock },
+        { provide: FilemanagerWorkspaceService, useClass: FilemanagerWorkspaceServiceMock },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PreviewComponent);
     component = fixture.componentInstance;
     filemanagerFacade = TestBed.inject(FilemanagerFacade) as unknown as FilemanagerFacadeMock;
-    tagsFacade = TestBed.inject(FilemanagerTagsFacade) as unknown as FilemanagerTagsFacadeMock;
+    workspaceService = TestBed.inject(FilemanagerWorkspaceService) as unknown as FilemanagerWorkspaceServiceMock;
     fixture.detectChanges();
   });
 
@@ -66,82 +60,87 @@ describe('PreviewComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show tag section only for files', () => {
+  it('should render shared tags component only for files', () => {
     filemanagerFacade.selectedDocument.set({
       key: 'folder',
       path: 'folder',
       isFolder: true,
     });
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).not.toContain('Tags');
+    expect(fixture.nativeElement.querySelector('app-document-tags')).toBeNull();
 
     filemanagerFacade.selectedDocument.set({
       key: 'folder/file.txt',
       path: 'folder/file.txt',
+      name: 'file.txt',
       isFolder: false,
     });
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Tags');
+    expect(fixture.nativeElement.querySelector('app-document-tags')).not.toBeNull();
   });
 
-  it('should add a tag on Enter', () => {
+  it('should open the editor for editable files', () => {
     filemanagerFacade.selectedDocument.set({
       key: 'folder/file.txt',
       path: 'folder/file.txt',
+      name: 'file.txt',
       isFolder: false,
     });
-    tagsFacade.documentId.set('folder/file.txt');
     fixture.detectChanges();
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('input[placeholder="Tag hinzufügen..."]');
-    input.value = 'Rechnung';
-    input.dispatchEvent(new Event('input'));
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
-    fixture.detectChanges();
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    button.click();
 
-    expect(tagsFacade.addTag).toHaveBeenCalledWith('Rechnung');
+    expect(workspaceService.openEditor).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({ path: 'folder/file.txt' }),
+    );
+    expect(workspaceService.openPdfViewer).not.toHaveBeenCalled();
   });
 
-  it('should delete a tag by clicking the remove button', () => {
+  it('should open the pdf viewer for pdf files', () => {
     filemanagerFacade.selectedDocument.set({
-      key: 'folder/file.txt',
-      path: 'folder/file.txt',
+      key: 'folder/file.pdf',
+      path: 'folder/file.pdf',
+      name: 'file.pdf',
       isFolder: false,
     });
-    tagsFacade.tags.set([
-      {
-        id: 'tag-1',
-        name: 'Tag',
-        value: 'Tag',
-        color: '#111111',
-      },
-    ]);
     fixture.detectChanges();
 
-    const removeButton: HTMLButtonElement = fixture.nativeElement.querySelector('app-pill button[title="Entfernen"]');
-    removeButton.click();
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+    button.click();
 
-    expect(tagsFacade.deleteTag).toHaveBeenCalledWith('tag-1');
+    expect(workspaceService.openPdfViewer).toHaveBeenCalledOnceWith(
+      jasmine.objectContaining({ path: 'folder/file.pdf' }),
+    );
+    expect(workspaceService.openEditor).not.toHaveBeenCalled();
   });
 
-  it('should render loading, empty and error states', () => {
+  it('should render an image preview for images', async () => {
+    filemanagerFacade.getImagePreviewUrll.and.resolveTo('blob:preview-image');
     filemanagerFacade.selectedDocument.set({
-      key: 'folder/file.txt',
-      path: 'folder/file.txt',
+      key: 'folder/image.png',
+      path: 'folder/image.png',
+      name: 'image.png',
       isFolder: false,
     });
-    tagsFacade.isLoading.set(true);
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Tags werden geladen...');
+    await fixture.whenStable();
+    fixture.detectChanges();
 
-    tagsFacade.isLoading.set(false);
-    tagsFacade.tags.set([]);
-    tagsFacade.error.set(null);
-    fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Noch keine Tags');
+    expect(filemanagerFacade.getImagePreviewUrll).toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('img')?.getAttribute('src')).toBe('blob:preview-image');
+    expect(fixture.nativeElement.querySelector('app-document-tags')).not.toBeNull();
+  });
 
-    tagsFacade.error.set('Backend-Fehler');
+  it('should hide the primary action button for unsupported files', () => {
+    filemanagerFacade.selectedDocument.set({
+      key: 'folder/archive.zip',
+      path: 'folder/archive.zip',
+      name: 'archive.zip',
+      isFolder: false,
+    });
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Backend-Fehler');
+
+    expect(fixture.nativeElement.querySelector('button')).toBeNull();
   });
 });

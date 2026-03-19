@@ -1,33 +1,22 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject, signal, untracked } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject, OnDestroy } from '@angular/core';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { DocumentModel } from '@ladon/api';
-import { MonacoEditorService } from '../../editor/editor.service';
 import { filemanagerHelper } from '../helper/helper';
-import { PdfViewerFacade } from '../../pdf-viewer/pdf-viewer.facade';
-import { FilemanagerTagsFacade } from '../tags/filemanager-tags.facade';
-import { PillComponent } from '../../shared/components/pill/pill.component';
+import { FilemanagerWorkspaceService } from '../filemanager-workspace.service';
+import { DocumentTagsComponent } from '../../shared/components/document-tags/document-tags.component';
 
 @Component({
   selector: 'filemanager-preview',
-  imports: [PillComponent],
+  imports: [DocumentTagsComponent],
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class PreviewComponent {
-  readonly monacoEditorService = inject(MonacoEditorService);
+export class PreviewComponent implements OnDestroy {
   private readonly filemanagerFacade = inject(FilemanagerFacade);
-  private readonly pdfViewerFacade = inject(PdfViewerFacade);
-  private readonly filemanagerTagsFacade = inject(FilemanagerTagsFacade);
+  private readonly workspaceService = inject(FilemanagerWorkspaceService);
 
   selectedDocument = this.filemanagerFacade.selectedDocument;
-  readonly tags = this.filemanagerTagsFacade.tags;
-  readonly isTagsLoading = this.filemanagerTagsFacade.isLoading;
-  readonly isTagsMutating = this.filemanagerTagsFacade.isMutating;
-  readonly tagsError = this.filemanagerTagsFacade.error;
-  readonly tagsDocumentId = this.filemanagerTagsFacade.documentId;
-
-  readonly tagInput = signal('');
   imageUrl: string | null = null;
   isLoading = false;
   filename = '';
@@ -35,35 +24,33 @@ export class PreviewComponent {
   constructor() {
     effect(() => {
       const document = this.selectedDocument();
-      untracked(() => {
-        if (document && !document.isFolder) {
-          this.filemanagerTagsFacade.loadForDocument(document);
-        } else {
-          this.filemanagerTagsFacade.clearState();
-        }
-      });
-      this.tagInput.set('');
 
       if (document) {
         this.filename = document.name || '';
         if (!document.isFolder) {
-          this.loadPreview(document);
+          void this.loadPreview(document);
         } else {
-          this.revokeImageUrl();
+          this.revokePreviewUrls();
         }
       } else {
         this.filename = '';
-        this.revokeImageUrl();
+        this.revokePreviewUrls();
       }
     });
   }
 
+  ngOnDestroy(): void {
+    this.revokePreviewUrls();
+  }
+
   private async loadPreview(document: DocumentModel) {
-    this.revokeImageUrl();
+    this.revokePreviewUrls();
     this.isLoading = true;
     try {
-      if (!filemanagerHelper.isAudio(document)) {
+      if (filemanagerHelper.isImage(document)) {
         this.imageUrl = await this.filemanagerFacade.getImagePreviewUrll();
+      } else {
+        this.imageUrl = null;
       }
     } catch (error) {
       console.error('Fehler beim Laden der Vorschau:', error);
@@ -74,55 +61,50 @@ export class PreviewComponent {
 
   onImageError(event: any) {
     console.error('Fehler beim Anzeigen des Bildes:', event);
-    this.revokeImageUrl();
+    if (this.imageUrl) {
+      URL.revokeObjectURL(this.imageUrl);
+      this.imageUrl = null;
+    }
   }
 
-  private revokeImageUrl() {
+  private revokePreviewUrls() {
     if (this.imageUrl) {
       URL.revokeObjectURL(this.imageUrl);
     }
     this.imageUrl = null;
   }
 
-  openEditor() {
-    this.monacoEditorService.open();
-  }
-
-  async openPdf() {
+  hasPrimaryAction(): boolean {
     const document = this.selectedDocument();
-    if (document) {
-      await this.pdfViewerFacade.navigateToPdfViewer(document);
+    if (!document || document.isFolder) {
+      return false;
     }
+
+    return filemanagerHelper.isPdf(document) || filemanagerHelper.isEditableFile(document.key || document.name || '');
   }
 
-  onTagInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.tagInput.set(target.value);
-  }
-
-  onTagKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      this.addTag();
+  getPrimaryActionLabel(): string {
+    const document = this.selectedDocument();
+    if (document && filemanagerHelper.isPdf(document)) {
+      return 'PDF Viewer öffnen';
     }
+
+    return 'Im Editor öffnen';
   }
 
-  addTag() {
-    const value = this.tagInput().trim();
-    if (!value || this.isTagsMutating() || !this.tagsDocumentId()) {
+  openPrimaryAction(): void {
+    const document = this.selectedDocument();
+    if (!document || document.isFolder) {
       return;
     }
 
-    this.filemanagerTagsFacade.addTag(value);
-    this.tagInput.set('');
-  }
-
-  deleteTag(tagId: string) {
-    if (!tagId || this.isTagsMutating()) {
+    if (filemanagerHelper.isPdf(document)) {
+      this.workspaceService.openPdfViewer(document);
       return;
     }
-    this.filemanagerTagsFacade.deleteTag(tagId);
-  }
 
-  protected readonly filemanagerHelper = filemanagerHelper;
+    if (filemanagerHelper.isEditableFile(document.key || document.name || '')) {
+      this.workspaceService.openEditor(document);
+    }
+  }
 }

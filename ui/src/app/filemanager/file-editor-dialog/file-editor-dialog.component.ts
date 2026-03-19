@@ -31,7 +31,7 @@ import { Subscription } from 'rxjs';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FileEditorDialogComponent implements OnDestroy {
-  public fileContent: string  = '';
+  public fileContent: string = '';
   public isOpen: boolean = false;
   private readonly monacoEditorService = inject(MonacoEditorService);
   private subscriptions = new Subscription();
@@ -87,7 +87,7 @@ export class FileEditorDialogComponent implements OnDestroy {
   }
 
   async loadFileContent() {
-    this.fileContent = await this.monacoEditorService.loadFileContent() || '';
+    this.fileContent = (await this.monacoEditorService.loadFileContent()) || '';
     if (this.config().fileName && this.fileContent) {
       this.editorConfig = this.monacoEditorService.getEditorConfig(this.config().fileName, this.config().readOnly);
       this.originalContent = this.fileContent;

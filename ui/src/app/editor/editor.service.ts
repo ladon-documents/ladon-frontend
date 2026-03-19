@@ -1,7 +1,7 @@
 import { EventEmitter, inject, Injectable, Output } from '@angular/core';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { FilemanagerFacade } from '../filemanager/filemanager.facade';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 
 export interface EditorConfig {
   language: string;

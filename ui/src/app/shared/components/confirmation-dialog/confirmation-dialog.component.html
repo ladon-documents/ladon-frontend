@@ -16,14 +16,14 @@
 
       <div class="flex justify-end gap-3 pt-2">
         <button class="btn btn-outline" (click)="onCancel()">
-          {{ confirmationDialogService.state().config?.cancelText || 'Abbrechen' }}
+          {{ confirmationDialogService.state().config?.cancelText || "Abbrechen" }}
         </button>
         <button
-                                                                                            class="btn"
-                                                                                            [class.btn-error]="confirmationDialogService.state().config?.danger"
-                                                                                            [class.btn-primary]="!confirmationDialogService.state().config?.danger"
-                                                                                            (click)="onConfirm()">
-          {{ confirmationDialogService.state().config?.confirmText || 'Bestätigen' }}
+          class="btn"
+          [class.btn-error]="confirmationDialogService.state().config?.danger"
+          [class.btn-primary]="!confirmationDialogService.state().config?.danger"
+          (click)="onConfirm()">
+          {{ confirmationDialogService.state().config?.confirmText || "Bestätigen" }}
         </button>
       </div>
     </div>

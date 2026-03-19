@@ -133,14 +133,41 @@ Base paths configured in [app.config.ts](../ui/src/app/app.config.ts#L24):
 
 Token interceptor applied globally in `interceptors/token.interceptor.ts`.
 
+## TypeScript Path Aliases
+
+Defined in `ui/tsconfig.json`. Always use these aliases instead of relative paths:
+
+| Alias | Resolves to | Usage |
+|-------|-------------|-------|
+| `@ladon/api` | `api/index.ts` | Generated API services & models |
+| `@ladon/utility` | `api/utility/index.ts` | Shared utility pipes & helpers |
+| `@ladon/shared` | `ui/src/app/shared/index.ts` | Shared guards, pipes, directives, components |
+| `@ladon/assets/*` | `ui/public/assets/*`, `ui/src/assets/*` | Static assets |
+| `@ladon/mocks/*` | `ui/public/mocks/*`, `ui/src/mocks/*` | Mock data files |
+| `@ladon/tests/*` | `ui/tests/*` | Test utilities & fixtures |
+
+```typescript
+import { DocumentModel } from '@ladon/api';
+import { FilesizePipe } from '@ladon/utility';
+import { AuthGuard } from '@ladon/shared';
+```
+
 ## Key File Locations & Patterns
 
 | Purpose | Location | Example |
 |---------|----------|---------|
 | Stores (state) | `ui/src/app/store/` | [filemanager.store.ts](../ui/src/app/store/filemanager.store.ts) |
+| Store features | `ui/src/app/store/features/` | `request-status.feature.ts` |
 | HTTP Services | `ui/src/app/services/` | `converter.service.ts`, `auth.service.ts` |
+| Shared Services | `ui/src/app/shared/services/` | `toast.service.ts`, `context-menu.service.ts` |
 | Shared Pipes | `ui/src/app/shared/pipes/` | `filesize.pipe.ts`, `fileicon.pipe.ts` |
+| Shared Directives | `ui/src/app/shared/directive/` | `file-upload.directive.ts` |
+| Shared Guards | `ui/src/app/shared/guards/` | `auth.guard.ts`, `can-activate.login.ts` |
+| Shared Components | `ui/src/app/shared/components/` | `search-modal/`, `clipboard/`, `uploads/` |
+| Shared re-exports | `ui/src/app/shared/index.ts` | Import via `@ladon/shared` alias |
 | Components | `ui/src/app/{feature}/` | Standalone, with providers |
+| Feature Routes | `ui/src/app/{feature}/{feature}.routes.ts` | `filemanager.routes.ts` |
+| Facades | `ui/src/app/{feature}/{feature}.facade.ts` | `filemanager.facade.ts` |
 | Utilities | `api/utility/` | Custom pipes for API responses |
 | API Clients | `ui/src/api/` | Auto-generated from OpenAPI |
 
@@ -151,6 +178,28 @@ Complex components use **Facade** classes (e.g., `FilemanagerContentFacade`, `Fi
 private facade = inject(FilemanagerContentFacade);
 // In facade
 public loadDocuments = this.facade.loadDocuments;
+```
+
+## Shared Services Pattern
+Services in `ui/src/app/shared/services/` expose state via **signals** (not stores) for lightweight cross-component communication:
+
+| Service | Purpose |
+|---------|---------|
+| `ToastService` | Show success/error/warning/info toasts |
+| `ContextMenuService` | Right-click context menu state |
+| `ConfirmationDialogService` | `await confirm({...})` Promise-based confirmation dialogs |
+| `InputDialogService` | `await prompt({...})` Promise-based text input dialogs |
+| `KeyboardShortcutsService` | Register/handle global keyboard shortcuts |
+| `SidebarService` | Sidebar open/close/mode state (per feature) |
+
+```typescript
+// Example: show a toast
+private toastService = inject(ToastService);
+this.toastService.success('File deleted');
+
+// Example: confirm before destructive action
+private confirmDialog = inject(ConfirmationDialogService);
+const ok = await this.confirmDialog.confirm({ title: 'Delete?', message: '...', danger: true });
 ```
 
 ## Common Tasks
@@ -244,6 +293,8 @@ BREAKING CHANGE: The documents endpoint now returns paginated results instead of
 4. **CSS Variables in DaisyUI** - HSL format only; no hex colors in derived variables
 5. **Component imports** - Explicit imports required for standalone; CommonModule for `*ngIf`, `*ngFor`
 6. **Build order matters** - Run `npm run build:api` before `build:all` if specs change
+7. **Shared re-exports** - Import shared guards, pipes, and components via `@ladon/shared` (maps to `ui/src/app/shared/index.ts`)
+8. **Injectable facade scope** - Some facades (e.g. `UsermanagerFacade`) use `@Injectable()` without `providedIn: 'root'`; they must be provided in a component's `providers` array
 
 ## References
 

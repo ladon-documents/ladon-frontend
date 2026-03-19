@@ -4,7 +4,7 @@ import {
   ConverterJobModel,
   ConverterService as ConverterServiceApi,
   DocumentModel,
-} from '../../api';
+} from '@ladon/api';
 import { lastValueFrom } from 'rxjs';
 
 type converterType = 'applyandstore' | 'applyanddownload';

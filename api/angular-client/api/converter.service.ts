@@ -20,6 +20,8 @@ import { Observable }                                        from 'rxjs';
 import { ConverterInfoModel } from '../model/converterInfo';
 // @ts-ignore
 import { ConverterJobModel } from '../model/converterJob';
+// @ts-ignore
+import { MultiValueMapStringStringModel } from '../model/multiValueMapStringString';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';

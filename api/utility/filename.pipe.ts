@@ -8,4 +8,4 @@ export const filenamePipeTransform = (payload: string): string => {
 
   lastSlashIndex += 1;
   return payload.slice(lastSlashIndex);
-}
+};

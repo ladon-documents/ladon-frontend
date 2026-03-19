@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { filesizePipeTransform } from '@utility';
+import { filesizePipeTransform } from '@ladon/utility';
 
 @Pipe({
   name: 'filesize',

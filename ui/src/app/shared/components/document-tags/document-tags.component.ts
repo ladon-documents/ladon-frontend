@@ -1,5 +1,5 @@
 import { Component, effect, inject, input, signal, untracked } from '@angular/core';
-import { DocumentModel } from '../../../../api';
+import { DocumentModel } from '@ladon/api';
 import { PillComponent } from '../pill/pill.component';
 import { DocumentTagsFacade } from '../../services/document-tags.facade';
 

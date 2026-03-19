@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject, OnDestroy } from '@angular/core';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { filemanagerHelper } from '../helper/helper';
 import { FilemanagerWorkspaceService } from '../filemanager-workspace.service';
 import { DocumentTagsComponent } from '../../shared/components/document-tags/document-tags.component';

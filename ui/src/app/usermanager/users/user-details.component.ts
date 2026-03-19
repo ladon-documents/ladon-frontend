@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
-import { PermissionModel, UserEntryModel, RoleEntryModel } from '../../../api';
+import { PermissionModel, UserEntryModel, RoleEntryModel } from '@ladon/api';
 import {
   AbstractControl,
   FormControl,

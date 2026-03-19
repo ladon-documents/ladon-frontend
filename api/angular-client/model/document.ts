@@ -16,6 +16,7 @@ export interface DocumentModel {
     'last-modified'?: string;
     bucket?: string;
     key?: string;
+    name?: string;
     path?: string;
     etag?: string;
     metadata?: DocumentMetadataModel;

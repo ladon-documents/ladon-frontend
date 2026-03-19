@@ -2,8 +2,8 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
-import { DocumentModel } from '../../api';
-import { isPdfDocument } from '@utility';
+import { DocumentModel } from '@ladon/api';
+import { isPdfDocument } from '@ladon/utility';
 import { ConverterService } from '../services/converter.service';
 
 interface ClipboardState {
@@ -37,15 +37,11 @@ export const ClipboardStore = signalStore(
     isEmpty: computed(() => store.selectedDocuments().length === 0),
 
     allDocumentsArePdf: computed(
-      () =>
-        store.selectedDocuments().length > 0 &&
-        store.selectedDocuments().every((doc) => isPdfDocument(doc)),
+      () => store.selectedDocuments().length > 0 && store.selectedDocuments().every((doc) => isPdfDocument(doc)),
     ),
 
     canGeneratePdf: computed(
-      () =>
-        store.selectedDocuments().length >= 2 &&
-        store.selectedDocuments().every((doc) => isPdfDocument(doc)),
+      () => store.selectedDocuments().length >= 2 && store.selectedDocuments().every((doc) => isPdfDocument(doc)),
     ),
 
     canCreateZip: computed(() => store.selectedDocuments().length > 0),

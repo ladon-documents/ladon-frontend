@@ -14,7 +14,7 @@ import { MappedPermission, MappedUser, UsermanagerService } from '../services/us
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { tap } from 'rxjs/operators';
-import { PermissionModel, RoleEntryModel, UserEntryModel } from '../../../api';
+import { PermissionModel, RoleEntryModel, UserEntryModel } from '@ladon/api';
 import { combineLatest, switchMap } from 'rxjs';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroTrash, heroPlus } from '@ng-icons/heroicons/outline';

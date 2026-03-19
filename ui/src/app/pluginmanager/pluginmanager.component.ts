@@ -12,7 +12,7 @@ import {
 import { finalize, mergeMap, Observable, of, Subscription, tap } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ChannelList, PluginInstallState, PluginService, PluginWithVersionStatus } from './services/plugin.service';
-import { PluginModel } from '../../plugin';
+import { plugin } from '@ladon/api';
 import { CommonModule } from '@angular/common';
 import { isEmpty } from 'lodash';
 import { FormsModule } from '@angular/forms';
@@ -153,17 +153,17 @@ export class PluginmanagerComponent implements OnInit {
     });
   }
 
-  install(plugin: PluginModel): void {
-    if (!plugin) {
+  install(pluginItem: plugin.PluginModel): void {
+    if (!pluginItem) {
       return;
     }
-    if (plugin.spec?.type === 'web-bundle') {
-      this.installBundle(plugin);
+    if (pluginItem.spec?.type === 'web-bundle') {
+      this.installBundle(pluginItem);
     } else {
-      if (this.prepareAction(plugin)) {
+      if (this.prepareAction(pluginItem)) {
         this.sub$.add(
           this.pluginService
-            .installPlugin(plugin)
+            .installPlugin(pluginItem)
             .pipe(
               finalize(() => {
                 this.isInstalling = false;
@@ -175,11 +175,11 @@ export class PluginmanagerComponent implements OnInit {
     }
   }
 
-  deinstall(plugin: PluginModel): void {
-    if (this.prepareAction(plugin)) {
+  deinstall(pluginItem: plugin.PluginModel): void {
+    if (this.prepareAction(pluginItem)) {
       this.sub$.add(
         this.pluginService
-          .deintallPlugin(plugin)
+          .deintallPlugin(pluginItem)
           .pipe(
             finalize(() => {
               this.isInstalling = false;
@@ -190,10 +190,10 @@ export class PluginmanagerComponent implements OnInit {
     }
   }
 
-  private installBundle(plugin: PluginModel): void {
-    if (this.prepareAction(plugin)) {
+  private installBundle(pluginItem: plugin.PluginModel): void {
+    if (this.prepareAction(pluginItem)) {
       this.sub$ = this.pluginService
-        .installBundle(plugin)
+        .installBundle(pluginItem)
         .pipe(
           finalize(() => {
             //this.loader.hide();
@@ -206,8 +206,8 @@ export class PluginmanagerComponent implements OnInit {
     }
   }
 
-  private prepareAction(plugin: PluginModel): boolean {
-    if (!plugin) {
+  private prepareAction(pluginItem: plugin.PluginModel): boolean {
+    if (!pluginItem) {
       return false;
     }
     if (this.sub$) {

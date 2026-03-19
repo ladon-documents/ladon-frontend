@@ -1,5 +1,5 @@
 @if (isOpen) {
-  @if (displayMode() === 'modal') {
+  @if (displayMode() === "modal") {
     <div class="fixed inset-0 z-50 overflow-y-auto" [class.hidden]="!isOpen">
       <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" (click)="closeDialog()"></div>
 
@@ -85,81 +85,81 @@
     </div>
   } @else {
     <div class="bg-base-100 rounded-lg border border-gray-500/40 w-full h-full flex flex-col">
-        <div class="flex items-center justify-between p-4 border-b border-gray-500/40">
-          <div class="flex items-center space-x-3">
-            <ng-icon name="heroDocumentText" class="w-6 h-6 text-gray-600"></ng-icon>
-            <div>
-              <h3 class="text-lg font-semibold">{{ config().fileName }}</h3>
-              <p class="text-sm text-gray-500">
-                {{ editorConfig?.language }} • {{ config().readOnly ? "Nur Lesen" : "Bearbeiten" }}
-              </p>
-            </div>
+      <div class="flex items-center justify-between p-4 border-b border-gray-500/40">
+        <div class="flex items-center space-x-3">
+          <ng-icon name="heroDocumentText" class="w-6 h-6 text-gray-600"></ng-icon>
+          <div>
+            <h3 class="text-lg font-semibold">{{ config().fileName }}</h3>
+            <p class="text-sm text-gray-500">
+              {{ editorConfig?.language }} • {{ config().readOnly ? "Nur Lesen" : "Bearbeiten" }}
+            </p>
           </div>
+        </div>
 
-          <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-2">
+          <button
+            (click)="toggleTheme()"
+            class="p-2 rounded-md hover:bg-gray-100 transition-colors"
+            title="Theme wechseln">
+            🌓
+          </button>
+
+          @if (!config().readOnly && hasChanges) {
             <button
-              (click)="toggleTheme()"
-              class="p-2 rounded-md hover:bg-gray-100 transition-colors"
-              title="Theme wechseln">
-              🌓
+              (click)="saveFile()"
+              [disabled]="isSaving"
+              class="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
+              @if (isSaving) {
+                <ng-icon name="heroArrowPath" class="w-4 h-4 mr-2 animate-spin"></ng-icon>
+              } @else {
+                <ng-icon name="heroCheck" class="w-4 h-4 mr-2"></ng-icon>
+              }
+              Speichern
             </button>
+          }
 
-            @if (!config().readOnly && hasChanges) {
+          <button (click)="closeDialog()" class="p-2 rounded-md hover:bg-gray-100 transition-colors">
+            <ng-icon name="heroXMark" class="w-6 h-6 text-gray-600"></ng-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-hidden">
+        <monaco-editor
+          #editor
+          [value]="fileContent"
+          [language]="editorConfig?.language || 'plaintext'"
+          [theme]="editorConfig?.theme || 'vs'"
+          [readOnly]="config().readOnly"
+          [options]="editorConfig?.options"
+          (valueChange)="onContentChange($event)"
+          (editorReady)="onEditorReady($event)">
+        </monaco-editor>
+      </div>
+
+      @if (hasChanges && !config().readOnly) {
+        <div class="p-4 border-t border-gray-500/40 bg-gray-50">
+          <div class="flex items-center justify-between">
+            <p class="text-sm text-gray-600">
+              <span class="inline-block w-2 h-2 bg-orange-400 rounded-full mr-2"></span>
+              Ungespeicherte Änderungen
+            </p>
+            <div class="flex space-x-2">
+              <button
+                (click)="discardChanges()"
+                class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                Verwerfen
+              </button>
               <button
                 (click)="saveFile()"
                 [disabled]="isSaving"
-                class="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
-                @if (isSaving) {
-                  <ng-icon name="heroArrowPath" class="w-4 h-4 mr-2 animate-spin"></ng-icon>
-                } @else {
-                  <ng-icon name="heroCheck" class="w-4 h-4 mr-2"></ng-icon>
-                }
+                class="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
                 Speichern
               </button>
-            }
-
-            <button (click)="closeDialog()" class="p-2 rounded-md hover:bg-gray-100 transition-colors">
-              <ng-icon name="heroXMark" class="w-6 h-6 text-gray-600"></ng-icon>
-            </button>
-          </div>
-        </div>
-
-        <div class="flex-1 overflow-hidden">
-          <monaco-editor
-            #editor
-            [value]="fileContent"
-            [language]="editorConfig?.language || 'plaintext'"
-            [theme]="editorConfig?.theme || 'vs'"
-            [readOnly]="config().readOnly"
-            [options]="editorConfig?.options"
-            (valueChange)="onContentChange($event)"
-            (editorReady)="onEditorReady($event)">
-          </monaco-editor>
-        </div>
-
-        @if (hasChanges && !config().readOnly) {
-          <div class="p-4 border-t border-gray-500/40 bg-gray-50">
-            <div class="flex items-center justify-between">
-              <p class="text-sm text-gray-600">
-                <span class="inline-block w-2 h-2 bg-orange-400 rounded-full mr-2"></span>
-                Ungespeicherte Änderungen
-              </p>
-              <div class="flex space-x-2">
-                <button
-                  (click)="discardChanges()"
-                  class="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
-                  Verwerfen
-                </button>
-                <button
-                  (click)="saveFile()"
-                  [disabled]="isSaving"
-                  class="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors">
-                  Speichern
-                </button>
-              </div>
             </div>
           </div>
-        }
+        </div>
+      }
     </div>
   }
 }

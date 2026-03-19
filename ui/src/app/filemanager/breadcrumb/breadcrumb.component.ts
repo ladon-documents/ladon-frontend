@@ -1,6 +1,6 @@
 import { Component, inject, Signal } from '@angular/core';
 import { BreadcrumbStore } from '../../store/breadcrumb.store';
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { FilemanagerFacade } from '../filemanager.facade';
 
 @Component({

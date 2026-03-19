@@ -14,8 +14,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DocumentModel } from '../../api';
-import { isPdfDocument } from '@utility';
+import { DocumentModel } from '@ladon/api';
+import { isPdfDocument } from '@ladon/utility';
 import { FilemanagerFacade } from '../filemanager/filemanager.facade';
 import { ActivatedRoute } from '@angular/router';
 import { PdfViewerFacade } from './pdf-viewer.facade';
@@ -117,7 +117,6 @@ export class PdfViewerComponent implements OnInit {
   private isPdfDocument(document: DocumentModel): boolean {
     return isPdfDocument(document);
   }
-
 
   private resetState(): void {
     this.pdfFacade.resetState();

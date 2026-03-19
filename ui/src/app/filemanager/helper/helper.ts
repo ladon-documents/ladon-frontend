@@ -1,4 +1,4 @@
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { PaginationState, SortConfig } from '../../store/filemanager.store';
 import {
   buildTargetPath as utilityBuildTargetPath,
@@ -8,7 +8,7 @@ import {
   isImageDocument,
   isPdfDocument as isUtilityPdfDocument,
   isVideoDocument,
-} from '@utility';
+} from '@ladon/utility';
 
 const storageKey = `mf-ladon-docmanager:view`;
 

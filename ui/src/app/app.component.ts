@@ -16,9 +16,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppStore } from './store/app.store';
 import { HeaderComponent } from './header/header.component';
 import { PdfviewerComponent } from './shared/components/pdfviewer/pdfviewer.component';
-import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
-import { DocumentModel } from '../api';
-import { SearchModalComponent } from './shared/components/search-modal/search-modal.component';
+import { DocumentModel } from '@ladon/api';
 import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 import { KeyboardShortcutsService } from './shared/services/keyboard-shortcuts.service';
 import { ContextMenuComponent } from './shared/components/context-menu/context-menu.component';
@@ -33,13 +31,11 @@ import { InputDialogComponent } from './shared/components/input-dialog/input-dia
     TranslateModule,
     NavigationComponent,
     HeaderComponent,
-    PdfViewerComponent,
     SpinnerComponent,
-    SearchModalComponent,
     ContextMenuComponent,
     ToastComponent,
     ConfirmationDialogComponent,
-    InputDialogComponent
+    InputDialogComponent,
   ],
   standalone: true,
   selector: 'ldn-ui',

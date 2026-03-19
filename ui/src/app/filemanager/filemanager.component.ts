@@ -24,11 +24,10 @@ import {
 import { FilesizePipe } from '../shared/pipes/filesize.pipe';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
-import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
 import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
-import { BucketUiItemModel } from '../../api';
+import { BucketUiItemModel } from '@ladon/api';
 import { CreateNewFileComponent } from './create-new-file/create-new-file.component';
 import { FilemanagerWorkspaceService } from './filemanager-workspace.service';
 import { FilemanagerWorkspaceViewComponent } from './workspace-view/workspace-view.component';
@@ -41,7 +40,6 @@ import { FilemanagerWorkspaceViewComponent } from './workspace-view/workspace-vi
     RouterModule,
     NgIconComponent,
     BreadcrumbComponent,
-    FileUploaderComponent,
     CreateFolderComponent,
     SidebarComponent,
     SearchModalComponent,

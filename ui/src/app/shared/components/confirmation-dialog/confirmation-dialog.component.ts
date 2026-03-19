@@ -14,7 +14,7 @@ import { DialogComponent } from '../dialog/dialog.component';
       heroExclamationTriangle,
     }),
   ],
-  templateUrl: './confirmation-dialog.component.html'
+  templateUrl: './confirmation-dialog.component.html',
 })
 export class ConfirmationDialogComponent {
   @ViewChild(DialogComponent, { static: true }) dialog: DialogComponent | undefined;

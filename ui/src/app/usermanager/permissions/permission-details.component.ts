@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { PermissionModel } from '../../../api';
+import { PermissionModel } from '@ladon/api';
 import { AliasPipe } from '@ladon/shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsermanagerService } from '../services/usermanager.service';

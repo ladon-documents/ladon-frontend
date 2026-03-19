@@ -4,7 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { DocumentsService } from '../../api';
+import { DocumentsService } from '@ladon/api';
 
 @Component({
   selector: 'lib-static-web',

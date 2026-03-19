@@ -1,54 +1,53 @@
 <app-dialog [title]="inputDialogService.state().config?.title || ''">
   @if (inputDialogService.state().visible) {
     <form (submit)="onConfirm(); $event.preventDefault()" class="flex flex-col gap-4">
-
-        <div class="relative">
-          @if (inputDialogService.state().config?.icon) {
-            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50">
-              <ng-icon [name]="inputDialogService.state().config!.icon" size="1.2em"></ng-icon>
-            </div>
-          }
-        </div>
-
-        <label class="input w-full" for="inputDialogField">
-          <span class="label">{{ inputDialogService.state().config?.label }} *</span>
-          <input id="inputDialogField"
-                 type="text"
-                 required
-                 [value]="inputDialogService.state().value"
-                 (input)="onValueChange($event)"
-                 [placeholder]="inputDialogService.state().config?.placeholder || ''"
-                 [class.pl-10]="inputDialogService.state().config?.icon"
-                 [class.input-error]="inputDialogService.state().showError"
-                 [disabled]="inputDialogService.state().isProcessing"
-                 class="input input-bordered w-full"
-                 autocomplete="off" />
-        </label>
-
-        @if (inputDialogService.state().showError) {
-          <label class="label">
-            <span class="label-text-alt text-error flex items-center gap-1">
-              <ng-icon name="heroExclamationCircle" size="1em"></ng-icon>
-              {{ inputDialogService.state().config?.errorMessage }}
-            </span>
-          </label>
+      <div class="relative">
+        @if (inputDialogService.state().config?.icon) {
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50">
+            <ng-icon [name]="inputDialogService.state().config!.icon" size="1.2em"></ng-icon>
+          </div>
         }
+      </div>
+
+      <label class="input w-full" for="inputDialogField">
+        <span class="label">{{ inputDialogService.state().config?.label }} *</span>
+        <input
+          id="inputDialogField"
+          type="text"
+          required
+          [value]="inputDialogService.state().value"
+          (input)="onValueChange($event)"
+          [placeholder]="inputDialogService.state().config?.placeholder || ''"
+          [class.pl-10]="inputDialogService.state().config?.icon"
+          [class.input-error]="inputDialogService.state().showError"
+          [disabled]="inputDialogService.state().isProcessing"
+          class="input input-bordered w-full"
+          autocomplete="off" />
+      </label>
+
+      @if (inputDialogService.state().showError) {
+        <label class="label">
+          <span class="label-text-alt text-error flex items-center gap-1">
+            <ng-icon name="heroExclamationCircle" size="1em"></ng-icon>
+            {{ inputDialogService.state().config?.errorMessage }}
+          </span>
+        </label>
+      }
 
       <div class="flex justify-around items-center gap-4">
-        <button type="button"
-                class="btn btn-ghost grow"
-                type="reset"
-                (click)="onCancel()"
-                [disabled]="inputDialogService.state().isProcessing">
-          {{ inputDialogService.state().config?.cancelText || 'Abbrechen' }}
+        <button
+          type="button"
+          class="btn btn-ghost grow"
+          type="reset"
+          (click)="onCancel()"
+          [disabled]="inputDialogService.state().isProcessing">
+          {{ inputDialogService.state().config?.cancelText || "Abbrechen" }}
         </button>
-        <button type="submit"
-                class="btn btn-primary grow"
-                [disabled]="inputDialogService.state().isProcessing">
+        <button type="submit" class="btn btn-primary grow" [disabled]="inputDialogService.state().isProcessing">
           @if (inputDialogService.state().isProcessing) {
             <span class="loading loading-spinner loading-sm"></span>
           }
-          {{ inputDialogService.state().config?.confirmText || 'Erstellen' }}
+          {{ inputDialogService.state().config?.confirmText || "Erstellen" }}
         </button>
       </div>
     </form>

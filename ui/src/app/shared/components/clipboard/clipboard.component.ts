@@ -2,7 +2,7 @@ import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { ClipboardService } from './clipboard.service';
-import { DocumentModel } from '../../../../api';
+import { DocumentModel } from '@ladon/api';
 import { FileiconPipe } from '../../pipes/fileicon.pipe';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { FilesizePipe } from '../../pipes/filesize.pipe';

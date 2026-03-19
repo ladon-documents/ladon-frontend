@@ -26,20 +26,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DialogComponent, FolderComponent } from '@ladon/shared';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SortConfig } from '../store/bucket.store';
-import { BucketUiItemModel } from '../../api';
+import { BucketUiItemModel } from '@ladon/api';
 import { LadonRouterService } from '../services/ladon-router.service';
 
 @Component({
   selector: 'buckets',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    NgIconComponent,
-    TranslateModule,
-    DialogComponent,
-    FolderComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, NgIconComponent, TranslateModule, DialogComponent, FolderComponent],
   providers: [
     provideIcons({
       heroFolder,

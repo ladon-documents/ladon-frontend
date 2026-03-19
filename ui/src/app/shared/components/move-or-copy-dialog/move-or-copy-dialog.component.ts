@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DialogComponent } from '@ladon/shared';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroDocumentDuplicate, heroArrowRight } from '@ng-icons/heroicons/outline';
-import { DocumentModel } from '../../../../api';
+import { DocumentModel } from '@ladon/api';
 
 @Component({
   selector: 'move-or-copy-dialog',
@@ -15,7 +15,7 @@ import { DocumentModel } from '../../../../api';
       heroArrowRight,
     }),
   ],
-  templateUrl: './move-or-copy-dialog.component.html'
+  templateUrl: './move-or-copy-dialog.component.html',
 })
 export class MoveOrCopyDialogComponent {
   @ViewChild(DialogComponent, { static: true }) dialog: DialogComponent | undefined;

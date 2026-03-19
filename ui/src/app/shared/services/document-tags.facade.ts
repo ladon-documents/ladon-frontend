@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { FilemanagerTagsStore } from '../../store/filemanager-tags.store';
 
 @Injectable({

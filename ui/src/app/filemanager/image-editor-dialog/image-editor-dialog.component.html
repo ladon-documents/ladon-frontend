@@ -36,7 +36,7 @@
 
             <button class="btn btn-outline btn-sm w-full" [class.btn-info]="isCropMode" (click)="toggleCropMode()">
               <ng-icon name="heroScissors"></ng-icon>
-              Crop {{ isCropMode ? 'aktiv' : 'starten' }}
+              Crop {{ isCropMode ? "aktiv" : "starten" }}
             </button>
 
             @if (isCropMode) {
@@ -172,7 +172,7 @@
           <button class="btn btn-ghost" (click)="closeDialog()" [disabled]="isSaving">Abbrechen</button>
           <button class="btn btn-primary" (click)="save()" [disabled]="isSaving || isLoading">
             <ng-icon name="heroCheck"></ng-icon>
-            {{ isSaving ? 'Speichert...' : (saveAsEnabled ? 'Speichern unter' : 'Speichern') }}
+            {{ isSaving ? "Speichert..." : saveAsEnabled ? "Speichern unter" : "Speichern" }}
           </button>
         </div>
       </div>

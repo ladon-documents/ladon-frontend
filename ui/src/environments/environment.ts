@@ -1,5 +1,5 @@
 import packageJson from '../../../package.json';
-import type { WebComponentLoaderOptions } from '@utility';
+import type { WebComponentLoaderOptions } from '@ladon/utility';
 
 const webComponents: WebComponentLoaderOptions = {
   source: 'server',

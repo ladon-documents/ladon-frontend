@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TasksService, DocumentsService, DocumentModel, TaskStatusModel } from '../../api';
+import { TasksService, DocumentsService, DocumentModel, TaskStatusModel } from '@ladon/api';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 

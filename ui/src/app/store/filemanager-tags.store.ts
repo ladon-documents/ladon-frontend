@@ -2,7 +2,7 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
-import { DocumentModel, TagmanagerService, TagModel } from '../../api';
+import { DocumentModel, TagmanagerService, TagModel } from '@ladon/api';
 import { ToastService } from '../shared/services/toast.service';
 
 export interface FilemanagerTagsState {
@@ -136,10 +136,12 @@ export const FilemanagerTagsStore = signalStore(
             }
 
             const normalizedValue = normalizeTag(trimmedValue);
-            const duplicateExists = store.tags().some(
-              (tag) =>
-                normalizeTag(tag.value ?? '') === normalizedValue || normalizeTag(tag.name ?? '') === normalizedValue,
-            );
+            const duplicateExists = store
+              .tags()
+              .some(
+                (tag) =>
+                  normalizeTag(tag.value ?? '') === normalizedValue || normalizeTag(tag.name ?? '') === normalizedValue,
+              );
 
             if (duplicateExists) {
               patchState(store, { error: 'Tag existiert bereits' });

@@ -1,16 +1,15 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroFolder, heroXMark } from '@ng-icons/heroicons/outline';
-import { DialogComponent } from '@ladon/shared';
 import { InputDialogService } from '../../shared/services/input-dialog.service';
 
 @Component({
   selector: 'create-folder',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgIconComponent, DialogComponent],
+  imports: [CommonModule, FormsModule, NgIconComponent],
   providers: [
     provideIcons({
       heroFolder,
@@ -20,7 +19,6 @@ import { InputDialogService } from '../../shared/services/input-dialog.service';
   templateUrl: './create-folder.component.html',
 })
 export class CreateFolderComponent {
-  @ViewChild(DialogComponent, { static: true }) createFolderDialog: DialogComponent | undefined;
   private readonly facade = inject(FilemanagerFacade);
   private readonly inputDialogService = inject(InputDialogService);
 
@@ -49,5 +47,4 @@ export class CreateFolderComponent {
       }
     }
   }
-
 }

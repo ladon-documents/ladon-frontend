@@ -62,6 +62,12 @@ export interface Document {
      * @type {string}
      * @memberof Document
      */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Document
+     */
     path?: string;
     /**
      * 
@@ -123,6 +129,7 @@ export function DocumentFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'lastModified': json['last-modified'] == null ? undefined : json['last-modified'],
         'bucket': json['bucket'] == null ? undefined : json['bucket'],
         'key': json['key'] == null ? undefined : json['key'],
+        'name': json['name'] == null ? undefined : json['name'],
         'path': json['path'] == null ? undefined : json['path'],
         'etag': json['etag'] == null ? undefined : json['etag'],
         'metadata': json['metadata'] == null ? undefined : DocumentMetadataFromJSON(json['metadata']),
@@ -149,6 +156,7 @@ export function DocumentToJSONTyped(value?: Document | null, ignoreDiscriminator
         'last-modified': value['lastModified'],
         'bucket': value['bucket'],
         'key': value['key'],
+        'name': value['name'],
         'path': value['path'],
         'etag': value['etag'],
         'metadata': DocumentMetadataToJSON(value['metadata']),

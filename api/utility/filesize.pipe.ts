@@ -11,10 +11,11 @@ export const filesizePipeTransform = (payload: any): string | null => {
   }
 
   return (
-    new Intl.NumberFormat("de-DE", { maximumSignificantDigits: 2 }).format(payload) +
-    ` ${FileSizes[count]}`
+    new Intl.NumberFormat("de-DE", { maximumSignificantDigits: 2 }).format(
+      payload,
+    ) + ` ${FileSizes[count]}`
   );
-}
+};
 
 enum FileSizes {
   B,
@@ -26,10 +27,10 @@ enum FileSizes {
   EB,
 }
 
-export const formatFileSize = (bytes: number): string  => {
-  if (bytes === 0) return '0 Bytes';
+export const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return "0 Bytes";
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};

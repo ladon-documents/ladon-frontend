@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DocumentModel, DocumentsService } from '../../api';
+import { DocumentModel, DocumentsService } from '@ladon/api';
 import { throwError } from 'rxjs';
 
 @Injectable({

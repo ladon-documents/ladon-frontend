@@ -4,8 +4,8 @@ import { Observable, of } from 'rxjs';
 import { AppStore } from '../store/app.store';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { PdfViewerStore } from '../store/pdf-viewer.store';
-import { DocumentModel } from '../../api';
-import { isPdfDocument } from '@utility';
+import { DocumentModel } from '@ladon/api';
+import { isPdfDocument } from '@ladon/utility';
 
 @Injectable({
   providedIn: 'root',

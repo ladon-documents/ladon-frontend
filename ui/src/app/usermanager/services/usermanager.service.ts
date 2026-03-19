@@ -5,7 +5,7 @@ import {
   RoleEntryModel,
   RoleWrapperModel,
   PermissionModel,
-} from '../../../api';
+} from '@ladon/api';
 
 export interface MappedRole extends RoleEntryModel {
   active?: boolean;

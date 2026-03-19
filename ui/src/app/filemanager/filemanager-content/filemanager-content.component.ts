@@ -16,7 +16,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DocumentModel } from '../../../api';
+import { DocumentModel } from '@ladon/api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   heroArrowDownTray,
@@ -51,7 +51,7 @@ import { FavoritesStore } from '../../store/favorites.store';
 import { FilemanagerContextMenuService } from '../filemanager-context-menu.service';
 import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-dialog/move-or-copy-dialog.component';
 import { InputDialogService } from '../../shared/services/input-dialog.service';
-import { isWebComponentRegistered } from '@utility';
+import { isWebComponentRegistered } from '@ladon/utility';
 import { FilemanagerWorkspaceService } from '../filemanager-workspace.service';
 
 

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 import { FilemanagerFacade } from './filemanager.facade';
 import { MonacoEditorService } from '../editor/editor.service';
 import { ToastService } from '../shared/services/toast.service';

@@ -6,7 +6,7 @@ import { UsermanagerStore } from '../../store/usermanager.store';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
 import { FilterComponent } from '../components/filter/filter.component';
-import { UserEntryModel } from '../../../api';
+import { UserEntryModel } from '@ladon/api';
 import { CommonModule } from '@angular/common';
 
 @Component({

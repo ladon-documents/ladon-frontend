@@ -9,11 +9,9 @@
     "generate:client:ng": "rimraf ./angular-client; openapi-generator-cli generate -i  ../spec/api.yaml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
     "generate:plugin:ng": "rimraf ./angular-plugin-client; openapi-generator-cli generate -i  ../spec/plugin-v1.yaml -g typescript-angular -o angular-plugin-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
     "generate:apis": "npm run generate:client:ts & npm run generate:client:ng & npm run generate:plugin:ng",
-    "copy-ng": "node -e \"require('fs').cpSync('angular-client/', '../ui/src/api', {recursive: true});\"",
-    "copy-plugin-ng": "node -e \"require('fs').cpSync('angular-plugin-client/', '../ui/src/plugin', {recursive: true});\"",
     "build:fetch": "esbuild fetch-client/index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api/ladon-api-fetch-client.mjs",
     "build:utility": "esbuild index.ts --bundle --minify --sourcemap  --platform=neutral --outfile=dist/ladon-api/ladon-api.mjs",
-    "build:all": "npm run generate:apis && npm run copy-ng && npm run copy-plugin-ng  && npm run build:utility",
+    "build:all": "npm run generate:apis && npm run build:utility",
     "serve": "esbuild index.ts --outdir=www/ --bundle --servedir=www --platform=neutral"
   },
   "author": "",
@@ -26,17 +24,26 @@
     "releasenotes.md"
   ],
   "devDependencies": {
+    "@angular/common": "^21.2.4",
+    "@angular/core": "^21.2.4",
     "@openapitools/openapi-generator-cli": "^2.15.3",
     "@types/jasmine": "^5.1.5",
     "esbuild": "0.24.2",
     "jasmine": "^5.5.0",
     "jasmine-core": "^5.5.0",
     "rimraf": "^6.0.1",
+    "rxjs": "^7.8.2",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "5.7.3"
   },
   "publishConfig": {
     "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
+  },
+  "peerDependencies": {
+    "@angular/common": "^21.2.4",
+    "@angular/core": "^21.2.4",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.8.1"
   }
 }

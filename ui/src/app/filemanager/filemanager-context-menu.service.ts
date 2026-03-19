@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 import { FavoritesStore } from '../store/favorites.store';
 import { ContextMenuService } from '../shared/services/context-menu.service';
 import { ClipboardStore } from '../store/clipboard.store';
@@ -148,7 +148,7 @@ export class FilemanagerContextMenuService {
   }
 
   private download(document: DocumentModel) {
-  //  this.filemanagerStore.get(document);
+    //  this.filemanagerStore.get(document);
   }
 
   private copyLink(document: DocumentModel) {

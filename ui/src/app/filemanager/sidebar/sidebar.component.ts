@@ -11,13 +11,7 @@ import { ClipboardStore } from '../../store/clipboard.store';
 
 @Component({
   selector: 'filemanager-sidebar',
-  imports: [
-    CommonModule,
-    MetaComponent,
-    SidebarResizerComponent,
-    PreviewComponent,
-    ClipboardComponent,
-  ],
+  imports: [CommonModule, MetaComponent, SidebarResizerComponent, PreviewComponent, ClipboardComponent],
   providers: [],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',

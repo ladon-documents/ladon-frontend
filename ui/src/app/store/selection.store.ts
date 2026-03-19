@@ -1,6 +1,6 @@
 import { computed, Injectable } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 
 interface SelectionState {
   selectedDocuments: DocumentModel[];

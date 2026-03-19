@@ -3084,6 +3084,8 @@ components:
           type: string
         key:
           type: string
+        name:
+          type: string
         path:
           type: string
         etag:

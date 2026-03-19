@@ -6,7 +6,7 @@ import { withEntities, addEntity, removeEntity, updateEntity } from '@ngrx/signa
 import { withRequestStatus, requestStatusHelpers } from './features/request-status.feature';
 
 import { BucketsService } from '../buckets/buckets.service';
-import { BucketUiItemModel } from '../../api';
+import { BucketUiItemModel } from '@ladon/api';
 
 export interface BucketStats {
   name: string;

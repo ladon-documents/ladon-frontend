@@ -1,6 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { FilemanagerStore } from '../store/filemanager.store';
-import { DocumentModel } from '../../api';
+import { DocumentModel } from '@ladon/api';
 import { BreadcrumbStore } from '../store/breadcrumb.store';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { ConverterService } from '../services/converter.service';

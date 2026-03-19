@@ -1,4 +1,3 @@
-
 import { Component, ElementRef, inject, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarService } from './sidebar.service';
@@ -8,45 +7,42 @@ import { SidebarService } from './sidebar.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div
-      #resizerHandle
-      class="resizer-handle"
-      (mousedown)="startResize($event)"
-      [class.resizing]="isResizing">
-    </div>
+    <div #resizerHandle class="resizer-handle" (mousedown)="startResize($event)" [class.resizing]="isResizing"></div>
   `,
-  styles: [`
-    .resizer-handle {
-      width: 4px;
-      height: 100%;
-      background: transparent;
-      cursor: col-resize;
-      position: absolute;
-      left: 0;
-      top: 0;
-      z-index: 10;
-      transition: background-color 0.2s ease;
-    }
+  styles: [
+    `
+      .resizer-handle {
+        width: 4px;
+        height: 100%;
+        background: transparent;
+        cursor: col-resize;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 10;
+        transition: background-color 0.2s ease;
+      }
 
-    .resizer-handle:hover,
-    .resizer-handle.resizing {
-      background-color: #3b82f6;
-    }
+      .resizer-handle:hover,
+      .resizer-handle.resizing {
+        background-color: #3b82f6;
+      }
 
-    .resizer-handle::before {
-      content: '';
-      position: absolute;
-      left: -2px;
-      top: 0;
-      width: 8px;
-      height: 100%;
-    }
+      .resizer-handle::before {
+        content: '';
+        position: absolute;
+        left: -2px;
+        top: 0;
+        width: 8px;
+        height: 100%;
+      }
 
-    /* Während des Resizings alle Transitionen deaktivieren */
-    :host(.resizing) * {
-      transition: none !important;
-    }
-  `]
+      /* Während des Resizings alle Transitionen deaktivieren */
+      :host(.resizing) * {
+        transition: none !important;
+      }
+    `,
+  ],
 })
 export class SidebarResizerComponent implements OnDestroy {
   @ViewChild('resizerHandle', { static: true }) resizerHandle!: ElementRef;

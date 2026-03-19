@@ -90,7 +90,10 @@ build_all() {
   
   log_message "Baue API..."
   npm --prefix ./api run build:fetch
-  
+
+  log_message "Baue API Utility..."
+  npm --prefix ./api run build:utility
+
   log_message "Baue UI..."
   npm --prefix ./ui run build
   
@@ -186,6 +189,7 @@ main() {
   check_directories
   check_for_node_modules
   build_all
+  build_webcomponents
   create_release_package
   # package_release
 

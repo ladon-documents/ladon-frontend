@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "ts-node node_modules/jasmine/bin/jasmine.js",
-    "clean": "rimraf ./fetch-client",
+    "clean:all": "rimraf fetch-client angular-client angular-plugin-client dist",
     "generate:client:ts": "rimraf ./fetch-client; openapi-generator-cli generate -i ../spec/api.yaml -g typescript-fetch -o fetch-client --additional-properties=supportsES6=false,disallowAdditionalPropertiesIfNotPresent=false,withSeparateModelsAndApi=false,prefixParameterInterfaces=true,withInterfaces=true",
     "generate:client:ng": "rimraf ./angular-client; openapi-generator-cli generate -i  ../spec/api.yaml -g typescript-angular -o angular-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",
     "generate:plugin:ng": "rimraf ./angular-plugin-client; openapi-generator-cli generate -i  ../spec/plugin-v1.yaml -g typescript-angular -o angular-plugin-client --additional-properties=apiModulePrefix=Ladon,ngVersion=19 --additional-properties=modelNameSuffix=Model",

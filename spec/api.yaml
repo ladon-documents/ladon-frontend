@@ -312,7 +312,11 @@ paths:
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/MultiValueMapStringString'
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                type: string
         - name: name
           in: path
           required: true
@@ -2442,7 +2446,11 @@ paths:
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/MultiValueMapStringString'
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                type: string
       responses:
         '200':
           description: OK

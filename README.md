@@ -2,11 +2,14 @@
 
 ## Table of contents
 
+* [Generate APIs](#generate-apis)
 * [Starting frontend](#starting-frontend)
 * [Trigger a release build](#trigger-a-release-build)
 * [Colors and Themes](style/README.md)
 
-### <a id="starting-frontend"></a>Starting frontend
+### Generate APIs
+
+### Starting frontend
 
 ```bash
 cd ui
@@ -14,7 +17,7 @@ npm i
 npm start
 ```
 
-### <a id="trigger-a-release-build"></a>Trigger a release build
+### Trigger a release build
 
 > [!CAUTION]
 > Run following commands in `root`, otherwise no release get's triggered

@@ -8,10 +8,11 @@
     "generate:client:ng": "rimraf ./angular-client; openapi-generator-cli generate --generator-key angular-client",
     "generate:plugin:ng": "rimraf ./angular-plugin-client; openapi-generator-cli generate --generator-key angular-plugin-client",
     "generate:apis": "npm run generate:client:ts && npm run generate:client:ng && npm run generate:plugin:ng",
+    "prebuild:fetch": "node ./scripts/patch-fetch-runtime.cjs",
     "build:fetch": "esbuild --tsconfig=tsconfig.esbuild.json fetch-client/index.ts --bundle --minify --sourcemap --platform=neutral --outfile=dist/ladon-api/ladon-api-fetch-client.mjs",
     "build:utility": "esbuild --tsconfig=tsconfig.esbuild.json index.ts --bundle --minify --sourcemap --platform=neutral --outfile=dist/ladon-api/ladon-api.mjs",
     "prebuild:all": "npm run clean:all",
-    "build:all": "npm run generate:apis && npm run build:utility",
+    "build:all": "npm run generate:apis && npm run build:fetch && npm run build:utility",
     "serve": "esbuild index.ts --outdir=www/ --bundle --servedir=www --platform=neutral"
   },
   "author": "",

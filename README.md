@@ -9,6 +9,13 @@
 
 ### Generate APIs
 
+> [!CAUTION]
+> Run following commands in `root`
+
+```bash
+npm run build:api
+```
+
 ### Starting frontend
 
 ```bash

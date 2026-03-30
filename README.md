@@ -18,6 +18,17 @@ npm run build:api
 
 ### Starting frontend
 
+#### Getting started
+
+```bash
+sh bundle.sh
+```
+
+> [!INFO]
+> Bundle takes care of generating API from specs and installing missing node modules
+
+#### Serve Frontend
+
 ```bash
 cd ui
 npm i

@@ -38,7 +38,7 @@ npm start
 ### Trigger a release build
 
 > [!CAUTION]
-> Run following commands in `root`, otherwise no release get's triggered
+> Run the following commands in the repository root, otherwise no release gets triggered
 
 ```bash
 npm version [major, minor, patch]

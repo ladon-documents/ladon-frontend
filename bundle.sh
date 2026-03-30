@@ -44,10 +44,10 @@ install_dependencies() {
   local target_dir="$1"
 
   if [ -f "./$target_dir/package-lock.json" ]; then
-    log_message "Installiere Abhängigkeiten für ./$target_dir mit npm ci  …"
+    log_message "Installiere Abhängigkeiten für ./$target_dir mit npm ci …"
     npm ci --prefix "./$target_dir"
   else
-    log_message "Installiere Abhängigkeiten für ./$target_dir mit npm install  …"
+    log_message "Installiere Abhängigkeiten für ./$target_dir mit npm install …"
     npm install --prefix "./$target_dir"
   fi
 }
@@ -115,16 +115,11 @@ build_all() {
   log_message "Baue alle APIs … 🤖"
   npm --prefix ./api run build:all
 
-  if [ "$build_type" == "release" ]; then
-    log_message "Baue alle APIs für Release … 🤖"
-    npm --prefix ./api run build:all
-  fi 
-
   log_message "Alle Projekte erfolgreich gebaut!"
 }
 
 create_release_package() {
-  log_message "Erstelle Release-Paket…"
+  log_message "Erstelle Release-Paket …"
 
   rm -rf "$RELEASE_DIR"
   mkdir -p "$RELEASE_DIR"
@@ -215,7 +210,9 @@ main() {
     sync_webcomponents
   fi
   
-  create_release_package
+  if [ "$build_type" == "release" ]; then
+    create_release_package
+  else
   
   log_message "Bundling abgeschlossen! Release-Paket wurde erstellt."
 }

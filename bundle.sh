@@ -212,7 +212,7 @@ main() {
   
   if [ "$build_type" == "release" ]; then
     create_release_package
-  else
+  fi
   
   log_message "Bundling abgeschlossen! Release-Paket wurde erstellt."
 }

@@ -2,6 +2,40 @@
   "$schema": "./node_modules/@openapitools/openapi-generator-cli/config.schema.json",
   "spaces": 2,
   "generator-cli": {
-    "version": "7.10.0"
+    "version": "7.10.0",
+    "generators": {
+      "fetch-client": {
+        "generatorName": "typescript-fetch",
+        "output": "./fetch-client",
+        "additionalProperties": {
+          "supportsES6": false,
+          "disallowAdditionalPropertiesIfNotPresent": false,
+          "withSeparateModelsAndApi": false,
+          "prefixParameterInterfaces": true,
+          "withInterfaces": true
+        },
+        "inputSpec": "../spec/api.yaml"
+      },
+      "angular-client": {
+        "generatorName": "typescript-angular",
+        "output": "./angular-client",
+        "additionalProperties": {
+          "apiModulePrefix": "Ladon",
+          "ngVersion": "19",
+          "modelNameSuffix": "Model"
+        },
+        "inputSpec": "../spec/api.yaml"
+      },
+      "angular-plugin-client": {
+        "generatorName": "typescript-angular",
+        "output": "./angular-plugin-client",
+        "additionalProperties": {
+          "apiModulePrefix": "Ladon",
+          "ngVersion": "19",
+          "modelNameSuffix": "Model"
+        },
+        "inputSpec": "../spec/plugin-v1.yaml"
+      }
+    }
   }
 }

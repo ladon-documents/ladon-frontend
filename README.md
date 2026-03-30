@@ -2,11 +2,32 @@
 
 ## Table of contents
 
+* [Generate APIs](#generate-apis)
 * [Starting frontend](#starting-frontend)
 * [Trigger a release build](#trigger-a-release-build)
 * [Colors and Themes](style/README.md)
 
-### <a id="starting-frontend"></a>Starting frontend
+### Generate APIs
+
+> [!CAUTION]
+> Run following commands in `root`
+
+```bash
+npm run build:api
+```
+
+### Starting frontend
+
+#### Getting started
+
+```bash
+sh bundle.sh
+```
+
+> [!INFO]
+> Bundle takes care of generating API from specs and installing missing node modules
+
+#### Serve Frontend
 
 ```bash
 cd ui
@@ -14,10 +35,10 @@ npm i
 npm start
 ```
 
-### <a id="trigger-a-release-build"></a>Trigger a release build
+### Trigger a release build
 
 > [!CAUTION]
-> Run following commands in `root`, otherwise no release get's triggered
+> Run the following commands in the repository root, otherwise no release gets triggered
 
 ```bash
 npm version [major, minor, patch]

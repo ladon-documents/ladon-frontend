@@ -4,6 +4,9 @@
 /dist
 /**/dist
 /tmp
+/api/angular-client
+/api/angular-plugin-client
+/api/fetch-client
 /out-tsc
 /bazel-out
 *.tgz

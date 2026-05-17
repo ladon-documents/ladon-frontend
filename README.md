@@ -24,7 +24,7 @@ npm run build:api
 sh bundle.sh
 ```
 
-> [!INFO]
+> [!NOTE]
 > Bundle takes care of generating API from specs and installing missing node modules
 
 #### Serve Frontend

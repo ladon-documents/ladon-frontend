@@ -15,6 +15,7 @@
     "build:globals": "npm run build -w @ladon/globals",
     "build:styles": "npm run build -w @ladon/style",
     "build:ui": "npm run build -w @ladon/ui",
+    "build:static": "npm --prefix ./api run generate:client:ts && npm --prefix ./api run build:static && npm --prefix ./style run build",
     "build:clipboard": "npm run build -w @ladon/clipboard",
     "build:pdfviewer": "npm run build -w @ladon/pdfviewer",
     "build:mediaplayer": "npm run build -w ladon-mediaplayer",
@@ -24,6 +25,7 @@
     "build:wc": "npm run build:clipboard && npm run build:pdfviewer && npm run build:mediaplayer && npm run build:audioplayer && npm run build:imageeditor && npm run build:editor",
     "sync:wc:local": "node ./scripts/sync-local-webcomponents.mjs",
     "serve:ui": "npm run start -w @ladon/ui",
+    "serve:static": "node ./static/serve.mjs",
     "build:all": "npm run build:api && npm run build:globals && npm run build:styles && npm run build:ui",
     "release": "bash ./bundle.sh release"
   },

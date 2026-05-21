@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
     }
     const redirectUrl = state.url;
     this.#store.setRedirectUrl(redirectUrl);
-    this.router.navigateByUrl(`${environment.baseHref}/login`);
+    this.router.navigate([`${environment.baseHref}/login`], { queryParams: { redirectUrl } });
     return of(false);
   }
 }

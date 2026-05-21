@@ -165,6 +165,14 @@ create_release_package() {
     log_warning "Style dist-Verzeichnis nicht gefunden"
   fi
 
+  if [ -d "./static" ]; then
+    log_message "Kopiere statische Standalone-Views …"
+    cp -r ./static "$RELEASE_DIR/"
+    find "$RELEASE_DIR/static" -name "*.test.mjs" -delete
+  else
+    log_warning "Static-Verzeichnis nicht gefunden"
+  fi
+
   if [ -d "./wc" ]; then
     log_message "Kopiere WebComponents …"
     mkdir -p "$RELEASE_DIR/webcomponents"

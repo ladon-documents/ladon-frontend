@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ladon Static WebComponents</title>
+  <script>
+    window.ladonStaticConfig = {
+      webComponents: true,
+      webComponentOptions: {
+        source: 'local',
+      },
+    };
+  </script>
+  <script type="module" src="./ladon-static.mjs"></script>
+</head>
+<body>
+  <main class="prose mx-auto p-6">
+    <h1>Ladon Static WebComponents</h1>
+    <p id="status">Loading local WebComponents...</p>
+    <section class="mt-6 not-prose">
+      <ladon-clipboard></ladon-clipboard>
+    </section>
+  </main>
+  <script type="module">
+    const status = document.querySelector('#status');
+
+    try {
+      await window.ladonStaticReady;
+      await customElements.whenDefined('ladon-clipboard');
+      status.textContent = 'Local WebComponents loaded.';
+    } catch (error) {
+      status.textContent = `WebComponents failed: ${error.message}`;
+      console.error(error);
+    }
+  </script>
+</body>
+</html>

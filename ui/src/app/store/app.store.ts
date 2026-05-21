@@ -33,6 +33,39 @@ const initialState: AppState = {
   auth: { isAuthenticated: false, user: null, loginError: null, isAuthenticating: true, redirectUrl: null },
 };
 
+function isSameOriginPath(url: string): boolean {
+  return url.startsWith('/') && !url.startsWith('//');
+}
+
+function isInternalRoute(url: string): boolean {
+  return url.includes(environment.baseHref);
+}
+
+function fallbackRedirectUrl(): string {
+  return `${environment.baseHref}/buckets`;
+}
+
+function resolveRedirectUrl(redirectUrl: string | null): string {
+  if (!redirectUrl) {
+    return fallbackRedirectUrl();
+  }
+
+  if (isInternalRoute(redirectUrl) || isSameOriginPath(redirectUrl)) {
+    return redirectUrl;
+  }
+
+  return fallbackRedirectUrl();
+}
+
+function redirectAfterLogin(router: Router, redirectUrl: string): void {
+  if (isInternalRoute(redirectUrl)) {
+    router.navigateByUrl(redirectUrl);
+    return;
+  }
+
+  window.location.assign(redirectUrl);
+}
+
 export const AppStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -120,10 +153,8 @@ export const AppStore = signalStore(
                     isAuthenticating: false,
                   },
                 }));
-                const redirectUrl: string = store.auth.redirectUrl()?.includes(environment.baseHref)
-                  ? (store.auth.redirectUrl() as string)
-                  : `${environment.baseHref}/buckets`;
-                router.navigateByUrl(redirectUrl);
+                const redirectUrl = resolveRedirectUrl(store.auth.redirectUrl());
+                redirectAfterLogin(router, redirectUrl);
               }),
               catchError((error) => {
                 patchState(store, (state) => ({

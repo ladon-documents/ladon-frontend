@@ -28,6 +28,9 @@
   "publishConfig": {
     "registry": "https://nexus.mind-consulting.de/repository/npm-private/"
   },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.15.3"
+  },
   "peerDependencies": {
     "@angular/common": "^19.2.8",
     "@angular/core": "^19.2.8",

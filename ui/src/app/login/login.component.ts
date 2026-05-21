@@ -1,8 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { environment } from '../../environments/environment';
+import { ActivatedRoute } from '@angular/router';
 import { AppStore } from '../store/app.store';
 
 @Component({
@@ -12,7 +11,7 @@ import { AppStore } from '../store/app.store';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   public config: { [key: string]: string } | undefined;
 
   public errorMessage: string | undefined;
@@ -20,12 +19,20 @@ export class LoginComponent {
   public loginForm: FormGroup;
   readonly #store = inject(AppStore);
   readonly #formBuilder = inject(FormBuilder);
+  readonly #activatedRoute = inject(ActivatedRoute);
 
   constructor() {
     this.loginForm = this.#formBuilder.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
     });
+  }
+
+  ngOnInit() {
+    const redirectUrl = this.#activatedRoute.snapshot.queryParamMap.get('redirectUrl');
+    if (redirectUrl) {
+      this.#store.setRedirectUrl(redirectUrl);
+    }
   }
 
   login() {

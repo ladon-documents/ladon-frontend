@@ -38,14 +38,27 @@ log_warning() {
 }
 
 OUTPUT_DIR="dist"
-RELEASE_DIR="${1:-release}"
+RELEASE_DIR="${2:-release}"
+
+dependencies_are_valid() {
+  local target_dir="$1"
+
+  if [ ! -f "./$target_dir/package.json" ]; then
+    return 1
+  fi
+
+  npm --prefix "./$target_dir" ls --depth=0 >/dev/null 2>&1
+}
 
 install_dependencies() {
   local target_dir="$1"
 
   if [ -f "./$target_dir/package-lock.json" ]; then
     log_message "Installiere Abhängigkeiten für ./$target_dir mit npm ci …"
-    npm ci --prefix "./$target_dir"
+    if ! npm ci --prefix "./$target_dir"; then
+      log_warning "npm ci für ./$target_dir fehlgeschlagen (Lockfile nicht synchron?). Verwende npm install …"
+      npm install --prefix "./$target_dir"
+    fi
   else
     log_message "Installiere Abhängigkeiten für ./$target_dir mit npm install …"
     npm install --prefix "./$target_dir"
@@ -65,12 +78,20 @@ check_for_node_modules() {
   for dir in "${directories[@]}"; do
     if [ ! -d "./$dir/node_modules" ]; then
       install_dependencies "$dir"
+    elif ! dependencies_are_valid "$dir"; then
+      log_warning "Abhängigkeiten in ./$dir sind unvollständig oder beschädigt. Installiere neu …"
+      install_dependencies "$dir"
     fi
   done
 
   for wc_dir in "${wc_directories[@]}"; do
-    if [ -d "./wc/$wc_dir" ] && [ ! -d "./wc/$wc_dir/node_modules" ]; then
-      install_dependencies "wc/$wc_dir"
+    if [ -d "./wc/$wc_dir" ]; then
+      if [ ! -d "./wc/$wc_dir/node_modules" ]; then
+        install_dependencies "wc/$wc_dir"
+      elif ! dependencies_are_valid "wc/$wc_dir"; then
+        log_warning "Abhängigkeiten in ./wc/$wc_dir sind unvollständig oder beschädigt. Installiere neu …"
+        install_dependencies "wc/$wc_dir"
+      fi
     fi
   done
 }

@@ -35,6 +35,11 @@
                 "input": "public",
                 "output": "public",
                 "ignore": ["mock/**"]
+              },
+              {
+                "glob": "**/*",
+                "input": "../public/dev-wc",
+                "output": "public/dev-wc"
               }
             ],
             "styles": [
@@ -106,6 +111,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "../public/dev-wc",
+                "output": "public/dev-wc"
               }
             ],
             "styles": [

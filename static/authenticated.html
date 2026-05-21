@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ladon Static Authenticated</title>
+  <script>
+    window.ladonStaticConfig = {
+      webComponents: true,
+      webComponentOptions: {
+        source: 'local',
+      },
+    };
+  </script>
+  <script type="module" src="./ladon-static.mjs"></script>
+</head>
+<body class="bg-base-200 min-h-screen">
+  <main class="mx-auto max-w-6xl p-6">
+    <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-semibold text-base-content">Audio Browser</h1>
+        <p id="status" class="text-sm text-base-content/70">Checking authentication...</p>
+      </div>
+      <button id="logout" class="btn btn-outline btn-sm hidden" type="button">Logout</button>
+    </header>
+
+    <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
+      <div class="rounded-lg bg-base-100 p-4 shadow">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-medium text-base-content">test/test/Musik Oma</h2>
+            <p id="count" class="text-sm text-base-content/60">No files loaded.</p>
+          </div>
+          <button id="refresh" class="btn btn-ghost btn-sm" type="button">Refresh</button>
+        </div>
+        <div id="message" class="alert hidden"></div>
+        <ul id="tracks" class="menu rounded-box bg-base-100 p-0"></ul>
+      </div>
+
+      <aside class="rounded-lg bg-base-100 p-4 shadow">
+        <h2 class="mb-4 text-lg font-medium text-base-content">Player</h2>
+        <div id="empty-player" class="rounded-lg border border-dashed border-base-300 p-6 text-center text-sm text-base-content/60">
+          Select an audio file.
+        </div>
+        <ladon-audioplayer id="audio-player" class="hidden"></ladon-audioplayer>
+      </aside>
+    </section>
+  </main>
+  <script type="module">
+    const status = document.querySelector('#status');
+    const logoutButton = document.querySelector('#logout');
+    const refreshButton = document.querySelector('#refresh');
+    const count = document.querySelector('#count');
+    const tracks = document.querySelector('#tracks');
+    const message = document.querySelector('#message');
+    const emptyPlayer = document.querySelector('#empty-player');
+    const audioPlayer = document.querySelector('#audio-player');
+    const loginUrl = `/ui/draco/ladon-core/login?redirectUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+    const bucket = 'test';
+    const folder = 'test/Musik Oma/';
+
+    let ladonStatic;
+
+    function showMessage(text, type = 'alert-info') {
+      message.className = `alert ${type}`;
+      message.textContent = text;
+      message.classList.toggle('hidden', !text);
+    }
+
+    function normalizeDocument(document) {
+      return {
+        ...document,
+        bucket: document.bucket || bucket,
+        key: document.key || document.path || document.name,
+        name: document.name || (document.key || document.path || '').split('/').pop(),
+        path: document.path || document.key,
+        'content-type': document['content-type'] || document.contentType || document.metadata?.['content-type'],
+        lastModified: document.lastModified || document['last-modified'],
+      };
+    }
+
+    function formatTrackLabel(document) {
+      return document.name || document.key || document.path || 'Unnamed audio file';
+    }
+
+    function renderTracks(documents) {
+      tracks.innerHTML = '';
+      count.textContent = `${documents.length} audio file${documents.length === 1 ? '' : 's'}`;
+
+      if (documents.length === 0) {
+        showMessage('No audio files found in this folder.', 'alert-warning');
+        return;
+      }
+
+      showMessage('');
+      for (const document of documents) {
+        const item = window.document.createElement('li');
+        const button = window.document.createElement('button');
+        button.type = 'button';
+        button.className = 'flex items-center justify-between gap-3';
+        button.innerHTML = `
+          <span class="truncate">${formatTrackLabel(document)}</span>
+          <span class="badge badge-ghost">${ladonStatic.utility.formatFileSize(document.size || 0)}</span>
+        `;
+        button.addEventListener('click', () => selectTrack(document, button));
+        item.appendChild(button);
+        tracks.appendChild(item);
+      }
+    }
+
+    async function selectTrack(document, selectedButton) {
+      tracks.querySelectorAll('button').forEach((button) => button.classList.remove('active'));
+      selectedButton.classList.add('active');
+      emptyPlayer.classList.add('hidden');
+      audioPlayer.classList.remove('hidden');
+      await customElements.whenDefined('ladon-audioplayer');
+      audioPlayer.document = document;
+
+      setTimeout(() => {
+        const playButton = audioPlayer.querySelector('.btn-primary');
+        playButton?.click();
+      }, 250);
+    }
+
+    async function loadTracks() {
+      refreshButton.disabled = true;
+      status.textContent = `Loading ${bucket}/${folder}...`;
+      showMessage('');
+
+      try {
+        const documentsApi = ladonStatic.auth.createAuthenticatedApi(ladonStatic.fetchClient.DocumentsApi);
+        const documents = await documentsApi.listDocuments({
+          bucket,
+          limit: 1000,
+          prefix: folder,
+          currentFolder: true,
+        });
+        const audioDocuments = documents
+          .map(normalizeDocument)
+          .filter((document) => ladonStatic.utility.isAudioDocument(document))
+          .sort((a, b) => formatTrackLabel(a).localeCompare(formatTrackLabel(b)));
+
+        renderTracks(audioDocuments);
+        status.textContent = 'Authenticated.';
+      } catch (error) {
+        status.textContent = `Failed to load audio files: ${error.message}`;
+        showMessage(error.message, 'alert-error');
+        console.error(error);
+      } finally {
+        refreshButton.disabled = false;
+      }
+    }
+
+    try {
+      ladonStatic = await window.ladonStaticReady;
+      const isAuthenticated = ladonStatic.auth.ensureAuthenticated({
+        redirectTo: loginUrl,
+      });
+
+      if (!isAuthenticated) {
+        status.textContent = 'Redirecting to login...';
+      } else {
+        const userApi = ladonStatic.auth.createAuthenticatedApi(ladonStatic.fetchClient.UserControllerApi);
+        const user = await userApi.getCurrentUser();
+        status.textContent = `Authenticated as ${user.fullName || user.email || user.userId || 'user'}.`;
+        logoutButton.classList.remove('hidden');
+        logoutButton.addEventListener('click', async () => {
+          logoutButton.disabled = true;
+          status.textContent = 'Logging out...';
+
+          try {
+            const authApi = ladonStatic.auth.createAuthenticatedApi(ladonStatic.fetchClient.AuthControllerApi);
+            await authApi.logout();
+          } catch (error) {
+            console.warn('Backend logout failed, clearing local auth state anyway.', error);
+          } finally {
+            ladonStatic.auth.clearAccessToken();
+            window.location.assign(loginUrl);
+          }
+        });
+        refreshButton.addEventListener('click', loadTracks);
+        await loadTracks();
+      }
+    } catch (error) {
+      status.textContent = `Authentication failed: ${error.message}`;
+      console.error(error);
+    }
+  </script>
+</body>
+</html>

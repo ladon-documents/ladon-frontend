@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "build:api": "npm  --prefix ./api run build:all",
+    "build:static": "npm --prefix ./api run generate:client:ts && npm --prefix ./api run build:static && npm --prefix ./style run build",
     "serve:api": "npm  --prefix ./api run serve",
     "build:globals": "npm  --prefix ./globals run build",
     "build:styles": "npm  --prefix ./style run build",
@@ -13,6 +14,7 @@
     "build:mediaplayer": "npm  --prefix ./wc/mediaplayer run build",
     "sync:wc:local": "node ./scripts/sync-local-webcomponents.mjs",
     "serve:ui": "npm  --prefix ./ui run start",
+    "serve:static": "node ./static/serve.mjs",
     "build:all": "npm run build:api && npm run build:globals && npm run build:styles && npm run build:ui",
     "release": "bash ./bundle.sh release"
   },

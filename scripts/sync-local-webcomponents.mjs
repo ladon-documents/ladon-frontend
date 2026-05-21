@@ -6,9 +6,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '..');
 const wcRoot = path.join(repoRoot, 'wc');
-const targetDir = path.join(repoRoot, 'ui', 'public', 'dev-wc');
+const targetDir = getLocalWebcomponentTargetDir(repoRoot);
 const manifestPath = path.join(targetDir, 'manifest.json');
 const bundlePattern = /^wc-.*\.js$/;
+
+export function getLocalWebcomponentTargetDir(rootDir) {
+  return path.join(rootDir, 'public', 'dev-wc');
+}
 
 async function getDirectories(rootDir) {
   const entries = await fs.readdir(rootDir, { withFileTypes: true });
@@ -105,7 +109,9 @@ async function syncBundles() {
   }
 }
 
-syncBundles().catch((error) => {
-  console.error('Failed to sync local webcomponents', error);
-  process.exitCode = 1;
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+  syncBundles().catch((error) => {
+    console.error('Failed to sync local webcomponents', error);
+    process.exitCode = 1;
+  });
+}

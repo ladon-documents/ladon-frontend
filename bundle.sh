@@ -75,6 +75,11 @@ check_directories() {
 }
 
 check_for_node_modules() {
+  if [ ! -d "./node_modules" ]; then
+    log_message "node_modules im Hauptverzeichnis nicht gefunden. Installiere Abhängigkeiten …"
+    npm install
+  fi
+
   for dir in "${directories[@]}"; do
     if [ ! -d "./$dir/node_modules" ]; then
       install_dependencies "$dir"

@@ -1,9 +1,10 @@
 import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
-import { DocumentModel, TagmanagerService, TagModel } from '@ladon/api';
+import { catchError, EMPTY, from, pipe, switchMap, tap } from 'rxjs';
+import { DocumentModel, TagModel } from '@ladon/api';
 import { ToastService } from '../shared/services/toast.service';
+import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
 export interface FilemanagerTagsState {
   documentId: string | null;
@@ -56,7 +57,7 @@ export const FilemanagerTagsStore = signalStore(
     hasDocumentId: computed(() => !!store.documentId()),
     hasTags: computed(() => store.tags().length > 0),
   })),
-  withMethods((store, tagmanagerService = inject(TagmanagerService), toastService = inject(ToastService)) => {
+  withMethods((store, apiFactory = inject(FetchApiFactory), toastService = inject(ToastService)) => {
     const methods = {
       clearState() {
         patchState(store, initialState);
@@ -106,7 +107,11 @@ export const FilemanagerTagsStore = signalStore(
             });
           }),
           switchMap((documentId) =>
-            tagmanagerService.tags(documentId).pipe(
+            from(
+              apiFactory.tagmanagerApi.tags({
+                id: documentId,
+              }),
+            ).pipe(
               tap((tags) => {
                 patchState(store, {
                   tags,
@@ -153,8 +158,19 @@ export const FilemanagerTagsStore = signalStore(
               error: null,
             });
 
-            return tagmanagerService.addTags(documentId, trimmedValue).pipe(
-              switchMap(() => tagmanagerService.tags(documentId)),
+            return from(
+              apiFactory.tagmanagerApi.addTags({
+                id: documentId,
+                value: trimmedValue,
+              }),
+            ).pipe(
+              switchMap(() =>
+                from(
+                  apiFactory.tagmanagerApi.tags({
+                    id: documentId,
+                  }),
+                ),
+              ),
               tap((tags) => {
                 patchState(store, {
                   tags,
@@ -189,8 +205,18 @@ export const FilemanagerTagsStore = signalStore(
               error: null,
             });
 
-            return tagmanagerService.deleteTag(tagId).pipe(
-              switchMap(() => tagmanagerService.tags(documentId)),
+            return from(
+              apiFactory.tagmanagerApi.deleteTag({
+                tagid: tagId,
+              }),
+            ).pipe(
+              switchMap(() =>
+                from(
+                  apiFactory.tagmanagerApi.tags({
+                    id: documentId,
+                  }),
+                ),
+              ),
               tap((tags) => {
                 patchState(store, {
                   tags,

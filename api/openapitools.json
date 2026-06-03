@@ -16,6 +16,18 @@
         },
         "inputSpec": "../spec/api.yaml"
       },
+      "plugin-fetch-client": {
+        "generatorName": "typescript-fetch",
+        "output": "./plugin-fetch-client",
+        "additionalProperties": {
+          "supportsES6": false,
+          "disallowAdditionalPropertiesIfNotPresent": false,
+          "withSeparateModelsAndApi": false,
+          "prefixParameterInterfaces": true,
+          "withInterfaces": true
+        },
+        "inputSpec": "../spec/plugin-v1.yaml"
+      },
       "angular-client": {
         "generatorName": "typescript-angular",
         "output": "./angular-client",

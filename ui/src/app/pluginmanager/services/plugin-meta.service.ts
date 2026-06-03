@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { PluginmanagerService } from '@ladon/api';
 import { pluginTestMock } from '@ladon/tests/plugin-test-object';
+import { FetchApiFactory } from '../../services/api/fetch-api.factory';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,7 @@ export class PluginMetaService {
   ];
   constructor(
     private httpClient: HttpClient,
-    private pluginmanagerService: PluginmanagerService,
+    private apiFactory: FetchApiFactory,
   ) {}
 
   public getPluginConfig(): Observable<any> {
@@ -57,7 +57,7 @@ export class PluginMetaService {
   }
 
   private getInstalledPlugins(): Observable<{ [key: string]: string }> {
-    return this.pluginmanagerService.installedPlugins();
+    return from(this.apiFactory.pluginmanagerApi.installedPlugins());
   }
 
   private mapPluginData(data: any[]): Array<any> {

@@ -1,34 +1,28 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { from } from 'rxjs';
 import { take } from 'rxjs';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
-import {
-  BucketsService as BucketsServiceApi,
-  BucketUiItemModel,
-  DocumentsService,
-  NewBucketModel,
-  UIService,
-} from '@ladon/api';
+import { BucketUiItemModel, NewBucketModel } from '@ladon/api';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { LadonRouterService } from '../services/ladon-router.service';
+import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BucketsService {
   readonly #filemanagerStore = inject(FilemanagerStore);
-  readonly bucketsService = inject(BucketsServiceApi);
-  readonly uiService = inject(UIService);
+  readonly apiFactory = inject(FetchApiFactory);
   private bucketsListSignal = signal<BucketUiItemModel[]>([]);
   private bucketStatsSignal = signal<BucketStatsExtended | undefined>(undefined);
   private _bucketList = signal<BucketUiItemModel[]>([]);
 
   constructor(
-    private documentsService: DocumentsService,
     private ladonRouterService: LadonRouterService,
   ) {}
 
   getBuckets() {
-    return this.uiService.listBuckets();
+    return from(this.apiFactory.uiApi.listBuckets({}) as Promise<BucketUiItemModel[]>);
   }
 
   createBucket(bucketid: string) {
@@ -37,18 +31,32 @@ export class BucketsService {
       versioned: 'false',
       favourite: 'false',
     };
-    return this.uiService.createBucket1(newBucket);
+    return from(this.apiFactory.uiApi.createBucket1({ bucket: newBucket as any }));
   }
 
   searchBuckets(bucketName: string) {
-    return this.uiService.listBuckets(bucketName);
+    return from(
+      this.apiFactory.uiApi.listBuckets({
+        filter: bucketName,
+      }) as Promise<BucketUiItemModel[]>,
+    );
   }
 
   deleteBucket(bucketId: string) {
-    return this.bucketsService.deleteBucket(bucketId);
+    return from(
+      this.apiFactory.bucketsApi.deleteBucket({
+        bucket: bucketId,
+      }),
+    );
   }
+
   public getStats(bucketId: string) {
-    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
+    return from(
+      this.apiFactory.documentsApi.getDocument({
+        bucket: '_proc',
+        key: `bucket-stats/${bucketId}/stats.json`,
+      }),
+    );
   }
 
   toggleFavoriteBuckets(isFavorite: boolean) {

@@ -1,49 +1,39 @@
-import { Inject, Injectable, isDevMode } from '@angular/core';
-import { mergeMap, tap } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AuthControllerService, LoginRequestModel, UserModel, UserControllerService } from '@ladon/api';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, isDevMode } from '@angular/core';
+import { from, mergeMap, tap } from 'rxjs';
+import { LoginRequestModel, UserModel } from '@ladon/api';
 import { AuthStorageService } from './auth.storage.service';
+import { FetchApiFactory } from './api/fetch-api.factory';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   constructor(
-    private as: AuthControllerService,
-    private us: UserControllerService,
-    private httpClient: HttpClient,
+    private apiFactory: FetchApiFactory,
     private authStorage: AuthStorageService,
   ) {}
 
   public login(Login: LoginRequestModel) {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json;  charset=utf-8');
-    const httpOptions = {
-      headers,
-      responseType: 'json' as 'json',
-    };
-    return this.httpClient
-      .post<{
-        accessToken: string;
-        tokenType: string;
-      }>(this.as.configuration.basePath + '/auth/login', JSON.stringify(Login), httpOptions)
+    return from(this.apiFactory.authControllerApi.authenticateUser({ loginRequest: Login as any }))
       .pipe(
-        map((response) => {
-          const tokenResponse = response;
-          this.authStorage.setData({ accessToken: tokenResponse.accessToken });
-          return response;
+        tap((response: any) => {
+          if (response?.accessToken) {
+            this.authStorage.setData({ accessToken: response.accessToken });
+          }
         }),
-        mergeMap((res: any) => {
-          return this.us.getCurrentUser();
+        mergeMap(() => {
+          return from(this.apiFactory.userControllerApi.getCurrentUser() as Promise<UserModel>);
         }),
-        map((user: UserModel) => {
-          return user;
+        tap((user: UserModel) => {
+          if (!user) {
+            throw new Error('Could not load user after login');
+          }
         }),
       );
   }
 
   public logout() {
-    return this.as.logout().pipe(
+    return from(this.apiFactory.authControllerApi.logout()).pipe(
       tap(() => {
         this.authStorage.removeData();
       }),
@@ -51,7 +41,13 @@ export class AuthService {
   }
 
   public getCurrentUser() {
-    return this.us.getCurrentUser();
+    return from(this.apiFactory.userControllerApi.getCurrentUser() as Promise<UserModel>).pipe(
+      tap((user) => {
+        if (!user) {
+          throw new Error('No user returned');
+        }
+      }),
+    );
   }
 
   private isDevelopmentEnironment(): boolean {

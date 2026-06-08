@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { FilemanagerTagsStore } from '../../store/filemanager-tags.store';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class DocumentTagsFacade {
   readonly isMutating = this.#store.isMutating;
   readonly error = this.#store.error;
 
-  loadForDocument(document: DocumentModel | null) {
+  loadForDocument(document: Document | null) {
     this.#store.setDocument(document);
   }
 

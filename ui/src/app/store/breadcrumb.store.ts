@@ -1,9 +1,9 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 
 export interface BreadcrumbState {
-  paths: DocumentModel[];
-  currentPath: DocumentModel | null;
+  paths: Document[];
+  currentPath: Document | null;
 }
 
 const initialState: BreadcrumbState = {
@@ -15,7 +15,7 @@ export const BreadcrumbStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withMethods((store) => ({
-    addPath(path: DocumentModel) {
+    addPath(path: Document) {
       const currentPaths = store.paths();
       const existingIndex = currentPaths.findIndex((item) => item.key === path.key && item.bucket === path.bucket);
 

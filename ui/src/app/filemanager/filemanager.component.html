@@ -10,7 +10,7 @@
       </div>
     </div>
   } @else {
-    @if (workspaceMode() === 'browser') {
+    @if (workspaceMode() === "browser") {
       <div class="sticky top-0 z-10 border-b border-gray-500/40 bg-base-100 dark:border-gray-500/40">
         <div class="flex items-center justify-between p-4">
           <app-breadcrumb></app-breadcrumb>
@@ -48,7 +48,9 @@
                   <ng-icon name="heroChevronUp" size="0.8em"></ng-icon>
                 }
               </div>
-              <ul tabindex="0" class="dropdown-content menu z-10 w-52 rounded-box bg-base-100 p-2 text-primary shadow-lg">
+              <ul
+                tabindex="0"
+                class="dropdown-content menu z-10 w-52 rounded-box bg-base-100 p-2 text-primary shadow-lg">
                 <li>
                   <a (click)="toggleSort('name')" [class.active]="sortConfig().field === 'name'">
                     <ng-icon name="heroDocumentText" size="1em"></ng-icon>
@@ -83,10 +85,10 @@
                   </a>
                 </li>
                 <li>
-                  <a (click)="toggleSort('last-modified')" [class.active]="sortConfig().field === 'last-modified'">
+                  <a (click)="toggleSort('lastModified')" [class.active]="sortConfig().field === 'lastModified'">
                     <ng-icon name="heroClock" size="1em"></ng-icon>
                     Geändert
-                    @if (sortConfig().field === "last-modified") {
+                    @if (sortConfig().field === "lastModified") {
                       <ng-icon
                         [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
                         size="0.8em"></ng-icon>
@@ -112,7 +114,7 @@
                 class="btn btn-square btn-outline btn-sm btn-primary"
                 (click)="toggleViewMode()"
                 [title]="viewMode() === 'card' ? 'Zur Tabellenansicht wechseln' : 'Zur Card-Ansicht wechseln'">
-                @if (viewMode() === 'card') {
+                @if (viewMode() === "card") {
                   <ng-icon name="heroBars3" size="1.2em" class="size-5"></ng-icon>
                 } @else {
                   <ng-icon name="heroSquares2x2" size="1.2em" class="size-5"></ng-icon>
@@ -133,7 +135,9 @@
                   <ng-icon name="heroPlus" size="1.0em"></ng-icon>
                   Hinzufügen
                 </div>
-                <ul tabindex="0" class="dropdown-content menu z-10 w-52 rounded-box bg-base-100 p-2 text-primary shadow-lg">
+                <ul
+                  tabindex="0"
+                  class="dropdown-content menu z-10 w-52 rounded-box bg-base-100 p-2 text-primary shadow-lg">
                   <li>
                     <a>
                       <create-new-file></create-new-file>

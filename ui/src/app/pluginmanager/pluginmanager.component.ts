@@ -12,7 +12,7 @@ import {
 import { finalize, mergeMap, Observable, of, Subscription, tap } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ChannelList, PluginInstallState, PluginService, PluginWithVersionStatus } from './services/plugin.service';
-import { plugin } from '@ladon/api';
+import { pluginFetchClient } from '@ladon/api';
 import { CommonModule } from '@angular/common';
 import { isEmpty } from 'lodash';
 import { FormsModule } from '@angular/forms';
@@ -153,7 +153,7 @@ export class PluginmanagerComponent implements OnInit {
     });
   }
 
-  install(pluginItem: plugin.PluginModel): void {
+  install(pluginItem: pluginFetchClient.Plugin): void {
     if (!pluginItem) {
       return;
     }
@@ -175,7 +175,7 @@ export class PluginmanagerComponent implements OnInit {
     }
   }
 
-  deinstall(pluginItem: plugin.PluginModel): void {
+  deinstall(pluginItem: pluginFetchClient.Plugin): void {
     if (this.prepareAction(pluginItem)) {
       this.sub$.add(
         this.pluginService
@@ -190,7 +190,7 @@ export class PluginmanagerComponent implements OnInit {
     }
   }
 
-  private installBundle(pluginItem: plugin.PluginModel): void {
+  private installBundle(pluginItem: pluginFetchClient.Plugin): void {
     if (this.prepareAction(pluginItem)) {
       this.sub$ = this.pluginService
         .installBundle(pluginItem)
@@ -206,7 +206,7 @@ export class PluginmanagerComponent implements OnInit {
     }
   }
 
-  private prepareAction(pluginItem: plugin.PluginModel): boolean {
+  private prepareAction(pluginItem: pluginFetchClient.Plugin): boolean {
     if (!pluginItem) {
       return false;
     }

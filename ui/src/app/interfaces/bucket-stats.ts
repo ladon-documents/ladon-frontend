@@ -1,6 +1,6 @@
-import { StatisticsModel } from '@ladon/api';
+import { Statistics } from '@ladon/api';
 
-export interface BucketStatsExtended extends StatisticsModel {
+export interface BucketStatsExtended extends Statistics {
   name: string;
   objects: number;
   favourite?: boolean;

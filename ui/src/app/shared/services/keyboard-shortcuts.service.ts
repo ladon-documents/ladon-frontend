@@ -2,7 +2,7 @@
 import { Injectable, inject } from '@angular/core';
 import { FilemanagerFacade } from '../../filemanager/filemanager.facade';
 import { ClipboardStore } from '../../store/clipboard.store';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 
 export interface ShortcutHandler {
   key: string;

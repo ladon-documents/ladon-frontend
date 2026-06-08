@@ -6,7 +6,7 @@ import { withEntities, addEntity, removeEntity, updateEntity } from '@ngrx/signa
 import { withRequestStatus, requestStatusHelpers } from './features/request-status.feature';
 
 import { BucketsService } from '../buckets/buckets.service';
-import { BucketUiItemModel } from '@ladon/api';
+import { BucketUiItem } from '@ladon/api';
 
 export interface BucketStats {
   name: string;
@@ -32,10 +32,10 @@ export interface SortConfig {
 }
 
 export interface BucketsState {
-  buckets: BucketUiItemModel[];
-  allBuckets: BucketUiItemModel[];
-  filteredBuckets: BucketUiItemModel[];
-  selectedBucket: BucketUiItemModel | null;
+  buckets: BucketUiItem[];
+  allBuckets: BucketUiItem[];
+  filteredBuckets: BucketUiItem[];
+  selectedBucket: BucketUiItem | null;
   bucketStats: BucketStats | null;
   isLoading: boolean;
   error: string | null;
@@ -73,7 +73,7 @@ const initialState: BucketsState = {
 
 export const BucketsStore = signalStore(
   { providedIn: 'root' },
-  withEntities<BucketUiItemModel>(),
+  withEntities<BucketUiItem>(),
   withRequestStatus(),
   withState(initialState),
   withComputed((store) => ({
@@ -93,7 +93,7 @@ export const BucketsStore = signalStore(
         patchState(store, initialState);
       },
 
-      setSelectedBucket: (selectedBucket: BucketUiItemModel | null) => {
+      setSelectedBucket: (selectedBucket: BucketUiItem | null) => {
         patchState(store, { selectedBucket });
         if (selectedBucket && selectedBucket.id) {
           methods.loadBucketStats(selectedBucket.id);
@@ -227,11 +227,7 @@ export const BucketsStore = signalStore(
         const currentPagination = store.pagination();
         methods.goToPage(currentPagination.totalPages);
       },
-      applyFilters: (
-        buckets: BucketUiItemModel[],
-        searchTerm: string,
-        showFavoritesOnly: boolean,
-      ): BucketUiItemModel[] => {
+      applyFilters: (buckets: BucketUiItem[], searchTerm: string, showFavoritesOnly: boolean): BucketUiItem[] => {
         let filtered = [...buckets];
         if (searchTerm) {
           const term = searchTerm.toLowerCase();
@@ -244,7 +240,7 @@ export const BucketsStore = signalStore(
         return filtered;
       },
 
-      sortBuckets: (buckets: BucketUiItemModel[], sortConfig: SortConfig): BucketUiItemModel[] => {
+      sortBuckets: (buckets: BucketUiItem[], sortConfig: SortConfig): BucketUiItem[] => {
         return [...buckets].sort((a, b) => {
           let aValue: any;
           let bValue: any;
@@ -292,11 +288,11 @@ export const BucketsStore = signalStore(
       },
 
       calculatePaginationState: (
-        allBuckets: BucketUiItemModel[],
+        allBuckets: BucketUiItem[],
         currentPage: number,
         pageSize: number,
       ): {
-        paginatedBuckets: BucketUiItemModel[];
+        paginatedBuckets: BucketUiItem[];
         paginationState: PaginationState;
       } => {
         const totalItems = allBuckets.length;
@@ -319,7 +315,7 @@ export const BucketsStore = signalStore(
       },
 
       applyFiltersAndPagination: (
-        allBuckets: BucketUiItemModel[],
+        allBuckets: BucketUiItem[],
         searchTerm: string,
         showFavoritesOnly: boolean,
         sortConfig: SortConfig,

@@ -17,7 +17,7 @@ import {
   filter,
 } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { DocumentModel, TaskStatusModel } from '@ladon/api';
+import { Document, TaskStatus } from '@ladon/api';
 import { FilemanagerContentFacade } from '../filemanager/filemanager-content/filemanager-content.facade';
 
 @Component({
@@ -31,11 +31,11 @@ import { FilemanagerContentFacade } from '../filemanager/filemanager-content/fil
 })
 export class TaskmanagerComponent implements OnInit {
   availableTasks$: Observable<string[]> | undefined;
-  activeTasks$: Observable<TaskStatusModel[]> | undefined;
+  activeTasks$: Observable<TaskStatus[]> | undefined;
   activeLog$ = new Subject<string>();
   activeTask: string | undefined;
   activeLog: string | undefined;
-  availableLogs: { created: string | undefined; logs: DocumentModel[] }[] | undefined;
+  availableLogs: { created: string | undefined; logs: Document[] }[] | undefined;
   toggleChecked: boolean | undefined;
   scrolledDivs: { [key: string]: boolean } = {};
 
@@ -68,9 +68,9 @@ export class TaskmanagerComponent implements OnInit {
               return {
                 ...log,
                 created: log.created?.slice(0, log.created.indexOf('T')),
-              } as DocumentModel;
+              } as Document;
             }),
-            groupBy((log: DocumentModel) => log.created),
+            groupBy((log: Document) => log.created),
             mergeMap((group$) =>
               group$.pipe(
                 toArray(),
@@ -110,7 +110,7 @@ export class TaskmanagerComponent implements OnInit {
     }
   }
 
-  invokeLog(log: DocumentModel): void {
+  invokeLog(log: Document): void {
     const { bucket, key } = log;
     this.activeLog = key;
     this.taskmanagerService.retrieveLog(bucket!, key!).subscribe(async (log: Blob) => {

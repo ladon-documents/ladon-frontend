@@ -1,9 +1,9 @@
 import { computed, Injectable } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 
 interface FavoritesState {
-  favorites: DocumentModel[];
+  favorites: Document[];
 }
 
 const initialState: FavoritesState = {
@@ -17,10 +17,10 @@ export class FavoritesStore extends signalStore(
     favoriteCount: computed(() => state.favorites().length),
   })),
   withMethods((store) => ({
-    isFavorite(document: DocumentModel): boolean {
+    isFavorite(document: Document): boolean {
       return store.favorites().some((fav) => fav.bucket === document.bucket && fav.key === document.key);
     },
-    addFavorite(document: DocumentModel) {
+    addFavorite(document: Document) {
       const favorites = store.favorites();
       const exists = favorites.some((fav) => fav.bucket === document.bucket && fav.key === document.key);
       if (!exists) {
@@ -29,14 +29,14 @@ export class FavoritesStore extends signalStore(
         this.saveFavorites(newFavorites);
       }
     },
-    removeFavorite(document: DocumentModel) {
+    removeFavorite(document: Document) {
       const favorites = store
         .favorites()
         .filter((fav) => !(fav.bucket === document.bucket && fav.key === document.key));
       patchState(store, { favorites });
       this.saveFavorites(favorites);
     },
-    toggleFavorite(document: DocumentModel) {
+    toggleFavorite(document: Document) {
       const isFav = store.favorites().some((fav) => fav.bucket === document.bucket && fav.key === document.key);
       if (isFav) {
         this.removeFavorite(document);
@@ -55,7 +55,7 @@ export class FavoritesStore extends signalStore(
         }
       }
     },
-    saveFavorites(favorites: DocumentModel[]) {
+    saveFavorites(favorites: Document[]) {
       localStorage.setItem('ladon-favorites', JSON.stringify(favorites));
     },
   })),

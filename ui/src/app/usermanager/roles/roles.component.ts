@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { FilterComponent } from '../components/filter/filter.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { RoleEntryModel } from '@ladon/api';
+import { RoleEntry } from '@ladon/api';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { heroDocumentDuplicate, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -19,7 +19,7 @@ import { RouterModule } from '@angular/router';
 export class RolesComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) roleDialog: DialogComponent | undefined;
 
-  filteredRoles: RoleEntryModel[] | undefined;
+  filteredRoles: RoleEntry[] | undefined;
   readonly roleAddGroup = new FormGroup({});
   readonly store = inject(UsermanagerStore);
 
@@ -63,7 +63,7 @@ export class RolesComponent implements OnInit {
     this.roleAddGroup.reset();
   }
 
-  duplicateRole(role: RoleEntryModel): void {
+  duplicateRole(role: RoleEntry): void {
     const { id, name, details: description } = role;
     this.roleAddGroup.patchValue({ id, name, description });
     this.roleDialog?.openDialog();

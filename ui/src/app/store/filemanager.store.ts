@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, forkJoin, pipe, switchMap, tap } from 'rxjs';
 import { FilemanagerService } from '../filemanager/filemanager.service';
@@ -23,19 +23,19 @@ export interface PaginationState {
 }
 
 export interface SortConfig {
-  field: keyof DocumentModel | 'name' | 'size' | 'type';
+  field: keyof Document | 'name' | 'size' | 'type';
   direction: 'asc' | 'desc';
 }
 
 type ViewMode = 'card' | 'table';
 
 export interface FilemanagerState {
-  documents: DocumentModel[];
-  allDocuments: DocumentModel[];
-  filteredDocuments: DocumentModel[];
+  documents: Document[];
+  allDocuments: Document[];
+  filteredDocuments: Document[];
   statistics: BucketStatsExtended | null;
-  currentFolder: DocumentModel | null;
-  selectedDocument: DocumentModel | null;
+  currentFolder: Document | null;
+  selectedDocument: Document | null;
   isLoading: boolean;
   error: string | null;
   sort: SortConfig;
@@ -56,7 +56,7 @@ const initialState: FilemanagerState = {
   isLoading: false,
   error: null,
   sort: {
-    field: 'last-modified',
+    field: 'lastModified',
     direction: 'desc',
   },
   pagination: {
@@ -98,9 +98,7 @@ export const FilemanagerStore = signalStore(
         return EMPTY;
       };
 
-      const resolveLoadDocumentListInput = (
-        input: DocumentModel | { document: DocumentModel; updateBreadcrumb?: boolean },
-      ) => {
+      const resolveLoadDocumentListInput = (input: Document | { document: Document; updateBreadcrumb?: boolean }) => {
         if ('document' in input) {
           return {
             document: input.document,
@@ -131,7 +129,7 @@ export const FilemanagerStore = signalStore(
         updateSelectedBucket: (selectedBucket: string) => {
           patchState(store, { selectedBucket });
         },
-        setSelectedDocument: (selectedDocument: DocumentModel | null) => {
+        setSelectedDocument: (selectedDocument: Document | null) => {
           patchState(store, { selectedDocument });
         },
         setViewMode: (viewMode: ViewMode) => {
@@ -313,7 +311,7 @@ export const FilemanagerStore = signalStore(
             ),
           ),
         ),
-        loadDocumentList: rxMethod<DocumentModel | { document: DocumentModel; updateBreadcrumb?: boolean }>(
+        loadDocumentList: rxMethod<Document | { document: Document; updateBreadcrumb?: boolean }>(
           pipe(
             tap(() => {
               patchState(store, (state) => ({
@@ -514,7 +512,7 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        deleteDocument: rxMethod<DocumentModel>(
+        deleteDocument: rxMethod<Document>(
           pipe(
             switchMap(async (document) => {
               const confirmed = await confirmationDialog.confirm({
@@ -580,12 +578,12 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        deleteDocuments: rxMethod<DocumentModel[]>(
+        deleteDocuments: rxMethod<Document[]>(
           pipe(
             switchMap(async (documents) => {
-              const validDocuments = documents.filter(
-                (document) => !!document.bucket && !!document.key,
-              ) as Array<DocumentModel & { key: string; bucket: string }>;
+              const validDocuments = documents.filter((document) => !!document.bucket && !!document.key) as Array<
+                Document & { key: string; bucket: string }
+              >;
 
               if (validDocuments.length === 0) {
                 return { documents: validDocuments, confirmed: false };
@@ -650,7 +648,7 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        moveDocument: rxMethod<{ document: DocumentModel; targetPath: string }>(
+        moveDocument: rxMethod<{ document: Document; targetPath: string }>(
           pipe(
             tap(() => {
               patchState(store, { isLoading: true, error: null });
@@ -700,16 +698,16 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        moveDocuments: rxMethod<{ documents: DocumentModel[]; targetPath: string }>(
+        moveDocuments: rxMethod<{ documents: Document[]; targetPath: string }>(
           pipe(
             tap(() => {
               patchState(store, { isLoading: true, error: null });
             }),
             switchMap(({ documents: documentsToMove, targetPath }) => {
               const targetBucket = store.selectedBucket();
-              const validDocuments = documentsToMove.filter(
-                (document) => !!document.bucket && !!document.key,
-              ) as Array<DocumentModel & { key: string; bucket: string }>;
+              const validDocuments = documentsToMove.filter((document) => !!document.bucket && !!document.key) as Array<
+                Document & { key: string; bucket: string }
+              >;
 
               if (!targetBucket || validDocuments.length === 0) {
                 patchState(store, {
@@ -759,7 +757,7 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        copyDocument: rxMethod<{ document: DocumentModel; targetPath: string }>(
+        copyDocument: rxMethod<{ document: Document; targetPath: string }>(
           pipe(
             tap(() => {
               patchState(store, { isLoading: true, error: null });
@@ -808,16 +806,16 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        copyDocuments: rxMethod<{ documents: DocumentModel[]; targetPath: string }>(
+        copyDocuments: rxMethod<{ documents: Document[]; targetPath: string }>(
           pipe(
             tap(() => {
               patchState(store, { isLoading: true, error: null });
             }),
             switchMap(({ documents: documentsToCopy, targetPath }) => {
               const targetBucket = store.selectedBucket();
-              const validDocuments = documentsToCopy.filter(
-                (document) => !!document.bucket && !!document.key,
-              ) as Array<DocumentModel & { key: string; bucket: string }>;
+              const validDocuments = documentsToCopy.filter((document) => !!document.bucket && !!document.key) as Array<
+                Document & { key: string; bucket: string }
+              >;
 
               if (!targetBucket || validDocuments.length === 0) {
                 patchState(store, {

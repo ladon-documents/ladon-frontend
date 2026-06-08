@@ -26,7 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DialogComponent, FolderComponent } from '@ladon/shared';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SortConfig } from '../store/bucket.store';
-import { BucketUiItemModel } from '@ladon/api';
+import { BucketUiItem } from '@ladon/api';
 import { LadonRouterService } from '../services/ladon-router.service';
 
 @Component({
@@ -106,7 +106,7 @@ export class BucketsComponent implements OnInit {
     this.loadBuckets();
   }
 
-  selectBucket(bucket: BucketUiItemModel) {
+  selectBucket(bucket: BucketUiItem) {
     this.bucketsFacade.selectBucket(bucket);
   }
 
@@ -208,12 +208,12 @@ export class BucketsComponent implements OnInit {
     }
   }
 
-  renameBucket(bucket: BucketUiItemModel) {
+  renameBucket(bucket: BucketUiItem) {
     // TODO: Implement rename functionality
     console.log('Rename bucket:', bucket.id);
   }
 
-  deleteBucket(bucket: BucketUiItemModel) {
+  deleteBucket(bucket: BucketUiItem) {
     if (!bucket.id) return;
     if (confirm(`Sind Sie sicher, dass Sie das Bucket "${bucket.id}" löschen möchten?`)) {
       this.bucketsFacade.deleteBucket(bucket.id);
@@ -225,14 +225,14 @@ export class BucketsComponent implements OnInit {
     this.bucketAddGroup.reset();
   }
 
-  onRowClick(bucket: BucketUiItemModel, event: Event) {
+  onRowClick(bucket: BucketUiItem, event: Event) {
     const target = event.target as HTMLElement;
     if (!target.closest('.dropdown') && !target.closest('button')) {
       this.selectBucket(bucket);
     }
   }
 
-  onRowDoubleClick(bucket: BucketUiItemModel, event: Event) {
+  onRowDoubleClick(bucket: BucketUiItem, event: Event) {
     const target = event.target as HTMLElement;
     if (!target.closest('.dropdown') && !target.closest('button')) {
       this.selectBucket(bucket);

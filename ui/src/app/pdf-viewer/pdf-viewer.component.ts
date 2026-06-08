@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { isPdfDocument } from '@ladon/utility';
 import { FilemanagerFacade } from '../filemanager/filemanager.facade';
 import { ActivatedRoute } from '@angular/router';
@@ -44,7 +44,7 @@ export class PdfViewerComponent implements OnInit {
   readonly hasError = this.pdfFacade.hasError;
   readonly errorMessage = this.pdfFacade.errorMessage;
 
-  private _selectedDocument = signal<DocumentModel | null>(null);
+  private _selectedDocument = signal<Document | null>(null);
   private _isLoading = signal<boolean>(false);
   private _hasError = signal<boolean>(false);
   private _errorMessage = signal<string>('');
@@ -60,7 +60,7 @@ export class PdfViewerComponent implements OnInit {
     const doc = this.selectedDocument();
     if (!doc || !doc.bucket || !doc.key) return '';
 
-    // Generiert die URL basierend auf dem DocumentModel
+    // Generiert die URL basierend auf dem Document
     return `/admin/api/filemanager/${encodeURIComponent(doc.bucket)}/direct?id=${encodeURIComponent(doc.key)}`;
   });
 
@@ -114,7 +114,7 @@ export class PdfViewerComponent implements OnInit {
     });
   }
 
-  private isPdfDocument(document: DocumentModel): boolean {
+  private isPdfDocument(document: Document): boolean {
     return isPdfDocument(document);
   }
 
@@ -277,7 +277,7 @@ export class PdfViewerComponent implements OnInit {
     this.retryLoad();
   }
 
-  setDocument(document: DocumentModel): void {
+  setDocument(document: Document): void {
     if (this.isPdfDocument(document)) {
       this._selectedDocument.set(document);
       this.loadPdf();

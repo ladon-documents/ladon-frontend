@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { PluginInstallState, PluginWithVersionStatus } from '../services/plugin.service';
-import { plugin } from '@ladon/api';
+import { pluginFetchClient } from '@ladon/api';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { PillComponent } from '@ladon/shared';
@@ -52,13 +52,13 @@ export class PluginProgressbarComponent implements OnInit {
   }
 
   @Output()
-  cancel = new EventEmitter<plugin.PluginModel>();
+  cancel = new EventEmitter<pluginFetchClient.Plugin>();
 
   @Output()
-  deinstall = new EventEmitter<plugin.PluginModel>();
+  deinstall = new EventEmitter<pluginFetchClient.Plugin>();
 
   @Output()
-  update = new EventEmitter<plugin.PluginModel>();
+  update = new EventEmitter<pluginFetchClient.Plugin>();
 
   public isProgressVisible: boolean = false;
 

@@ -2,11 +2,11 @@ import { computed, inject } from '@angular/core';
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY, of, delay } from 'rxjs';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { isPdfDocument } from '@ladon/utility';
 
 interface PdfViewerState {
-  selectedDocument: DocumentModel | null;
+  selectedDocument: Document | null;
   queryParams: Record<string, string | number | boolean>;
 
   isLoading: boolean;
@@ -67,7 +67,7 @@ export const PdfViewerStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withMethods((store) => ({
-    setDocument: (document: DocumentModel | null): void => {
+    setDocument: (document: Document | null): void => {
       if (!document) {
         patchState(store, {
           ...initialState,
@@ -313,7 +313,7 @@ export const PdfViewerStore = signalStore(
       patchState(store, updates);
     },
 
-    loadPDFDocument: rxMethod<DocumentModel | null>(
+    loadPDFDocument: rxMethod<Document | null>(
       pipe(
         tap((document) => {
           if (!document) {

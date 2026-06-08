@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { PdfViewerStore } from '../store/pdf-viewer.store';
 import { LadonRouterService } from '../services/ladon-router.service';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 
 @Injectable({ providedIn: 'root' })
 export class PdfViewerFacade {
@@ -64,7 +64,7 @@ export class PdfViewerFacade {
   resetState = this.store.resetState;
   resetToInitialState = this.store.resetToInitialState;
 
-  async navigateToPdfViewer(documuent: DocumentModel) {
+  async navigateToPdfViewer(documuent: Document) {
     this.setDocument(documuent);
     await this.router.navigateToPdfViewer(documuent.path);
   }

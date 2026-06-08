@@ -1,6 +1,6 @@
 import { Component, inject, Signal } from '@angular/core';
 import { BreadcrumbStore } from '../../store/breadcrumb.store';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { FilemanagerFacade } from '../filemanager.facade';
 
 @Component({
@@ -14,7 +14,7 @@ export class BreadcrumbComponent {
   readonly filemanagerFacade = inject(FilemanagerFacade);
   readonly selectedBucket: Signal<string | null> = this.filemanagerFacade.selectedBucket;
 
-  public breadcrumbSignal: Signal<DocumentModel[]>;
+  public breadcrumbSignal: Signal<Document[]>;
 
   constructor() {
     this.breadcrumbSignal = this.store.paths;

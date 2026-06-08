@@ -1,6 +1,6 @@
 import { inject, Injectable, Signal } from '@angular/core';
 import { FilemanagerStore } from '../store/filemanager.store';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { BreadcrumbStore } from '../store/breadcrumb.store';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { ConverterService } from '../services/converter.service';
@@ -15,7 +15,7 @@ export class FilemanagerFacade {
   readonly #converterService = inject(ConverterService);
   readonly ladonRouterService = inject(LadonRouterService);
   readonly filemanagerSerivce = inject(FilemanagerService);
-  readonly documents: Signal<DocumentModel[]> = this.#filemanagerStore.documents;
+  readonly documents: Signal<Document[]> = this.#filemanagerStore.documents;
   readonly selectedBucket = this.#filemanagerStore.selectedBucket;
   readonly error = this.#filemanagerStore.error;
   readonly statistics = this.#filemanagerStore.statistics;
@@ -72,15 +72,15 @@ export class FilemanagerFacade {
     this.#filemanagerStore.clearSearch();
   }
 
-  setSortConfig(field: 'name' | 'size' | 'type' | 'last-modified' | 'created', direction?: 'asc' | 'desc') {
+  setSortConfig(field: 'name' | 'size' | 'type' | 'lastModified' | 'created', direction?: 'asc' | 'desc') {
     this.#filemanagerStore.setSortConfig(field, direction);
   }
 
-  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+  toggleSort(field: 'name' | 'size' | 'type' | 'lastModified' | 'created') {
     this.#filemanagerStore.setSortConfig(field);
   }
 
-  setSelectedDocument(document: DocumentModel) {
+  setSelectedDocument(document: Document) {
     this.#filemanagerStore.setSelectedDocument(document);
   }
 
@@ -113,10 +113,10 @@ export class FilemanagerFacade {
     this.#filemanagerStore.loadStats(this.selectedBucket());
   }
 
-  getDocument(document: DocumentModel) {
+  getDocument(document: Document) {
     return this.filemanagerSerivce.getDocument(document);
   }
-  saveDocument(document: DocumentModel, content: Blob) {
+  saveDocument(document: Document, content: Blob) {
     return this.filemanagerSerivce.saveDocument(document, content);
   }
   async getImagePreviewUrll() {
@@ -130,7 +130,7 @@ export class FilemanagerFacade {
     }
   }
 
-  load(document: DocumentModel): void {
+  load(document: Document): void {
     if (!document) return;
     const currentBucket = this.selectedBucket();
     if (document.isFolder && currentBucket && document.key) {
@@ -154,17 +154,17 @@ export class FilemanagerFacade {
     this.initRoot();
   }
 
-  loadByKey(document: DocumentModel): void {
+  loadByKey(document: Document): void {
     if (document && document.key) {
     }
   }
 
-  setCurrentFolder(document: DocumentModel) {}
+  setCurrentFolder(document: Document) {}
 
-  delete(document: DocumentModel): void {
+  delete(document: Document): void {
     this.#filemanagerStore.deleteDocument(document);
   }
-  moveDocument(documentModel: DocumentModel): void {
+  moveDocument(documentModel: Document): void {
     const targetPath = this.getCurrentPath() ?? '';
     this.#filemanagerStore.moveDocument({
       document: documentModel,
@@ -172,7 +172,7 @@ export class FilemanagerFacade {
     });
   }
 
-  moveDocuments(documentModels: DocumentModel[]): void {
+  moveDocuments(documentModels: Document[]): void {
     if (documentModels.length === 0) {
       return;
     }
@@ -184,7 +184,7 @@ export class FilemanagerFacade {
     });
   }
 
-  copyDocument(documentModel: DocumentModel): void {
+  copyDocument(documentModel: Document): void {
     const targetPath = this.getCurrentPath() ?? '';
     this.#filemanagerStore.copyDocument({
       document: documentModel,
@@ -192,7 +192,7 @@ export class FilemanagerFacade {
     });
   }
 
-  copyDocuments(documentModels: DocumentModel[]): void {
+  copyDocuments(documentModels: Document[]): void {
     if (documentModels.length === 0) {
       return;
     }
@@ -203,9 +203,9 @@ export class FilemanagerFacade {
       targetPath,
     });
   }
-  updateFolder(document: DocumentModel): void {}
+  updateFolder(document: Document): void {}
 
-  updateFile(document: DocumentModel): void {
+  updateFile(document: Document): void {
     const currentPath = this.getCurrentPath();
     //    this.#filemanagerStore.uploadFile({ document, currentPath });
   }

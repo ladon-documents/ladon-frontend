@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject, OnDestroy } from '@angular/core';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { filemanagerHelper } from '../helper/helper';
 import { FilemanagerWorkspaceService } from '../filemanager-workspace.service';
 import { DocumentTagsComponent } from '../../shared/components/document-tags/document-tags.component';
@@ -43,7 +43,7 @@ export class PreviewComponent implements OnDestroy {
     this.revokePreviewUrls();
   }
 
-  private async loadPreview(document: DocumentModel) {
+  private async loadPreview(document: Document) {
     this.revokePreviewUrls();
     this.isLoading = true;
     try {

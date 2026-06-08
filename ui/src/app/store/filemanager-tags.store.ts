@@ -2,13 +2,13 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, from, pipe, switchMap, tap } from 'rxjs';
-import { DocumentModel, TagModel } from '@ladon/api';
+import { Document, Tag } from '@ladon/api';
 import { ToastService } from '../shared/services/toast.service';
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
 export interface FilemanagerTagsState {
   documentId: string | null;
-  tags: TagModel[];
+  tags: Tag[];
   isLoading: boolean;
   isMutating: boolean;
   error: string | null;
@@ -63,7 +63,7 @@ export const FilemanagerTagsStore = signalStore(
         patchState(store, initialState);
       },
 
-      setDocument(document: DocumentModel | null) {
+      setDocument(document: Document | null) {
         if (document?.isFolder) {
           patchState(store, {
             documentId: null,

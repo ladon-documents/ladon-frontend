@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
-import { PermissionModel, UserEntryModel, RoleEntryModel } from '@ladon/api';
+import { Permission, UserEntry, RoleEntry } from '@ladon/api';
 import {
   AbstractControl,
   FormControl,
@@ -59,7 +59,7 @@ export class UserDetailsComponent implements OnInit {
   ) {}
 
   store = inject(UsermanagerStore);
-  user: UserEntryModel | undefined;
+  user: UserEntry | undefined;
   userForm = new FormGroup({});
   passwordForm = new FormGroup({});
   userRoles = signal<string[] | undefined>(undefined);
@@ -68,18 +68,18 @@ export class UserDetailsComponent implements OnInit {
     const deletions = Array.from(this.roleDeletionsSet());
     return roles?.filter((roleId) => !deletions.includes(roleId));
   });
-  userPermissions = signal<PermissionModel[] | undefined>(undefined);
-  patchedPermissions = computed<PermissionModel[] | undefined>(() => {
+  userPermissions = signal<Permission[] | undefined>(undefined);
+  patchedPermissions = computed<Permission[] | undefined>(() => {
     const permissions = this.userPermissions();
     const deletions = Array.from(this.permissionDeletionsSet());
     return permissions?.filter(({ permissionId }) => !deletions.includes(permissionId));
   });
-  roleOptions = signal<RoleEntryModel[] | undefined>(undefined);
-  permissionOptions = signal<PermissionModel[] | undefined>(undefined);
+  roleOptions = signal<RoleEntry[] | undefined>(undefined);
+  permissionOptions = signal<Permission[] | undefined>(undefined);
   dialogTitle = '';
 
-  private rolesSet = new Set<RoleEntryModel>();
-  private permissionsSet = new Set<PermissionModel>();
+  private rolesSet = new Set<RoleEntry>();
+  private permissionsSet = new Set<Permission>();
   private roleDeletionsSet = signal(new Set<string>());
   private permissionDeletionsSet = signal(new Set<string>());
 
@@ -187,7 +187,7 @@ export class UserDetailsComponent implements OnInit {
     this.dialogCmp?.openDialog();
   }
 
-  checkFormPatch(type: UserSetType, value: PermissionModel | RoleEntryModel, form: FormGroup) {
+  checkFormPatch(type: UserSetType, value: Permission | RoleEntry, form: FormGroup) {
     return this.usermanagerFacade.checkFormPatch(type, value, form);
   }
 
@@ -232,22 +232,22 @@ export class UserDetailsComponent implements OnInit {
    * @param type
    * @param value
    */
-  updateByType(event: any, type: UserSetType, value: RoleEntryModel | PermissionModel) {
+  updateByType(event: any, type: UserSetType, value: RoleEntry | Permission) {
     const { checked } = event.target;
     switch (type) {
       case 'role':
         if (checked) {
-          this.rolesSet.add(value as RoleEntryModel);
+          this.rolesSet.add(value as RoleEntry);
         } else {
-          this.rolesSet.delete(value as RoleEntryModel);
+          this.rolesSet.delete(value as RoleEntry);
         }
         this.patchFormByType('roles', this.rolesSet);
         break;
       case 'permission':
         if (checked) {
-          this.permissionsSet.add(value as PermissionModel);
+          this.permissionsSet.add(value as Permission);
         } else {
-          this.permissionsSet.delete(value as PermissionModel);
+          this.permissionsSet.delete(value as Permission);
         }
         this.patchFormByType('permissions', this.permissionsSet);
         break;
@@ -271,10 +271,10 @@ export class UserDetailsComponent implements OnInit {
    * @param type
    * @param value
    */
-  removeByType(type: UserSetType, value: RoleEntryModel | PermissionModel | string) {
+  removeByType(type: UserSetType, value: RoleEntry | Permission | string) {
     switch (type) {
       case 'role':
-        this.rolesSet.delete(value as RoleEntryModel);
+        this.rolesSet.delete(value as RoleEntry);
         this.patchFormByType('roles', this.rolesSet);
         break;
       case 'roleDeletion':
@@ -282,11 +282,11 @@ export class UserDetailsComponent implements OnInit {
         this.patchFormByType('roleDeletions', this.roleDeletionsSet());
         break;
       case 'permission':
-        this.permissionsSet.delete(value as PermissionModel);
+        this.permissionsSet.delete(value as Permission);
         this.patchFormByType('permissions', this.permissionsSet);
         break;
       case 'permissionDeletion':
-        this.usermanagerFacade.addAndSetSignal((value as PermissionModel).permissionId, this.permissionDeletionsSet);
+        this.usermanagerFacade.addAndSetSignal((value as Permission).permissionId, this.permissionDeletionsSet);
         this.patchFormByType('permissionDeletions', this.permissionDeletionsSet());
         break;
       default:

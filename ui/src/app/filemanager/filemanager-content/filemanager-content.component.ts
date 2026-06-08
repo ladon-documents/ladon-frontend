@@ -9,14 +9,10 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import {
-  CdkDrag,
-  CdkDragDrop,
-  CdkDropList,
-} from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   heroArrowDownTray,
@@ -53,7 +49,6 @@ import { MoveOrCopyDialogComponent } from '../../shared/components/move-or-copy-
 import { InputDialogService } from '../../shared/services/input-dialog.service';
 import { isWebComponentRegistered } from '@ladon/utility';
 import { FilemanagerWorkspaceService } from '../filemanager-workspace.service';
-
 
 @Component({
   standalone: true,
@@ -111,11 +106,11 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
   readonly monacoEditorService = inject(MonacoEditorService);
 
   protected readonly clipboardList = this.clipboardService.clipboardList;
-  documents: Signal<DocumentModel[]> = this.#facade.documents;
+  documents: Signal<Document[]> = this.#facade.documents;
 
   #currentBucket: string | null = null;
   #subfolder: string | null = null;
-  #selectedDocument: DocumentModel | null = null;
+  #selectedDocument: Document | null = null;
   viewMode = this.#facade.viewMode;
   readonly searchTerm = this.#facade.searchTerm;
   readonly sortConfig = this.#facade.sortConfig;
@@ -155,15 +150,15 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getSelectedDocument(): DocumentModel | null {
+  getSelectedDocument(): Document | null {
     return this.#selectedDocument;
   }
 
-  isSelected(document: DocumentModel): boolean {
+  isSelected(document: Document): boolean {
     return this.selectionStore.isSelected(document);
   }
 
-  copy(file: DocumentModel) {
+  copy(file: Document) {
     console.log('copy');
   }
 
@@ -201,7 +196,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     this.#facade.setPageSize(pageSize);
   }
 
-  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+  toggleSort(field: 'name' | 'size' | 'type' | 'lastModified' | 'created') {
     this.#facade.toggleSort(field);
   }
 
@@ -211,11 +206,11 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async select(document: DocumentModel) {
+  async select(document: Document) {
     this.#facade.setSelectedDocument(document);
   }
 
-  async navigateTo(document: DocumentModel) {
+  async navigateTo(document: Document) {
     if (!document) return;
     if (document.isFolder) {
       this.#selectedDocument = document;
@@ -245,7 +240,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     );
   }
 
-  onContextMenu(event: MouseEvent, document: DocumentModel, index: number) {
+  onContextMenu(event: MouseEvent, document: Document, index: number) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -292,7 +287,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     );
   }
 
-  private resolveContextDocuments(document: DocumentModel, index: number): DocumentModel[] {
+  private resolveContextDocuments(document: Document, index: number): Document[] {
     const visibleDocumentsById = new Set(this.documents().map((doc) => this.documentId(doc)));
     const visibleSelection = this.selectionStore
       .selectedDocuments()
@@ -311,7 +306,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     return [document];
   }
 
-  toggleSelection(document: DocumentModel, index: number, event: Event) {
+  toggleSelection(document: Document, index: number, event: Event) {
     const mouseEvent = event as MouseEvent;
     if (mouseEvent.shiftKey) {
       this.selectionStore.selectRange(this.documents(), index);
@@ -321,7 +316,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     this.selectionStore.toggleSelection(document, index);
   }
 
-  onItemClick(document: DocumentModel, index: number, event: MouseEvent) {
+  onItemClick(document: Document, index: number, event: MouseEvent) {
     if (event.shiftKey || event.ctrlKey || event.metaKey) {
       this.toggleSelection(document, index, event);
       this.#facade.setSelectedDocument(document);
@@ -331,7 +326,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     }
   }
 
-  toggleFavorite(document: DocumentModel) {
+  toggleFavorite(document: Document) {
     this.favoritesStore.toggleFavorite(document);
   }
 
@@ -349,7 +344,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onDropFromClipboard(event: CdkDragDrop<DocumentModel[]>) {
+  onDropFromClipboard(event: CdkDragDrop<Document[]>) {
     if (event.previousContainer !== event.container) {
       const droppedDocuments = this.resolveDroppedDocuments(event);
       if (droppedDocuments.length > 0) {
@@ -358,7 +353,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getDragPayload(document: DocumentModel): DocumentModel[] {
+  getDragPayload(document: Document): Document[] {
     const visibleDocumentsById = new Set(this.documents().map((doc) => this.documentId(doc)));
     const visibleSelection = this.selectionStore
       .selectedDocuments()
@@ -371,7 +366,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     return [document];
   }
 
-  private resolveDroppedDocuments(event: CdkDragDrop<DocumentModel[]>): DocumentModel[] {
+  private resolveDroppedDocuments(event: CdkDragDrop<Document[]>): Document[] {
     const dragData = event.item.data;
     if (Array.isArray(dragData)) {
       return dragData;
@@ -381,7 +376,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     return fallbackDocument ? [fallbackDocument] : [];
   }
 
-  private async showMoveOrCopyDialog(documents: DocumentModel[]) {
+  private async showMoveOrCopyDialog(documents: Document[]) {
     const representativeDocument = documents[0];
     if (!representativeDocument) {
       return;
@@ -434,7 +429,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     return isWebComponentRegistered(this.pdfViewerTagName);
   }
 
-  private documentId(document: DocumentModel): string {
+  private documentId(document: Document): string {
     return `${document.bucket || ''}::${document.key || document.path || document.name || ''}`;
   }
 }

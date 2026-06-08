@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { DocumentsService } from '@ladon/api';
+import { from, Subscription } from 'rxjs';
+import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
 @Component({
   selector: 'lib-static-web',
@@ -22,7 +22,7 @@ export class StaticwebComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private activatedRoute: ActivatedRoute,
     private elementRef: ElementRef,
-    private documentService: DocumentsService,
+    private apiFactory: FetchApiFactory,
   ) {}
 
   ngOnInit() {
@@ -59,7 +59,12 @@ export class StaticwebComponent implements OnInit, OnDestroy {
         path = path.slice(0, path.indexOf('&'));
       }
       const bucket = url.slice(0, url.indexOf('/'));
-      this.documentService.getDocument(bucket, path).subscribe((response) => {
+      from(
+        this.apiFactory.documentsApi.getDocument({
+          bucket,
+          key: path,
+        }),
+      ).subscribe((response) => {
         console.log(response);
         this.cleanupScripts();
 

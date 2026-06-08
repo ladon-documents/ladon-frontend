@@ -1,20 +1,33 @@
 import { Injectable } from '@angular/core';
-import { DocumentModel, DocumentsService } from '@ladon/api';
-import { throwError } from 'rxjs';
+import { DocumentModel } from '@ladon/api';
+import { from, throwError } from 'rxjs';
+import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilemanagerService {
-  constructor(private documentsService: DocumentsService) {}
+  constructor(private apiFactory: FetchApiFactory) {}
 
   public loadBucket(bucket: string, limit: number = 25) {
-    return this.documentsService.listDocuments(bucket, limit, undefined, undefined, undefined, undefined, true);
+    return from(
+      this.apiFactory.documentsApi.listDocuments({
+        bucket,
+        limit,
+        currentFolder: true,
+      }) as Promise<DocumentModel[]>,
+    );
   }
+
   public getDocument(document: DocumentModel) {
     const { bucket, key } = document;
     if (bucket && key) {
-      return this.documentsService.getDocument(bucket, key);
+      return from(
+        this.apiFactory.documentsApi.getDocument({
+          bucket,
+          key,
+        }),
+      );
     }
     return throwError(new Error('Not Found'));
   }
@@ -22,7 +35,13 @@ export class FilemanagerService {
   public saveDocument(document: DocumentModel, content: any) {
     const { bucket, key } = document;
     if (bucket && key) {
-      return this.documentsService.putDocument(bucket, key, undefined, content);
+      return from(
+        this.apiFactory.documentsApi.putDocument({
+          bucket,
+          key,
+          zipUploadRequest: content,
+        }) as Promise<DocumentModel>,
+      );
     }
     return throwError(new Error('Not Found'));
   }
@@ -30,7 +49,12 @@ export class FilemanagerService {
   public deleteDocument(document: DocumentModel) {
     const { bucket, key } = document;
     if (bucket && key) {
-      return this.documentsService.deleteDocument(bucket, key);
+      return from(
+        this.apiFactory.documentsApi.deleteDocument({
+          bucket,
+          key,
+        }),
+      );
     }
     return throwError(new Error('Not Found'));
   }
@@ -38,7 +62,14 @@ export class FilemanagerService {
   public moveDocument(document: DocumentModel, targetBucket: string, targetKey: string) {
     const { bucket, key } = document;
     if (bucket && key && targetBucket && targetKey) {
-      return this.documentsService.moveDocument(bucket, key, targetBucket, targetKey);
+      return from(
+        this.apiFactory.documentsApi.moveDocument({
+          bucket,
+          key,
+          targetBucket,
+          targetKey,
+        }) as Promise<DocumentModel>,
+      );
     }
     return throwError(new Error('Not Found'));
   }
@@ -46,35 +77,57 @@ export class FilemanagerService {
   public copyDocument(document: DocumentModel, targetBucket: string, targetKey: string) {
     const { bucket, key } = document;
     if (bucket && key && targetBucket && targetKey) {
-      return this.documentsService.copyDocument(bucket, key, targetBucket, targetKey);
+      return from(
+        this.apiFactory.documentsApi.copyDocument({
+          bucket,
+          key,
+          targetBucket,
+          targetKey,
+        }) as Promise<DocumentModel>,
+      );
     }
     return throwError(new Error('Not Found'));
   }
 
   public loadDocumentList(document: DocumentModel, limit: number = 1000) {
     if (document && document.bucket) {
-      return this.documentsService.listDocuments(
-        document.bucket,
-        limit,
-        undefined,
-        document.key,
-        undefined,
-        undefined,
-        true,
+      return from(
+        this.apiFactory.documentsApi.listDocuments({
+          bucket: document.bucket,
+          limit,
+          prefix: document.key,
+          currentFolder: true,
+        }) as Promise<DocumentModel[]>,
       );
     }
     return throwError(new Error('Not Found'));
   }
 
   public getStats(bucketId: string) {
-    return this.documentsService.getDocument('_proc', `bucket-stats/${bucketId}/stats.json`);
+    return from(
+      this.apiFactory.documentsApi.getDocument({
+        bucket: '_proc',
+        key: `bucket-stats/${bucketId}/stats.json`,
+      }),
+    );
   }
 
   public createNewFile(bucket: string, key: string, content: any | null) {
-    return this.documentsService.putDocument(bucket, key, undefined, content);
+    return from(
+      this.apiFactory.documentsApi.putDocument({
+        bucket,
+        key,
+        zipUploadRequest: content,
+      }) as Promise<DocumentModel>,
+    );
   }
 
   public createNewFolder(bucket: string, key: string) {
-    return this.documentsService.putFolder(bucket, key);
+    return from(
+      this.apiFactory.documentsApi.putFolder({
+        bucket,
+        key,
+      }) as Promise<DocumentModel>,
+    );
   }
 }

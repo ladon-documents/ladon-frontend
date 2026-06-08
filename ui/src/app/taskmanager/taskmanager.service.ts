@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TasksService, DocumentsService, DocumentModel, TaskStatusModel } from '@ladon/api';
+import { DocumentModel, TaskStatusModel } from '@ladon/api';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
+import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +11,11 @@ import { Observable } from 'rxjs';
 export class TaskmanagerService {
   constructor(
     private http: HttpClient,
-    private documentsService: DocumentsService,
-    private tasksService: TasksService,
+    private apiFactory: FetchApiFactory,
   ) {}
 
   filterAvailableTasks(filterQuery?: string): Observable<string[]> {
-    return this.tasksService.getAvailableTasks().pipe(
+    return from(this.apiFactory.tasksApi.getAvailableTasks()).pipe(
       map((tasks: string[]) => {
         if (filterQuery) {
           return tasks.filter((task) => task.includes(filterQuery));
@@ -26,23 +26,42 @@ export class TaskmanagerService {
   }
 
   retrieveActiveTasks(): Observable<TaskStatusModel[]> {
-    return this.tasksService.getActiveTasks();
+    return from(this.apiFactory.tasksApi.getActiveTasks() as Promise<TaskStatusModel[]>);
   }
 
   taskStart(name: string): Observable<{ [key: string]: string }> {
-    return this.tasksService.startTask(name, {});
+    return from(
+      this.apiFactory.tasksApi.startTask({
+        name,
+        requestBody: {},
+      }),
+    );
   }
 
   stopTask(id: string): Observable<string> {
-    return this.tasksService.stopTask(id);
+    return from(
+      this.apiFactory.tasksApi.stopTask({
+        id,
+      }),
+    );
   }
 
   retrieveLogs(name: string): Observable<DocumentModel[]> {
-    return this.documentsService.listDocuments('_system', undefined, undefined, `tasks/${name}/`);
+    return from(
+      this.apiFactory.documentsApi.listDocuments({
+        bucket: '_system',
+        prefix: `tasks/${name}/`,
+      }) as Promise<DocumentModel[]>,
+    );
   }
 
   retrieveLog(bucket: string, key: string): Observable<Blob> {
-    return this.documentsService.getDocument(bucket, key);
+    return from(
+      this.apiFactory.documentsApi.getDocument({
+        bucket,
+        key,
+      }),
+    );
   }
 
   retrieveMockJSON(name: string): Observable<DocumentModel[]> {

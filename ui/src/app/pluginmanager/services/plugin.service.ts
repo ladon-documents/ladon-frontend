@@ -5,6 +5,7 @@ import {
   delay,
   EMPTY,
   forkJoin,
+  from,
   map,
   mergeMap,
   Observable,
@@ -16,11 +17,14 @@ import {
   throwError,
 } from 'rxjs';
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders } from '@angular/common/http';
-import { DocumentsService, TransactionService, ResponseSuccessModel, plugin } from '@ladon/api';
+import { pluginFetchClient } from '@ladon/api';
 import { sortChannels } from '../helper/helper';
 import { PluginMetaService } from './plugin-meta.service';
+import { FetchApiFactory } from '../../services/api/fetch-api.factory';
 
-export interface PluginWithVersionStatus extends plugin.PluginModel {
+type PluginModel = pluginFetchClient.Plugin;
+
+export interface PluginWithVersionStatus extends PluginModel {
   canInstall: boolean;
   canUpdate: boolean;
   canDeinstall: boolean;
@@ -47,7 +51,7 @@ export interface PluginInstallState {
   state: PluginState;
   content: any;
   transactionID?: string;
-  plugin?: plugin.PluginModel;
+  plugin?: PluginModel;
 }
 
 @Injectable({
@@ -86,10 +90,8 @@ export class PluginService {
 
   constructor(
     private httpClient: HttpClient,
-    private pluginmanagerService: plugin.V1Service,
+    private apiFactory: FetchApiFactory,
     private pluginMetaService: PluginMetaService,
-    private transactionService: TransactionService,
-    private documentService: DocumentsService,
   ) {}
 
   readonly iFrameUrl = this.iFrameSubject$.asObservable();
@@ -151,17 +153,23 @@ export class PluginService {
       webBundlePlugin: undefined,
     };
 
-    return this.pluginmanagerService.plugins(this.product, this.channel).pipe(
-      mergeMap((plugins: Array<plugin.PluginModel>) => {
-        const webbundlePlugin: any = plugins.find((item: plugin.PluginModel) => {
+    return from(this.apiFactory.pluginV1Api.plugins({ product: 'ladon', channel: this.channel as any })).pipe(
+      mergeMap((plugins: Array<PluginModel>) => {
+        const webbundlePlugin: any = plugins.find((item: PluginModel) => {
           return item.spec?.type === this.SPEC_TYPE_WEB_BUNDLE;
         });
         if (webbundlePlugin) {
           webbundlePlugin.canUpdate = false;
           webbundlePlugin.canInstall = false;
           webbundlePlugin.current = webbundlePlugin.version;
-          return this.pluginmanagerService.bundleContent(this.product, this.channel, webbundlePlugin.id).pipe(
-            mergeMap((bundlePlugins: Array<plugin.PluginModel>) => {
+          return from(
+            this.apiFactory.pluginV1Api.bundleContent({
+              product: 'ladon',
+              channel: this.channel as any,
+              id: webbundlePlugin.id,
+            }),
+          ).pipe(
+            mergeMap((bundlePlugins: Array<PluginModel>) => {
               return this.pluginMetaService.setVersions(bundlePlugins);
             }),
             map((bundleContentWithVersions) => {
@@ -189,8 +197,8 @@ export class PluginService {
       .pipe(
         take(1),
         mergeMap((bundleResults: PluginWithVersionStatus | undefined) => {
-          return this.pluginmanagerService.plugins(this.product, this.channel).pipe(
-            map((plugins: Array<plugin.PluginModel>) => {
+          return from(this.apiFactory.pluginV1Api.plugins({ product: 'ladon', channel: this.channel as any })).pipe(
+            map((plugins: Array<PluginModel>) => {
               return {
                 plugins,
                 webbundle: bundleResults,
@@ -198,9 +206,9 @@ export class PluginService {
             }),
           );
         }),
-        mergeMap((result: { plugins: Array<plugin.PluginModel>; webbundle: PluginWithVersionStatus | undefined }) => {
+        mergeMap((result: { plugins: Array<PluginModel>; webbundle: PluginWithVersionStatus | undefined }) => {
           if (result.plugins && Array.isArray(result.plugins)) {
-            const filtered = result.plugins.filter((plugin: plugin.PluginModel) => {
+            const filtered = result.plugins.filter((plugin: PluginModel) => {
               return plugin.spec?.type !== this.SPEC_TYPE_WEB_BUNDLE;
             });
             return this.pluginMetaService.setVersions(filtered).pipe(
@@ -243,7 +251,13 @@ export class PluginService {
   }
 
   public getPluginDescription(pluginId: string): Observable<string> {
-    return this.pluginmanagerService.pluginReadme(this.product, this.channel, pluginId);
+    return from(
+      this.apiFactory.pluginV1Api.pluginReadme({
+        product: 'ladon',
+        channel: this.channel as any,
+        id: pluginId,
+      }),
+    );
   }
 
   private getDocsUrl(id?: string): string {
@@ -255,7 +269,7 @@ export class PluginService {
     }
   }
 
-  public installBundle(webBundle: plugin.PluginModel): Observable<any> {
+  public installBundle(webBundle: PluginModel): Observable<any> {
     const pluginsToBeUpdated: Array<PluginWithVersionStatus> = this.bundleContentWithVersions.filter((plugin) => {
       return plugin.canInstall || plugin.canUpdate;
     });
@@ -283,7 +297,7 @@ export class PluginService {
     return EMPTY;
   }
 
-  public deintallPlugin(pluginItem: plugin.PluginModel): Observable<any> {
+  public deintallPlugin(pluginItem: PluginModel): Observable<any> {
     if (!pluginItem || !pluginItem.name) {
       return of(undefined);
     }
@@ -305,19 +319,27 @@ export class PluginService {
       orderby: `created_desc`,
       key: '',
     };
-    const params = new URLSearchParams();
-    params.set('prefix', `etc/plugins/static-web/${pluginItem.pluginId}`);
-    params.set('orderby', `created_desc`);
-
-    return this.documentService.listDocumentJson(payload.bucket, payload.prefix, payload.orderby).pipe(
+    return from(
+      this.apiFactory.documentsApi.listDocumentJson({
+        bucket: payload.bucket,
+        prefix: payload.prefix,
+        orderby: payload.orderby,
+      }),
+    ).pipe(
       mergeMap((result: any) => {
-        if (result && Array.isArray(result)) {
+        const parsedResult = typeof result === 'string' ? JSON.parse(result) : result;
+        if (parsedResult && Array.isArray(parsedResult)) {
           this.currentInstallations[pluginName] = initialState;
           this.currentInstallations$.next(this.currentInstallations);
-          const newestVersion = result[0];
+          const newestVersion = parsedResult[0];
           const key = newestVersion.changetoken;
           payload.key = `etc/plugins/static-web/${pluginItem.pluginId}/${key}.json`;
-          return this.documentService.deleteDocument(payload.bucket, payload.key).pipe(
+          return from(
+            this.apiFactory.documentsApi.deleteDocument({
+              bucket: payload.bucket,
+              key: payload.key,
+            }),
+          ).pipe(
             tap((v) => {
               this.currentInstallations[pluginName] = {
                 ...initialState,
@@ -339,7 +361,7 @@ export class PluginService {
     );
   }
 
-  public installPlugin(pluginItem: plugin.PluginModel): Observable<any> {
+  public installPlugin(pluginItem: PluginModel): Observable<any> {
     if (!pluginItem) {
       return of(undefined);
     }
@@ -389,7 +411,7 @@ export class PluginService {
     );
   }
 
-  private installPluginFromBundle(pluginItem: plugin.PluginModel): Observable<any> {
+  private installPluginFromBundle(pluginItem: PluginModel): Observable<any> {
     console.log('invoking installPluginFromBundle ' + pluginItem.id);
     if (pluginItem.name) {
       this.currentInstallations[pluginItem.name] = null;
@@ -441,19 +463,27 @@ export class PluginService {
         return throwError(() => createErrorState());
       }
       const { id } = state.plugin;
-      const pluginContentStream$ = this.pluginmanagerService.pluginContent(
-        this.product,
-        this.channel,
-        id,
-        'events',
-        true,
-      ) as Observable<HttpEvent<any>>;
-      const updatedState: PluginInstallState = {
-        ...state,
-        mode: 'DOWNLOAD',
-      };
-
-      return this.installProgress(pluginContentStream$, state.plugin, updatedState);
+      return from(
+        this.apiFactory.pluginV1Api.pluginContentRaw({
+          product: 'ladon',
+          channel: this.channel as any,
+          id,
+        }),
+      ).pipe(
+        mergeMap(async (response): Promise<PluginInstallState> => {
+          const body = await response.value();
+          return {
+            ...state,
+            mode: 'DOWNLOAD' as const,
+            state: 'DONE' as const,
+            progress: 100,
+            content: {
+              headers: response.raw.headers,
+              body,
+            },
+          };
+        }),
+      );
     } catch (e) {
       return throwError(() => createErrorState());
     }
@@ -473,18 +503,8 @@ export class PluginService {
       }
       const { file } = state.plugin;
       const responseHeaders = state.content.headers;
-      const data = new Blob([state.content.body]);
-      const keys: Array<string> = [];
-      let headers = new HttpHeaders();
-
-      responseHeaders.forEach((key: string) => {
-        keys.push(key);
-      });
-      const filteredHeaders = keys.filter((key) => key.includes('ladon-plugin'));
-      filteredHeaders.forEach((key) => {
-        headers = headers.append(key, responseHeaders.get(key));
-      });
-      headers = headers.append('enctype', 'multipart/form-data');
+      const data = state.content.body instanceof Blob ? state.content.body : new Blob([state.content.body]);
+      const headers = this.extractPluginUploadHeaders(responseHeaders);
       const uploadForm = new FormData();
       uploadForm.append('upload', data);
       uploadForm.append('upload_fullpath', file);
@@ -506,8 +526,8 @@ export class PluginService {
     }
   }
 
-  private startInstallation(pluginItem: plugin.PluginModel): Observable<PluginInstallState | undefined> {
-    return this.transactionService.startTransaction().pipe(
+  private startInstallation(pluginItem: PluginModel): Observable<PluginInstallState | undefined> {
+    return from(this.apiFactory.transactionApi.startTransaction()).pipe(
       map((response) => {
         if (response) {
           return {
@@ -526,9 +546,13 @@ export class PluginService {
 
   private finishInstallation(pluginState: PluginInstallState): Observable<PluginInstallState | undefined> {
     if (!pluginState.transactionID) return of(undefined);
-    return this.transactionService.commitTransaction(pluginState.transactionID).pipe(
+    return from(
+      this.apiFactory.transactionApi.commitTransaction({
+        txId: pluginState.transactionID,
+      }),
+    ).pipe(
       delay(10),
-      mergeMap((result: ResponseSuccessModel) => {
+      mergeMap((result: { success?: boolean }) => {
         const state: PluginInstallState = {
           ...pluginState,
           state: 'FINISHED',
@@ -541,16 +565,20 @@ export class PluginService {
     );
   }
 
-  private rollbackInstallation(pluginState: PluginInstallState): Observable<ResponseSuccessModel | undefined> {
+  private rollbackInstallation(pluginState: PluginInstallState): Observable<{ success?: boolean } | undefined> {
     return pluginState.transactionID
-      ? this.transactionService.rollbackTransaction(pluginState.transactionID)
+      ? from(
+          this.apiFactory.transactionApi.rollbackTransaction({
+            txId: pluginState.transactionID,
+          }),
+        )
       : of(undefined);
   }
 
   // tslint:disable-next-line:max-line-length
   private installProgress(
     source: Observable<HttpEvent<any>>,
-    pluginItem: plugin.PluginModel,
+    pluginItem: PluginModel,
     initialState: PluginInstallState,
   ): Observable<PluginInstallState> {
     if (initialState.mode === 'DOWNLOAD' && pluginItem.name) {
@@ -600,5 +628,33 @@ export class PluginService {
 
   private isPluginStateDone(pluginState: PluginInstallState | undefined): boolean {
     return !!pluginState && pluginState.state === 'DONE';
+  }
+
+  private extractPluginUploadHeaders(responseHeaders: Headers | HttpHeaders | undefined): HttpHeaders {
+    let headers = new HttpHeaders();
+    if (!responseHeaders) {
+      return headers.append('enctype', 'multipart/form-data');
+    }
+
+    if (responseHeaders instanceof Headers) {
+      responseHeaders.forEach((value, key) => {
+        if (key.includes('ladon-plugin')) {
+          headers = headers.append(key, value);
+        }
+      });
+      return headers.append('enctype', 'multipart/form-data');
+    }
+
+    const headerKeys = responseHeaders.keys();
+    for (const key of headerKeys) {
+      if (key.includes('ladon-plugin')) {
+        const value = responseHeaders.get(key);
+        if (value) {
+          headers = headers.append(key, value);
+        }
+      }
+    }
+
+    return headers.append('enctype', 'multipart/form-data');
   }
 }

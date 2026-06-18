@@ -15,7 +15,7 @@ export class StaticDefinitionResolver {
 
   resolve(input: StaticResolveInput): StaticPolicyResult {
     const policyResult = this.policyProvider.resolve(input);
-    if (policyResult.kind === 'allow' || policyResult.kind === 'deny' || policyResult.kind === 'invalid') {
+    if (policyResult.kind !== 'missing') {
       return policyResult;
     }
 

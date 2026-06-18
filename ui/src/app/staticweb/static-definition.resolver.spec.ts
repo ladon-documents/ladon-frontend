@@ -47,6 +47,34 @@ describe('StaticDefinitionResolver', () => {
     expect(result.definition).toBeUndefined();
   });
 
+  it('returns provider invalid result before local fallback', () => {
+    policyProvider.resolve.and.returnValue({ kind: 'invalid', error: 'Invalid by server policy' });
+
+    const result = resolver.resolve({ page: './public/html/test.html' });
+
+    expect(result.kind).toBe('invalid');
+    expect(result.error).toBe('Invalid by server policy');
+    expect(result.definition).toBeUndefined();
+  });
+
+  it('returns provider legacy result before local fallback', () => {
+    policyProvider.resolve.and.returnValue({
+      kind: 'legacy',
+      definition: {
+        source: '/server/static/page.html',
+        mode: 'display-only',
+        allowScripts: false,
+        allowedScriptSources: 'same-origin',
+      },
+    });
+
+    const result = resolver.resolve({ page: './public/html/test.html' });
+
+    expect(result.kind).toBe('legacy');
+    expect(result.definition?.source).toBe('/server/static/page.html');
+    expect(result.definition?.mode).toBe('display-only');
+  });
+
   it('returns local trusted fallback for the bundled Static Example', () => {
     policyProvider.resolve.and.returnValue({ kind: 'missing' });
     const result = resolver.resolve({ page: './public/html/test.html' });

@@ -14,6 +14,7 @@ export class StaticUrlPolicyService {
     if (this.containsEncodedSeparator(pathOnly)) throw new Error('Static source is not allowed');
 
     const decodedPath = this.decodePath(pathOnly);
+    if (this.containsUrlDelimiter(decodedPath)) throw new Error('Static source is not allowed');
     if (/[\\]/.test(decodedPath)) throw new Error('Static source is not allowed');
     if (this.containsEncodedSeparator(decodedPath)) throw new Error('Static source is not allowed');
     if (this.containsRemainingPercentEncoding(decodedPath)) throw new Error('Static source is not allowed');
@@ -36,6 +37,10 @@ export class StaticUrlPolicyService {
 
   private containsEncodedSeparator(value: string): boolean {
     return /%2f|%5c/i.test(value);
+  }
+
+  private containsUrlDelimiter(value: string): boolean {
+    return /[?#]/.test(value);
   }
 
   private containsRemainingPercentEncoding(value: string): boolean {

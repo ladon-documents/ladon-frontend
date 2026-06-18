@@ -30,6 +30,10 @@ describe('StaticUrlPolicyService', () => {
     expect(() => service.normalizeLegacySource('https://example.test/x.html')).toThrowError(/not allowed/i);
   });
 
+  it('rejects protocol-relative urls', () => {
+    expect(() => service.normalizeLegacySource('//example.test/x.html')).toThrowError(/not allowed/i);
+  });
+
   it('rejects javascript urls', () => {
     expect(() => service.normalizeLegacySource('javascript:alert(1)')).toThrowError(/not allowed/i);
   });
@@ -60,6 +64,14 @@ describe('StaticUrlPolicyService', () => {
 
   it('rejects malformed percent encoding', () => {
     expect(() => service.normalizeLegacySource('/public/html/%E0%A4%A.html')).toThrowError(/not allowed/i);
+  });
+
+  it('rejects encoded query delimiters after decoding', () => {
+    expect(() => service.normalizeLegacySource('/public/html/test%3Fignored.html')).toThrowError(/not allowed/i);
+  });
+
+  it('rejects encoded hash delimiters after decoding', () => {
+    expect(() => service.normalizeLegacySource('/public/html/test%23ignored.html')).toThrowError(/not allowed/i);
   });
 
   it('strips query and hash before validation', () => {

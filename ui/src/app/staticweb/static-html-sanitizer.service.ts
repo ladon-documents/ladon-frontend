@@ -19,7 +19,7 @@ export class StaticHtmlSanitizer {
       if (node.nodeType !== Node.ELEMENT_NODE) continue;
 
       const element = node as Element;
-      if (BLOCKED_ELEMENTS.has(element.tagName)) {
+      if (BLOCKED_ELEMENTS.has(element.tagName.toUpperCase())) {
         element.remove();
         continue;
       }

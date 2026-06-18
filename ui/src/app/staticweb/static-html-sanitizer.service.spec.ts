@@ -14,6 +14,10 @@ describe('StaticHtmlSanitizer', () => {
     expect(service.sanitize('<p>ok</p><script>window.x=1</script>')).toBe('<p>ok</p>');
   });
 
+  it('removes script elements inside svg markup', () => {
+    expect(service.sanitize('<svg><script>window.x=1</script><circle></circle></svg>')).not.toContain('script');
+  });
+
   it('removes inline event handlers', () => {
     expect(service.sanitize('<button onclick="alert(1)">Run</button>')).not.toContain('onclick');
   });

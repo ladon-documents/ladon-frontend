@@ -1,5 +1,4 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { from } from 'rxjs';
 import { take } from 'rxjs';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
 import { BucketUiItemModel, NewBucketModel } from '@ladon/api';
@@ -17,12 +16,10 @@ export class BucketsService {
   private bucketStatsSignal = signal<BucketStatsExtended | undefined>(undefined);
   private _bucketList = signal<BucketUiItemModel[]>([]);
 
-  constructor(
-    private ladonRouterService: LadonRouterService,
-  ) {}
+  constructor(private ladonRouterService: LadonRouterService) {}
 
   getBuckets() {
-    return from(this.apiFactory.uiApi.listBuckets({}) as Promise<BucketUiItemModel[]>);
+    return this.apiFactory.fromApi(() => this.apiFactory.uiApi.listBuckets({}) as Promise<BucketUiItemModel[]>);
   }
 
   createBucket(bucketid: string) {
@@ -31,19 +28,20 @@ export class BucketsService {
       versioned: 'false',
       favourite: 'false',
     };
-    return from(this.apiFactory.uiApi.createBucket1({ bucket: newBucket as any }));
+    return this.apiFactory.fromApi(() => this.apiFactory.uiApi.createBucket1({ bucket: newBucket as any }));
   }
 
   searchBuckets(bucketName: string) {
-    return from(
-      this.apiFactory.uiApi.listBuckets({
-        filter: bucketName,
-      }) as Promise<BucketUiItemModel[]>,
+    return this.apiFactory.fromApi(
+      () =>
+        this.apiFactory.uiApi.listBuckets({
+          filter: bucketName,
+        }) as Promise<BucketUiItemModel[]>,
     );
   }
 
   deleteBucket(bucketId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.bucketsApi.deleteBucket({
         bucket: bucketId,
       }),
@@ -51,7 +49,7 @@ export class BucketsService {
   }
 
   public getStats(bucketId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.documentsApi.getDocument({
         bucket: '_proc',
         key: `bucket-stats/${bucketId}/stats.json`,

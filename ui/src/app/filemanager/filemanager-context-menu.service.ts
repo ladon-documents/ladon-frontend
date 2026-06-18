@@ -5,6 +5,7 @@ import { ContextMenuService } from '../shared/services/context-menu.service';
 import { ClipboardStore } from '../store/clipboard.store';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { filemanagerHelper } from './helper/helper';
+import { FilemanagerService } from './filemanager.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ import { filemanagerHelper } from './helper/helper';
 export class FilemanagerContextMenuService {
   readonly favoritesStore = inject(FavoritesStore);
   readonly contextMenuService = inject(ContextMenuService);
+  readonly filemanagerService = inject(FilemanagerService);
   readonly clipboardStore = inject(ClipboardStore);
   readonly filemanagerStore = inject(FilemanagerStore);
 
@@ -148,7 +150,7 @@ export class FilemanagerContextMenuService {
   }
 
   private download(document: DocumentModel) {
-    //  this.filemanagerStore.get(document);
+    this.filemanagerService.getDocument(document);
   }
 
   private copyLink(document: DocumentModel) {

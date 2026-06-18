@@ -71,6 +71,32 @@ const initialState: FilemanagerState = {
   viewMode: 'card',
 };
 
+const toErrorMessage = (error: unknown, fallback = 'Unbekannter Fehler'): string => {
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'error' in error &&
+    typeof (error as { error?: { reason?: string } }).error?.reason === 'string'
+  ) {
+    return (error as { error?: { reason?: string } }).error!.reason!;
+  }
+
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: string }).message === 'string'
+  ) {
+    return (error as { message?: string }).message!;
+  }
+
+  return fallback;
+};
+
 export const FilemanagerStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -305,9 +331,9 @@ export const FilemanagerStore = signalStore(
                   patchState(store, (state) => ({
                     ...state,
                     isLoading: false,
-                    error: error.error?.reason,
+                    error: toErrorMessage(error, 'Fehler beim Laden des Buckets'),
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               ),
             ),
@@ -353,9 +379,9 @@ export const FilemanagerStore = signalStore(
                   patchState(store, (state) => ({
                     ...state,
                     isLoading: false,
-                    error,
+                    error: toErrorMessage(error, 'Fehler beim Laden des Ordners'),
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               );
             }),
@@ -406,7 +432,7 @@ export const FilemanagerStore = signalStore(
                     isLoading: false,
                     error: `Fehler beim Erstellen des Ordners: ${error.message || error}`,
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               );
             }),
@@ -457,7 +483,7 @@ export const FilemanagerStore = signalStore(
                     isLoading: false,
                     error: `Fehler beim Erstellen einer neuen Datei: ${error.message || error}`,
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               );
             }),
@@ -508,7 +534,7 @@ export const FilemanagerStore = signalStore(
                     isLoading: false,
                     error: `Fehler beim Erstellen des Ordners: ${error.message || error}`,
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               );
             }),
@@ -583,9 +609,9 @@ export const FilemanagerStore = signalStore(
         deleteDocuments: rxMethod<DocumentModel[]>(
           pipe(
             switchMap(async (documents) => {
-              const validDocuments = documents.filter(
-                (document) => !!document.bucket && !!document.key,
-              ) as Array<DocumentModel & { key: string; bucket: string }>;
+              const validDocuments = documents.filter((document) => !!document.bucket && !!document.key) as Array<
+                DocumentModel & { key: string; bucket: string }
+              >;
 
               if (validDocuments.length === 0) {
                 return { documents: validDocuments, confirmed: false };
@@ -707,9 +733,9 @@ export const FilemanagerStore = signalStore(
             }),
             switchMap(({ documents: documentsToMove, targetPath }) => {
               const targetBucket = store.selectedBucket();
-              const validDocuments = documentsToMove.filter(
-                (document) => !!document.bucket && !!document.key,
-              ) as Array<DocumentModel & { key: string; bucket: string }>;
+              const validDocuments = documentsToMove.filter((document) => !!document.bucket && !!document.key) as Array<
+                DocumentModel & { key: string; bucket: string }
+              >;
 
               if (!targetBucket || validDocuments.length === 0) {
                 patchState(store, {
@@ -815,9 +841,9 @@ export const FilemanagerStore = signalStore(
             }),
             switchMap(({ documents: documentsToCopy, targetPath }) => {
               const targetBucket = store.selectedBucket();
-              const validDocuments = documentsToCopy.filter(
-                (document) => !!document.bucket && !!document.key,
-              ) as Array<DocumentModel & { key: string; bucket: string }>;
+              const validDocuments = documentsToCopy.filter((document) => !!document.bucket && !!document.key) as Array<
+                DocumentModel & { key: string; bucket: string }
+              >;
 
               if (!targetBucket || validDocuments.length === 0) {
                 patchState(store, {

@@ -1,0 +1,760 @@
+<!-- 
+	Testdaten Entwicklung
+	DVAG => 8053560, 8884440
+	AF1 => 1010010
+	AF2 => 2010020
+	Wien => 5010020
+-->
+
+<link rel="stylesheet" href="/static/public/dynamic-template-generator/styles.css" />
+
+<div class="flyout flyout--session">Ihre Sitzung ist abgelaufen. Sie werden in wenigen Sekunden ausgeloggt.</div>
+<div class="flyout flyout--printcue">
+	Druckvorgang gestartet. Die Druckausgabe kann einige Minuten verzögert starten.
+</div>
+
+<div class="grid">
+	<div class="controls card">
+		<div class="card-header">
+			Online-Briefgenerator
+			<div class="controls">
+				<button id="cancel-btn" class="clear">Abbrechen</button>
+				<button id="print-pdf" class="outline"><span></span>Drucken</button>
+				<button id="generate-pdf">Erstellen</button>
+				<button id="preview-pdf" class="tertiary">Vorschau</button>
+			</div>
+		</div>
+
+		<div class="card-content">
+			<form name="searchForm">
+				<div class="form__item__wrapper">
+					<label for="vbnummer">VB-Nummer*</label>
+					<input type="number" tabindex="1" required name="vbnummer" id="vbnummer" placeholder="8053560" />
+				</div>
+
+				<div class="form__item__wrapper">
+					<label for="anschrift">Anschrift*</label>
+					<div class="select">
+						<select name="anschrift" id="anschrift" required>
+							<option value="Z">Zustelladresse</option>
+							<option value="P">Privatadresse</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form__item__wrapper">
+					<label for="info">Info</label>
+					<input type="text" readonly name="info" id="info" hidden />
+				</div>
+
+				<div class="form__item__wrapper">
+					<label for="kategorie">Kategorie*</label>
+					<div class="select">
+						<select name="kategorie" id="kategorie" required>
+							<option value="">auswählen</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form__item__wrapper">
+					<label for="brief">Brief*</label>
+					<div class="select">
+						<select name="brief" id="brief" required>
+							<option value="">auswählen</option>
+						</select>
+					</div>
+				</div>
+			</form>
+
+			<div id="wcmf-wrapper">
+				<wc-moped-form></wc-moped-form>
+			</div>
+			<wc-ladon-pdfviewer></wc-ladon-pdfviewer>
+		</div>
+	</div>
+</div>
+
+<script type="module">
+	let spinner,
+		documentApi,
+		taskApi,
+		dataPayload,
+		pdfPayload,
+		briefePayload,
+		formData,
+		wcmEventType,
+		stammdatenPayload,
+		userData,
+		setTimeoutID;
+	const searchForm = document.forms.searchForm;
+	const flyoutSessionEl = document.querySelector(".flyout--session");
+	const flyoutEl = document.querySelector(".flyout--printcue");
+	const cancelBtn = document.getElementById("cancel-btn");
+	const printBtn = document.getElementById("print-pdf");
+	const generateBtn = document.getElementById("generate-pdf");
+	const previewBtn = document.getElementById("preview-pdf");
+	const wcpdfEl = document.querySelector("wc-ladon-pdfviewer");
+	const wcmfEl = document.querySelector("wc-moped-form");
+
+	printBtn.disabled = true;
+	cancelBtn.disabled = true;
+	generateBtn.disabled = true;
+	previewBtn.disabled = true;
+
+	wcmfEl.options = {
+		addSubmit: false,
+	};
+
+	const clearOptionItems = (parentElement) => {
+		// Reset disabled state
+		parentElement.disabled = false;
+
+		if (parentElement.childElementCount !== 0) {
+			let c = parentElement.lastElementChild;
+
+			while (c.value !== "") {
+				parentElement.removeChild(c);
+				c = parentElement.lastElementChild;
+			}
+		}
+	};
+
+	const resolveStammdatenToJson = (stammdaten) => {
+		if (stammdaten) {
+			const { UUANRKZ, UUVORNAME, UUZUNAME, UUSTRASSE, UUSTUFEAB, UUPLZ, UUORT, UUTITEL, MSG, INFO } = stammdaten;
+
+			if (MSG && !MSG.startsWith(">I<")) {
+				throw Error(MSG);
+			}
+
+			stammdatenPayload = stammdaten;
+
+			const dataJson = {
+				titel: UUTITEL.trim(),
+				anrede: UUANRKZ,
+				vorname: UUVORNAME.trim(),
+				zuname: UUZUNAME.trim(),
+				strasse: UUSTRASSE.trim(),
+				plz: UUPLZ.trim(),
+				ort: UUORT.trim(),
+				info: INFO.trim(),
+				mitWirkungVom: utility.reformatDate(UUSTUFEAB.trim()),
+			};
+
+			return Promise.resolve(dataJson);
+		}
+
+		throw TypeError(`Passed in payload shoulde be a object`);
+	};
+
+	const utility = {
+		pdfPath: undefined,
+
+		set currentPdfPath(path) {
+			this.pdfPath = path;
+		},
+
+		get currentPdfPath() {
+			return this.pdfPath;
+		},
+
+		set printBtnText(value) {
+			printBtn.querySelector("span").innerText = `${value} `;
+		},
+
+		clearPrintBtnText() {
+			printBtn.querySelector("span").innerText = ``;
+		},
+
+		disableAllFormActionButtons() {
+			printBtn.disabled = true;
+			generateBtn.disabled = true;
+			previewBtn.disabled = true;
+		},
+
+		getFormValue(name) {
+			const element = searchForm.elements[name];
+			return element ? element.value : null;
+		},
+
+		encodeAmpersand(value) {
+			return value.replaceAll("&", "&amp;");
+		},
+
+		toggleInfoInput(infoValue) {
+			const inputEl = searchForm.querySelector('input[name="info"]');
+
+			if (infoValue) {
+				inputEl.value = infoValue;
+				inputEl.removeAttribute("hidden");
+			} else {
+				inputEl.setAttribute("hidden", true);
+			}
+		},
+
+		generateBody(brief, erstellen = false) {
+			let config;
+
+			const pdfOptions = Object.entries(pdfPayload).reduce((result, currentValue) => {
+				const { 0: key, 1: value } = currentValue;
+
+				if (value instanceof Array) {
+					return Object.assign(result, utility.mergeArrayToMap(value));
+				}
+
+				result[key] = typeof value === "string" ? utility.encodeAmpersand(value) : value;
+				return result;
+			}, {});
+
+			config = {
+				...pdfOptions,
+				...stammdatenPayload,
+			};
+
+			if (erstellen) {
+				config = { ...config, erstellen };
+			}
+
+			return {
+				inputPaths: [`/templates/templates/${brief}/${brief}.vm`],
+				converters: [
+					{
+						id: "moped/pdf",
+						config,
+					},
+				],
+			};
+		},
+
+		debouncer(fn, time) {
+			let timeout;
+
+			return function () {
+				const functionCall = () => fn.apply(this, arguments);
+				clearTimeout(timeout);
+				timeout = setTimeout(functionCall, time);
+			};
+		},
+
+		stripToFilename(payload) {
+			if (payload) {
+				if (payload.endsWith("/")) {
+					return payload.slice(0, -1);
+				}
+				return payload.slice(payload.lastIndexOf("/") + 1);
+			}
+
+			return payload;
+		},
+
+		stripToIcon(payload) {
+			if (payload) {
+				if (payload.endsWith("/")) {
+					return `/ui/icons/small/types/folder.svg`;
+				}
+
+				const fileType = payload.slice(payload.lastIndexOf(".") + 1);
+				return `/ui/icons/small/file/${fileType}.svg`;
+			}
+
+			return payload;
+		},
+
+		mergeArrayToMap(payload) {
+			if (payload instanceof Array) {
+				const obj = {};
+				payload.forEach((p) => {
+					obj[p] = true;
+				});
+
+				return obj;
+			}
+
+			throw TypeError("Please pass array as payload");
+		},
+
+		dateFormater(string, withTime = false) {
+			if (string.startsWith("-")) return "";
+			const date = new Date(string);
+			let options = {
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+			};
+
+			if (withTime) {
+				options = Object.assign({ ...options }, { hour: "numeric", minute: "numeric" });
+			}
+
+			return new Intl.DateTimeFormat("de-DE", options).format(date);
+		},
+
+		reformatDate(dateString) {
+			return dateString.split(".").reverse().join("-");
+		},
+	};
+
+	/*
+	 * Api definitions start
+	 */
+	async function getDocument(bucket, key) {
+		const response = await documentApi.getDocument({ bucket, key });
+
+		if (response.status === 200) {
+			return response.data;
+		}
+
+		throw response;
+	}
+
+	async function deleteDocument(bucket, key) {
+		const response = await documentApi.deleteDocument({ bucket, key });
+
+		if (response.status === 200) {
+			return response.data;
+		}
+
+		throw response;
+	}
+
+	async function getDocumentsList(bucket, prefix) {
+		const response = await documentApi.listDocuments({ bucket, prefix });
+
+		if (response.status === 200) {
+			return response.data;
+		}
+
+		throw response;
+	}
+
+	async function getJsonList(bucket, prefix, asMap = true) {
+		const response = await documentApi.listDocumentJson({ bucket, prefix, asMap });
+
+		if (response.status === 200) {
+			return response.data;
+		}
+
+		throw response;
+	}
+
+	async function getMe() {
+		const response = await fetch(
+			new Request("/admin/user/me", {
+				method: "GET",
+			}),
+		);
+
+		if (response.status === 200) {
+			return response.json();
+		}
+
+		throw response;
+	}
+
+	async function taskStart(id) {
+		const { userId } = userData;
+		const response = await taskApi.startTask(id, { userId });
+		if (response.status === 200) {
+			return response.data;
+		}
+
+		throw response;
+	}
+
+	async function retrieveTmpPDF(body) {
+		const response = await fetch(
+			new Request("/admin/api/rest/v1/converters/applyandstore", {
+				method: "POST",
+				headers: new Headers({ "Content-Type": "application/json" }),
+				body: JSON.stringify(body),
+			}),
+		);
+
+		if (response.status === 200) {
+			return response.json();
+		}
+
+		throw response;
+	}
+
+	async function copyTmpPDF() {
+		const respone = await fetch(new Request("/adim/api/rest/v1/taskmanager/"), {
+			method: "POST",
+		});
+
+		if (respone.status === 200) {
+			return respone.json();
+		}
+
+		throw response;
+	}
+
+	/**
+	 * Api definitions end
+	 */
+
+	function handleError(e) {
+		if (e instanceof Error) {
+			if (e.isAxiosError) {
+				return getMeAndHandle401(e.response);
+			}
+
+			const { message } = e;
+			return alert(message);
+		}
+
+		if (e instanceof Response) {
+			return getMeAndHandle401(e);
+		}
+
+		console.error(e);
+		alert(e);
+	}
+
+	function getMeAndHandle401(error) {
+		const { status } = error;
+		if (status === 403) {
+			getMe().catch(handleError);
+		}
+
+		if (status === 401) {
+			flyoutSessionEl.classList.add("visible");
+			return setTimeout(() => {
+				flyoutSessionEl.classList.remove("visible");
+				window.dispatchEvent(new CustomEvent("ladon:logout:complete"));
+			}, 5000);
+		}
+	}
+
+	async function generateOptionsFromPayload(selector, payload) {
+		const selectEl = document.querySelector(selector);
+
+		clearOptionItems(selectEl);
+
+		if (payload instanceof Array) {
+			payload.forEach((p) => {
+				const optionEl = document.createElement("option");
+				if (p instanceof Object && "brief" in p && "titel" in p) {
+					const { brief, titel } = p;
+					optionEl.value = brief;
+					optionEl.innerText = `${titel}`;
+				} else {
+					optionEl.value = p;
+					optionEl.innerText = p;
+				}
+				selectEl.append(optionEl);
+			});
+
+			if (payload.length === 1) {
+				// Auto select 1 since 0 is only placeholder option
+				selectEl.value = selectEl.querySelectorAll("option")[1].value;
+				// Fire change event to trigger FormData updates
+				selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+				selectEl.disabled = true;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	cancelBtn.addEventListener("click", async () => {
+		const documents = await getDocumentsList("_tmp", `onlinebriefe/${userData.userId}/`);
+		const isConfirmed = window.confirm(`Wollen Sie wirklich ${documents.length} Dokumente löschen?`);
+
+		if (isConfirmed) {
+			Promise.all(documents.map(({ bucket, key }) => deleteDocument(bucket, key))).then((response) => {
+				utility.clearPrintBtnText();
+				clearTimeout(setTimeoutID);
+				printBtn.disabled = true;
+				cancelBtn.disabled = true;
+			});
+		}
+	});
+
+	printBtn.addEventListener("click", () => {
+		taskStart(`Onlinebriefe drucken`)
+			.then(({ success }) => {
+				if (success) {
+					flyoutEl.classList.add("visible");
+					setTimeoutID = setTimeout(() => {
+						flyoutEl.classList.remove("visible");
+					}, 5000);
+					utility.clearPrintBtnText();
+					printBtn.disabled = true;
+					cancelBtn.disabled = true;
+				}
+			})
+			.catch(handleError);
+	});
+
+	generateBtn.addEventListener("click", () => {
+		if (searchForm.reportValidity() && wcmEventType) {
+			spinner.show();
+
+			retrieveTmpPDF(utility.generateBody(utility.getFormValue("brief").toLocaleLowerCase(), true))
+				.then(() => getDocumentsList("_tmp", `onlinebriefe/${userData.userId}/`))
+				.then((response) => {
+					if (response.length !== 0) {
+						utility.printBtnText = response.length;
+						printBtn.disabled = false;
+						cancelBtn.disabled = false;
+					}
+				})
+				.catch(handleError)
+				.finally(() => {
+					spinner.hide();
+				});
+		}
+	});
+
+	previewBtn.addEventListener("click", () => {
+		updatePDFPreview();
+	});
+
+	wcmfEl.addEventListener("wc-moped-form-changes", updatePDFPayload);
+
+	function updatePDFPayload(e) {
+		const { detail } = e;
+		const { eventType, event } = detail;
+
+		wcmEventType = eventType;
+
+		if (wcmEventType === "changes") {
+			pdfPayload = event;
+			utility.disableAllFormActionButtons();
+		}
+
+		if (wcmEventType === "isValid") {
+			previewBtn.disabled = false;
+			generateBtn.disabled = false;
+		}
+	}
+
+	function updatePDFPreview() {
+		spinner.show();
+
+		retrieveTmpPDF(utility.generateBody(utility.getFormValue("brief").toLocaleLowerCase()))
+			.then((response) => {
+				const { 0: pdfPath } = response;
+
+				if (!utility.currentPdfPath || utility.currentPdfPath !== pdfPath) {
+					utility.currentPdfPath = pdfPath;
+					wcpdfEl.pdf = pdfPath;
+				} else {
+					window.dispatchEvent(new CustomEvent("ladon:pdfviewer:refresh"));
+				}
+			})
+			.catch(handleError)
+			.finally(() => {
+				spinner.hide();
+			});
+	}
+
+	function sortAscending(a, b) {
+		if (a > b) return 1;
+		if (a < b) return -1;
+		return 0;
+	}
+
+	function isKategorieForPrivatanschrift(kategorie) {
+		return ["Sonstige", "Strukturänderung", "VB-Kündigungsbriefe", "VM-Kündigungsbriefe"].includes(kategorie);
+	}
+
+	function isKategorieForReinitialising(kategorie) {
+		return ["", "Antrag"].includes(kategorie);
+	}
+
+	async function retrieveTemplateDataAndSet() {
+		const briefValue = utility.getFormValue("brief");
+
+		if (!briefValue) {
+			return;
+		}
+
+		spinner.show();
+		try {
+			const response = await getJsonList("templates", `templates/${briefValue.toLocaleLowerCase()}/online/`);
+			if (response) {
+				const { defaults, params } = response;
+				const { schema, form } = params[0];
+				wcmfEl.layout = form;
+				wcmfEl.schema = schema;
+				// Fixes the unfocus issue for client
+				wcmfEl.data = {};
+
+				if (defaults) {
+					wcmfEl.data = {
+						...dataPayload,
+						...defaults[0],
+					};
+				} else {
+					wcmfEl.data = dataPayload;
+				}
+			}
+		} catch (e) {
+			handleError(e);
+			utility.disableAllFormActionButtons();
+		} finally {
+			spinner.hide();
+		}
+	}
+
+	searchForm.addEventListener("submit", (event) => {
+		event.preventDefault();
+	});
+
+	searchForm.addEventListener("change", (event) => {
+		event.preventDefault();
+		const { target } = event;
+		const form = target.closest("form");
+		const hasChangedVB = target.id === "vbnummer";
+		const hasChangedKategorie = target.id === "kategorie";
+		const hasChangedBrief = target.id === "brief";
+		const hasChangedAnschrift = target.id === "anschrift";
+
+		formData = new FormData(form);
+
+		/*
+		 * React on changes when FormData has vbnummer element and input was triggerd
+		 */
+		if ((formData.has("vbnummer") && hasChangedVB) || (formData.has("anschrift") && hasChangedAnschrift)) {
+			spinner.show();
+			getDocument("db2-rest-api", `stammdatenv2_${formData.get("vbnummer")}_${formData.get("anschrift")}.json`)
+				.then((response) => {
+					if (response.StatusCode === 200) {
+						return resolveStammdatenToJson(response["Output Parameters"]);
+					}
+				})
+				.then(async (data) => {
+					dataPayload = data;
+					utility.toggleInfoInput(data.info);
+					return true;
+				})
+				.then(async () => {
+					return await getJsonList("onlinebriefe-ui", ``, false);
+				})
+				.then(async (briefe) => {
+					const briefeFiltered = briefe.filter((brief) => {
+						if (brief.lkz instanceof Array) {
+							return brief.lkz.includes(stammdatenPayload.UULKZ);
+						}
+						return true;
+					});
+
+					if (JSON.stringify(briefePayload) === JSON.stringify(briefeFiltered)) {
+						await retrieveTemplateDataAndSet();
+
+						// Stop regenerating options when payload is same to previous
+						return;
+					}
+
+					// Reassign filtered briefe to global payload
+					briefePayload = briefeFiltered;
+
+					// Generate Set to avoid duplicate entries
+					const kategorien = [
+						...new Set(
+							briefe.map((brief) => {
+								if ("kategorie" in brief) {
+									return brief.kategorie;
+								}
+								// Fallback when no kategorie is set
+								return "Sonstige";
+							}),
+						),
+					];
+
+					if (!isKategorieForReinitialising(utility.getFormValue("kategorie"))) {
+						await retrieveTemplateDataAndSet();
+						// Stop regenerating options when payload differs but is not specific kategorie
+						return;
+					}
+
+					if (briefePayload.length > 1) {
+						// Clear brief options when payload is bigger then 1 and LKZ differs
+						await generateOptionsFromPayload("select#brief", undefined);
+					}
+
+					await generateOptionsFromPayload(
+						"select#kategorie",
+						kategorien.sort((a, b) => sortAscending(a, b)),
+					);
+					utility.disableAllFormActionButtons();
+				})
+				.catch((e) => {
+					handleError(e);
+					utility.disableAllFormActionButtons();
+				})
+				.finally(() => spinner.hide());
+		}
+
+		/*
+		 * React on changes when FormData has kategorie element and input was triggerd
+		 */
+		if (formData.has("kategorie") && hasChangedKategorie) {
+			if (isKategorieForPrivatanschrift(utility.getFormValue("kategorie"))) {
+				// Bei bestimmten Kategorien wird Privatadresse als Default-Anschrift gesetzt
+				formData.set("anschrift", "P");
+				searchForm.querySelector("select#anschrift").value = formData.get("anschrift");
+				// Wir fetchen uns die Stammdaten erneut, da sich die Anschrift geändert hat
+				spinner.show();
+				getDocument("db2-rest-api", `stammdatenv2_${formData.get("vbnummer")}_${formData.get("anschrift")}.json`)
+					.then((response) => {
+						if (response.StatusCode === 200) {
+							return resolveStammdatenToJson(response["Output Parameters"]);
+						}
+					})
+					.then(async (data) => {
+						dataPayload = data;
+						utility.toggleInfoInput(data.info);
+						return true;
+					})
+					.catch((e) => {
+						handleError(e);
+						utility.disableAllFormActionButtons();
+					})
+					.finally(() => spinner.hide());
+			}
+
+			const filteredBriefe = briefePayload
+				.filter(
+					(brief) =>
+						(formData.get("kategorie") === "Sonstige" && !("kategorie" in brief)) ||
+						brief.kategorie === formData.get("kategorie"),
+				)
+				.sort((a, b) => sortAscending(a.titel, b.titel));
+
+			generateOptionsFromPayload("select#brief", filteredBriefe);
+		}
+
+		/*
+		 * React on changes when FormData has brief element and input was triggerd
+		 */
+		if (formData.has("brief") && hasChangedBrief) {
+			retrieveTemplateDataAndSet();
+		}
+	});
+
+	Promise.all([System.import("@mind/mf-ladon-styles"), System.import("@mind/mf-ladon-utility-api"), getMe()])
+		.then(async (values) => {
+			const { 0: styles, 1: utility, 2: user } = values;
+			spinner = styles.LadonSpinner;
+			spinner.show();
+			documentApi = utility.MFLadonDocumentApi;
+			taskApi = utility.MFLadonTaskApi;
+			userData = user;
+			return user;
+		})
+		.then(({ userId }) => getDocumentsList("_tmp", `onlinebriefe/${userId}/`))
+		.then((response) => {
+			if (response.length !== 0) {
+				utility.printBtnText = response.length;
+				printBtn.disabled = false;
+				cancelBtn.disabled = false;
+			}
+		})
+		.catch(handleError)
+		.finally(() => spinner.hide());
+</script>

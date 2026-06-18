@@ -1,5 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { from, mergeMap, tap } from 'rxjs';
+import { mergeMap, tap } from 'rxjs';
 import { LoginRequestModel, UserModel } from '@ladon/api';
 import { AuthStorageService } from './auth.storage.service';
 import { FetchApiFactory } from './api/fetch-api.factory';
@@ -14,7 +14,8 @@ export class AuthService {
   ) {}
 
   public login(Login: LoginRequestModel) {
-    return from(this.apiFactory.authControllerApi.authenticateUser({ loginRequest: Login as any }))
+    return this.apiFactory
+      .fromApi(() => this.apiFactory.authControllerApi.authenticateUser({ loginRequest: Login as any }))
       .pipe(
         tap((response: any) => {
           if (response?.accessToken) {
@@ -22,7 +23,9 @@ export class AuthService {
           }
         }),
         mergeMap(() => {
-          return from(this.apiFactory.userControllerApi.getCurrentUser() as Promise<UserModel>);
+          return this.apiFactory.fromApi(
+            () => this.apiFactory.userControllerApi.getCurrentUser() as Promise<UserModel>,
+          );
         }),
         tap((user: UserModel) => {
           if (!user) {
@@ -33,21 +36,25 @@ export class AuthService {
   }
 
   public logout() {
-    return from(this.apiFactory.authControllerApi.logout()).pipe(
-      tap(() => {
-        this.authStorage.removeData();
-      }),
-    );
+    return this.apiFactory
+      .fromApi(() => this.apiFactory.authControllerApi.logout())
+      .pipe(
+        tap(() => {
+          this.authStorage.removeData();
+        }),
+      );
   }
 
   public getCurrentUser() {
-    return from(this.apiFactory.userControllerApi.getCurrentUser() as Promise<UserModel>).pipe(
-      tap((user) => {
-        if (!user) {
-          throw new Error('No user returned');
-        }
-      }),
-    );
+    return this.apiFactory
+      .fromApi(() => this.apiFactory.userControllerApi.getCurrentUser() as Promise<UserModel>)
+      .pipe(
+        tap((user) => {
+          if (!user) {
+            throw new Error('No user returned');
+          }
+        }),
+      );
   }
 
   private isDevelopmentEnironment(): boolean {

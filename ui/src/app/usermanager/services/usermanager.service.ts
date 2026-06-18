@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from } from 'rxjs';
-import {
-  UserWrapperModel,
-  RoleEntryModel,
-  RoleWrapperModel,
-  PermissionModel,
-} from '@ladon/api';
+import { UserWrapperModel, RoleEntryModel, RoleWrapperModel, PermissionModel } from '@ladon/api';
 import { FetchApiFactory } from '../../services/api/fetch-api.factory';
 
 export interface MappedRole extends RoleEntryModel {
@@ -27,15 +21,15 @@ export class UsermanagerService {
   constructor(private apiFactory: FetchApiFactory) {}
 
   retrieveUsers() {
-    return from(this.apiFactory.usermanagerApi.getUsers());
+    return this.apiFactory.fromApi(() => this.apiFactory.usermanagerApi.getUsers());
   }
 
   retrieveRoles() {
-    return from(this.apiFactory.usermanagerApi.getRoles());
+    return this.apiFactory.fromApi(() => this.apiFactory.usermanagerApi.getRoles());
   }
 
   retrieveRoleForUser(userId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.getRoleForUser({
         userId,
       }),
@@ -43,11 +37,11 @@ export class UsermanagerService {
   }
 
   retrievePermissions() {
-    return from(this.apiFactory.usermanagerApi.getAllPermissions());
+    return this.apiFactory.fromApi(() => this.apiFactory.usermanagerApi.getAllPermissions());
   }
 
   retrievePermissionForUser(userId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.getPermissionsForUser({
         userId,
       }),
@@ -55,7 +49,7 @@ export class UsermanagerService {
   }
 
   retrieveUser(userId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.getUserData({
         userId,
       }),
@@ -63,7 +57,7 @@ export class UsermanagerService {
   }
 
   addUser(user: UserWrapperModel) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.addUser({
         userWrapper: user as any,
       }),
@@ -72,7 +66,7 @@ export class UsermanagerService {
 
   updateUser(user: { [key: string]: any }) {
     const { id, name, email, status, imageUrl } = user;
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.updateUser({
         userId: id,
         userDataWrapper: { name, email, status, imageUrl } as any,
@@ -81,7 +75,7 @@ export class UsermanagerService {
   }
 
   updateUserCredentials(userId: string, newPW: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.setCredentials({
         userId,
         body: newPW,
@@ -90,7 +84,7 @@ export class UsermanagerService {
   }
 
   addRoleForUser(userId: string, roleId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.addRoleForUser({
         userId,
         roleId,
@@ -99,7 +93,7 @@ export class UsermanagerService {
   }
 
   deleteRoleFromUser(userId: string, roleId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.deleteRoleForUser({
         userId,
         roleId,
@@ -108,7 +102,7 @@ export class UsermanagerService {
   }
 
   addPermissionForUser(userId: string, permissionId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.addPermissionForUser({
         userId,
         permissionId,
@@ -117,7 +111,7 @@ export class UsermanagerService {
   }
 
   addPermissionForRole(permissionId: string, roleId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.addPermissionForRole({
         roleId,
         permissionId,
@@ -126,7 +120,7 @@ export class UsermanagerService {
   }
 
   deletePermissionFromUser(userId: string, permissionId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.removePermissionFromUser({
         userId,
         permissionId,
@@ -135,7 +129,7 @@ export class UsermanagerService {
   }
 
   deletePermissionFromRole(permissionId: string, roleId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.removePermissionFromRole({
         permissionId,
         roleId,
@@ -144,7 +138,7 @@ export class UsermanagerService {
   }
 
   addRole(role: RoleWrapperModel) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.createRole({
         roleWrapper: role as any,
       }),
@@ -152,7 +146,7 @@ export class UsermanagerService {
   }
 
   retrievePermissionsByRole(id: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.getPermissionsForRole({
         roleId: id,
       }),
@@ -160,7 +154,7 @@ export class UsermanagerService {
   }
 
   retrieveUsersByRole(id: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.getUsersForRole({
         roleId: id,
       }),
@@ -168,7 +162,7 @@ export class UsermanagerService {
   }
 
   addPermission(permission: PermissionModel) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.createPermissions({
         ladonPermission: permission as any,
       }),
@@ -176,7 +170,7 @@ export class UsermanagerService {
   }
 
   deleteUser(userId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.deleteUser({
         userId,
       }),
@@ -184,7 +178,7 @@ export class UsermanagerService {
   }
 
   deleteRole(roleId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.deleteRole({
         roleId,
       }),
@@ -192,7 +186,7 @@ export class UsermanagerService {
   }
 
   deletePermission(permissionId: string) {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.removePermission({
         permissionId,
       }),

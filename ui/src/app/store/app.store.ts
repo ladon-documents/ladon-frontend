@@ -1,7 +1,7 @@
 import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
 import { LoginRequestModel, UserModel } from '@ladon/api';
 import { inject } from '@angular/core';
-import { catchError, of, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, of, pipe, switchMap, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -118,7 +118,7 @@ export const AppStore = signalStore(
                     isAuthenticating: false,
                   },
                 }));
-                throw error;
+                return EMPTY;
               }),
             ),
           ),
@@ -168,7 +168,7 @@ export const AppStore = signalStore(
                     isAuthenticating: false,
                   },
                 }));
-                throw error;
+                return EMPTY;
               }),
             ),
           ),

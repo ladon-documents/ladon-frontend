@@ -26,12 +26,24 @@ describe('StaticHtmlSanitizer', () => {
     expect(service.sanitize('<a href="//example.test/x">bad</a>')).not.toContain('//example.test/x');
   });
 
-  it('removes risky embedding elements', () => {
-    const output = service.sanitize('<iframe src="/x"></iframe><object></object><embed>');
+  it('removes risky embedding and base elements', () => {
+    const output = service.sanitize('<iframe src="/x"></iframe><object></object><embed><base href="/x">');
 
     expect(output).not.toContain('iframe');
     expect(output).not.toContain('object');
     expect(output).not.toContain('embed');
+    expect(output).not.toContain('base');
+  });
+
+  it('removes unsafe src, xlink href, and form action values', () => {
+    const output = service.sanitize(
+      '<img src="javascript:alert(1)"><svg><use xlink:href="javascript:alert(1)"></use></svg><button formaction="javascript:alert(1)">Go</button>',
+    );
+
+    expect(output).not.toContain('javascript:');
+    expect(output).not.toContain('src=');
+    expect(output).not.toContain('xlink:href=');
+    expect(output).not.toContain('formaction=');
   });
 
   it('keeps ordinary markup and classes', () => {

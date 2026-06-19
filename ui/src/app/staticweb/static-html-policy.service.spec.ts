@@ -95,4 +95,10 @@ describe('StaticHtmlPolicyService', () => {
       /script source/i,
     );
   });
+
+  it('blocks same-origin blob external script src values in trusted mode', () => {
+    expect(() =>
+      service.createRenderPlan(`<script src="blob:${window.location.origin}/helper.js"></script>`, trustedDefinition),
+    ).toThrowError(/script source/i);
+  });
 });

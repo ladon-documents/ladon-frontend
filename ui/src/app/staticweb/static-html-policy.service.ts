@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { StaticHtmlSanitizer } from './static-html-sanitizer.service';
 import { StaticDefinition, StaticRenderPlan, StaticScriptDescriptor } from './staticweb.types';
 
+const ALLOWED_EXTERNAL_SCRIPT_PROTOCOLS = new Set(['http:', 'https:']);
+
 @Injectable({ providedIn: 'root' })
 export class StaticHtmlPolicyService {
   constructor(private readonly htmlSanitizer: StaticHtmlSanitizer) {}
@@ -62,7 +64,7 @@ export class StaticHtmlPolicyService {
       throw new Error('External script source is not allowed');
     }
 
-    if (url.origin !== window.location.origin) {
+    if (!ALLOWED_EXTERNAL_SCRIPT_PROTOCOLS.has(url.protocol) || url.origin !== window.location.origin) {
       throw new Error('External script source is not allowed');
     }
 

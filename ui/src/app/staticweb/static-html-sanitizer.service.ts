@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-const BLOCKED_ELEMENTS = new Set(['SCRIPT', 'IFRAME', 'OBJECT', 'EMBED', 'BASE']);
-const URL_ATTRIBUTES = new Set(['href', 'src', 'xlink:href', 'formaction']);
+const BLOCKED_ELEMENTS = new Set(['SCRIPT', 'IFRAME', 'OBJECT', 'EMBED', 'BASE', 'META']);
+const URL_ATTRIBUTES = new Set(['href', 'src', 'xlink:href', 'action', 'formaction']);
 const ALLOWED_PROTOCOLS = ['http:', 'https:', 'mailto:', 'tel:'];
 
 @Injectable({ providedIn: 'root' })

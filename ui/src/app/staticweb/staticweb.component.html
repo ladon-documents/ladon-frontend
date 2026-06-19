@@ -1,3 +1,7 @@
-@if (staticHMTL) {
-  <div id="static-page-content" [innerHTML]="staticHMTL"></div>
+@if (loading) {
+  <div id="static-page-loading">Loading...</div>
+} @else if (error) {
+  <div id="static-page-error">{{ error }}</div>
+} @else if (staticHTML) {
+  <div id="static-page-content" [innerHTML]="staticHTML"></div>
 }

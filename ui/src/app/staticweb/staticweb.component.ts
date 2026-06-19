@@ -1,10 +1,15 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { from, Subscription } from 'rxjs';
-import { FetchApiFactory } from '../services/api/fetch-api.factory';
+import { combineLatest, firstValueFrom, Subscription } from 'rxjs';
+
+import { StaticDefinitionResolver } from './static-definition.resolver';
+import { StaticHtmlPolicyService } from './static-html-policy.service';
+import { StaticRuntimeFacadeService } from './static-runtime-facade.service';
+import { StaticScriptRunnerService } from './static-script-runner.service';
+import { StaticDefinition } from './staticweb.types';
 
 @Component({
   selector: 'lib-static-web',
@@ -13,169 +18,101 @@ import { FetchApiFactory } from '../services/api/fetch-api.factory';
   styleUrl: './staticweb.component.css',
 })
 export class StaticwebComponent implements OnInit, OnDestroy {
-  private subscription!: Subscription;
-  staticHMTL!: SafeHtml;
-  private injectedScripts: HTMLScriptElement[] = [];
+  staticHTML?: SafeHtml;
+  loading = false;
+  error?: string;
+
+  private subscription?: Subscription;
+  private loadId = 0;
 
   constructor(
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
-    private activatedRoute: ActivatedRoute,
-    private elementRef: ElementRef,
-    private apiFactory: FetchApiFactory,
+    private readonly http: HttpClient,
+    private readonly sanitizer: DomSanitizer,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly definitionResolver: StaticDefinitionResolver,
+    private readonly htmlPolicy: StaticHtmlPolicyService,
+    private readonly runtimeFacade: StaticRuntimeFacadeService,
+    private readonly scriptRunner: StaticScriptRunnerService,
   ) {}
 
-  ngOnInit() {
-    this.subscription = this.activatedRoute.queryParams.subscribe((params) => {
-      const page = params['page'];
-      const query = decodeURIComponent(location.search);
-      if (page) {
-        this.loadContent(page);
-      }
-    });
+  ngOnInit(): void {
+    this.subscription = combineLatest([this.activatedRoute.queryParams, this.activatedRoute.paramMap]).subscribe(
+      ([queryParams, paramMap]) => {
+        void this.resolveAndRender(paramMap.get('htmlId'), queryParams['page'] ?? null);
+      },
+    );
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.cleanupScripts();
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+    this.clearRuntime();
   }
 
-  loadContent(url: string) {
-    this.handleQueryParams();
-    this.http.get(url, { responseType: 'text' }).subscribe((response) => {
-      this.cleanupScripts();
+  private async resolveAndRender(htmlId: string | null, page: string | null): Promise<void> {
+    const currentLoadId = ++this.loadId;
+    this.loading = true;
+    this.error = undefined;
+    this.staticHTML = undefined;
+    this.clearRuntime();
 
-      this.processHtmlWithScripts(response);
-    });
-  }
-
-  handleQueryParams() {
-    const query = decodeURIComponent(location.search);
-    const page = query.startsWith('?page=');
-    if (page) {
-      const url = query.replace('?page=', '');
-      let path = url.slice(url.indexOf('/') + 1);
-      if (path.includes('&')) {
-        path = path.slice(0, path.indexOf('&'));
-      }
-      const bucket = url.slice(0, url.indexOf('/'));
-      from(
-        this.apiFactory.documentsApi.getDocument({
-          bucket,
-          key: path,
-        }),
-      ).subscribe((response) => {
-        console.log(response);
-        this.cleanupScripts();
-
-        // Process the response HTML
-        //this.processHtmlWithScripts(response);
-      });
-    } else {
-      this.staticHMTL = this.sanitizer.bypassSecurityTrustHtml('No content found');
+    const result = this.definitionResolver.resolve({ htmlId, page });
+    if (!result.definition) {
+      this.setError(result.error ?? 'Static page is not available');
+      return;
     }
-  }
 
-  private processHtmlWithScripts(htmlString: string) {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlString;
-    const scriptTags = tempDiv.querySelectorAll('script');
-    const scripts: { type: 'inline' | 'external'; content: string; attributes: { [key: string]: string } }[] = [];
-    scriptTags.forEach((script) => {
-      const scriptInfo = {
-        type: script.src ? ('external' as const) : ('inline' as const),
-        content: script.src || script.innerHTML,
-        attributes: {} as { [key: string]: string },
-      };
-
-      Array.from(script.attributes).forEach((attr) => {
-        scriptInfo.attributes[attr.name] = attr.value;
-      });
-
-      scripts.push(scriptInfo);
-      script.remove();
-    });
-
-    this.staticHMTL = this.sanitizer.bypassSecurityTrustHtml(tempDiv.innerHTML);
-
-    setTimeout(() => {
-      this.executeScripts(scripts);
-    }, 0);
-  }
-
-  private executeScripts(
-    scripts: { type: 'inline' | 'external'; content: string; attributes: { [key: string]: string } }[],
-  ) {
-    scripts.forEach((scriptInfo, index) => {
-      if (scriptInfo.type === 'external') {
-        this.loadExternalScript(scriptInfo.content, scriptInfo.attributes, index);
-      } else {
-        this.executeInlineScript(scriptInfo.content, scriptInfo.attributes, index);
-      }
-    });
-  }
-
-  private loadExternalScript(src: string, attributes: { [key: string]: string }, index: number) {
-    const script = document.createElement('script');
-    script.src = src;
-
-    Object.entries(attributes).forEach(([key, value]) => {
-      if (key !== 'src') {
-        script.setAttribute(key, value);
-      }
-    });
-
-    script.onload = () => {
-      console.log(`External script ${index} loaded:`, src);
-    };
-
-    script.onerror = (error) => {
-      console.error(`Failed to load external script ${index}:`, src, error);
-    };
-
-    this.injectedScripts.push(script);
-
-    document.head.appendChild(script);
-  }
-
-  private executeInlineScript(scriptContent: string, attributes: { [key: string]: string }, index: number) {
     try {
-      const script = document.createElement('script');
-
-      Object.entries(attributes).forEach(([key, value]) => {
-        script.setAttribute(key, value);
-      });
-
-      const wrappedScript = `
-        try {
-          ${scriptContent}
-        } catch (error) {
-          console.error('Error in inline script ${index}:', error);
-        }
-      `;
-
-      script.innerHTML = wrappedScript;
-
-      this.injectedScripts.push(script);
-
-      document.head.appendChild(script);
-
-      console.log(`Inline script ${index} executed`);
+      await this.loadDefinition(result.definition, currentLoadId);
     } catch (error) {
-      console.error(`Failed to execute inline script ${index}:`, error);
+      if (currentLoadId !== this.loadId) return;
+      this.clearRuntime();
+      this.staticHTML = undefined;
+      this.dispatchHttpError(error, result.definition.source);
+      this.setError(error instanceof Error ? error.message : 'Static page could not be loaded');
     }
   }
 
-  private cleanupScripts() {
-    this.injectedScripts.forEach((script) => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-    });
-    this.injectedScripts = [];
+  private async loadDefinition(definition: StaticDefinition, loadId: number): Promise<void> {
+    const html = await firstValueFrom(this.http.get(definition.source, { responseType: 'text' }));
+    if (loadId !== this.loadId) return;
+
+    const plan = this.htmlPolicy.createRenderPlan(html, definition);
+    if (definition.mode === 'display-only') {
+      this.clearRuntime();
+      this.staticHTML = this.sanitizer.bypassSecurityTrustHtml(plan.html);
+      this.loading = false;
+      return;
+    }
+
+    this.runtimeFacade.install();
+    this.staticHTML = this.sanitizer.bypassSecurityTrustHtml(plan.html);
+    await this.scriptRunner.run(plan.scripts);
+    if (loadId !== this.loadId) return;
+    this.loading = false;
   }
 
-  private handleError(code: number, url: string) {
+  private clearRuntime(): void {
+    this.scriptRunner.cleanup();
+    this.runtimeFacade.clear();
+  }
+
+  private setError(message: string): void {
+    this.loading = false;
+    this.error = message;
+  }
+
+  private dispatchHttpError(error: unknown, url: string): void {
+    if (typeof error !== 'object' || error === null || !('status' in error)) {
+      return;
+    }
+
+    const status = (error as { status?: unknown }).status;
+    if (typeof status === 'number') {
+      this.handleError(status, url);
+    }
+  }
+
+  private handleError(code: number, url: string): void {
     let customEventName;
     switch (code) {
       case 401:

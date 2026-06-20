@@ -3,7 +3,7 @@ import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { FilterComponent } from '../components/filter/filter.component';
 import { UsermanagerStore } from '../../store/usermanager.store';
-import { PermissionModel } from '@ladon/api';
+import { Permission } from '@ladon/api';
 import { heroPlus, heroTrash, heroDocumentDuplicate } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -19,7 +19,7 @@ import { RouterModule } from '@angular/router';
 export class PermissionsComponent implements OnInit {
   @ViewChild(DialogComponent, { static: true }) permissionDialog: DialogComponent | undefined;
 
-  filteredPermissions: PermissionModel[] | undefined;
+  filteredPermissions: Permission[] | undefined;
   readonly store = inject(UsermanagerStore);
   readonly permissionAddGroup = new FormGroup({});
 
@@ -53,7 +53,7 @@ export class PermissionsComponent implements OnInit {
       return;
     }
 
-    this.store.addPermission(this.permissionAddGroup.value as PermissionModel);
+    this.store.addPermission(this.permissionAddGroup.value as Permission);
     this.closeDialog();
   }
 
@@ -62,7 +62,7 @@ export class PermissionsComponent implements OnInit {
     this.permissionAddGroup.reset();
   }
 
-  duplicatePermission(permission: PermissionModel): void {
+  duplicatePermission(permission: Permission): void {
     this.permissionAddGroup.patchValue(permission);
     this.permissionDialog?.openDialog();
   }

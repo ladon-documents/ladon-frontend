@@ -27,26 +27,6 @@
           "withInterfaces": true
         },
         "inputSpec": "../spec/plugin-v1.yaml"
-      },
-      "angular-client": {
-        "generatorName": "typescript-angular",
-        "output": "./angular-client",
-        "additionalProperties": {
-          "apiModulePrefix": "Ladon",
-          "ngVersion": "19",
-          "modelNameSuffix": "Model"
-        },
-        "inputSpec": "../spec/api.yaml"
-      },
-      "angular-plugin-client": {
-        "generatorName": "typescript-angular",
-        "output": "./angular-plugin-client",
-        "additionalProperties": {
-          "apiModulePrefix": "Ladon",
-          "ngVersion": "19",
-          "modelNameSuffix": "Model"
-        },
-        "inputSpec": "../spec/plugin-v1.yaml"
       }
     }
   }

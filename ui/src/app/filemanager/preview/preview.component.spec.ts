@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
 import { heroTrash } from '@ng-icons/heroicons/outline';
-import { DocumentModel, TagModel } from '@ladon/api';
+import { Document, Tag } from '@ladon/api';
 
 import { PreviewComponent } from './preview.component';
 import { FilemanagerFacade } from '../filemanager.facade';
@@ -10,13 +10,13 @@ import { DocumentTagsFacade } from '../../shared/services/document-tags.facade';
 import { FilemanagerWorkspaceService } from '../filemanager-workspace.service';
 
 class FilemanagerFacadeMock {
-  selectedDocument = signal<DocumentModel | null>(null);
+  selectedDocument = signal<Document | null>(null);
   getImagePreviewUrll = jasmine.createSpy('getImagePreviewUrll').and.resolveTo(null);
 }
 
 class DocumentTagsFacadeMock {
   documentId = signal<string | null>('doc-path');
-  tags = signal<TagModel[]>([]);
+  tags = signal<Tag[]>([]);
   isLoading = signal(false);
   isMutating = signal(false);
   error = signal<string | null>(null);
@@ -91,9 +91,7 @@ describe('PreviewComponent', () => {
     const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
     button.click();
 
-    expect(workspaceService.openEditor).toHaveBeenCalledOnceWith(
-      jasmine.objectContaining({ path: 'folder/file.txt' }),
-    );
+    expect(workspaceService.openEditor).toHaveBeenCalledOnceWith(jasmine.objectContaining({ path: 'folder/file.txt' }));
     expect(workspaceService.openPdfViewer).not.toHaveBeenCalled();
   });
 

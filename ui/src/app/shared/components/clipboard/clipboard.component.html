@@ -1,5 +1,4 @@
 <div class="flex flex-col h-full">
-
   @if (clipboardStore.hasError()) {
     <div class="mx-4 mt-4">
       <div class="alert alert-error shadow-sm">
@@ -7,192 +6,182 @@
         <div class="flex-1">
           <span class="text-sm">{{ clipboardStore.error() }}</span>
         </div>
-        <button
-                                                                                            (click)="dismissError()"
-                                                                                            class="btn btn-ghost btn-sm btn-square">
+        <button (click)="dismissError()" class="btn btn-ghost btn-sm btn-square">
           <ng-icon name="heroXMark" size="1rem"></ng-icon>
         </button>
       </div>
     </div>
   }
   <div class="flex-1 overflow-y-auto">
-    <div cdkDropList
-         [cdkDropListConnectedTo]="originList() ? [originList()] : []"
-         #clipboardList="cdkDropList"
-         [cdkDropListData]="clipboardStore.selectedDocuments()"
-         (cdkDropListDropped)="drop($event)"
-         class="min-h-full  transition-all duration-200 border-base-300 bg-base-200/50">
-
-    @if (clipboardStore.isEmpty()) {
-      <div class="flex flex-col items-center justify-center py-12 px-4 text-center h-full">
-        <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-          <ng-icon name="heroDocumentPlus" size="2rem" class="text-primary"></ng-icon>
+    <div
+      cdkDropList
+      [cdkDropListConnectedTo]="originList() ? [originList()] : []"
+      #clipboardList="cdkDropList"
+      [cdkDropListData]="clipboardStore.selectedDocuments()"
+      (cdkDropListDropped)="drop($event)"
+      class="min-h-full transition-all duration-200 border-base-300 bg-base-200/50">
+      @if (clipboardStore.isEmpty()) {
+        <div class="flex flex-col items-center justify-center py-12 px-4 text-center h-full">
+          <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+            <ng-icon name="heroDocumentPlus" size="2rem" class="text-primary"></ng-icon>
+          </div>
+          <h4 class="text-sm font-medium text-base-content mb-1">Clipboard ist leer</h4>
+          <p class="text-xs text-base-content/60 max-w-xs">Ziehen Sie Dateien oder Ordner hierher, um sie zu sammeln</p>
         </div>
-        <h4 class="text-sm font-medium text-base-content mb-1">
-          Clipboard ist leer
-        </h4>
-        <p class="text-xs text-base-content/60 max-w-xs">
-          Ziehen Sie Dateien oder Ordner hierher, um sie zu sammeln
-        </p>
-      </div>
-    }
+      }
 
-    @if (!clipboardStore.isEmpty()) {
-      <div class="space-y-2 p-2">
-        @for (doc of clipboardStore.selectedDocuments(); track doc.key; let i = $index) {
-          <div cdkDrag
-               [cdkDragData]="getDragPayload(doc)"
-               class="group relative bg-base-100 rounded-lg border border-base-300 hover:border-primary/50 hover:shadow-md transition-all duration-200 cursor-move"
-               [class.border-primary]="selectionStore.isSelected(doc)"
-               [class.shadow-md]="selectionStore.isSelected(doc)"
-               [class.bg-base-200]="selectionStore.isSelected(doc)"
-               (click)="onItemClick(doc, i, $event)">
+      @if (!clipboardStore.isEmpty()) {
+        <div class="space-y-2 p-2">
+          @for (doc of clipboardStore.selectedDocuments(); track doc.key; let i = $index) {
+            <div
+              cdkDrag
+              [cdkDragData]="getDragPayload(doc)"
+              class="group relative bg-base-100 rounded-lg border border-base-300 hover:border-primary/50 hover:shadow-md transition-all duration-200 cursor-move"
+              [class.border-primary]="selectionStore.isSelected(doc)"
+              [class.shadow-md]="selectionStore.isSelected(doc)"
+              [class.bg-base-200]="selectionStore.isSelected(doc)"
+              (click)="onItemClick(doc, i, $event)">
+              <div class="flex items-center gap-3 p-3">
+                <div
+                  class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
+                  <ng-icon name="heroBars3" size="1rem" class="text-base-content/40"></ng-icon>
+                </div>
 
-            <div class="flex items-center gap-3 p-3">
-              <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing">
-                <ng-icon name="heroBars3" size="1rem" class="text-base-content/40"></ng-icon>
-              </div>
-
-              <div class="flex-shrink-0 w-8 h-8">
-                @if (doc.isFolder) {
-                  <div class="w-8 h-8">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" class="w-full h-full">
-                      <g>
-                        <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" style="fill: #f29611"></rect>
-                        <path
-                                                                                                            d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
-                                                                                                            style="fill: #ffb32c"></path>
-                        <path
-                                                                                                            d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
-                                                                                                            style="fill: #f2a222"></path>
-                      </g>
-                    </svg>
-                  </div>
-                } @else {
-                  @if (doc.key) {
-                    <img [src]="doc.key | fileicon"
-                         class="w-8 h-8 object-contain"
-                         alt="File icon" />
+                <div class="flex-shrink-0 w-8 h-8">
+                  @if (doc.isFolder) {
+                    <div class="w-8 h-8">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" class="w-full h-full">
+                        <g>
+                          <rect x="32" y="16" width="28" height="15" rx="2.5" ry="2.5" style="fill: #f29611"></rect>
+                          <path
+                            d="M59.7778,61H12.2222A6.4215,6.4215,0,0,1,6,54.3962V17.6038A6.4215,6.4215,0,0,1,12.2222,11H30.6977a4.6714,4.6714,0,0,1,4.1128,2.5644L38,24H59.7778A5.91,5.91,0,0,1,66,30V54.3962A6.4215,6.4215,0,0,1,59.7778,61Z"
+                            style="fill: #ffb32c"></path>
+                          <path
+                            d="M8.015,59c2.169,2.3827,4.6976,2.0161,6.195,2H58.7806a6.2768,6.2768,0,0,0,5.2061-2Z"
+                            style="fill: #f2a222"></path>
+                        </g>
+                      </svg>
+                    </div>
+                  } @else {
+                    @if (doc.key) {
+                      <img [src]="doc.key | fileicon" class="w-8 h-8 object-contain" alt="File icon" />
+                    }
                   }
-                }
-              </div>
+                </div>
 
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-base-content truncate">
-                  {{ doc.name || doc.key }}
-                </p>
-                <div class="flex items-center gap-2 mt-0.5">
-                  @if (!doc.isFolder && doc.size) {
-                    <span class="text-xs text-base-content/60">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-base-content truncate">
+                    {{ doc.name || doc.key }}
+                  </p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    @if (!doc.isFolder && doc.size) {
+                      <span class="text-xs text-base-content/60">
                         {{ doc.size | filesize }}
                       </span>
-                  }
-                  @if (doc.isFolder) {
-                    <span class="badge badge-ghost badge-xs">Ordner</span>
-                  }
+                    }
+                    @if (doc.isFolder) {
+                      <span class="badge badge-ghost badge-xs">Ordner</span>
+                    }
+                  </div>
                 </div>
+
+                <!-- Remove Button -->
+                <button
+                  (click)="removeByIndex(i); $event.stopPropagation()"
+                  class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Entfernen">
+                  <ng-icon name="heroXMark" size="1rem"></ng-icon>
+                </button>
               </div>
 
-              <!-- Remove Button -->
-              <button (click)="removeByIndex(i); $event.stopPropagation()"
-                      class="btn btn-ghost btn-sm btn-square opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Entfernen">
-                <ng-icon name="heroXMark" size="1rem"></ng-icon>
-              </button>
-            </div>
-
-            <div *cdkDragPreview class="bg-base-100 rounded-lg border border-primary shadow-lg p-3 opacity-90">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8">
-                  @if (doc.key) {
-                    <img [src]="doc.key | fileicon" class="w-8 h-8 object-contain" alt="File icon" />
-                  }
+              <div *cdkDragPreview class="bg-base-100 rounded-lg border border-primary shadow-lg p-3 opacity-90">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8">
+                    @if (doc.key) {
+                      <img [src]="doc.key | fileicon" class="w-8 h-8 object-contain" alt="File icon" />
+                    }
+                  </div>
+                  <span class="text-sm font-medium">{{ doc.name || doc.key }}</span>
                 </div>
-                <span class="text-sm font-medium">{{ doc.name || doc.key }}</span>
               </div>
             </div>
-          </div>
-        }
-      </div>
-    }
+          }
+        </div>
+      }
+    </div>
   </div>
-</div>
 
-@if (clipboardStore.hasDocuments()) {
-  <div class="px-4 pb-3">
-    @if (clipboardStore.allDocumentsArePdf()) {
-      <div class="alert alert-info shadow-sm py-2">
-        <ng-icon name="heroInformationCircle" size="1.25rem"></ng-icon>
-        <div class="text-sm">
-          <span class="font-medium">{{ clipboardStore.documentCount() }} PDF(s)</span>
-          <span class="text-xs block">
+  @if (clipboardStore.hasDocuments()) {
+    <div class="px-4 pb-3">
+      @if (clipboardStore.allDocumentsArePdf()) {
+        <div class="alert alert-info shadow-sm py-2">
+          <ng-icon name="heroInformationCircle" size="1.25rem"></ng-icon>
+          <div class="text-sm">
+            <span class="font-medium">{{ clipboardStore.documentCount() }} PDF(s)</span>
+            <span class="text-xs block">
               @if (clipboardStore.canGeneratePdf()) {
                 Bereit zum Zusammenführen
               } @else {
                 Mindestens 2 PDFs erforderlich
               }
             </span>
+          </div>
         </div>
-      </div>
-    } @else {
-      <div class="alert shadow-sm py-2">
-        <ng-icon name="heroDocumentDuplicate" size="1.25rem"></ng-icon>
-        <div class="text-sm">
-          <span class="font-medium">{{ clipboardStore.documentCount() }} Dokument(e)</span>
-          <span class="text-xs block">Gesamt: {{ clipboardStore.totalSize() | filesize }}</span>
+      } @else {
+        <div class="alert shadow-sm py-2">
+          <ng-icon name="heroDocumentDuplicate" size="1.25rem"></ng-icon>
+          <div class="text-sm">
+            <span class="font-medium">{{ clipboardStore.documentCount() }} Dokument(e)</span>
+            <span class="text-xs block">Gesamt: {{ clipboardStore.totalSize() | filesize }}</span>
+          </div>
         </div>
+      }
+    </div>
+  }
+
+  @if (clipboardStore.hasDocuments()) {
+    <div class="border-t border-base-300 p-4 flex-shrink-0 space-y-2">
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          (click)="action('pdf')"
+          [disabled]="!clipboardStore.canGeneratePdf() || clipboardStore.actionInProgress()"
+          class="btn btn-sm btn-primary"
+          [class.btn-disabled]="!clipboardStore.canGeneratePdf()"
+          title="PDFs zusammenführen (mind. 2 erforderlich)">
+          @if (clipboardStore.actionInProgress() && clipboardStore.lastAction() === "merge-pdf") {
+            <span class="loading loading-spinner loading-xs"></span>
+          } @else {
+            <ng-icon name="heroDocumentText" size="1rem"></ng-icon>
+          }
+          PDF
+        </button>
+
+        <button
+          (click)="action('zip')"
+          [disabled]="!clipboardStore.canCreateZip() || clipboardStore.actionInProgress()"
+          class="btn btn-sm btn-primary btn-outline">
+          @if (clipboardStore.actionInProgress() && clipboardStore.lastAction() === "create-zip") {
+            <span class="loading loading-spinner loading-xs"></span>
+          } @else {
+            <ng-icon name="heroArchiveBox" size="1rem"></ng-icon>
+          }
+          ZIP
+        </button>
       </div>
-    }
-  </div>
-}
 
-@if (clipboardStore.hasDocuments()) {
-  <div class="border-t border-base-300 p-4 flex-shrink-0 space-y-2">
-    <div class="grid grid-cols-2 gap-2">
-      <button
-                                                                                          (click)="action('pdf')"
-                                                                                          [disabled]="!clipboardStore.canGeneratePdf() || clipboardStore.actionInProgress()"
-                                                                                          class="btn btn-sm btn-primary"
-                                                                                          [class.btn-disabled]="!clipboardStore.canGeneratePdf()"
-                                                                                          title="PDFs zusammenführen (mind. 2 erforderlich)">
-        @if (clipboardStore.actionInProgress() && clipboardStore.lastAction() === 'merge-pdf') {
-          <span class="loading loading-spinner loading-xs"></span>
-        } @else {
-          <ng-icon name="heroDocumentText" size="1rem"></ng-icon>
-        }
-        PDF
-      </button>
-
-      <button
-                                                                                          (click)="action('zip')"
-                                                                                          [disabled]="!clipboardStore.canCreateZip() || clipboardStore.actionInProgress()"
-                                                                                          class="btn btn-sm btn-primary btn-outline">
-        @if (clipboardStore.actionInProgress() && clipboardStore.lastAction() === 'create-zip') {
-          <span class="loading loading-spinner loading-xs"></span>
-        } @else {
-          <ng-icon name="heroArchiveBox" size="1rem"></ng-icon>
-        }
-        ZIP
+      <button (click)="reset()" [disabled]="clipboardStore.actionInProgress()" class="btn btn-sm btn-outline w-full">
+        <ng-icon name="heroTrash" size="1rem"></ng-icon>
+        Auswahl zurücksetzten
       </button>
     </div>
+  }
 
-
-    <button
-                                                                                        (click)="reset()"
-                                                                                        [disabled]="clipboardStore.actionInProgress()"
-                                                                                        class="btn btn-sm  btn-outline w-full">
-      <ng-icon name="heroTrash" size="1rem"></ng-icon>
-      Auswahl zurücksetzten
-    </button>
-  </div>
-}
-
-@if (clipboardStore.actionInProgress()) {
-  <div class="absolute inset-0 bg-base-100/80 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="flex flex-col items-center gap-3">
-      <span class="loading loading-spinner loading-lg text-primary"></span>
-      <p class="text-sm font-medium">Verarbeite Dokumente...</p>
+  @if (clipboardStore.actionInProgress()) {
+    <div class="absolute inset-0 bg-base-100/80 backdrop-blur-sm flex items-center justify-center z-50">
+      <div class="flex flex-col items-center gap-3">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+        <p class="text-sm font-medium">Verarbeite Dokumente...</p>
+      </div>
     </div>
-  </div>
-}
+  }
 </div>

@@ -2,12 +2,12 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap, catchError, EMPTY } from 'rxjs';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { isPdfDocument } from '@ladon/utility';
 import { ConverterService } from '../services/converter.service';
 
 interface ClipboardState {
-  selectedDocuments: DocumentModel[];
+  selectedDocuments: Document[];
   isClipboardOpen: boolean;
   lastAction: 'copy' | 'move' | 'merge-pdf' | 'create-zip' | null;
   actionInProgress: boolean;
@@ -78,7 +78,7 @@ export const ClipboardStore = signalStore(
   })),
 
   withMethods((store, converterService = inject(ConverterService)) => ({
-    addDocument: (document: DocumentModel) => {
+    addDocument: (document: Document) => {
       const exists = store.selectedDocuments().some((doc) => doc.key === document.key);
       if (!exists) {
         patchState(store, {
@@ -89,7 +89,7 @@ export const ClipboardStore = signalStore(
       }
     },
 
-    addDocuments: (documents: DocumentModel[]) => {
+    addDocuments: (documents: Document[]) => {
       const existingKeys = new Set(store.selectedDocuments().map((doc) => doc.key));
       const newDocs = documents.filter((doc) => !existingKeys.has(doc.key));
 

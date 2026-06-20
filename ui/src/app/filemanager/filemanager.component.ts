@@ -27,7 +27,7 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { CreateFolderComponent } from './create-folder/create-folder.component';
 import { SidebarService } from './sidebar/sidebar.service';
 import { SearchModalComponent } from '../shared/components/search-modal/search-modal.component';
-import { BucketUiItemModel } from '@ladon/api';
+import { BucketUiItem } from '@ladon/api';
 import { CreateNewFileComponent } from './create-new-file/create-new-file.component';
 import { FilemanagerWorkspaceService } from './filemanager-workspace.service';
 import { FilemanagerWorkspaceViewComponent } from './workspace-view/workspace-view.component';
@@ -132,7 +132,7 @@ export class FilemanagerComponent implements OnInit {
     this.filemanagerFacade.clearSearch();
   }
 
-  toggleSort(field: 'name' | 'size' | 'type' | 'last-modified' | 'created') {
+  toggleSort(field: 'name' | 'size' | 'type' | 'lastModified' | 'created') {
     this.filemanagerFacade.toggleSort(field);
   }
 
@@ -164,7 +164,7 @@ export class FilemanagerComponent implements OnInit {
     this.isSearchModalOpen.set(false);
   }
 
-  onBucketSelected(bucket: BucketUiItemModel) {
+  onBucketSelected(bucket: BucketUiItem) {
     console.log('Selected bucket:', bucket);
     this.filemanagerFacade.loadBucket(bucket.id as string);
   }

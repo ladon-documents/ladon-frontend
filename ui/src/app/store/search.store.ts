@@ -1,6 +1,6 @@
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
 import { computed } from '@angular/core';
-import { BucketUiItemModel } from '@ladon/api';
+import { BucketUiItem } from '@ladon/api';
 
 export interface SearchItem {
   id: string;
@@ -67,7 +67,7 @@ export const SearchStore = signalStore(
       patchState(store, { isLoading: loading });
     },
 
-    setSearchResults: (results: BucketUiItemModel[]) => {
+    setSearchResults: (results: BucketUiItem[]) => {
       const searchItems: SearchItem[] = results.map((bucket) => ({
         id: bucket.id || '',
         name: bucket.id || '',

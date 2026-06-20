@@ -2,14 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideIcons } from '@ng-icons/core';
 import { heroTrash } from '@ng-icons/heroicons/outline';
 import { signal } from '@angular/core';
-import { DocumentModel, TagModel } from '../../../../api';
+import { Document, Tag } from '../../../../api';
 
 import { DocumentTagsComponent } from './document-tags.component';
 import { DocumentTagsFacade } from '../../services/document-tags.facade';
 
 class DocumentTagsFacadeMock {
   documentId = signal<string | null>('doc-path');
-  tags = signal<TagModel[]>([]);
+  tags = signal<Tag[]>([]);
   isLoading = signal(false);
   isMutating = signal(false);
   error = signal<string | null>(null);
@@ -25,7 +25,7 @@ describe('DocumentTagsComponent', () => {
   let fixture: ComponentFixture<DocumentTagsComponent>;
   let facade: DocumentTagsFacadeMock;
 
-  const document: DocumentModel = {
+  const document: Document = {
     key: 'folder/file.txt',
     path: 'folder/file.txt',
     name: 'file.txt',
@@ -35,10 +35,7 @@ describe('DocumentTagsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DocumentTagsComponent],
-      providers: [
-        provideIcons({ heroTrash }),
-        { provide: DocumentTagsFacade, useClass: DocumentTagsFacadeMock },
-      ],
+      providers: [provideIcons({ heroTrash }), { provide: DocumentTagsFacade, useClass: DocumentTagsFacadeMock }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DocumentTagsComponent);

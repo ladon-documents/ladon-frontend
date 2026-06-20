@@ -6,7 +6,7 @@ import { UsermanagerStore } from '../../store/usermanager.store';
 import { AliasPipe, DialogComponent } from '@ladon/shared';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
 import { FilterComponent } from '../components/filter/filter.component';
-import { UserEntryModel } from '@ladon/api';
+import { UserEntry } from '@ladon/api';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -30,7 +30,7 @@ export class UsersComponent implements OnInit {
 
   store = inject(UsermanagerStore);
   userAddGroup = new FormGroup({});
-  filteredUsers: UserEntryModel[] | undefined;
+  filteredUsers: UserEntry[] | undefined;
 
   ngOnInit(): void {
     this.store.retrieveUsers();
@@ -47,7 +47,7 @@ export class UsersComponent implements OnInit {
     this.userDialog?.openDialog();
   }
 
-  duplicateUser(user: UserEntryModel): void {
+  duplicateUser(user: UserEntry): void {
     this.userAddGroup.patchValue(user);
     this.userDialog?.openDialog();
   }

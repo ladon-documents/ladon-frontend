@@ -5,13 +5,13 @@
         <ng-icon name="heroArrowLeft" size="1.1em"></ng-icon>
       </button>
       <h2 class="text-sm font-semibold uppercase tracking-wide text-base-content/80">
-        @if (workspaceMode() === 'editor') {
+        @if (workspaceMode() === "editor") {
           Editor
-        } @else if (workspaceMode() === 'image-editor') {
+        } @else if (workspaceMode() === "image-editor") {
           Image Editor
-        } @else if (workspaceMode() === 'pdf-viewer') {
+        } @else if (workspaceMode() === "pdf-viewer") {
           PDF Viewer
-        } @else if (workspaceMode() === 'media-player') {
+        } @else if (workspaceMode() === "media-player") {
           Media Player
         }
       </h2>
@@ -24,7 +24,7 @@
         <span class="loading loading-spinner loading-lg"></span>
       </div>
     } @else {
-      @if (workspaceMode() === 'editor') {
+      @if (workspaceMode() === "editor") {
         <div class="h-full min-h-0">
           <file-editor-dialog
             [displayMode]="'inline'"
@@ -36,7 +36,7 @@
         </div>
       }
 
-      @if (workspaceMode() === 'image-editor' && workspaceService.imageEditorSourceUrl()) {
+      @if (workspaceMode() === "image-editor" && workspaceService.imageEditorSourceUrl()) {
         <div class="h-full min-h-0">
           <ladon-image-editor
             [attr.image-src]="workspaceService.imageEditorSourceUrl()"
@@ -48,7 +48,7 @@
         </div>
       }
 
-      @if (workspaceMode() === 'media-player' && workspaceService.mediaPlayerSourceUrl()) {
+      @if (workspaceMode() === "media-player" && workspaceService.mediaPlayerSourceUrl()) {
         <div class="h-full min-h-0">
           <ladon-media-player
             [attr.media-src]="workspaceService.mediaPlayerSourceUrl()"
@@ -58,7 +58,7 @@
         </div>
       }
 
-      @if (workspaceMode() === 'pdf-viewer' && workspaceService.pdfSource()) {
+      @if (workspaceMode() === "pdf-viewer" && workspaceService.pdfSource()) {
         <div class="h-full min-h-0">
           <pdf-viewer></pdf-viewer>
           <!--<ladon-pdfviewer class="block h-full w-full" [attr.pdf]="workspaceService.pdfSource()"></ladon-pdfviewer> -->

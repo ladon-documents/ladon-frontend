@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { FilemanagerFacade } from '../filemanager.facade';
 import { firstValueFrom } from 'rxjs';
 import { ensureFileExtension, getFileExtension } from '@ladon/utility';
@@ -85,7 +85,7 @@ export class ImageEditorDialogComponent implements AfterViewInit {
   compareMode = false;
   comparePosition = 50;
 
-  private document: DocumentModel | null = null;
+  private document: Document | null = null;
   private sourceImage: HTMLImageElement | null = null;
   private originalImageUrl: string | null = null;
   private cropRect: CropRect | null = null;
@@ -124,7 +124,7 @@ export class ImageEditorDialogComponent implements AfterViewInit {
     }
   }
 
-  async openDialog(document: DocumentModel): Promise<void> {
+  async openDialog(document: Document): Promise<void> {
     this.resetEditorState();
     this.isOpen = true;
     this.isLoading = true;
@@ -288,7 +288,7 @@ export class ImageEditorDialogComponent implements AfterViewInit {
     }
   }
 
-  private resolveTargetDocumentAndMimeType(): { targetDocument: DocumentModel; mimeType: string } {
+  private resolveTargetDocumentAndMimeType(): { targetDocument: Document; mimeType: string } {
     if (!this.document || !this.document.bucket) {
       throw new Error('Ungültiges Dokument für Speichern');
     }
@@ -342,8 +342,8 @@ export class ImageEditorDialogComponent implements AfterViewInit {
   }
 
   private getOriginalMimeType(): string {
-    if (this.document?.['content-type']?.startsWith('image/')) {
-      return this.document['content-type'];
+    if (this.document?.contentType?.startsWith('image/')) {
+      return this.document.contentType;
     }
 
     const key = this.document?.key || this.document?.path || '';
@@ -541,7 +541,7 @@ export class ImageEditorDialogComponent implements AfterViewInit {
     });
   }
 
-  private extractFileName(document: DocumentModel): string {
+  private extractFileName(document: Document): string {
     const key = document.key || document.path || document.name || 'edited-image';
     const lastSlash = key.lastIndexOf('/');
     return lastSlash >= 0 ? key.substring(lastSlash + 1) : key;

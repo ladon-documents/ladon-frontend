@@ -25,12 +25,12 @@
           <span class="text-sm col-span-2">{{ formatFileSize(document?.size!) }}</span>
         </div>
       }
-      @if (document["content-type"]) {
+      @if (document.contentType) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Typ:</span>
           <span class="text-sm col-span-2">
             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-primary">
-              {{ document["content-type"] }}
+              {{ document.contentType }}
             </span>
           </span>
         </div>
@@ -41,10 +41,10 @@
           <span class="text-sm col-span-2">{{ document.created | date: "dd.MM.yyyy HH:mm" }}</span>
         </div>
       }
-      @if (document["last-modified"]) {
+      @if (document.lastModified) {
         <div class="grid grid-cols-3 gap-2">
           <span class="text-sm text-gray-500 font-medium">Geändert:</span>
-          <span class="text-sm col-span-2">{{ document["last-modified"] | date: "dd.MM.yyyy HH:mm" }}</span>
+          <span class="text-sm col-span-2">{{ document.lastModified | date: "dd.MM.yyyy HH:mm" }}</span>
         </div>
       }
       @if (document.path) {

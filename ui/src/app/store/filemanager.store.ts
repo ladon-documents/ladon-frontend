@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
-import { Document } from '@ladon/api';
+import { DocumentModel } from '@ladon/api';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, forkJoin, pipe, switchMap, tap } from 'rxjs';
 import { FilemanagerService } from '../filemanager/filemanager.service';
@@ -23,19 +23,19 @@ export interface PaginationState {
 }
 
 export interface SortConfig {
-  field: keyof Document | 'name' | 'size' | 'type';
+  field: keyof DocumentModel | 'name' | 'size' | 'type';
   direction: 'asc' | 'desc';
 }
 
 type ViewMode = 'card' | 'table';
 
 export interface FilemanagerState {
-  documents: Document[];
-  allDocuments: Document[];
-  filteredDocuments: Document[];
+  documents: DocumentModel[];
+  allDocuments: DocumentModel[];
+  filteredDocuments: DocumentModel[];
   statistics: BucketStatsExtended | null;
-  currentFolder: Document | null;
-  selectedDocument: Document | null;
+  currentFolder: DocumentModel | null;
+  selectedDocument: DocumentModel | null;
   isLoading: boolean;
   error: string | null;
   sort: SortConfig;
@@ -56,7 +56,7 @@ const initialState: FilemanagerState = {
   isLoading: false,
   error: null,
   sort: {
-    field: 'lastModified',
+    field: 'last-modified',
     direction: 'desc',
   },
   pagination: {
@@ -69,6 +69,32 @@ const initialState: FilemanagerState = {
   },
   searchTerm: '',
   viewMode: 'card',
+};
+
+const toErrorMessage = (error: unknown, fallback = 'Unbekannter Fehler'): string => {
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'error' in error &&
+    typeof (error as { error?: { reason?: string } }).error?.reason === 'string'
+  ) {
+    return (error as { error?: { reason?: string } }).error!.reason!;
+  }
+
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: string }).message === 'string'
+  ) {
+    return (error as { message?: string }).message!;
+  }
+
+  return fallback;
 };
 
 export const FilemanagerStore = signalStore(
@@ -98,7 +124,9 @@ export const FilemanagerStore = signalStore(
         return EMPTY;
       };
 
-      const resolveLoadDocumentListInput = (input: Document | { document: Document; updateBreadcrumb?: boolean }) => {
+      const resolveLoadDocumentListInput = (
+        input: DocumentModel | { document: DocumentModel; updateBreadcrumb?: boolean },
+      ) => {
         if ('document' in input) {
           return {
             document: input.document,
@@ -129,7 +157,7 @@ export const FilemanagerStore = signalStore(
         updateSelectedBucket: (selectedBucket: string) => {
           patchState(store, { selectedBucket });
         },
-        setSelectedDocument: (selectedDocument: Document | null) => {
+        setSelectedDocument: (selectedDocument: DocumentModel | null) => {
           patchState(store, { selectedDocument });
         },
         setViewMode: (viewMode: ViewMode) => {
@@ -303,15 +331,15 @@ export const FilemanagerStore = signalStore(
                   patchState(store, (state) => ({
                     ...state,
                     isLoading: false,
-                    error: error.error?.reason,
+                    error: toErrorMessage(error, 'Fehler beim Laden des Buckets'),
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               ),
             ),
           ),
         ),
-        loadDocumentList: rxMethod<Document | { document: Document; updateBreadcrumb?: boolean }>(
+        loadDocumentList: rxMethod<DocumentModel | { document: DocumentModel; updateBreadcrumb?: boolean }>(
           pipe(
             tap(() => {
               patchState(store, (state) => ({
@@ -351,9 +379,9 @@ export const FilemanagerStore = signalStore(
                   patchState(store, (state) => ({
                     ...state,
                     isLoading: false,
-                    error,
+                    error: toErrorMessage(error, 'Fehler beim Laden des Ordners'),
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               );
             }),
@@ -404,7 +432,7 @@ export const FilemanagerStore = signalStore(
                     isLoading: false,
                     error: `Fehler beim Erstellen des Ordners: ${error.message || error}`,
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               );
             }),
@@ -455,7 +483,7 @@ export const FilemanagerStore = signalStore(
                     isLoading: false,
                     error: `Fehler beim Erstellen einer neuen Datei: ${error.message || error}`,
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               );
             }),
@@ -506,13 +534,13 @@ export const FilemanagerStore = signalStore(
                     isLoading: false,
                     error: `Fehler beim Erstellen des Ordners: ${error.message || error}`,
                   }));
-                  throw error;
+                  return EMPTY;
                 }),
               );
             }),
           ),
         ),
-        deleteDocument: rxMethod<Document>(
+        deleteDocument: rxMethod<DocumentModel>(
           pipe(
             switchMap(async (document) => {
               const confirmed = await confirmationDialog.confirm({
@@ -578,11 +606,11 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        deleteDocuments: rxMethod<Document[]>(
+        deleteDocuments: rxMethod<DocumentModel[]>(
           pipe(
             switchMap(async (documents) => {
               const validDocuments = documents.filter((document) => !!document.bucket && !!document.key) as Array<
-                Document & { key: string; bucket: string }
+                DocumentModel & { key: string; bucket: string }
               >;
 
               if (validDocuments.length === 0) {
@@ -648,7 +676,7 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        moveDocument: rxMethod<{ document: Document; targetPath: string }>(
+        moveDocument: rxMethod<{ document: DocumentModel; targetPath: string }>(
           pipe(
             tap(() => {
               patchState(store, { isLoading: true, error: null });
@@ -698,7 +726,7 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        moveDocuments: rxMethod<{ documents: Document[]; targetPath: string }>(
+        moveDocuments: rxMethod<{ documents: DocumentModel[]; targetPath: string }>(
           pipe(
             tap(() => {
               patchState(store, { isLoading: true, error: null });
@@ -706,7 +734,7 @@ export const FilemanagerStore = signalStore(
             switchMap(({ documents: documentsToMove, targetPath }) => {
               const targetBucket = store.selectedBucket();
               const validDocuments = documentsToMove.filter((document) => !!document.bucket && !!document.key) as Array<
-                Document & { key: string; bucket: string }
+                DocumentModel & { key: string; bucket: string }
               >;
 
               if (!targetBucket || validDocuments.length === 0) {
@@ -757,7 +785,7 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        copyDocument: rxMethod<{ document: Document; targetPath: string }>(
+        copyDocument: rxMethod<{ document: DocumentModel; targetPath: string }>(
           pipe(
             tap(() => {
               patchState(store, { isLoading: true, error: null });
@@ -806,7 +834,7 @@ export const FilemanagerStore = signalStore(
             }),
           ),
         ),
-        copyDocuments: rxMethod<{ documents: Document[]; targetPath: string }>(
+        copyDocuments: rxMethod<{ documents: DocumentModel[]; targetPath: string }>(
           pipe(
             tap(() => {
               patchState(store, { isLoading: true, error: null });
@@ -814,7 +842,7 @@ export const FilemanagerStore = signalStore(
             switchMap(({ documents: documentsToCopy, targetPath }) => {
               const targetBucket = store.selectedBucket();
               const validDocuments = documentsToCopy.filter((document) => !!document.bucket && !!document.key) as Array<
-                Document & { key: string; bucket: string }
+                DocumentModel & { key: string; bucket: string }
               >;
 
               if (!targetBucket || validDocuments.length === 0) {

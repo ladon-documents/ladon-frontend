@@ -153,42 +153,46 @@ export class PluginService {
       webBundlePlugin: undefined,
     };
 
-    return from(this.apiFactory.pluginV1Api.plugins({ product: 'ladon', channel: this.channel as any })).pipe(
-      mergeMap((plugins: Array<PluginModel>) => {
-        const webbundlePlugin: any = plugins.find((item: PluginModel) => {
-          return item.spec?.type === this.SPEC_TYPE_WEB_BUNDLE;
-        });
-        if (webbundlePlugin) {
-          webbundlePlugin.canUpdate = false;
-          webbundlePlugin.canInstall = false;
-          webbundlePlugin.current = webbundlePlugin.version;
-          return from(
-            this.apiFactory.pluginV1Api.bundleContent({
-              product: 'ladon',
-              channel: this.channel as any,
-              id: webbundlePlugin.id,
-            }),
-          ).pipe(
-            mergeMap((bundlePlugins: Array<PluginModel>) => {
-              return this.pluginMetaService.setVersions(bundlePlugins);
-            }),
-            map((bundleContentWithVersions) => {
-              this.bundleContentWithVersions = bundleContentWithVersions;
-              const isUpdatable = this.bundleContentWithVersions.find((plugin) => {
-                return plugin.canInstall || plugin.canUpdate;
-              });
-              if (isUpdatable) {
-                webbundlePlugin.canUpdate = true;
-              }
-              webBundle.bundleContent = this.bundleContentWithVersions;
-              webBundle.webBundlePlugin = webbundlePlugin;
-              return webBundle.webBundlePlugin;
-            }),
-          );
-        }
-        return of(undefined);
-      }),
-    );
+    return this.apiFactory
+      .fromApi(() => this.apiFactory.pluginV1Api.plugins({ product: 'ladon', channel: this.channel as any }))
+      .pipe(
+        mergeMap((plugins: Array<PluginModel>) => {
+          const webbundlePlugin: any = plugins.find((item: PluginModel) => {
+            return item.spec?.type === this.SPEC_TYPE_WEB_BUNDLE;
+          });
+          if (webbundlePlugin) {
+            webbundlePlugin.canUpdate = false;
+            webbundlePlugin.canInstall = false;
+            webbundlePlugin.current = webbundlePlugin.version;
+            return this.apiFactory
+              .fromApi(() =>
+                this.apiFactory.pluginV1Api.bundleContent({
+                  product: 'ladon',
+                  channel: this.channel as any,
+                  id: webbundlePlugin.id,
+                }),
+              )
+              .pipe(
+                mergeMap((bundlePlugins: Array<PluginModel>) => {
+                  return this.pluginMetaService.setVersions(bundlePlugins);
+                }),
+                map((bundleContentWithVersions) => {
+                  this.bundleContentWithVersions = bundleContentWithVersions;
+                  const isUpdatable = this.bundleContentWithVersions.find((plugin) => {
+                    return plugin.canInstall || plugin.canUpdate;
+                  });
+                  if (isUpdatable) {
+                    webbundlePlugin.canUpdate = true;
+                  }
+                  webBundle.bundleContent = this.bundleContentWithVersions;
+                  webBundle.webBundlePlugin = webbundlePlugin;
+                  return webBundle.webBundlePlugin;
+                }),
+              );
+          }
+          return of(undefined);
+        }),
+      );
   }
 
   private _getPlugins(): void {
@@ -197,14 +201,16 @@ export class PluginService {
       .pipe(
         take(1),
         mergeMap((bundleResults: PluginWithVersionStatus | undefined) => {
-          return from(this.apiFactory.pluginV1Api.plugins({ product: 'ladon', channel: this.channel as any })).pipe(
-            map((plugins: Array<PluginModel>) => {
-              return {
-                plugins,
-                webbundle: bundleResults,
-              };
-            }),
-          );
+          return this.apiFactory
+            .fromApi(() => this.apiFactory.pluginV1Api.plugins({ product: 'ladon', channel: this.channel as any }))
+            .pipe(
+              map((plugins: Array<PluginModel>) => {
+                return {
+                  plugins,
+                  webbundle: bundleResults,
+                };
+              }),
+            );
         }),
         mergeMap((result: { plugins: Array<PluginModel>; webbundle: PluginWithVersionStatus | undefined }) => {
           if (result.plugins && Array.isArray(result.plugins)) {
@@ -251,7 +257,7 @@ export class PluginService {
   }
 
   public getPluginDescription(pluginId: string): Observable<string> {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.pluginV1Api.pluginReadme({
         product: 'ladon',
         channel: this.channel as any,
@@ -319,46 +325,50 @@ export class PluginService {
       orderby: `created_desc`,
       key: '',
     };
-    return from(
-      this.apiFactory.documentsApi.listDocumentJson({
-        bucket: payload.bucket,
-        prefix: payload.prefix,
-        orderby: payload.orderby,
-      }),
-    ).pipe(
-      mergeMap((result: any) => {
-        const parsedResult = typeof result === 'string' ? JSON.parse(result) : result;
-        if (parsedResult && Array.isArray(parsedResult)) {
-          this.currentInstallations[pluginName] = initialState;
-          this.currentInstallations$.next(this.currentInstallations);
-          const newestVersion = parsedResult[0];
-          const key = newestVersion.changetoken;
-          payload.key = `etc/plugins/static-web/${pluginItem.pluginId}/${key}.json`;
-          return from(
-            this.apiFactory.documentsApi.deleteDocument({
-              bucket: payload.bucket,
-              key: payload.key,
-            }),
-          ).pipe(
-            tap((v) => {
-              this.currentInstallations[pluginName] = {
-                ...initialState,
-                state: 'FINISHED',
-              };
-              this.currentInstallations$.next(this.currentInstallations);
-            }),
-          );
-        }
-        return throwError(() => new Error('No Plugin List found'));
-      }),
-      tap(() => {
-        this.pluginInstallFinished(pluginName);
-        this.reloadPlugin();
-      }),
-      catchError((err) => {
-        return throwError(err);
-      }),
-    );
+    return this.apiFactory
+      .fromApi(() =>
+        this.apiFactory.documentsApi.listDocumentJson({
+          bucket: payload.bucket,
+          prefix: payload.prefix,
+          orderby: payload.orderby,
+        }),
+      )
+      .pipe(
+        mergeMap((result: any) => {
+          const parsedResult = typeof result === 'string' ? JSON.parse(result) : result;
+          if (parsedResult && Array.isArray(parsedResult)) {
+            this.currentInstallations[pluginName] = initialState;
+            this.currentInstallations$.next(this.currentInstallations);
+            const newestVersion = parsedResult[0];
+            const key = newestVersion.changetoken;
+            payload.key = `etc/plugins/static-web/${pluginItem.pluginId}/${key}.json`;
+            return this.apiFactory
+              .fromApi(() =>
+                this.apiFactory.documentsApi.deleteDocument({
+                  bucket: payload.bucket,
+                  key: payload.key,
+                }),
+              )
+              .pipe(
+                tap((v) => {
+                  this.currentInstallations[pluginName] = {
+                    ...initialState,
+                    state: 'FINISHED',
+                  };
+                  this.currentInstallations$.next(this.currentInstallations);
+                }),
+              );
+          }
+          return throwError(() => new Error('No Plugin List found'));
+        }),
+        tap(() => {
+          this.pluginInstallFinished(pluginName);
+          this.reloadPlugin();
+        }),
+        catchError((err) => {
+          return throwError(err);
+        }),
+      );
   }
 
   public installPlugin(pluginItem: PluginModel): Observable<any> {
@@ -463,27 +473,29 @@ export class PluginService {
         return throwError(() => createErrorState());
       }
       const { id } = state.plugin;
-      return from(
-        this.apiFactory.pluginV1Api.pluginContentRaw({
-          product: 'ladon',
-          channel: this.channel as any,
-          id,
-        }),
-      ).pipe(
-        mergeMap(async (response): Promise<PluginInstallState> => {
-          const body = await response.value();
-          return {
-            ...state,
-            mode: 'DOWNLOAD' as const,
-            state: 'DONE' as const,
-            progress: 100,
-            content: {
-              headers: response.raw.headers,
-              body,
-            },
-          };
-        }),
-      );
+      return this.apiFactory
+        .fromApi(() =>
+          this.apiFactory.pluginV1Api.pluginContentRaw({
+            product: 'ladon',
+            channel: this.channel as any,
+            id,
+          }),
+        )
+        .pipe(
+          mergeMap(async (response): Promise<PluginInstallState> => {
+            const body = await response.value();
+            return {
+              ...state,
+              mode: 'DOWNLOAD' as const,
+              state: 'DONE' as const,
+              progress: 100,
+              content: {
+                headers: response.raw.headers,
+                body,
+              },
+            };
+          }),
+        );
     } catch (e) {
       return throwError(() => createErrorState());
     }
@@ -527,49 +539,55 @@ export class PluginService {
   }
 
   private startInstallation(pluginItem: PluginModel): Observable<PluginInstallState | undefined> {
-    return from(this.apiFactory.transactionApi.startTransaction()).pipe(
-      map((response) => {
-        if (response) {
-          return {
-            state: 'PENDING',
-            progress: 0,
-            mode: 'DOWNLOAD',
-            content: null,
-            plugin: pluginItem,
-            transactionID: response.txId,
-          } as PluginInstallState;
-        }
-        return undefined;
-      }),
-    );
+    return this.apiFactory
+      .fromApi(() => this.apiFactory.transactionApi.startTransaction())
+      .pipe(
+        map((response) => {
+          if (response) {
+            return {
+              state: 'PENDING',
+              progress: 0,
+              mode: 'DOWNLOAD',
+              content: null,
+              plugin: pluginItem,
+              transactionID: response.txId,
+            } as PluginInstallState;
+          }
+          return undefined;
+        }),
+      );
   }
 
   private finishInstallation(pluginState: PluginInstallState): Observable<PluginInstallState | undefined> {
     if (!pluginState.transactionID) return of(undefined);
-    return from(
-      this.apiFactory.transactionApi.commitTransaction({
-        txId: pluginState.transactionID,
-      }),
-    ).pipe(
-      delay(10),
-      mergeMap((result: { success?: boolean }) => {
-        const state: PluginInstallState = {
-          ...pluginState,
-          state: 'FINISHED',
-          progress: 100,
-          mode: 'UPLOAD',
-          content: null,
-        };
-        return result.success ? of(state) : throwError(() => state);
-      }),
-    );
+    const txId = pluginState.transactionID;
+    return this.apiFactory
+      .fromApi(() =>
+        this.apiFactory.transactionApi.commitTransaction({
+          txId,
+        }),
+      )
+      .pipe(
+        delay(10),
+        mergeMap((result: { success?: boolean }) => {
+          const state: PluginInstallState = {
+            ...pluginState,
+            state: 'FINISHED',
+            progress: 100,
+            mode: 'UPLOAD',
+            content: null,
+          };
+          return result.success ? of(state) : throwError(() => state);
+        }),
+      );
   }
 
   private rollbackInstallation(pluginState: PluginInstallState): Observable<{ success?: boolean } | undefined> {
-    return pluginState.transactionID
-      ? from(
+    const txId = pluginState.transactionID;
+    return txId
+      ? this.apiFactory.fromApi(() =>
           this.apiFactory.transactionApi.rollbackTransaction({
-            txId: pluginState.transactionID,
+            txId,
           }),
         )
       : of(undefined);

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abrechnungsdokumente</title>
+  <script>
+      window.ladonStaticConfig = {
+          webComponents: true,
+          webComponentOptions: {
+              source: 'local',
+          },
+      };
+  </script>
+  <script type="module" src="./../../ladon-static.mjs"></script>
+  <link rel="stylesheet" href="/static//public/abrechnungsdokumente/styles.css"/>
+
+</head>
+<body class="bg-base-200">
+<div id="status"></div>
+<div class="grid">
+  <div class="card">
+    <div class="card-header">
+      Suche
+      <button type="submit" form="sf" class="btn btn-primary btn-sm gap-1">Suchen</button>
+    </div>
+    <div class="card-content">
+      <form id="sf" name="searchForm">
+        <div class="form__item">
+          <label for="vbnummer">VB Nummer*</label>
+          <input type="search" tabindex="1" id="vbnummer" required name="vbnummer" class="input input-secondary input-sm w-64 pr-8 focus:ring-0"/>
+        </div>
+        <div class="form__item">
+          <label for="from">Von*</label>
+          <input type="date" required name="von" id="from" tabindex="2"class="input input-secondary input-sm w-64 pr-8 focus:ring-0"/>
+        </div>
+        <div class="form__item">
+          <label for="to">Bis*</label>
+          <input type="date" required name="bis" id="to" tabindex="3" class="input input-secondary input-sm w-64 pr-8 focus:ring-0"/>
+        </div>
+
+        <div class="form__item">
+          <label for="search">Suchen</label>
+          <input type="search" name="suchen" id="search" tabindex="4" class="input input-secondary input-sm w-64 pr-8 focus:ring-0"/>
+        </div>
+
+        <div class="form__item">
+          <label for="filter">Negativfilter</label>
+          <input type="search" name="filter" id="filter" tabindex="5" class="input input-secondary input-sm w-64 pr-8 focus:ring-0"/>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="list card">
+    <div class="card-header">Dateien</div>
+    <div class="card-content">
+      <div id="no-results"></div>
+      <ul></ul>
+    </div>
+    <div class="card-footer">
+      <button class="clear" id="select-all">Alles übernehmen</button>
+    </div>
+  </div>
+
+  <div class="clipboard pdfviewer card">
+    <div class="card-header">
+      <button class="clear">Zwischenablage</button>
+      <button class="clear">Vorschau</button>
+    </div>
+    <div class="card-content">
+      <ladon-clipboard></ladon-clipboard>
+      <ladon-pdfviewer></ladon-pdfviewer>
+    </div>
+  </div>
+</div>
+
+<template id="list-tmp">
+  <li draggable="true">
+    <img src="" class="icon"/>
+    <span></span>
+  </li>
+</template>
+
+<script type="module">
+    const loginUrl = `/ui/draco/ladon-core/login?redirectUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+
+    try {
+        const ladonStatic = await window.ladonStaticReady;
+        const isAuthenticated = ladonStatic.auth.ensureAuthenticated({
+            redirectTo: loginUrl,
+        });
+        if (!isAuthenticated) {
+            status.textContent = 'Redirecting to login...';
+        } else {
+            const documentsApi = ladonStatic.auth.createAuthenticatedApi(ladonStatic.fetchClient.DocumentsApi);
+
+            let spinner, taskApi;
+            let payloadToPass = undefined;
+            const form = document.forms.searchForm;
+            const noresultsEl = document.getElementById("no-results");
+            const wccEl = document.querySelector("ladon-clipboard");
+            const wcpvEl = document.querySelector("ladon-pdfviewer");
+            const selectAllButton = document.querySelector("#select-all");
+            const headerControlBtns = document.querySelectorAll(".clipboard.card > .card-header > button");
+
+            headerControlBtns.forEach((btn) => {
+                if (btn.innerText === "Zwischenablage") {
+                    btn.classList.add("active");
+                }
+                btn.addEventListener("click", toggleView);
+            });
+
+            wccEl.classList.add("visible");
+
+            selectAllButton.disabled = true;
+
+            selectAllButton.addEventListener("click", () => {
+                if (payloadToPass) {
+                    const detail = JSON.stringify(payloadToPass);
+                    window.dispatchEvent(new CustomEvent("ladon:clipboard:documents:add", {detail}));
+                }
+            });
+
+            wccEl.addEventListener("dragover", (event) => {
+                const {currentTarget} = event;
+                currentTarget
+                    .querySelector(".container")
+                    .style.setProperty(
+                    "--drop-zone-bg-color",
+                    "linear-gradient(transparent, hsl(212deg 58% 95%))",
+                );
+            });
+
+            wccEl.addEventListener("dragleave", (event) => {
+                const {currentTarget} = event;
+                currentTarget
+                    .querySelector(".container")
+                    .style.setProperty("--drop-zone-bg-color", "transparent");
+            });
+
+            wccEl.addEventListener("drop", (event) => {
+                const {currentTarget} = event;
+                currentTarget
+                    .querySelector(".container")
+                    .style.setProperty("--drop-zone-bg-color", "transparent");
+            });
+
+            function toggleView() {
+                this.classList.add("active");
+                if (this.innerText === "Zwischenablage") {
+                    this.nextElementSibling.classList.remove("active");
+                    this.closest(".card").querySelector("ladon-pdfviewer").classList.remove("visible");
+                    this.closest(".card").querySelector("ladon-clipboard").classList.add("visible");
+                }
+
+                if (this.innerText === "Vorschau") {
+                    this.previousElementSibling.classList.remove("active");
+                    this.closest(".card").querySelector("ladon-clipboard").classList.remove("visible");
+                    this.closest(".card").querySelector("ladon-pdfviewer").classList.add("visible");
+                }
+            }
+
+            function dateSorter(a, b) {
+                if (a.created < b.created) {
+                    return 1;
+                }
+
+                if (a.created > b.created) {
+                    return -1;
+                }
+
+                return 0;
+            }
+
+            const clearListItems = (parentElement) => {
+                if (parentElement.childElementCount !== 0) {
+                    let c = parentElement.lastElementChild;
+                    c.removeEventListener("click", performItemClick);
+                    c.removeEventListener("dragend", onDragEnd);
+                    c.removeEventListener("dragstart", onDragStart);
+
+                    while (c) {
+                        parentElement.removeChild(c);
+                        c = parentElement.lastElementChild;
+                    }
+                }
+            };
+
+            const utility = {
+                stripToFilename(payload) {
+                    if (payload) {
+                        if (payload.endsWith("/")) {
+                            return payload.slice(0, -1);
+                        }
+                        return payload.slice(payload.lastIndexOf("/") + 1);
+                    }
+
+                    return payload;
+                },
+
+                getFullMonth(month) {
+                    let m = month + 1;
+                    if (m < 10) {
+                        return `0${m}`;
+                    }
+
+                    return m;
+                },
+
+                stripToIcon(payload) {
+                    if (payload) {
+                        if (payload.endsWith("/")) {
+                            return `/ui/icons/small/types/folder.svg`;
+                        }
+
+                        const fileType = payload.slice(payload.lastIndexOf(".") + 1);
+                        return `/ui/icons/small/file/${fileType}.svg`;
+                    }
+
+                    return payload;
+                },
+
+                dateFormater(string, withTime = false) {
+                    if (string.startsWith("-")) return "";
+                    const date = new Date(string);
+                    let options = {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                    };
+
+                    if (withTime) {
+                        options = Object.assign({...options}, {hour: "numeric", minute: "numeric"});
+                    }
+
+                    return new Intl.DateTimeFormat("de-DE", options).format(date);
+                },
+            };
+
+            const date = new Date();
+            const vonDefaultDate = `${date.getFullYear() - 1}-${utility.getFullMonth(date.getMonth())}-01`;
+            const vonInputEl = document.querySelector('input[type="date"][name="von"]');
+            const bisInputEl = document.querySelector('input[type="date"][name="bis"]');
+            vonInputEl.value = vonDefaultDate;
+            bisInputEl.value = date.toISOString().split("T")[0];
+
+            /*
+             * Api definitions
+             */
+            async function listDocuments(bucket, limit = 10000, prefix = undefined) {
+                const response = await documentsApi.listDocuments({
+                    bucket,
+                    limit,
+                    prefix,
+                    orderby: "name",
+                });
+
+                if (response.status === 200) {
+                    return response.data;
+                }
+
+                throw response;
+            }
+
+            async function listDocumentsWithRange(bucket, from, to, term = undefined, limit = 10000) {
+                const payload = {
+                    bucket, from, to, limit
+                }
+                if (term) {
+                    payload.term = term;
+                }
+                const response = await documentsApi.datepathsearch(payload);
+                if (response.status === 200) {
+                    return response.json();
+                }
+                throw response;
+            }
+
+            async function getDocumentMeta(bucket, key) {
+                const response = await documentsApi.getDocumentMeta({bucket, key});
+
+                if (response.status === 200) {
+                    return response.data;
+                }
+
+                throw response;
+            }
+
+            /*
+             * Api definitions END
+             */
+
+            function onDragStart(event, data) {
+                const {dataTransfer, target} = event;
+                dataTransfer.setData("text", JSON.stringify(data));
+                target.classList.add("dragging");
+            }
+
+            function onDragEnd(event) {
+                const {target} = event;
+                target.classList.remove("dragging");
+            }
+
+            function loadUnknown() {
+                this.src = `/ui/icons/small/file/unknown.svg`;
+            }
+
+            function showParagrahInList(message) {
+                const pEl = document.createElement("p");
+                pEl.innerText = message;
+                document.querySelector(".list .card-content").append(pEl);
+            }
+
+            function performItemClick($event) {
+                const {bucket, key, path} = this.dataset;
+                const lis = this.parentNode.querySelectorAll("li");
+                lis.forEach((li) => {
+                    if (li.classList.contains("active")) {
+                        li.classList.toggle("active");
+                    }
+                });
+
+                this.classList.add("active");
+                wcpvEl.pdf = path;
+            }
+
+            function performBtnClick() {
+                const {path, key, bucket} = this.dataset;
+
+                if (key.endsWith("/")) {
+                    const ce = new CustomEvent("ladon:mf:navigate", {
+                        detail: {
+                            id: "@mind/mf-ladon-docmanager",
+                            path,
+                        },
+                    });
+                    window.dispatchEvent(ce);
+                    return;
+                }
+            }
+
+            async function generateListFromPayload(payload) {
+                const ulEl = document.querySelector(".list ul");
+                const liTemplate = document.querySelector("#list-tmp");
+
+                if (payload instanceof Array && payload.length !== 0) {
+                    payload.forEach((file) => {
+                        const {bucket, key, created, path} = file;
+                        const template = liTemplate.content.cloneNode(true);
+                        const li = template.querySelector("li");
+                        li.dataset.bucket = bucket;
+                        li.dataset.key = key;
+                        li.dataset.path = path;
+                        li.setAttribute("title", path);
+                        li.querySelector(".icon + span").innerText = utility.stripToFilename(key);
+                        li.querySelector(".icon").src = utility.stripToIcon(key);
+                        li.querySelector(".icon").addEventListener("error", loadUnknown);
+                        li.addEventListener("click", performItemClick);
+                        li.addEventListener("dragstart", (event) => {
+                            onDragStart(event, file);
+                        });
+                        li.addEventListener("dragend", onDragEnd);
+                        ulEl.append(template);
+                    });
+                    payloadToPass = payload;
+                    selectAllButton.disabled = false;
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const {target} = event;
+
+                const formData = new FormData(target);
+                const ulEl = document.querySelector(".list ul");
+
+                clearListItems(ulEl);
+                noresultsEl.innerText = "";
+                listDocumentsWithRange(
+                    formData.get("vbnummer"),
+                    formData.get("von"),
+                    formData.get("bis"),
+                    formData.get("suchen"),
+                )
+                    .then((response) => {
+                        if (formData.get("filter").length !== 0) {
+                            return generateListFromPayload(
+                                formData
+                                    .get("filter")
+                                    .split(",")
+                                    .reduce(
+                                        (accumulator, currentValue) =>
+                                            accumulator.filter(
+                                                (item) => !item.name.includes(currentValue.trim()),
+                                            ),
+                                        response,
+                                    ),
+                            );
+                        }
+                        return generateListFromPayload(response);
+                    })
+                    .then((response) => {
+                        if (!response) {
+                            payloadToPass = undefined;
+                            selectAllButton.disabled = true;
+                            noresultsEl.innerText = "Kein Suchergebniss gefunden";
+                        }
+                    })
+                    .catch(({response}) => {
+                        payloadToPass = undefined;
+                        selectAllButton.disabled = true;
+
+                        if (response.status === 404) {
+                            noresultsEl.innerText = "Kein Suchergebniss gefunden";
+                            return;
+                        }
+
+                        alert("Entschuldigung, es ist ein Fehler aufgetretn");
+                    })
+                    .finally(() => {
+                        //     spinner.hide();
+                    });
+            });
+
+        }
+    } catch (error) {
+        console.error(error);
+    }
+</script>
+</body>
+</html>

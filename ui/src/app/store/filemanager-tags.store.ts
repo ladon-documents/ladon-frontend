@@ -1,14 +1,14 @@
 import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, from, pipe, switchMap, tap } from 'rxjs';
-import { Document, Tag } from '@ladon/api';
+import { catchError, EMPTY, pipe, switchMap, tap } from 'rxjs';
+import { DocumentModel, TagModel } from '@ladon/api';
 import { ToastService } from '../shared/services/toast.service';
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
 export interface FilemanagerTagsState {
   documentId: string | null;
-  tags: Tag[];
+  tags: TagModel[];
   isLoading: boolean;
   isMutating: boolean;
   error: string | null;
@@ -63,7 +63,7 @@ export const FilemanagerTagsStore = signalStore(
         patchState(store, initialState);
       },
 
-      setDocument(document: Document | null) {
+      setDocument(document: DocumentModel | null) {
         if (document?.isFolder) {
           patchState(store, {
             documentId: null,
@@ -107,26 +107,28 @@ export const FilemanagerTagsStore = signalStore(
             });
           }),
           switchMap((documentId) =>
-            from(
-              apiFactory.tagmanagerApi.tags({
-                id: documentId,
-              }),
-            ).pipe(
-              tap((tags) => {
-                patchState(store, {
-                  tags,
-                  isLoading: false,
-                  error: null,
-                });
-              }),
-              catchError((error) => {
-                patchState(store, {
-                  isLoading: false,
-                  error: toErrorMessage(error),
-                });
-                return EMPTY;
-              }),
-            ),
+            apiFactory
+              .fromApi(() =>
+                apiFactory.tagmanagerApi.tags({
+                  id: documentId,
+                }),
+              )
+              .pipe(
+                tap((tags) => {
+                  patchState(store, {
+                    tags,
+                    isLoading: false,
+                    error: null,
+                  });
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isLoading: false,
+                    error: toErrorMessage(error),
+                  });
+                  return EMPTY;
+                }),
+              ),
           ),
         ),
       ),
@@ -158,36 +160,38 @@ export const FilemanagerTagsStore = signalStore(
               error: null,
             });
 
-            return from(
-              apiFactory.tagmanagerApi.addTags({
-                id: documentId,
-                value: trimmedValue,
-              }),
-            ).pipe(
-              switchMap(() =>
-                from(
-                  apiFactory.tagmanagerApi.tags({
-                    id: documentId,
-                  }),
+            return apiFactory
+              .fromApi(() =>
+                apiFactory.tagmanagerApi.addTags({
+                  id: documentId,
+                  value: trimmedValue,
+                }),
+              )
+              .pipe(
+                switchMap(() =>
+                  apiFactory.fromApi(() =>
+                    apiFactory.tagmanagerApi.tags({
+                      id: documentId,
+                    }),
+                  ),
                 ),
-              ),
-              tap((tags) => {
-                patchState(store, {
-                  tags,
-                  isMutating: false,
-                  error: null,
-                });
-                toastService.success('Tag wurde hinzugefügt');
-              }),
-              catchError((error) => {
-                patchState(store, {
-                  isMutating: false,
-                  error: toErrorMessage(error),
-                });
-                toastService.error('Fehler beim Hinzufügen des Tags');
-                return EMPTY;
-              }),
-            );
+                tap((tags) => {
+                  patchState(store, {
+                    tags,
+                    isMutating: false,
+                    error: null,
+                  });
+                  toastService.success('Tag wurde hinzugefügt');
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isMutating: false,
+                    error: toErrorMessage(error),
+                  });
+                  toastService.error('Fehler beim Hinzufügen des Tags');
+                  return EMPTY;
+                }),
+              );
           }),
         ),
       ),
@@ -205,35 +209,37 @@ export const FilemanagerTagsStore = signalStore(
               error: null,
             });
 
-            return from(
-              apiFactory.tagmanagerApi.deleteTag({
-                tagid: tagId,
-              }),
-            ).pipe(
-              switchMap(() =>
-                from(
-                  apiFactory.tagmanagerApi.tags({
-                    id: documentId,
-                  }),
+            return apiFactory
+              .fromApi(() =>
+                apiFactory.tagmanagerApi.deleteTag({
+                  tagid: tagId,
+                }),
+              )
+              .pipe(
+                switchMap(() =>
+                  apiFactory.fromApi(() =>
+                    apiFactory.tagmanagerApi.tags({
+                      id: documentId,
+                    }),
+                  ),
                 ),
-              ),
-              tap((tags) => {
-                patchState(store, {
-                  tags,
-                  isMutating: false,
-                  error: null,
-                });
-                toastService.success('Tag wurde entfernt');
-              }),
-              catchError((error) => {
-                patchState(store, {
-                  isMutating: false,
-                  error: toErrorMessage(error),
-                });
-                toastService.error('Fehler beim Entfernen des Tags');
-                return EMPTY;
-              }),
-            );
+                tap((tags) => {
+                  patchState(store, {
+                    tags,
+                    isMutating: false,
+                    error: null,
+                  });
+                  toastService.success('Tag wurde entfernt');
+                }),
+                catchError((error) => {
+                  patchState(store, {
+                    isMutating: false,
+                    error: toErrorMessage(error),
+                  });
+                  toastService.error('Fehler beim Entfernen des Tags');
+                  return EMPTY;
+                }),
+              );
           }),
         ),
       ),

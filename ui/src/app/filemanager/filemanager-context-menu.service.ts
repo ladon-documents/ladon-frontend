@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { Document } from '@ladon/api';
+import { DocumentModel } from '@ladon/api';
 import { FavoritesStore } from '../store/favorites.store';
 import { ContextMenuService } from '../shared/services/context-menu.service';
 import { ClipboardStore } from '../store/clipboard.store';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { filemanagerHelper } from './helper/helper';
+import { FilemanagerService } from './filemanager.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ import { filemanagerHelper } from './helper/helper';
 export class FilemanagerContextMenuService {
   readonly favoritesStore = inject(FavoritesStore);
   readonly contextMenuService = inject(ContextMenuService);
+  readonly filemanagerService = inject(FilemanagerService);
   readonly clipboardStore = inject(ClipboardStore);
   readonly filemanagerStore = inject(FilemanagerStore);
 
@@ -19,7 +21,7 @@ export class FilemanagerContextMenuService {
 
   onContextMenu(
     event: MouseEvent,
-    document: Document,
+    document: DocumentModel,
     actions?: {
       editImage?: () => void;
       openEditor?: () => void;
@@ -27,7 +29,7 @@ export class FilemanagerContextMenuService {
       openAudio?: () => void;
       openMedia?: () => void;
     },
-    contextDocuments: Document[] = [document],
+    contextDocuments: DocumentModel[] = [document],
   ) {
     event.preventDefault();
     event.stopPropagation();
@@ -139,35 +141,35 @@ export class FilemanagerContextMenuService {
     this.contextMenuService.show(event.clientX, event.clientY, menuItems);
   }
 
-  private rename(document: Document) {
+  private rename(document: DocumentModel) {
     console.log('Rename:', document.key);
   }
 
-  private copy(documents: Document[]) {
+  private copy(documents: DocumentModel[]) {
     this.clipboardStore.addDocuments(documents);
   }
 
-  private download(document: Document) {
-    //  this.filemanagerStore.get(document);
+  private download(document: DocumentModel) {
+    this.filemanagerService.getDocument(document);
   }
 
-  private copyLink(document: Document) {
+  private copyLink(document: DocumentModel) {
     console.log('Copy link:', document.key);
   }
 
-  private showProperties(document: Document) {
+  private showProperties(document: DocumentModel) {
     console.log('Show properties:', document.key);
   }
 
-  private deleteDocument(document: Document) {
+  private deleteDocument(document: DocumentModel) {
     this.filemanagerStore.deleteDocument(document);
   }
 
-  private deleteDocuments(documents: Document[]) {
+  private deleteDocuments(documents: DocumentModel[]) {
     this.filemanagerStore.deleteDocuments(documents);
   }
 
-  private delete(documents: Document[]) {
+  private delete(documents: DocumentModel[]) {
     if (documents.length > 1) {
       this.deleteDocuments(documents);
       return;
@@ -179,7 +181,7 @@ export class FilemanagerContextMenuService {
     }
   }
 
-  private toggleFavorites(documents: Document[]) {
+  private toggleFavorites(documents: DocumentModel[]) {
     if (documents.length === 0) {
       return;
     }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { pluginTestMock } from '@ladon/tests/plugin-test-object';
@@ -57,7 +57,7 @@ export class PluginMetaService {
   }
 
   private getInstalledPlugins(): Observable<{ [key: string]: string }> {
-    return from(this.apiFactory.pluginmanagerApi.installedPlugins());
+    return this.apiFactory.fromApi(() => this.apiFactory.pluginmanagerApi.installedPlugins());
   }
 
   private mapPluginData(data: any[]): Array<any> {

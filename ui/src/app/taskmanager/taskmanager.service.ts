@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Document, TaskStatus } from '@ladon/api';
+import { DocumentModel, TaskStatusModel } from '@ladon/api';
 import { map } from 'rxjs/operators';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
 @Injectable({
@@ -15,22 +15,24 @@ export class TaskmanagerService {
   ) {}
 
   filterAvailableTasks(filterQuery?: string): Observable<string[]> {
-    return from(this.apiFactory.tasksApi.getAvailableTasks()).pipe(
-      map((tasks: string[]) => {
-        if (filterQuery) {
-          return tasks.filter((task) => task.includes(filterQuery));
-        }
-        return tasks;
-      }),
-    );
+    return this.apiFactory
+      .fromApi(() => this.apiFactory.tasksApi.getAvailableTasks())
+      .pipe(
+        map((tasks: string[]) => {
+          if (filterQuery) {
+            return tasks.filter((task) => task.includes(filterQuery));
+          }
+          return tasks;
+        }),
+      );
   }
 
-  retrieveActiveTasks(): Observable<TaskStatus[]> {
-    return from(this.apiFactory.tasksApi.getActiveTasks() as Promise<TaskStatus[]>);
+  retrieveActiveTasks(): Observable<TaskStatusModel[]> {
+    return this.apiFactory.fromApi(() => this.apiFactory.tasksApi.getActiveTasks() as Promise<TaskStatusModel[]>);
   }
 
   taskStart(name: string): Observable<{ [key: string]: string }> {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.tasksApi.startTask({
         name,
         requestBody: {},
@@ -39,24 +41,25 @@ export class TaskmanagerService {
   }
 
   stopTask(id: string): Observable<string> {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.tasksApi.stopTask({
         id,
       }),
     );
   }
 
-  retrieveLogs(name: string): Observable<Document[]> {
-    return from(
-      this.apiFactory.documentsApi.listDocuments({
-        bucket: '_system',
-        prefix: `tasks/${name}/`,
-      }) as Promise<Document[]>,
+  retrieveLogs(name: string): Observable<DocumentModel[]> {
+    return this.apiFactory.fromApi(
+      () =>
+        this.apiFactory.documentsApi.listDocuments({
+          bucket: '_system',
+          prefix: `tasks/${name}/`,
+        }) as Promise<DocumentModel[]>,
     );
   }
 
   retrieveLog(bucket: string, key: string): Observable<Blob> {
-    return from(
+    return this.apiFactory.fromApi(() =>
       this.apiFactory.documentsApi.getDocument({
         bucket,
         key,
@@ -64,7 +67,7 @@ export class TaskmanagerService {
     );
   }
 
-  retrieveMockJSON(name: string): Observable<Document[]> {
-    return this.http.get<Document[]>(`public/mocks/${name}.json`);
+  retrieveMockJSON(name: string): Observable<DocumentModel[]> {
+    return this.http.get<DocumentModel[]>(`public/mocks/${name}.json`);
   }
 }

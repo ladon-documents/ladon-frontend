@@ -37,6 +37,17 @@
     "type": "main",
     "index": 32
   },
+
+  {
+    "label": "Usermanager",
+    "target": "internal",
+    "component": "usermanager",
+    "path": "usermanager",
+    "icon": "heroUsers",
+    "hasChildren": true,
+    "type": "main",
+    "index": 33
+  },
   {
     "label": "Static Example",
     "target": "static",
@@ -47,14 +58,13 @@
     "index": 35
   },
   {
-    "label": "Usermanager",
-    "target": "internal",
-    "component": "usermanager",
-    "path": "usermanager",
-    "icon": "heroUsers",
-    "hasChildren": true,
+    "label": "mp3 Player",
+    "target": "static",
+    "component": "Staticweb",
+    "path": "./public/html/authenticated.html",
+    "icon": "heroGlobeAlt",
     "type": "main",
-    "index": 33
+    "index": 36
   },
   {
     "label": "AUTH.LOGOUT",

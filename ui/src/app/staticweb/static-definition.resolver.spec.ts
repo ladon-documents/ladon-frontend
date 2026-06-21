@@ -84,6 +84,15 @@ describe('StaticDefinitionResolver', () => {
     expect(result.definition?.allowScripts).toBeTrue();
   });
 
+  it('returns local trusted fallback for the authenticated UI Static test page', () => {
+    policyProvider.resolve.and.returnValue({ kind: 'missing' });
+    const result = resolver.resolve({ page: './public/html/authenticated.html' });
+    expect(result.kind).toBe('allow');
+    expect(result.definition?.source).toBe('/public/html/authenticated.html');
+    expect(result.definition?.mode).toBe('trusted');
+    expect(result.definition?.allowScripts).toBeTrue();
+  });
+
   it('defaults valid legacy sources without fallback to display-only', () => {
     policyProvider.resolve.and.returnValue({ kind: 'missing' });
     const result = resolver.resolve({ page: '/public/html/unknown.html' });

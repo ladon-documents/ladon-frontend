@@ -6,7 +6,7 @@ import { StaticPolicyResult, StaticResolveInput } from './staticweb.types';
 
 @Injectable({ providedIn: 'root' })
 export class StaticDefinitionResolver {
-  private readonly localTrustedSources = new Set(['/public/html/test.html']);
+  private readonly localTrustedSources = new Set(['/public/html/test.html', '/public/html/authenticated.html']);
 
   constructor(
     private readonly policyProvider: StaticPolicyProviderService,

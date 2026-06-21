@@ -97,6 +97,8 @@ Example:
 Validation rules:
 
 - `id` is optional in source JSON. If omitted, the registry generates `static:<staticId>`.
+- If `id` is present, it must exactly equal `static:<staticId>`. Any other value is invalid.
+- The effective navigation ID is always the exact generated or validated value `static:<staticId>`.
 - `target` must be `static`.
 - `path` must equal the Static ID.
 - `component`, if present, must equal `Staticweb`. The dynamic route builder must ignore it for Static entries.

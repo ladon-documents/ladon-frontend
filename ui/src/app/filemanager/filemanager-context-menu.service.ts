@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { FavoritesStore } from '../store/favorites.store';
 import { ContextMenuService } from '../shared/services/context-menu.service';
 import { ClipboardStore } from '../store/clipboard.store';
@@ -21,7 +21,7 @@ export class FilemanagerContextMenuService {
 
   onContextMenu(
     event: MouseEvent,
-    document: DocumentModel,
+    document: Document,
     actions?: {
       editImage?: () => void;
       openEditor?: () => void;
@@ -29,7 +29,7 @@ export class FilemanagerContextMenuService {
       openAudio?: () => void;
       openMedia?: () => void;
     },
-    contextDocuments: DocumentModel[] = [document],
+    contextDocuments: Document[] = [document],
   ) {
     event.preventDefault();
     event.stopPropagation();
@@ -141,35 +141,35 @@ export class FilemanagerContextMenuService {
     this.contextMenuService.show(event.clientX, event.clientY, menuItems);
   }
 
-  private rename(document: DocumentModel) {
+  private rename(document: Document) {
     console.log('Rename:', document.key);
   }
 
-  private copy(documents: DocumentModel[]) {
+  private copy(documents: Document[]) {
     this.clipboardStore.addDocuments(documents);
   }
 
-  private download(document: DocumentModel) {
+  private download(document: Document) {
     this.filemanagerService.getDocument(document);
   }
 
-  private copyLink(document: DocumentModel) {
+  private copyLink(document: Document) {
     console.log('Copy link:', document.key);
   }
 
-  private showProperties(document: DocumentModel) {
+  private showProperties(document: Document) {
     console.log('Show properties:', document.key);
   }
 
-  private deleteDocument(document: DocumentModel) {
+  private deleteDocument(document: Document) {
     this.filemanagerStore.deleteDocument(document);
   }
 
-  private deleteDocuments(documents: DocumentModel[]) {
+  private deleteDocuments(documents: Document[]) {
     this.filemanagerStore.deleteDocuments(documents);
   }
 
-  private delete(documents: DocumentModel[]) {
+  private delete(documents: Document[]) {
     if (documents.length > 1) {
       this.deleteDocuments(documents);
       return;
@@ -181,7 +181,7 @@ export class FilemanagerContextMenuService {
     }
   }
 
-  private toggleFavorites(documents: DocumentModel[]) {
+  private toggleFavorites(documents: Document[]) {
     if (documents.length === 0) {
       return;
     }

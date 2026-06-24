@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { take } from 'rxjs';
 import { BucketStatsExtended } from '../interfaces/bucket-stats';
-import { BucketUiItemModel, NewBucketModel } from '@ladon/api';
+import { BucketUiItem, NewBucket } from '@ladon/api';
 import { FilemanagerStore } from '../store/filemanager.store';
 import { LadonRouterService } from '../services/ladon-router.service';
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
@@ -12,18 +12,18 @@ import { FetchApiFactory } from '../services/api/fetch-api.factory';
 export class BucketsService {
   readonly #filemanagerStore = inject(FilemanagerStore);
   readonly apiFactory = inject(FetchApiFactory);
-  private bucketsListSignal = signal<BucketUiItemModel[]>([]);
+  private bucketsListSignal = signal<BucketUiItem[]>([]);
   private bucketStatsSignal = signal<BucketStatsExtended | undefined>(undefined);
-  private _bucketList = signal<BucketUiItemModel[]>([]);
+  private _bucketList = signal<BucketUiItem[]>([]);
 
   constructor(private ladonRouterService: LadonRouterService) {}
 
   getBuckets() {
-    return this.apiFactory.fromApi(() => this.apiFactory.uiApi.listBuckets({}) as Promise<BucketUiItemModel[]>);
+    return this.apiFactory.fromApi(() => this.apiFactory.uiApi.listBuckets({}) as Promise<BucketUiItem[]>);
   }
 
   createBucket(bucketid: string) {
-    const newBucket: NewBucketModel = {
+    const newBucket: NewBucket = {
       bucketid,
       versioned: 'false',
       favourite: 'false',
@@ -36,7 +36,7 @@ export class BucketsService {
       () =>
         this.apiFactory.uiApi.listBuckets({
           filter: bucketName,
-        }) as Promise<BucketUiItemModel[]>,
+        }) as Promise<BucketUiItem[]>,
     );
   }
 
@@ -60,11 +60,11 @@ export class BucketsService {
   toggleFavoriteBuckets(isFavorite: boolean) {
     if (isFavorite) {
       const filteredBucketList = this._bucketList()?.filter(
-        (bucket: BucketUiItemModel) => bucket.favourite === isFavorite,
-      ) as BucketUiItemModel[];
+        (bucket: BucketUiItem) => bucket.favourite === isFavorite,
+      ) as BucketUiItem[];
       this.bucketsListSignal.set(filteredBucketList);
     } else {
-      this.bucketsListSignal.set(this._bucketList() as BucketUiItemModel[]);
+      this.bucketsListSignal.set(this._bucketList() as BucketUiItem[]);
     }
   }
 
@@ -72,7 +72,7 @@ export class BucketsService {
     this.#filemanagerStore.navigateToFilemanagerWithBucket(bucket);
   }
 
-  set bucket(bucket: BucketUiItemModel) {
+  set bucket(bucket: BucketUiItem) {
     if (!bucket?.id) return;
     this.getStats(bucket.id)
       .pipe(take(1))

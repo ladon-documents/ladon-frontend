@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { DocumentModel, TaskStatusModel } from '@ladon/api';
+import { Document, TaskStatus } from '@ladon/api';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
@@ -27,8 +27,8 @@ export class TaskmanagerService {
       );
   }
 
-  retrieveActiveTasks(): Observable<TaskStatusModel[]> {
-    return this.apiFactory.fromApi(() => this.apiFactory.tasksApi.getActiveTasks() as Promise<TaskStatusModel[]>);
+  retrieveActiveTasks(): Observable<TaskStatus[]> {
+    return this.apiFactory.fromApi(() => this.apiFactory.tasksApi.getActiveTasks() as Promise<TaskStatus[]>);
   }
 
   taskStart(name: string): Observable<{ [key: string]: string }> {
@@ -48,13 +48,13 @@ export class TaskmanagerService {
     );
   }
 
-  retrieveLogs(name: string): Observable<DocumentModel[]> {
+  retrieveLogs(name: string): Observable<Document[]> {
     return this.apiFactory.fromApi(
       () =>
         this.apiFactory.documentsApi.listDocuments({
           bucket: '_system',
           prefix: `tasks/${name}/`,
-        }) as Promise<DocumentModel[]>,
+        }) as Promise<Document[]>,
     );
   }
 
@@ -67,7 +67,7 @@ export class TaskmanagerService {
     );
   }
 
-  retrieveMockJSON(name: string): Observable<DocumentModel[]> {
-    return this.http.get<DocumentModel[]>(`public/mocks/${name}.json`);
+  retrieveMockJSON(name: string): Observable<Document[]> {
+    return this.http.get<Document[]>(`public/mocks/${name}.json`);
   }
 }

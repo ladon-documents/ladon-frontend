@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { throwError } from 'rxjs';
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
 
@@ -16,11 +16,11 @@ export class FilemanagerService {
           bucket,
           limit,
           currentFolder: true,
-        }) as Promise<DocumentModel[]>,
+        }) as Promise<Document[]>,
     );
   }
 
-  public getDocument(document: DocumentModel) {
+  public getDocument(document: Document) {
     const { bucket, key } = document;
     if (bucket && key) {
       return this.apiFactory.fromApi(() =>
@@ -33,7 +33,7 @@ export class FilemanagerService {
     return throwError(new Error('Not Found'));
   }
 
-  public saveDocument(document: DocumentModel, content: any) {
+  public saveDocument(document: Document, content: any) {
     const { bucket, key } = document;
     if (bucket && key) {
       return this.apiFactory.fromApi(
@@ -42,13 +42,13 @@ export class FilemanagerService {
             bucket,
             key,
             zipUploadRequest: content,
-          }) as Promise<DocumentModel>,
+          }) as Promise<Document>,
       );
     }
     return throwError(new Error('Not Found'));
   }
 
-  public deleteDocument(document: DocumentModel) {
+  public deleteDocument(document: Document) {
     const { bucket, key } = document;
     if (bucket && key) {
       return this.apiFactory.fromApi(() =>
@@ -61,7 +61,7 @@ export class FilemanagerService {
     return throwError(new Error('Not Found'));
   }
 
-  public moveDocument(document: DocumentModel, targetBucket: string, targetKey: string) {
+  public moveDocument(document: Document, targetBucket: string, targetKey: string) {
     const { bucket, key } = document;
     if (bucket && key && targetBucket && targetKey) {
       return this.apiFactory.fromApi(
@@ -71,13 +71,13 @@ export class FilemanagerService {
             key,
             targetBucket,
             targetKey,
-          }) as Promise<DocumentModel>,
+          }) as Promise<Document>,
       );
     }
     return throwError(new Error('Not Found'));
   }
 
-  public copyDocument(document: DocumentModel, targetBucket: string, targetKey: string) {
+  public copyDocument(document: Document, targetBucket: string, targetKey: string) {
     const { bucket, key } = document;
     if (bucket && key && targetBucket && targetKey) {
       return this.apiFactory.fromApi(
@@ -87,13 +87,13 @@ export class FilemanagerService {
             key,
             targetBucket,
             targetKey,
-          }) as Promise<DocumentModel>,
+          }) as Promise<Document>,
       );
     }
     return throwError(new Error('Not Found'));
   }
 
-  public loadDocumentList(document: DocumentModel, limit: number = 1000) {
+  public loadDocumentList(document: Document, limit: number = 1000) {
     if (document && document.bucket) {
       const bucket = document.bucket;
       return this.apiFactory.fromApi(
@@ -103,7 +103,7 @@ export class FilemanagerService {
             limit,
             prefix: document.key,
             currentFolder: true,
-          }) as Promise<DocumentModel[]>,
+          }) as Promise<Document[]>,
       );
     }
     return throwError(new Error('Not Found'));
@@ -125,7 +125,7 @@ export class FilemanagerService {
           bucket,
           key,
           zipUploadRequest: content,
-        }) as Promise<DocumentModel>,
+        }) as Promise<Document>,
     );
   }
 
@@ -135,7 +135,7 @@ export class FilemanagerService {
         this.apiFactory.documentsApi.putFolder({
           bucket,
           key,
-        }) as Promise<DocumentModel>,
+        }) as Promise<Document>,
     );
   }
 }

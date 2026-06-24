@@ -1,13 +1,13 @@
 {
-  "name": "Ladon",
+  "name": "Ladon Documents",
   "short_name": "Ladon",
   "description": "Ladon document management",
   "id": "../",
   "start_url": "../",
   "scope": "../",
   "display": "standalone",
-  "background_color": "#f3f4f6",
-  "theme_color": "#0f172a",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "./pwa/icon-192.png",
@@ -20,7 +20,7 @@
       "type": "image/png"
     },
     {
-      "src": "./pwa/icon-512.png",
+      "src": "./pwa/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

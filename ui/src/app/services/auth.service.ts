@@ -1,6 +1,6 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { mergeMap, tap } from 'rxjs';
-import { LoginRequestModel, UserModel } from '@ladon/api';
+import { LoginRequest, User } from '@ladon/api';
 import { AuthStorageService } from './auth.storage.service';
 import { FetchApiFactory } from './api/fetch-api.factory';
 
@@ -13,7 +13,7 @@ export class AuthService {
     private authStorage: AuthStorageService,
   ) {}
 
-  public login(Login: LoginRequestModel) {
+  public login(Login: LoginRequest) {
     return this.apiFactory
       .fromApi(() => this.apiFactory.authControllerApi.authenticateUser({ loginRequest: Login as any }))
       .pipe(
@@ -23,11 +23,9 @@ export class AuthService {
           }
         }),
         mergeMap(() => {
-          return this.apiFactory.fromApi(
-            () => this.apiFactory.userControllerApi.getCurrentUser() as Promise<UserModel>,
-          );
+          return this.apiFactory.fromApi(() => this.apiFactory.userControllerApi.getCurrentUser() as Promise<User>);
         }),
-        tap((user: UserModel) => {
+        tap((user: User) => {
           if (!user) {
             throw new Error('Could not load user after login');
           }
@@ -47,7 +45,7 @@ export class AuthService {
 
   public getCurrentUser() {
     return this.apiFactory
-      .fromApi(() => this.apiFactory.userControllerApi.getCurrentUser() as Promise<UserModel>)
+      .fromApi(() => this.apiFactory.userControllerApi.getCurrentUser() as Promise<User>)
       .pipe(
         tap((user) => {
           if (!user) {

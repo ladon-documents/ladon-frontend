@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { UserWrapperModel, RoleEntryModel, RoleWrapperModel, PermissionModel } from '@ladon/api';
+import { Permission, RoleEntry, RoleWrapper, UserEntry, UserWrapper } from '@ladon/api';
 import { FetchApiFactory } from '../../services/api/fetch-api.factory';
 
-export interface MappedRole extends RoleEntryModel {
+export interface MappedRole extends RoleEntry {
   active?: boolean;
 }
 
-export interface MappedPermission extends PermissionModel {
+export interface MappedPermission extends Permission {
   active?: boolean;
 }
 
-export interface MappedUser extends UserWrapperModel {
+export interface MappedUser extends UserEntry {
   active?: boolean;
 }
 
@@ -56,7 +56,7 @@ export class UsermanagerService {
     );
   }
 
-  addUser(user: UserWrapperModel) {
+  addUser(user: UserWrapper) {
     return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.addUser({
         userWrapper: user as any,
@@ -137,7 +137,7 @@ export class UsermanagerService {
     );
   }
 
-  addRole(role: RoleWrapperModel) {
+  addRole(role: RoleWrapper) {
     return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.createRole({
         roleWrapper: role as any,
@@ -161,7 +161,7 @@ export class UsermanagerService {
     );
   }
 
-  addPermission(permission: PermissionModel) {
+  addPermission(permission: Permission) {
     return this.apiFactory.fromApi(() =>
       this.apiFactory.usermanagerApi.createPermissions({
         ladonPermission: permission as any,

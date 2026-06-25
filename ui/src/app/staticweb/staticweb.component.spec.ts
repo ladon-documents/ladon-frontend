@@ -5,6 +5,7 @@ import { BehaviorSubject, of } from 'rxjs';
 
 import { StaticRuntimeFacadeService } from './static-runtime-facade.service';
 import { StaticScriptRunnerService } from './static-script-runner.service';
+import { STATIC_TRUSTED_EXECUTION_ENABLED } from './static-trust-boundary.service';
 import { StaticwebComponent } from './staticweb.component';
 
 describe('StaticwebComponent', () => {
@@ -16,7 +17,7 @@ describe('StaticwebComponent', () => {
   let runtimeFacade: jasmine.SpyObj<StaticRuntimeFacadeService>;
   let scriptRunner: jasmine.SpyObj<StaticScriptRunnerService>;
 
-  function createComponent(page: string | null): void {
+  function createComponent(page: string | null, trustedExecutionEnabled = false): void {
     queryParams = new BehaviorSubject<Params>(page ? { page } : {});
     paramMap = new BehaviorSubject<ParamMap>(convertToParamMap({}));
     http = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
@@ -31,6 +32,7 @@ describe('StaticwebComponent', () => {
         { provide: HttpClient, useValue: http },
         { provide: StaticRuntimeFacadeService, useValue: runtimeFacade },
         { provide: StaticScriptRunnerService, useValue: scriptRunner },
+        { provide: STATIC_TRUSTED_EXECUTION_ENABLED, useValue: trustedExecutionEnabled },
       ],
     });
 
@@ -58,8 +60,23 @@ describe('StaticwebComponent', () => {
     expect(runtimeFacade.install).not.toHaveBeenCalled();
   }));
 
-  it('installs trusted runtime and runs scripts for trusted local fallback', fakeAsync(() => {
+  it('downgrades trusted local fallback to display-only by default', fakeAsync(() => {
     createComponent('./public/html/test.html');
+    http.get.and.returnValue(of('<p>Hello</p><script>window.__trustedStatic=1</script>'));
+
+    fixture.detectChanges();
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    const content = fixture.nativeElement.querySelector('#static-page-content') as HTMLElement;
+    expect(content.textContent).toContain('Hello');
+    expect(content.innerHTML).not.toContain('script');
+    expect(runtimeFacade.install).not.toHaveBeenCalled();
+    expect(scriptRunner.run).not.toHaveBeenCalled();
+  }));
+
+  it('installs trusted runtime and runs scripts for trusted local fallback when explicitly enabled', fakeAsync(() => {
+    createComponent('./public/html/test.html', true);
     http.get.and.returnValue(of('<p>Hello</p><script>window.__trustedStatic=1</script>'));
 
     fixture.detectChanges();

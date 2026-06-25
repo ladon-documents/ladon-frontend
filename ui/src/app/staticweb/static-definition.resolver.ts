@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { StaticPolicyProviderService } from './static-policy-provider.service';
+import { StaticTrustBoundaryService } from './static-trust-boundary.service';
 import { StaticUrlPolicyService } from './static-url-policy.service';
 import { StaticPolicyResult, StaticResolveInput } from './staticweb.types';
 
@@ -11,12 +12,13 @@ export class StaticDefinitionResolver {
   constructor(
     private readonly policyProvider: StaticPolicyProviderService,
     private readonly urlPolicy: StaticUrlPolicyService,
+    private readonly trustBoundary: StaticTrustBoundaryService,
   ) {}
 
   resolve(input: StaticResolveInput): StaticPolicyResult {
     const policyResult = this.policyProvider.resolve(input);
     if (policyResult.kind !== 'missing') {
-      return policyResult;
+      return this.withTrustedStaticGate(policyResult);
     }
 
     if (input.htmlId) {
@@ -30,7 +32,7 @@ export class StaticDefinitionResolver {
     try {
       const source = this.urlPolicy.normalizeLegacySource(input.page);
       if (this.localTrustedSources.has(source)) {
-        return {
+        return this.withTrustedStaticGate({
           kind: 'allow',
           definition: {
             source,
@@ -38,10 +40,10 @@ export class StaticDefinitionResolver {
             allowScripts: true,
             allowedScriptSources: 'same-origin',
           },
-        };
+        });
       }
 
-      return {
+      return this.withTrustedStaticGate({
         kind: 'legacy',
         definition: {
           source,
@@ -49,9 +51,20 @@ export class StaticDefinitionResolver {
           allowScripts: false,
           allowedScriptSources: 'same-origin',
         },
-      };
+      });
     } catch (error) {
       return { kind: 'invalid', error: error instanceof Error ? error.message : 'Invalid static source' };
     }
+  }
+
+  private withTrustedStaticGate(result: StaticPolicyResult): StaticPolicyResult {
+    if (!result.definition) {
+      return result;
+    }
+
+    return {
+      ...result,
+      definition: this.trustBoundary.applyToDefinition(result.definition),
+    };
   }
 }

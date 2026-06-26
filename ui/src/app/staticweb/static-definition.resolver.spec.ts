@@ -1,182 +1,128 @@
 import { TestBed } from '@angular/core/testing';
 
+import { DracoStaticRegistryService } from './draco-static-registry.service';
+import { DracoStaticEntry } from './draco-static.types';
 import { StaticDefinitionResolver } from './static-definition.resolver';
-import { StaticPolicyProviderService } from './static-policy-provider.service';
-import { STATIC_TRUSTED_EXECUTION_ENABLED } from './static-trust-boundary.service';
+import { StaticDefinition } from './staticweb.types';
 
 describe('StaticDefinitionResolver', () => {
   let resolver: StaticDefinitionResolver;
-  let policyProvider: jasmine.SpyObj<StaticPolicyProviderService>;
+  let registry: jasmine.SpyObj<DracoStaticRegistryService>;
 
-  function configureResolver(trustedExecutionEnabled?: boolean): void {
-    TestBed.resetTestingModule();
-    policyProvider = jasmine.createSpyObj<StaticPolicyProviderService>('StaticPolicyProviderService', ['resolve']);
+  const displayOnlyDefinition: StaticDefinition = {
+    id: 'display-static',
+    source: 'display-static/index.html',
+    mode: 'display-only',
+    allowScripts: false,
+    allowedScriptSources: 'same-origin',
+  };
 
-    TestBed.configureTestingModule({
-      providers: [
-        StaticDefinitionResolver,
-        { provide: StaticPolicyProviderService, useValue: policyProvider },
-        ...(trustedExecutionEnabled === undefined
-          ? []
-          : [{ provide: STATIC_TRUSTED_EXECUTION_ENABLED, useValue: trustedExecutionEnabled }]),
-      ],
-    });
+  const trustedDefinition: StaticDefinition = {
+    id: 'trusted-static',
+    source: 'trusted-static/index.html',
+    mode: 'trusted',
+    allowScripts: true,
+    allowedScriptSources: 'same-origin',
+  };
 
-    resolver = TestBed.inject(StaticDefinitionResolver);
+  function createEntry(staticId: string, definition: StaticDefinition): DracoStaticEntry {
+    return {
+      staticId,
+      bucket: 'draco-statics',
+      basePath: `${staticId}/`,
+      html: 'index.html',
+      htmlKey: `${staticId}/index.html`,
+      mode: definition.mode,
+      allowScripts: definition.allowScripts,
+      allowedScriptSources: 'same-origin',
+      definition,
+    };
   }
 
   beforeEach(() => {
-    configureResolver();
-  });
+    registry = jasmine.createSpyObj<DracoStaticRegistryService>('DracoStaticRegistryService', ['getById']);
 
-  it('uses an API allow result before local fallback', () => {
-    policyProvider.resolve.and.returnValue({
-      kind: 'allow',
-      definition: {
-        source: '/server/static/page.html',
-        mode: 'display-only',
-        allowScripts: false,
-        allowedScriptSources: 'same-origin',
-      },
+    TestBed.configureTestingModule({
+      providers: [StaticDefinitionResolver, { provide: DracoStaticRegistryService, useValue: registry }],
     });
 
-    const result = resolver.resolve({ page: './public/html/test.html' });
-
-    expect(result.kind).toBe('allow');
-    expect(result.definition?.source).toBe('/server/static/page.html');
-    expect(result.definition?.mode).toBe('display-only');
+    resolver = TestBed.inject(StaticDefinitionResolver);
   });
 
-  it('does not allow local trusted fallback to override API denial', () => {
-    policyProvider.resolve.and.returnValue({ kind: 'deny', error: 'Denied by server policy' });
+  it('resolves a known static id from the registry', () => {
+    const entry = createEntry('display-static', displayOnlyDefinition);
+    registry.getById.and.returnValue(entry);
 
-    const result = resolver.resolve({ page: './public/html/test.html' });
+    const result = resolver.resolve({ staticId: 'display-static' });
 
-    expect(result.kind).toBe('deny');
+    expect(registry.getById).toHaveBeenCalledOnceWith('display-static');
+    expect(result).toEqual({ kind: 'allow', definition: entry.definition });
+  });
+
+  it('returns missing/error for unknown static ids', () => {
+    registry.getById.and.returnValue(undefined);
+
+    const result = resolver.resolve({ staticId: 'missing-static' });
+
+    expect(registry.getById).toHaveBeenCalledOnceWith('missing-static');
+    expect(result.kind).toBe('missing');
+    expect(result.error).toContain('missing-static');
     expect(result.definition).toBeUndefined();
   });
 
-  it('returns provider invalid result before local fallback', () => {
-    policyProvider.resolve.and.returnValue({ kind: 'invalid', error: 'Invalid by server policy' });
+  it('does not resolve legacy page query sources', () => {
+    registry.getById.and.returnValue(createEntry('display-static', displayOnlyDefinition));
 
     const result = resolver.resolve({ page: './public/html/test.html' });
 
+    expect(registry.getById).not.toHaveBeenCalled();
     expect(result.kind).toBe('invalid');
-    expect(result.error).toBe('Invalid by server policy');
     expect(result.definition).toBeUndefined();
   });
 
-  it('returns provider legacy result before local fallback', () => {
-    policyProvider.resolve.and.returnValue({
-      kind: 'legacy',
-      definition: {
-        source: '/server/static/page.html',
-        mode: 'display-only',
-        allowScripts: false,
-        allowedScriptSources: 'same-origin',
-      },
-    });
+  it('returns display-only when config is not trusted', () => {
+    const entry = createEntry('display-static', displayOnlyDefinition);
+    registry.getById.and.returnValue(entry);
 
-    const result = resolver.resolve({ page: './public/html/test.html' });
-
-    expect(result.kind).toBe('legacy');
-    expect(result.definition?.source).toBe('/server/static/page.html');
-    expect(result.definition?.mode).toBe('display-only');
-  });
-
-  it('downgrades trusted API allow results by default when the runtime trust boundary is disabled', () => {
-    policyProvider.resolve.and.returnValue({
-      kind: 'allow',
-      definition: {
-        source: '/server/static/trusted.html',
-        mode: 'trusted',
-        allowScripts: true,
-        allowedScriptSources: 'same-origin',
-      },
-    });
-
-    const result = resolver.resolve({ htmlId: 'trusted-api-static' });
+    const result = resolver.resolve({ staticId: 'display-static' });
 
     expect(result.kind).toBe('allow');
-    expect(result.definition).toEqual({
-      source: '/server/static/trusted.html',
+    expect(result.definition).toEqual(displayOnlyDefinition);
+  });
+
+  it('returns trusted only when mode trusted and allowScripts true', () => {
+    const entry = createEntry('trusted-static', trustedDefinition);
+    registry.getById.and.returnValue(entry);
+
+    const result = resolver.resolve({ staticId: 'trusted-static' });
+
+    expect(result.kind).toBe('allow');
+    expect(result.definition).toEqual(trustedDefinition);
+  });
+
+  it('returns display-only when trusted config is downgraded by the trust boundary gate', () => {
+    const downgradedDefinition: StaticDefinition = {
+      id: 'trusted-static',
+      source: 'trusted-static/index.html',
       mode: 'display-only',
       allowScripts: false,
       allowedScriptSources: 'same-origin',
-    });
-  });
+    };
+    const entry = createEntry('trusted-static', downgradedDefinition);
+    registry.getById.and.returnValue(entry);
 
-  it('preserves trusted API allow results when the runtime trust boundary is explicitly enabled', () => {
-    configureResolver(true);
-    policyProvider.resolve.and.returnValue({
-      kind: 'allow',
-      definition: {
-        source: '/server/static/trusted.html',
-        mode: 'trusted',
-        allowScripts: true,
-        allowedScriptSources: 'same-origin',
-      },
-    });
-
-    const result = resolver.resolve({ htmlId: 'trusted-api-static' });
+    const result = resolver.resolve({ staticId: 'trusted-static' });
 
     expect(result.kind).toBe('allow');
-    expect(result.definition).toEqual({
-      source: '/server/static/trusted.html',
-      mode: 'trusted',
-      allowScripts: true,
-      allowedScriptSources: 'same-origin',
-    });
+    expect(result.definition).toEqual(downgradedDefinition);
   });
 
-  it('downgrades local trusted fallback for the bundled Static Example by default', () => {
-    policyProvider.resolve.and.returnValue({ kind: 'missing' });
-    const result = resolver.resolve({ page: './public/html/test.html' });
-    expect(result.kind).toBe('allow');
-    expect(result.definition?.source).toBe('/public/html/test.html');
-    expect(result.definition?.mode).toBe('display-only');
-    expect(result.definition?.allowScripts).toBeFalse();
-  });
+  it('rejects invalid static ids before registry lookup', () => {
+    const result = resolver.resolve({ staticId: '../demo' });
 
-  it('downgrades local trusted fallback for the authenticated UI Static test page by default', () => {
-    policyProvider.resolve.and.returnValue({ kind: 'missing' });
-    const result = resolver.resolve({ page: './public/html/authenticated.html' });
-    expect(result.kind).toBe('allow');
-    expect(result.definition?.source).toBe('/public/html/authenticated.html');
-    expect(result.definition?.mode).toBe('display-only');
-    expect(result.definition?.allowScripts).toBeFalse();
-  });
-
-  it('preserves local trusted fallback when the runtime trust boundary is explicitly enabled', () => {
-    configureResolver(true);
-    policyProvider.resolve.and.returnValue({ kind: 'missing' });
-
-    const result = resolver.resolve({ page: './public/html/authenticated.html' });
-
-    expect(result.kind).toBe('allow');
-    expect(result.definition?.source).toBe('/public/html/authenticated.html');
-    expect(result.definition?.mode).toBe('trusted');
-    expect(result.definition?.allowScripts).toBeTrue();
-  });
-
-  it('defaults valid legacy sources without fallback to display-only', () => {
-    policyProvider.resolve.and.returnValue({ kind: 'missing' });
-    const result = resolver.resolve({ page: '/public/html/unknown.html' });
-    expect(result.kind).toBe('legacy');
-    expect(result.definition?.mode).toBe('display-only');
-    expect(result.definition?.allowScripts).toBeFalse();
-  });
-
-  it('blocks invalid legacy source', () => {
-    policyProvider.resolve.and.returnValue({ kind: 'missing' });
-    const result = resolver.resolve({ page: 'https://example.test/x.html' });
+    expect(registry.getById).not.toHaveBeenCalled();
     expect(result.kind).toBe('invalid');
+    expect(result.error).toContain('staticId');
     expect(result.definition).toBeUndefined();
-  });
-
-  it('resolves route htmlId as missing until API-backed definitions exist', () => {
-    policyProvider.resolve.and.returnValue({ kind: 'missing' });
-    const result = resolver.resolve({ htmlId: 'my-static' });
-    expect(result.kind).toBe('missing');
   });
 });

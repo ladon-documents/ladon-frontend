@@ -3,20 +3,22 @@ import { environment } from '../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavigationEntry } from '../interfaces/navigation-entry';
 import { Location } from '@angular/common';
+import { NavigationStore } from '../navigation/navigation-store.service';
+
+type RoutableNavigationEntry = NavigationEntry & { component?: string };
 
 @Injectable({
   providedIn: 'root',
 })
 export class LadonRouterService {
-  readonly #navigationEntries: Array<any> = [];
   #baseHref: string;
 
   constructor(
     private readonly router: Router,
     private location: Location,
     private route: ActivatedRoute,
+    private readonly navigationStore: NavigationStore,
   ) {
-    this.#navigationEntries = environment.navigation;
     this.#baseHref = environment.baseHref ?? '';
   }
 
@@ -69,7 +71,9 @@ export class LadonRouterService {
   }
 
   private getFileManagerNavigationEntry(): NavigationEntry | undefined {
-    return this.#navigationEntries.find((entry) => entry.component === 'filemanager');
+    return this.navigationStore
+      .entries()
+      .find((entry) => (entry as RoutableNavigationEntry).component === 'filemanager');
   }
 
   private forceRouteRefresh() {

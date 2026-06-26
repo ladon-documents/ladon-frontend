@@ -1,11 +1,10 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, Signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
 import { UsermanagerComponent } from './usermanager/usermanager.component';
 import { BucketsComponent } from './buckets/buckets.component';
 import { CommonModule } from '@angular/common';
 import { NavigationEntry } from './interfaces/navigation-entry';
-import { environment } from '../environments/environment';
 import { NavigationComponent } from './navigation/navigation.component';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './login/login.component';
@@ -23,6 +22,8 @@ import { ContextMenuComponent } from './shared/components/context-menu/context-m
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
 import { InputDialogComponent } from './shared/components/input-dialog/input-dialog.component';
+import { NavigationStore } from './navigation/navigation-store.service';
+import { DracoStaticRegistryService } from './staticweb/draco-static-registry.service';
 
 @Component({
   imports: [
@@ -45,7 +46,11 @@ import { InputDialogComponent } from './shared/components/input-dialog/input-dia
 })
 export class AppComponent implements OnInit, OnDestroy {
   readonly store = inject(AppStore);
+  private readonly navigationStore = inject(NavigationStore);
+  private readonly staticRegistry = inject(DracoStaticRegistryService);
   private mql: MediaQueryList | undefined;
+  private staticNavigationDiscoveryInFlight = false;
+  private staticNavigationDiscoveryReady = false;
 
   isAuthenticated: Signal<boolean> = this.store.auth.isAuthenticated;
   isAuthenticating: Signal<boolean> = this.store.auth.isAuthenticating;
@@ -56,7 +61,14 @@ export class AppComponent implements OnInit, OnDestroy {
   sidebarCollapsed: Signal<boolean> = this.store.ui.isSidenavClosed;
 
   constructor(private translate: TranslateService) {
-    this.navigationEntries = environment.navigation;
+    effect(() => {
+      this.navigationEntries = this.navigationStore.entries();
+
+      if (this.isAuthenticated() && !this.staticNavigationDiscoveryReady && !this.staticNavigationDiscoveryInFlight) {
+        void this.discoverStaticNavigation();
+      }
+    });
+
     this.translate.addLangs(['de', 'en']);
     this.translate.setDefaultLang('de');
     this.translate.use('de');
@@ -109,6 +121,39 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onPdfClosed(event: { document: DocumentModel | null }): void {
     console.log('PDF Viewer geschlossen für:', event.document?.name);
+  }
+
+  private async discoverStaticNavigation(): Promise<void> {
+    this.staticNavigationDiscoveryInFlight = true;
+
+    try {
+      const snapshot = await this.staticRegistry.discover();
+      if (snapshot.state === 'ready') {
+        this.navigationStore.setStatic(
+          snapshot.entries
+            .map((entry) => entry.navigation)
+            .filter((entry): entry is NavigationEntry => this.isStaticNavigationEntry(entry)),
+        );
+        this.staticNavigationDiscoveryReady = true;
+      }
+    } catch (error) {
+      console.warn('Static navigation discovery failed.', error);
+    } finally {
+      this.staticNavigationDiscoveryInFlight = false;
+    }
+  }
+
+  private isStaticNavigationEntry(entry: NavigationEntry | undefined): entry is NavigationEntry {
+    return (
+      !!entry &&
+      entry.target === 'static' &&
+      typeof entry.id === 'string' &&
+      entry.id.startsWith('static:') &&
+      typeof entry.label === 'string' &&
+      entry.label.trim().length > 0 &&
+      typeof entry.path === 'string' &&
+      entry.path.trim().length > 0
+    );
   }
 }
 

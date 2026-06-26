@@ -49,24 +49,6 @@
     "index": 33
   },
   {
-    "label": "Static Example",
-    "target": "static",
-    "component": "Staticweb",
-    "path": "./public/html/test.html",
-    "icon": "heroGlobeAlt",
-    "type": "main",
-    "index": 35
-  },
-  {
-    "label": "mp3 Player",
-    "target": "static",
-    "component": "Staticweb",
-    "path": "./public/html/authenticated.html",
-    "icon": "heroGlobeAlt",
-    "type": "main",
-    "index": 36
-  },
-  {
     "label": "AUTH.LOGOUT",
     "icon": "heroArrowRightStartOnRectangle",
     "id": "ladon:logout",

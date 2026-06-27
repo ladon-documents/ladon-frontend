@@ -1,0 +1,10 @@
+{
+  "id": "static:demo",
+  "label": "Authenticated Demo",
+  "target": "static",
+  "component": "Staticweb",
+  "path": "demo",
+  "icon": "heroGlobeAlt",
+  "type": "main",
+  "index": 35
+}

@@ -1,10 +1,18 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { from, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
+
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
+import { STATIC_ID_PATTERN } from './draco-static-config.service';
+import { DracoStaticRegistryService } from './draco-static-registry.service';
+import { DracoStaticEntry } from './draco-static.types';
+import { StaticAssetRewriterService } from './static-asset-rewriter.service';
+import { StaticDefinitionResolver } from './static-definition.resolver';
+import { StaticHtmlPolicyService } from './static-html-policy.service';
+import { StaticRuntimeFacadeService } from './static-runtime-facade.service';
+import { StaticScriptRunnerService } from './static-script-runner.service';
 
 @Component({
   selector: 'lib-static-web',
@@ -13,169 +21,171 @@ import { FetchApiFactory } from '../services/api/fetch-api.factory';
   styleUrl: './staticweb.component.css',
 })
 export class StaticwebComponent implements OnInit, OnDestroy {
-  private subscription!: Subscription;
-  staticHMTL!: SafeHtml;
-  private injectedScripts: HTMLScriptElement[] = [];
+  private static readonly DRACO_STATIC_BUCKET = 'draco-statics';
+
+  staticHTML?: SafeHtml;
+  loading = false;
+  error?: string;
+
+  private subscription?: Subscription;
+  private loadId = 0;
 
   constructor(
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
-    private activatedRoute: ActivatedRoute,
-    private elementRef: ElementRef,
-    private apiFactory: FetchApiFactory,
+    private readonly apiFactory: FetchApiFactory,
+    private readonly sanitizer: DomSanitizer,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly registry: DracoStaticRegistryService,
+    private readonly definitionResolver: StaticDefinitionResolver,
+    private readonly assetRewriter: StaticAssetRewriterService,
+    private readonly htmlPolicy: StaticHtmlPolicyService,
+    private readonly runtimeFacade: StaticRuntimeFacadeService,
+    private readonly scriptRunner: StaticScriptRunnerService,
   ) {}
 
-  ngOnInit() {
-    this.subscription = this.activatedRoute.queryParams.subscribe((params) => {
-      const page = params['page'];
-      const query = decodeURIComponent(location.search);
-      if (page) {
-        this.loadContent(page);
-      }
+  ngOnInit(): void {
+    this.subscription = this.activatedRoute.paramMap.subscribe((paramMap) => {
+      void this.resolveAndRender(paramMap.get('staticId'));
     });
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.cleanupScripts();
+  ngOnDestroy(): void {
+    this.loadId += 1;
+    this.subscription?.unsubscribe();
+    this.clearRuntime();
   }
 
-  loadContent(url: string) {
-    this.handleQueryParams();
-    this.http.get(url, { responseType: 'text' }).subscribe((response) => {
-      this.cleanupScripts();
+  private async resolveAndRender(staticId: string | null): Promise<void> {
+    const currentLoadId = ++this.loadId;
+    let errorContext = staticId ?? 'static';
+    this.loading = true;
+    this.error = undefined;
+    this.staticHTML = undefined;
+    this.clearRuntime();
 
-      this.processHtmlWithScripts(response);
-    });
-  }
-
-  handleQueryParams() {
-    const query = decodeURIComponent(location.search);
-    const page = query.startsWith('?page=');
-    if (page) {
-      const url = query.replace('?page=', '');
-      let path = url.slice(url.indexOf('/') + 1);
-      if (path.includes('&')) {
-        path = path.slice(0, path.indexOf('&'));
-      }
-      const bucket = url.slice(0, url.indexOf('/'));
-      from(
-        this.apiFactory.documentsApi.getDocument({
-          bucket,
-          key: path,
-        }),
-      ).subscribe((response) => {
-        console.log(response);
-        this.cleanupScripts();
-
-        // Process the response HTML
-        //this.processHtmlWithScripts(response);
-      });
-    } else {
-      this.staticHMTL = this.sanitizer.bypassSecurityTrustHtml('No content found');
+    if (!staticId) {
+      this.setError('No staticId requested');
+      return;
     }
-  }
 
-  private processHtmlWithScripts(htmlString: string) {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlString;
-    const scriptTags = tempDiv.querySelectorAll('script');
-    const scripts: { type: 'inline' | 'external'; content: string; attributes: { [key: string]: string } }[] = [];
-    scriptTags.forEach((script) => {
-      const scriptInfo = {
-        type: script.src ? ('external' as const) : ('inline' as const),
-        content: script.src || script.innerHTML,
-        attributes: {} as { [key: string]: string },
-      };
+    if (!STATIC_ID_PATTERN.test(staticId)) {
+      this.setError(`Invalid staticId "${staticId}"`);
+      return;
+    }
 
-      Array.from(script.attributes).forEach((attr) => {
-        scriptInfo.attributes[attr.name] = attr.value;
-      });
-
-      scripts.push(scriptInfo);
-      script.remove();
-    });
-
-    this.staticHMTL = this.sanitizer.bypassSecurityTrustHtml(tempDiv.innerHTML);
-
-    setTimeout(() => {
-      this.executeScripts(scripts);
-    }, 0);
-  }
-
-  private executeScripts(
-    scripts: { type: 'inline' | 'external'; content: string; attributes: { [key: string]: string } }[],
-  ) {
-    scripts.forEach((scriptInfo, index) => {
-      if (scriptInfo.type === 'external') {
-        this.loadExternalScript(scriptInfo.content, scriptInfo.attributes, index);
-      } else {
-        this.executeInlineScript(scriptInfo.content, scriptInfo.attributes, index);
-      }
-    });
-  }
-
-  private loadExternalScript(src: string, attributes: { [key: string]: string }, index: number) {
-    const script = document.createElement('script');
-    script.src = src;
-
-    Object.entries(attributes).forEach(([key, value]) => {
-      if (key !== 'src') {
-        script.setAttribute(key, value);
-      }
-    });
-
-    script.onload = () => {
-      console.log(`External script ${index} loaded:`, src);
-    };
-
-    script.onerror = (error) => {
-      console.error(`Failed to load external script ${index}:`, src, error);
-    };
-
-    this.injectedScripts.push(script);
-
-    document.head.appendChild(script);
-  }
-
-  private executeInlineScript(scriptContent: string, attributes: { [key: string]: string }, index: number) {
     try {
-      const script = document.createElement('script');
+      const entry = await this.resolveEntry(staticId, currentLoadId);
+      if (currentLoadId !== this.loadId) return;
 
-      Object.entries(attributes).forEach(([key, value]) => {
-        script.setAttribute(key, value);
-      });
+      if (!entry) {
+        this.setError(`Static "${staticId}" was not found in the registry`);
+        return;
+      }
 
-      const wrappedScript = `
-        try {
-          ${scriptContent}
-        } catch (error) {
-          console.error('Error in inline script ${index}:', error);
-        }
-      `;
-
-      script.innerHTML = wrappedScript;
-
-      this.injectedScripts.push(script);
-
-      document.head.appendChild(script);
-
-      console.log(`Inline script ${index} executed`);
+      errorContext = entry.htmlKey;
+      await this.loadEntry(entry, currentLoadId);
     } catch (error) {
-      console.error(`Failed to execute inline script ${index}:`, error);
+      if (currentLoadId !== this.loadId) return;
+      this.clearRuntime();
+      this.staticHTML = undefined;
+      this.dispatchHttpError(error, errorContext);
+      this.setError(error instanceof Error ? error.message : 'Static page could not be loaded');
     }
   }
 
-  private cleanupScripts() {
-    this.injectedScripts.forEach((script) => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
+  private async resolveEntry(staticId: string, loadId: number): Promise<DracoStaticEntry | undefined> {
+    let snapshot = this.registry.snapshot();
+    if (snapshot.state === 'idle' || snapshot.state === 'loading') {
+      snapshot = await this.registry.waitUntilSettled();
+      if (loadId !== this.loadId) return undefined;
+    }
+
+    let result = this.definitionResolver.resolve({ staticId });
+    let entry = result.definition ? this.registry.getById(staticId) : undefined;
+    if (entry) {
+      return entry;
+    }
+
+    if (snapshot.state === 'failed') {
+      entry = await this.registry.lookupOnDemand(staticId);
+      if (loadId !== this.loadId) return undefined;
+      if (entry) {
+        return entry;
       }
-    });
-    this.injectedScripts = [];
+
+      result = this.definitionResolver.resolve({ staticId });
+      entry = result.definition ? this.registry.getById(staticId) : undefined;
+    }
+
+    return entry;
   }
 
-  private handleError(code: number, url: string) {
+  private async loadEntry(entry: DracoStaticEntry, loadId: number): Promise<void> {
+    const blob = await this.apiFactory.documentsApi.getDocument({
+      bucket: StaticwebComponent.DRACO_STATIC_BUCKET,
+      key: entry.htmlKey,
+    });
+    if (loadId !== this.loadId) return;
+
+    const html = await blob.text();
+    if (loadId !== this.loadId) return;
+
+    const rewrittenHtml = this.assetRewriter.rewrite(html, entry.basePath);
+    const plan = this.htmlPolicy.createRenderPlan(rewrittenHtml, entry.definition);
+    if (loadId !== this.loadId) return;
+
+    if (entry.definition.mode === 'display-only') {
+      this.clearRuntime();
+      this.staticHTML = this.sanitizer.bypassSecurityTrustHtml(plan.html);
+      this.loading = false;
+      return;
+    }
+
+    this.runtimeFacade.install();
+    this.staticHTML = this.sanitizer.bypassSecurityTrustHtml(plan.html);
+    await this.scriptRunner.run(plan.scripts);
+    if (loadId !== this.loadId) return;
+    this.loading = false;
+  }
+
+  private clearRuntime(): void {
+    this.scriptRunner.cleanup();
+    this.runtimeFacade.clear();
+  }
+
+  private setError(message: string): void {
+    this.loading = false;
+    this.error = message;
+  }
+
+  private dispatchHttpError(error: unknown, url: string): void {
+    const status = this.getHttpStatus(error);
+    if (typeof status !== 'number') {
+      return;
+    }
+
+    this.handleError(status, url);
+  }
+
+  private getHttpStatus(error: unknown): unknown {
+    if (typeof error !== 'object' || error === null) {
+      return undefined;
+    }
+
+    if ('status' in error) {
+      return (error as { status?: unknown }).status;
+    }
+
+    if ('response' in error) {
+      const response = (error as { response?: unknown }).response;
+      if (typeof response === 'object' && response !== null && 'status' in response) {
+        return (response as { status?: unknown }).status;
+      }
+    }
+
+    return undefined;
+  }
+
+  private handleError(code: number, url: string): void {
     let customEventName;
     switch (code) {
       case 401:

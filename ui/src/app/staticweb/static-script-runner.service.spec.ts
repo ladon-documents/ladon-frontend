@@ -33,10 +33,10 @@ describe('StaticScriptRunnerService', () => {
 
   it('creates external scripts with src', async () => {
     const runPromise = service.run([
-      { kind: 'external', src: '/public/html/helper.js', attributes: { src: '/public/html/helper.js' } },
+      { kind: 'external', src: '/static-test/helper.js', attributes: { src: '/static-test/helper.js' } },
     ]);
 
-    const script = document.head.querySelector('script[data-ladon-static-script="true"][src="/public/html/helper.js"]');
+    const script = document.head.querySelector('script[data-ladon-static-script="true"][src="/static-test/helper.js"]');
     expect(script).toBeTruthy();
     script?.dispatchEvent(new Event('load'));
 
@@ -45,13 +45,13 @@ describe('StaticScriptRunnerService', () => {
 
   it('waits for an external script before running the next inline script', async () => {
     const runPromise = service.run([
-      { kind: 'external', src: '/public/html/helper.js', attributes: { src: '/public/html/helper.js' } },
+      { kind: 'external', src: '/static-test/helper.js', attributes: { src: '/static-test/helper.js' } },
       { kind: 'inline-classic', content: 'window.__staticSequence = "inline"', attributes: {} },
     ]);
 
     expect((window as any).__staticSequence).toBeUndefined();
     document.head
-      .querySelector('script[data-ladon-static-script="true"][src="/public/html/helper.js"]')
+      .querySelector('script[data-ladon-static-script="true"][src="/static-test/helper.js"]')
       ?.dispatchEvent(new Event('load'));
 
     await runPromise;
@@ -61,11 +61,11 @@ describe('StaticScriptRunnerService', () => {
 
   it('rejects when an external script fails to load', async () => {
     const runPromise = service.run([
-      { kind: 'external', src: '/public/html/missing.js', attributes: { src: '/public/html/missing.js' } },
+      { kind: 'external', src: '/static-test/missing.js', attributes: { src: '/static-test/missing.js' } },
     ]);
 
     document.head
-      .querySelector('script[data-ladon-static-script="true"][src="/public/html/missing.js"]')
+      .querySelector('script[data-ladon-static-script="true"][src="/static-test/missing.js"]')
       ?.dispatchEvent(new Event('error'));
 
     await expectAsync(runPromise).toBeRejected();

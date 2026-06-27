@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { ComponentFixture, fakeAsync, flushMicrotasks, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, ParamMap, Params } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
@@ -17,7 +17,7 @@ import { StaticwebComponent } from './staticweb.component';
 describe('StaticwebComponent', () => {
   let fixture: ComponentFixture<StaticwebComponent>;
   let component: StaticwebComponent;
-  let queryParams: BehaviorSubject<Params>;
+  let queryParams: BehaviorSubject<Record<string, never>>;
   let paramMap: BehaviorSubject<ParamMap>;
   let http: jasmine.SpyObj<HttpClient>;
   let documentsApi: jasmine.SpyObj<{ getDocument: (request: Record<string, unknown>) => Promise<Blob> }>;
@@ -97,8 +97,8 @@ describe('StaticwebComponent', () => {
     });
   }
 
-  function createComponent(staticId: string | null = displayEntry.staticId, page?: string): void {
-    queryParams = new BehaviorSubject<Params>(page ? { page } : {});
+  function createComponent(staticId: string | null = displayEntry.staticId): void {
+    queryParams = new BehaviorSubject<Record<string, never>>({});
     paramMap = new BehaviorSubject<ParamMap>(convertToParamMap(staticId ? { staticId } : {}));
     http = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
     http.get.and.returnValue(of('<p>legacy</p>'));
@@ -323,8 +323,8 @@ describe('StaticwebComponent', () => {
     expect(fixture.nativeElement.querySelector('#static-page-error')?.textContent).toContain('script failed');
   }));
 
-  it('does not accept page query rendering', fakeAsync(() => {
-    createComponent(null, './public/html/test.html');
+  it('does not render without a static id', fakeAsync(() => {
+    createComponent(null);
 
     fixture.detectChanges();
     flushMicrotasks();

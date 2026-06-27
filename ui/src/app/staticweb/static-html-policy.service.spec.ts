@@ -7,14 +7,14 @@ describe('StaticHtmlPolicyService', () => {
   let service: StaticHtmlPolicyService;
 
   const displayOnlyDefinition: StaticDefinition = {
-    source: '/public/html/display.html',
+    source: 'display-static/index.html',
     mode: 'display-only',
     allowScripts: false,
     allowedScriptSources: 'same-origin',
   };
 
   const trustedDefinition: StaticDefinition = {
-    source: '/public/html/trusted.html',
+    source: 'trusted-static/index.html',
     mode: 'trusted',
     allowScripts: true,
     allowedScriptSources: 'same-origin',
@@ -57,14 +57,16 @@ describe('StaticHtmlPolicyService', () => {
 
   it('allows same-origin external scripts in trusted mode', () => {
     const plan = service.createRenderPlan(
-      '<script src="/public/html/helper.js" async data-name="helper"></script>',
+      '<script src="/admin/api/rest/v1/content/buckets/draco-statics/documents?key=trusted-static%2Fhelper.js" async data-name="helper"></script>',
       trustedDefinition,
     );
 
     expect(plan.html).toBe('');
     expect(plan.scripts.length).toBe(1);
     expect(plan.scripts[0].kind).toBe('external');
-    expect(plan.scripts[0].src).toBe(`${window.location.origin}/public/html/helper.js`);
+    expect(plan.scripts[0].src).toBe(
+      `${window.location.origin}/admin/api/rest/v1/content/buckets/draco-statics/documents?key=trusted-static%2Fhelper.js`,
+    );
     expect(plan.scripts[0].attributes).toEqual({ async: '', 'data-name': 'helper' });
   });
 

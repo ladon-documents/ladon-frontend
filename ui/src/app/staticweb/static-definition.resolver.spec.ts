@@ -70,10 +70,10 @@ describe('StaticDefinitionResolver', () => {
     expect(result.definition).toBeUndefined();
   });
 
-  it('does not resolve legacy page query sources', () => {
+  it('rejects requests without a static id', () => {
     registry.getById.and.returnValue(createEntry('display-static', displayOnlyDefinition));
 
-    const result = resolver.resolve({ page: './public/html/test.html' });
+    const result = resolver.resolve({});
 
     expect(registry.getById).not.toHaveBeenCalled();
     expect(result.kind).toBe('invalid');

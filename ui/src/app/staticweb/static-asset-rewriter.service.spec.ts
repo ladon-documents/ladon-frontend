@@ -9,7 +9,7 @@ describe('StaticAssetRewriterService', () => {
   let htmlPolicy: StaticHtmlPolicyService;
 
   const trustedDefinition: StaticDefinition = {
-    source: '/public/html/trusted.html',
+    source: 'trusted-static/index.html',
     mode: 'trusted',
     allowScripts: true,
     allowedScriptSources: 'same-origin',

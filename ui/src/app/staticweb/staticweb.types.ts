@@ -14,8 +14,6 @@ export interface StaticDefinition {
 
 export interface StaticResolveInput {
   staticId?: string | null;
-  htmlId?: string | null;
-  page?: string | null;
 }
 
 export interface StaticPolicyResult {

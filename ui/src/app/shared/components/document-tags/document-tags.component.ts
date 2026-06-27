@@ -1,5 +1,5 @@
 import { Component, effect, inject, input, signal, untracked } from '@angular/core';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { PillComponent } from '../pill/pill.component';
 import { DocumentTagsFacade } from '../../services/document-tags.facade';
 
@@ -11,7 +11,7 @@ import { DocumentTagsFacade } from '../../services/document-tags.facade';
   styleUrl: './document-tags.component.scss',
 })
 export class DocumentTagsComponent {
-  readonly document = input<DocumentModel | null>(null);
+  readonly document = input<Document | null>(null);
 
   private readonly documentTagsFacade = inject(DocumentTagsFacade);
 

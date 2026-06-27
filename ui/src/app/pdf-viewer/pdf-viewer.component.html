@@ -29,8 +29,8 @@
           @if (selectedDocument()?.size) {
             <span class="file-size">{{ formatFileSize(selectedDocument()!.size!) }}</span>
           }
-          @if (selectedDocument()?.["last-modified"]) {
-            <span class="last-modified"> Geändert: {{ formatDate(selectedDocument()!["last-modified"]!) }} </span>
+          @if (selectedDocument()?.lastModified) {
+            <span class="lastModified"> Geändert: {{ formatDate(selectedDocument()!.lastModified!) }} </span>
           }
         </div>
       </div>
@@ -39,4 +39,3 @@
 
   <ladon-pdfviewer #pdfViewerWC [attr.pdf]="pdfName()"> </ladon-pdfviewer>
 </div>
-x

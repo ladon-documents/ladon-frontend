@@ -1,4 +1,4 @@
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { PaginationState, SortConfig } from '../../store/filemanager.store';
 import {
   buildTargetPath as utilityBuildTargetPath,
@@ -64,7 +64,7 @@ export const formatTemplate = (size: number) => {
   return size + ' b';
 };
 
-export const isFolder = (document: DocumentModel) => {
+export const isFolder = (document: Document) => {
   return document.path?.endsWith('/');
 };
 
@@ -72,7 +72,7 @@ export const buildTargetPath = (basePath: string, documentKey: string): string =
   return utilityBuildTargetPath(basePath, documentKey);
 };
 
-export const isFile = (document: DocumentModel) => {
+export const isFile = (document: Document) => {
   return !document.path?.endsWith('/');
 };
 
@@ -138,11 +138,11 @@ const isEditableFile = (fileName?: string): boolean => {
 };
 
 const calculatePaginationState = (
-  allDocuments: DocumentModel[],
+  allDocuments: Document[],
   currentPage: number,
   pageSize: number,
 ): {
-  paginatedDocuments: DocumentModel[];
+  paginatedDocuments: Document[];
   paginationState: PaginationState;
 } => {
   const totalItems = allDocuments.length;
@@ -164,7 +164,7 @@ const calculatePaginationState = (
   return { paginatedDocuments, paginationState };
 };
 
-const filterDocuments = (documents: DocumentModel[], searchTerm: string): DocumentModel[] => {
+const filterDocuments = (documents: Document[], searchTerm: string): Document[] => {
   if (!searchTerm.trim()) {
     return documents;
   }
@@ -173,7 +173,7 @@ const filterDocuments = (documents: DocumentModel[], searchTerm: string): Docume
   return documents.filter((doc) => doc.name?.toLowerCase().includes(term) || doc.key?.toLowerCase().includes(term));
 };
 
-const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): DocumentModel[] => {
+const sortDocuments = (documents: Document[], sortConfig: SortConfig): Document[] => {
   return [...documents].sort((a, b) => {
     let aValue: any;
     let bValue: any;
@@ -194,17 +194,17 @@ const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): Docu
         aValue = a.isFolder ? 'folder' : getFileExtension(a.key || a.path || a.name || '') || '';
         bValue = b.isFolder ? 'folder' : getFileExtension(b.key || b.path || b.name || '') || '';
         break;
-      case 'last-modified':
-        aValue = new Date(a['last-modified'] || 0).getTime();
-        bValue = new Date(b['last-modified'] || 0).getTime();
+      case 'lastModified':
+        aValue = new Date(a.lastModified || 0).getTime();
+        bValue = new Date(b.lastModified || 0).getTime();
         break;
       case 'created':
         aValue = new Date(a.created || 0).getTime();
         bValue = new Date(b.created || 0).getTime();
         break;
       default:
-        aValue = a[sortConfig.field as keyof DocumentModel] || '';
-        bValue = b[sortConfig.field as keyof DocumentModel] || '';
+        aValue = a[sortConfig.field as keyof Document] || '';
+        bValue = b[sortConfig.field as keyof Document] || '';
     }
 
     let comparison = 0;
@@ -216,7 +216,7 @@ const sortDocuments = (documents: DocumentModel[], sortConfig: SortConfig): Docu
 };
 
 const applyFiltersAndPagination = (
-  allDocuments: DocumentModel[],
+  allDocuments: Document[],
   searchTerm: string,
   sortConfig: SortConfig,
   currentPage: number,
@@ -233,19 +233,19 @@ const applyFiltersAndPagination = (
   };
 };
 
-const isPdf = (document: DocumentModel | null): boolean => {
+const isPdf = (document: Document | null): boolean => {
   return isUtilityPdfDocument(document);
 };
 
-const isAudio = (document: DocumentModel | null): boolean => {
+const isAudio = (document: Document | null): boolean => {
   return isAudioDocument(document);
 };
 
-const isImage = (document: DocumentModel | null): boolean => {
+const isImage = (document: Document | null): boolean => {
   return isImageDocument(document);
 };
 
-const isVideo = (document: DocumentModel | null): boolean => {
+const isVideo = (document: Document | null): boolean => {
   return isVideoDocument(document);
 };
 

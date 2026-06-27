@@ -1,13 +1,13 @@
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { PermissionModel, RoleEntryModel, RoleWrapperModel, UserEntryModel, UserWrapperModel } from '@ladon/api';
+import { Permission, RoleEntry, RoleWrapper, UserEntry, UserWrapper } from '@ladon/api';
 import { computed, inject } from '@angular/core';
 import { UsermanagerService } from '../usermanager/services/usermanager.service';
 import { filter, finalize, forkJoin, lastValueFrom, map, of, Subject } from 'rxjs';
 
 type UsermanagerState = {
-  users: UserEntryModel[];
-  roles: RoleEntryModel[];
-  permissions: PermissionModel[];
+  users: UserEntry[];
+  roles: RoleEntry[];
+  permissions: Permission[];
   loading: boolean;
 };
 
@@ -65,7 +65,7 @@ export const UsermanagerStore = signalStore(
         });
     },
 
-    patchRoles(role: RoleEntryModel) {
+    patchRoles(role: RoleEntry) {
       loading$.next(true);
       patchState(store, { roles: [...store.roles(), role] });
       loading$.next(false);
@@ -131,14 +131,14 @@ export const UsermanagerStore = signalStore(
       return loading$;
     },
 
-    getUser(id: string): UserEntryModel | undefined {
+    getUser(id: string): UserEntry | undefined {
       return store.users().find((user) => user.id === id);
     },
 
-    getRole(id: string): RoleEntryModel | undefined {
+    getRole(id: string): RoleEntry | undefined {
       return store.roles().find((role) => role.id === id);
     },
-    addUser(user: UserWrapperModel) {
+    addUser(user: UserWrapper) {
       patchState(store, { loading: true });
       usermanagerService
         .addUser(user)
@@ -154,7 +154,7 @@ export const UsermanagerStore = signalStore(
         });
     },
 
-    patchUsersWithUser(user: UserEntryModel) {
+    patchUsersWithUser(user: UserEntry) {
       const users = store.users();
       const foundUser = users.find(({ email }) => email === user.email);
       const foundUserIndex = users.findIndex(({ email }) => email === user.email);
@@ -212,7 +212,7 @@ export const UsermanagerStore = signalStore(
       patchState(store, { loading: false });
     },
 
-    addRole(role: RoleWrapperModel) {
+    addRole(role: RoleWrapper) {
       patchState(store, { loading: true });
       usermanagerService
         .addRole(role)
@@ -228,11 +228,11 @@ export const UsermanagerStore = signalStore(
         });
     },
 
-    getPermission(id: string): PermissionModel | undefined {
+    getPermission(id: string): Permission | undefined {
       return store.permissions().find((permission) => permission.permissionId === id);
     },
 
-    addPermission(permission: PermissionModel) {
+    addPermission(permission: Permission) {
       patchState(store, { loading: true });
       usermanagerService
         .addPermission(permission)

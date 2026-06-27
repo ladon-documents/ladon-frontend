@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { FilemanagerService } from '../filemanager.service';
 import { FilemanagerFacade } from '../filemanager.facade';
-import { TaskStatusModel } from '@ladon/api';
+import { TaskStatus } from '@ladon/api';
 import { ToastService } from '../../shared/services/toast.service';
 
 export interface UploadStatus {
@@ -24,7 +24,7 @@ export class FilemanagerContentFacade {
   readonly toastService = inject(ToastService);
 
   uploadProgress = signal<UploadStatus[]>([]);
-  activeTasks = signal<TaskStatusModel[] | undefined>(undefined);
+  activeTasks = signal<TaskStatus[] | undefined>(undefined);
   computedProgress = computed(() => {
     const activeTasks = this.activeTasks()?.map((task) => this.convertTaskToUploadStatus(task)) || [];
     const activeUploads = this.uploadProgress().filter((u) => u.status === 'uploading' && !u.isTask);
@@ -35,9 +35,9 @@ export class FilemanagerContentFacade {
   filemanagerFacade = inject(FilemanagerFacade);
 
   /**
-   * Convert a TaskStatusModel to UploadStatus format
+   * Convert a TaskStatus to UploadStatus format
    */
-  private convertTaskToUploadStatus(task: TaskStatusModel): UploadStatus {
+  private convertTaskToUploadStatus(task: TaskStatus): UploadStatus {
     return {
       fileName: task.name || 'Task',
       status: task.running ? 'uploading' : 'success',

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { ConverterInfoModel, ConverterJobModel, DocumentModel } from '@ladon/api';
+import { ConverterInfo, ConverterJob, Document } from '@ladon/api';
 import { FetchApiFactory } from './api/fetch-api.factory';
 
 type converterType = 'applyandstore' | 'applyanddownload';
@@ -9,7 +9,7 @@ type converterType = 'applyandstore' | 'applyanddownload';
 })
 export class ConverterService {
   private readonly apiFactory = inject(FetchApiFactory);
-  private converters: ConverterInfoModel[] = [];
+  private converters: ConverterInfo[] = [];
   private readonly zip = 'mind/zip';
   private readonly unzip = 'mind/unzip';
   private readonly zipenc = 'mind/zip-enc';
@@ -46,9 +46,9 @@ export class ConverterService {
     }
   }
 
-  public async getPreview(document: DocumentModel) {
+  public async getPreview(document: Document) {
     if (!document.path) return null;
-    const data: ConverterJobModel = {
+    const data: ConverterJob = {
       inputPaths: [document.path],
       converters: [
         {
@@ -74,7 +74,7 @@ export class ConverterService {
   }
 
   private async handleConverter(inputPaths: Array<string>, converterId: string, type: converterType) {
-    const data: ConverterJobModel = {
+    const data: ConverterJob = {
       inputPaths,
       converters: [
         {

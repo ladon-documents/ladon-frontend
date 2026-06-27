@@ -1,7 +1,7 @@
 import { EventEmitter, inject, Injectable, Output } from '@angular/core';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { FilemanagerFacade } from '../filemanager/filemanager.facade';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 
 export interface EditorConfig {
   language: string;
@@ -130,7 +130,7 @@ export class MonacoEditorService {
     return editableExtensions.includes(extension || '');
   }
 
-  async saveFileContent(content: string, document?: DocumentModel): Promise<void> {
+  async saveFileContent(content: string, document?: Document): Promise<void> {
     const doc = document || this.selectedDocument();
     if (!doc?.key) {
       console.warn('Kein Dokument zum Speichern vorhanden');
@@ -147,7 +147,7 @@ export class MonacoEditorService {
     }
   }
 
-  async loadFileContent(document?: DocumentModel): Promise<string | undefined> {
+  async loadFileContent(document?: Document): Promise<string | undefined> {
     try {
       const doc = document || this.selectedDocument();
       if (!doc) {

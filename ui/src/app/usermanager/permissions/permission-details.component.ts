@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { PermissionModel } from '@ladon/api';
+import { Permission } from '@ladon/api';
 import { AliasPipe } from '@ladon/shared';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsermanagerService } from '../services/usermanager.service';
@@ -17,7 +17,7 @@ import { switchMap, of } from 'rxjs';
   styleUrl: './permission-details.component.scss',
 })
 export class PermissionDetailsComponent implements OnInit {
-  permission: PermissionModel | undefined;
+  permission: Permission | undefined;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly usermanagerService = inject(UsermanagerService);
@@ -60,7 +60,7 @@ export class PermissionDetailsComponent implements OnInit {
   }
 
   onSubmit() {
-    this.store.addPermission(this.permissionForm.value as PermissionModel);
+    this.store.addPermission(this.permissionForm.value as Permission);
   }
 
   deletePermission() {

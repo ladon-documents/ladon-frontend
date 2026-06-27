@@ -14,7 +14,7 @@ import { MappedPermission, MappedUser, UsermanagerService } from '../services/us
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { tap } from 'rxjs/operators';
-import { PermissionModel, RoleEntryModel, UserEntryModel } from '@ladon/api';
+import { Permission, RoleEntry, UserEntry } from '@ladon/api';
 import { combineLatest, switchMap } from 'rxjs';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroTrash, heroPlus } from '@ng-icons/heroicons/outline';
@@ -43,7 +43,7 @@ export class RoleDetailsComponent implements OnInit {
   @ViewChildren('userCheckbox') userCheckbox: QueryList<ElementRef<HTMLInputElement>> | undefined;
   @ViewChildren('permissionCheckbox') permissionCheckbox: QueryList<ElementRef<HTMLInputElement>> | undefined;
 
-  role: RoleEntryModel | undefined;
+  role: RoleEntry | undefined;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly usermanagerService = inject(UsermanagerService);
@@ -51,23 +51,23 @@ export class RoleDetailsComponent implements OnInit {
   readonly store = inject(UsermanagerStore);
 
   dialogTitle: string | undefined;
-  permissions = signal<PermissionModel[] | undefined>(undefined);
-  patchedPermissions = computed<PermissionModel[] | undefined>(() => {
+  permissions = signal<Permission[] | undefined>(undefined);
+  patchedPermissions = computed<Permission[] | undefined>(() => {
     const permissions = this.permissions();
     const deletions = Array.from(this.permissionDeletionsSet());
     return permissions?.filter(({ permissionId }) => !deletions.some(({ permissionId: pId }) => pId === permissionId));
   });
-  permissionOptions = signal<PermissionModel[] | undefined>(undefined);
-  userOptions = signal<UserEntryModel[] | undefined>(undefined);
+  permissionOptions = signal<Permission[] | undefined>(undefined);
+  userOptions = signal<UserEntry[] | undefined>(undefined);
   roleForm = new FormGroup({});
   userIds = signal<string[] | undefined>(undefined);
-  users = computed<UserEntryModel[]>(() => {
+  users = computed<UserEntry[]>(() => {
     const userIds = this.userIds();
     const users = this.store.users();
     return users.filter(({ id }) => userIds?.includes(id));
   });
 
-  patchedUsers = computed<UserEntryModel[] | undefined>(() => {
+  patchedUsers = computed<UserEntry[] | undefined>(() => {
     const users = this.users();
     const deletions = Array.from(this.userDeletionsSet());
     return users.filter(({ id }) => !deletions.some(({ id: uId }) => uId === id));
@@ -91,10 +91,10 @@ export class RoleDetailsComponent implements OnInit {
     }));
   });
 
-  private usersSet = new Set<UserEntryModel>();
-  private permissionsSet = new Set<PermissionModel>();
-  private userDeletionsSet = signal(new Set<UserEntryModel>());
-  private permissionDeletionsSet = signal(new Set<PermissionModel>());
+  private usersSet = new Set<UserEntry>();
+  private permissionsSet = new Set<Permission>();
+  private userDeletionsSet = signal(new Set<UserEntry>());
+  private permissionDeletionsSet = signal(new Set<Permission>());
 
   ngOnInit(): void {
     this.generateForm();
@@ -166,22 +166,22 @@ export class RoleDetailsComponent implements OnInit {
     }
   }
 
-  updateByType(event: any, type: RoleSetType, value: MappedUser | PermissionModel) {
+  updateByType(event: any, type: RoleSetType, value: MappedUser | Permission) {
     const { checked } = event.target;
     switch (type) {
       case 'user':
         if (checked) {
-          this.usersSet.add(value as UserEntryModel);
+          this.usersSet.add(value as UserEntry);
         } else {
-          this.usersSet.delete(value as UserEntryModel);
+          this.usersSet.delete(value as UserEntry);
         }
         this.patchFormByKey('users', this.usersSet);
         break;
       case 'permission':
         if (checked) {
-          this.permissionsSet.add(value as PermissionModel);
+          this.permissionsSet.add(value as Permission);
         } else {
-          this.permissionsSet.delete(value as PermissionModel);
+          this.permissionsSet.delete(value as Permission);
         }
         this.patchFormByKey('permissions', this.permissionsSet);
         break;
@@ -193,10 +193,10 @@ export class RoleDetailsComponent implements OnInit {
     this.router.navigate(['../'], { relativeTo: this.route });
   }
 
-  removeByType(type: RoleSetType, value: RoleEntryModel | PermissionModel | UserEntryModel) {
+  removeByType(type: RoleSetType, value: RoleEntry | Permission | UserEntry) {
     switch (type) {
       case 'permission':
-        this.permissionsSet.delete(value as PermissionModel);
+        this.permissionsSet.delete(value as Permission);
         this.patchFormByKey('permissions', this.permissionsSet);
         break;
       case 'permissionDeletion':
@@ -204,7 +204,7 @@ export class RoleDetailsComponent implements OnInit {
         this.patchFormByKey('permissionDeletions', this.permissionDeletionsSet());
         break;
       case 'user':
-        this.usersSet.delete(value as UserEntryModel);
+        this.usersSet.delete(value as UserEntry);
         this.patchFormByKey('users', this.usersSet);
         break;
       case 'userDeletion':
@@ -217,7 +217,7 @@ export class RoleDetailsComponent implements OnInit {
     }
   }
 
-  checkFormPatch(type: UserSetType, value: PermissionModel | RoleEntryModel | MappedUser, form: FormGroup) {
+  checkFormPatch(type: UserSetType, value: Permission | RoleEntry | MappedUser, form: FormGroup) {
     return this.usermanagerFacade.checkFormPatch(type, value, form);
   }
 

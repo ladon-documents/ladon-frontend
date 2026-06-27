@@ -1,9 +1,9 @@
 import { computed, Injectable } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 
 interface SelectionState {
-  selectedDocuments: DocumentModel[];
+  selectedDocuments: Document[];
   lastSelectedIndex: number | null;
   selectionMode: boolean;
 }
@@ -14,10 +14,10 @@ const initialState: SelectionState = {
   selectionMode: false,
 };
 
-const documentId = (document: DocumentModel): string =>
+const documentId = (document: Document): string =>
   `${document.bucket || ''}::${document.key || document.path || document.name || ''}`;
 
-const isSameDocument = (left: DocumentModel, right: DocumentModel): boolean => documentId(left) === documentId(right);
+const isSameDocument = (left: Document, right: Document): boolean => documentId(left) === documentId(right);
 
 @Injectable({ providedIn: 'root' })
 export class SelectionStore extends signalStore(
@@ -27,11 +27,11 @@ export class SelectionStore extends signalStore(
     hasSelection: computed(() => state.selectedDocuments().length > 0),
   })),
   withMethods((store) => ({
-    isSelected(document: DocumentModel): boolean {
+    isSelected(document: Document): boolean {
       return store.selectedDocuments().some((doc) => isSameDocument(doc, document));
     },
 
-    selectSingle(document: DocumentModel, index: number) {
+    selectSingle(document: Document, index: number) {
       patchState(store, {
         selectedDocuments: [document],
         lastSelectedIndex: index,
@@ -39,7 +39,7 @@ export class SelectionStore extends signalStore(
       });
     },
 
-    toggleSelection(document: DocumentModel, index: number) {
+    toggleSelection(document: Document, index: number) {
       const selected = store.selectedDocuments();
       const isCurrentlySelected = selected.some((doc) => isSameDocument(doc, document));
       const nextSelection = isCurrentlySelected
@@ -53,7 +53,7 @@ export class SelectionStore extends signalStore(
       });
     },
 
-    selectRange(documents: DocumentModel[], index: number) {
+    selectRange(documents: Document[], index: number) {
       if (!documents.length) {
         return;
       }
@@ -97,7 +97,7 @@ export class SelectionStore extends signalStore(
       });
     },
 
-    selectAll(documents: DocumentModel[]) {
+    selectAll(documents: Document[]) {
       patchState(store, {
         selectedDocuments: documents,
         lastSelectedIndex: documents.length > 0 ? documents.length - 1 : null,

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { DocumentModel } from '@ladon/api';
+import { Document } from '@ladon/api';
 import { FilemanagerFacade } from './filemanager.facade';
 import { MonacoEditorService } from '../editor/editor.service';
 import { ToastService } from '../shared/services/toast.service';
@@ -26,7 +26,7 @@ export class FilemanagerWorkspaceService {
   private readonly _imageEditorSourceUrl = signal<string | null>(null);
   private readonly _imageEditorFileName = signal('');
   private readonly _imageEditorMimeType = signal('image/png');
-  private readonly _imageEditorDocument = signal<DocumentModel | null>(null);
+  private readonly _imageEditorDocument = signal<Document | null>(null);
   private readonly _mediaPlayerSourceUrl = signal<string | null>(null);
   private readonly _mediaPlayerType = signal<'audio' | 'video' | 'image' | 'auto'>('auto');
   private readonly _mediaPlayerFileName = signal('');
@@ -42,14 +42,14 @@ export class FilemanagerWorkspaceService {
   readonly mediaPlayerFileName = this._mediaPlayerFileName.asReadonly();
   readonly pdfSource = this._pdfSource.asReadonly();
 
-  openEditor(document: DocumentModel): void {
+  openEditor(document: Document): void {
     this.filemanagerFacade.setSelectedDocument(document);
     this.clearTransientPayload();
     this._mode.set('editor');
     this.monacoEditorService.open();
   }
 
-  async openImageEditor(document: DocumentModel): Promise<void> {
+  async openImageEditor(document: Document): Promise<void> {
     this.filemanagerFacade.setSelectedDocument(document);
     this.clearTransientPayload();
     this._isPreparing.set(true);
@@ -61,7 +61,7 @@ export class FilemanagerWorkspaceService {
       this.revokeImageEditorSourceUrl();
       this._imageEditorSourceUrl.set(URL.createObjectURL(blob));
       this._imageEditorFileName.set(this.extractFileName(document));
-      this._imageEditorMimeType.set(document['content-type'] || blob.type || 'image/png');
+      this._imageEditorMimeType.set(document.contentType || blob.type || 'image/png');
       this._imageEditorDocument.set(document);
       this._mode.set('image-editor');
     } catch (error) {
@@ -90,21 +90,21 @@ export class FilemanagerWorkspaceService {
     }
   }
 
-  openPdfViewer(document: DocumentModel): void {
+  openPdfViewer(document: Document): void {
     this.filemanagerFacade.setSelectedDocument(document);
     this.clearTransientPayload();
     this._pdfSource.set(document.key || document.path || document.name || null);
     this._mode.set('pdf-viewer');
   }
 
-  async openMediaPlayer(document: DocumentModel): Promise<void> {
+  async openMediaPlayer(document: Document): Promise<void> {
     this.filemanagerFacade.setSelectedDocument(document);
     this.clearTransientPayload();
     this._isPreparing.set(true);
 
     try {
       const response = await firstValueFrom(this.filemanagerFacade.getDocument(document));
-      const contentType = document['content-type'] || undefined;
+      const contentType = document.contentType || undefined;
       const blob = response instanceof Blob ? response : new Blob([response], { type: contentType });
 
       this.revokeMediaPlayerSourceUrl();
@@ -157,7 +157,7 @@ export class FilemanagerWorkspaceService {
     this.revokeImageEditorSourceUrl();
   }
 
-  private buildTargetDocumentForImageSave(document: DocumentModel, fileName: string): DocumentModel {
+  private buildTargetDocumentForImageSave(document: Document, fileName: string): Document {
     const normalizedFileName = fileName.trim().replace(/^\/+/, '');
     if (!normalizedFileName) {
       return document;
@@ -173,11 +173,11 @@ export class FilemanagerWorkspaceService {
       key: targetKey,
       path: targetKey,
       name: normalizedFileName,
-      'content-type': document['content-type'],
+      contentType: document.contentType,
     };
   }
 
-  private resolveMediaType(document: DocumentModel): 'audio' | 'video' | 'image' | 'auto' {
+  private resolveMediaType(document: Document): 'audio' | 'video' | 'image' | 'auto' {
     if (filemanagerHelper.isAudio(document)) {
       return 'audio';
     }
@@ -191,7 +191,7 @@ export class FilemanagerWorkspaceService {
     return 'auto';
   }
 
-  private extractFileName(document: DocumentModel): string {
+  private extractFileName(document: Document): string {
     const key = document.key || document.path || document.name || 'document';
     const lastSlash = key.lastIndexOf('/');
     return lastSlash >= 0 ? key.substring(lastSlash + 1) : key;

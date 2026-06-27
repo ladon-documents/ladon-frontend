@@ -1,5 +1,5 @@
 import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
-import { LoginRequestModel, UserModel } from '@ladon/api';
+import { LoginRequest, User } from '@ladon/api';
 import { inject } from '@angular/core';
 import { catchError, EMPTY, of, pipe, switchMap, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
@@ -17,7 +17,7 @@ interface UiState {
 
 interface AuthState {
   isAuthenticated: boolean;
-  user: UserModel | null;
+  user: User | null;
   loginError: string | null;
   isAuthenticating: boolean;
   redirectUrl: string | null;
@@ -130,7 +130,7 @@ export const AppStore = signalStore(
   }),
   withMethods((store, authService = inject(AuthService), router = inject(Router)) => {
     return {
-      login: rxMethod<LoginRequestModel>(
+      login: rxMethod<LoginRequest>(
         pipe(
           tap(() => {
             patchState(store, (state) => ({

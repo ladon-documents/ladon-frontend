@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+
+import { STATIC_SOURCE_CONFIG, StaticSourceConfig } from './static-source-config';
 
 const DOCUMENT_ENDPOINT = '/admin/api/rest/v1/content/buckets/draco-statics/documents';
 
@@ -6,8 +8,14 @@ const DOCUMENT_ENDPOINT = '/admin/api/rest/v1/content/buckets/draco-statics/docu
 export class StaticAssetUrlService {
   static readonly documentEndpoint = DOCUMENT_ENDPOINT;
 
+  constructor(@Inject(STATIC_SOURCE_CONFIG) private readonly sourceConfig: StaticSourceConfig) {}
+
   buildAssetUrl(basePath: string, assetPath: string): string {
     const key = this.buildDocumentKey(basePath, assetPath);
+
+    if (this.sourceConfig.source === 'local') {
+      return `${this.localBasePath()}/${this.encodePath(key)}`;
+    }
 
     return `${DOCUMENT_ENDPOINT}?key=${encodeURIComponent(key)}`;
   }
@@ -89,5 +97,16 @@ export class StaticAssetUrlService {
     }
 
     return normalized.join('/');
+  }
+
+  private localBasePath(): string {
+    return this.sourceConfig.source === 'local' ? this.sourceConfig.local.basePath.replace(/\/+$/, '') : '';
+  }
+
+  private encodePath(path: string): string {
+    return path
+      .split('/')
+      .map((part) => encodeURIComponent(part))
+      .join('/');
   }
 }

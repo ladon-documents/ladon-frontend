@@ -178,6 +178,13 @@ create_release_package() {
     log_warning "Static-Verzeichnis nicht gefunden"
   fi
 
+  if [ -d "./draco-statics" ]; then
+    log_message "Kopiere Draco Statics …"
+    cp -r ./draco-statics "$RELEASE_DIR/"
+  else
+    log_warning "Draco-Statics-Verzeichnis nicht gefunden"
+  fi
+
   if [ -d "./wc" ]; then
     log_message "Kopiere WebComponents …"
     mkdir -p "$RELEASE_DIR/webcomponents"

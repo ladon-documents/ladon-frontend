@@ -3,5 +3,5 @@
 } @else if (error) {
   <div id="static-page-error">{{ error }}</div>
 } @else if (staticHTML) {
-  <div id="static-page-content" [innerHTML]="staticHTML"></div>
+  <div id="static-page-content" [innerHTML]="staticHTML" class="h-full overflow-y-auto"></div>
 }

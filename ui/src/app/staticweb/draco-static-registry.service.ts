@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
 import { DracoStaticConfigService, STATIC_ID_PATTERN } from './draco-static-config.service';
 import { DracoStaticEntry, DracoStaticRegistrySnapshot } from './draco-static.types';
+import { STATIC_SOURCE_CONFIG, StaticSourceConfig } from './static-source-config';
 
 const DRACO_STATIC_BUCKET = 'draco-statics';
 const DOCUMENT_LIST_LIMIT = 1000;
@@ -43,6 +44,7 @@ export class DracoStaticRegistryService {
   constructor(
     private readonly apiFactory: FetchApiFactory,
     private readonly configService: DracoStaticConfigService,
+    @Inject(STATIC_SOURCE_CONFIG) private readonly sourceConfig: StaticSourceConfig,
   ) {}
 
   snapshot(): DracoStaticRegistrySnapshot {
@@ -138,6 +140,10 @@ export class DracoStaticRegistryService {
   }
 
   private async discoverConfigFolders(): Promise<string[]> {
+    if (this.sourceConfig.source === 'local') {
+      return this.discoverLocalConfigFolders();
+    }
+
     const folders: string[] = [];
     const seenKeys = new Set<string>();
     let previousFullPageSignature: string | undefined;
@@ -177,6 +183,39 @@ export class DracoStaticRegistryService {
     }
 
     console.warn(`Stopping Draco static discovery after ${MAX_DOCUMENT_LIST_PAGES} full document pages.`);
+    return folders;
+  }
+
+  private async discoverLocalConfigFolders(): Promise<string[]> {
+    if (this.sourceConfig.source !== 'local') {
+      return [];
+    }
+
+    const manifestPath = this.sourceConfig.local.manifestPath ?? `${this.localBasePath()}/static-pages.json`;
+    const response = await fetch(manifestPath);
+    if (!response.ok) {
+      throw new Error(`Failed to load local Draco static manifest "${manifestPath}" (${response.status}).`);
+    }
+
+    const manifest = (await response.json()) as unknown;
+    if (!Array.isArray(manifest)) {
+      throw new Error('Local Draco static manifest must be an array of static ids.');
+    }
+
+    const folders: string[] = [];
+    const seen = new Set<string>();
+    for (const value of manifest) {
+      if (typeof value !== 'string' || !STATIC_ID_PATTERN.test(value)) {
+        console.warn(`Skipping invalid local Draco static id "${String(value)}".`);
+        continue;
+      }
+
+      if (!seen.has(value)) {
+        seen.add(value);
+        folders.push(value);
+      }
+    }
+
     return folders;
   }
 
@@ -230,6 +269,15 @@ export class DracoStaticRegistryService {
   }
 
   private async readJson(key: string): Promise<unknown> {
+    if (this.sourceConfig.source === 'local') {
+      const response = await fetch(this.localUrlForKey(key));
+      if (!response.ok) {
+        throw { status: response.status, message: `Missing ${key}` };
+      }
+
+      return response.json();
+    }
+
     const blob = await this.apiFactory.documentsApi.getDocument({
       bucket: DRACO_STATIC_BUCKET,
       key,
@@ -315,5 +363,16 @@ export class DracoStaticRegistryService {
     }
 
     return error instanceof Error && /^Missing .+\/navigation\.json$/.test(error.message);
+  }
+
+  private localUrlForKey(key: string): string {
+    return `${this.localBasePath()}/${key
+      .split('/')
+      .map((part) => encodeURIComponent(part))
+      .join('/')}`;
+  }
+
+  private localBasePath(): string {
+    return this.sourceConfig.source === 'local' ? this.sourceConfig.local.basePath.replace(/\/+$/, '') : '';
   }
 }

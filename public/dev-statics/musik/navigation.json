@@ -1,0 +1,10 @@
+{
+  "id": "static:musik",
+  "label": "Omas Musik Demo Static",
+  "target": "static",
+  "component": "Staticweb",
+  "path": "musik",
+  "icon": "heroGlobeAlt",
+  "type": "main",
+  "index": 36
+}

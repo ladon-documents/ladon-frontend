@@ -11,6 +11,7 @@ import { StaticDefinitionResolver } from './static-definition.resolver';
 import { StaticHtmlPolicyService } from './static-html-policy.service';
 import { StaticRuntimeFacadeService } from './static-runtime-facade.service';
 import { StaticScriptRunnerService } from './static-script-runner.service';
+import { STATIC_SOURCE_CONFIG } from './static-source-config';
 import { StaticRenderPlan } from './staticweb.types';
 import { StaticwebComponent } from './staticweb.component';
 
@@ -97,7 +98,7 @@ describe('StaticwebComponent', () => {
     });
   }
 
-  function createComponent(staticId: string | null = displayEntry.staticId): void {
+  function createComponent(staticId: string | null = displayEntry.staticId, sourceConfig?: unknown): void {
     queryParams = new BehaviorSubject<Record<string, never>>({});
     paramMap = new BehaviorSubject<ParamMap>(convertToParamMap(staticId ? { staticId } : {}));
     http = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
@@ -144,6 +145,7 @@ describe('StaticwebComponent', () => {
         { provide: StaticHtmlPolicyService, useValue: htmlPolicy },
         { provide: StaticRuntimeFacadeService, useValue: runtimeFacade },
         { provide: StaticScriptRunnerService, useValue: scriptRunner },
+        ...(sourceConfig ? [{ provide: STATIC_SOURCE_CONFIG, useValue: sourceConfig }] : []),
       ],
     });
 
@@ -197,6 +199,31 @@ describe('StaticwebComponent', () => {
     expect(htmlPolicy.createRenderPlan).toHaveBeenCalledWith('<h1>Draco document</h1>', displayEntry.definition);
     expect(fixture.nativeElement.querySelector('#static-page-content')?.textContent).toContain('Draco document');
   }));
+
+  it('loads html from local dev statics when the static source is local', async () => {
+    createComponent(displayEntry.staticId, {
+      source: 'local',
+      local: {
+        basePath: '/ui/draco/ladon-core/public/dev-statics',
+        manifestPath: '/ui/draco/ladon-core/public/dev-statics/static-pages.json',
+      },
+    });
+    const fetchSpy = spyOn(window, 'fetch').and.resolveTo({
+      ok: true,
+      status: 200,
+      text: () => Promise.resolve('<h1>Local static</h1>'),
+    } as Response);
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await Promise.resolve();
+    fixture.detectChanges();
+
+    expect(documentsApi.getDocument).not.toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledOnceWith('/ui/draco/ladon-core/public/dev-statics/display-static/index.html');
+    expect(htmlPolicy.createRenderPlan).toHaveBeenCalledWith('<h1>Local static</h1>', displayEntry.definition);
+    expect(fixture.nativeElement.querySelector('#static-page-content')?.textContent).toContain('Local static');
+  });
 
   it('does not render or run scripts when destroyed during an in-flight document load', fakeAsync(() => {
     createComponent(displayEntry.staticId);

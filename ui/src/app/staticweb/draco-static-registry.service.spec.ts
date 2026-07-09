@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { FetchApiFactory } from '../services/api/fetch-api.factory';
 import { DracoStaticRegistryService } from './draco-static-registry.service';
+import { STATIC_SOURCE_CONFIG } from './static-source-config';
 import { STATIC_TRUSTED_EXECUTION_ENABLED } from './static-trust-boundary.service';
 
 type DocumentStub = { key?: string };
@@ -13,7 +14,7 @@ describe('DracoStaticRegistryService', () => {
     getDocument: (request: Record<string, unknown>) => Promise<Blob>;
   }>;
 
-  function configureService(): void {
+  function configureService(sourceConfig?: unknown): void {
     TestBed.resetTestingModule();
     documentsApi = jasmine.createSpyObj('documentsApi', ['listDocuments', 'getDocument']);
 
@@ -22,6 +23,7 @@ describe('DracoStaticRegistryService', () => {
         DracoStaticRegistryService,
         { provide: STATIC_TRUSTED_EXECUTION_ENABLED, useValue: true },
         { provide: FetchApiFactory, useValue: { documentsApi } },
+        ...(sourceConfig ? [{ provide: STATIC_SOURCE_CONFIG, useValue: sourceConfig }] : []),
       ],
     });
 
@@ -98,6 +100,49 @@ describe('DracoStaticRegistryService', () => {
     expect(snapshot.state).toBe('ready');
     expect(snapshot.entries.map((entry) => entry.staticId)).toEqual(['demo-static']);
     expect(documentsApi.getDocument).toHaveBeenCalledWith({ bucket: 'draco-statics', key: 'demo-static/config.json' });
+  });
+
+  it('discovers local dev statics from the configured manifest without calling documentlist', async () => {
+    configureService({
+      source: 'local',
+      local: {
+        basePath: '/ui/draco/ladon-core/public/dev-statics',
+        manifestPath: '/ui/draco/ladon-core/public/dev-statics/static-pages.json',
+      },
+    });
+    const fetchSpy = spyOn(window, 'fetch').and.callFake((input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === '/ui/draco/ladon-core/public/dev-statics/static-pages.json') {
+        return Promise.resolve(new Response(JSON.stringify(['demo-static']), { status: 200 }));
+      }
+      if (url === '/ui/draco/ladon-core/public/dev-statics/demo-static/config.json') {
+        return Promise.resolve(new Response(JSON.stringify(validConfig()), { status: 200 }));
+      }
+      if (url === '/ui/draco/ladon-core/public/dev-statics/demo-static/navigation.json') {
+        return Promise.resolve(new Response(JSON.stringify(validNavigation()), { status: 200 }));
+      }
+
+      return Promise.resolve(new Response('missing', { status: 404 }));
+    });
+
+    const snapshot = await service.discover();
+
+    expect(documentsApi.listDocuments).not.toHaveBeenCalled();
+    expect(documentsApi.getDocument).not.toHaveBeenCalled();
+    expect(fetchSpy.calls.allArgs().map(([input]) => String(input))).toEqual([
+      '/ui/draco/ladon-core/public/dev-statics/static-pages.json',
+      '/ui/draco/ladon-core/public/dev-statics/demo-static/config.json',
+      '/ui/draco/ladon-core/public/dev-statics/demo-static/navigation.json',
+    ]);
+    expect(snapshot.state).toBe('ready');
+    expect(snapshot.entries[0]).toEqual(
+      jasmine.objectContaining({
+        staticId: 'demo-static',
+        bucket: 'draco-statics',
+        basePath: 'demo-static/',
+        htmlKey: 'demo-static/index.html',
+      }),
+    );
   });
 
   it('loads valid config and optional navigation json', async () => {

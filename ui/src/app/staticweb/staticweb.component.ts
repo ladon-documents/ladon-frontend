@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -13,6 +13,7 @@ import { StaticDefinitionResolver } from './static-definition.resolver';
 import { StaticHtmlPolicyService } from './static-html-policy.service';
 import { StaticRuntimeFacadeService } from './static-runtime-facade.service';
 import { StaticScriptRunnerService } from './static-script-runner.service';
+import { STATIC_SOURCE_CONFIG, StaticSourceConfig } from './static-source-config';
 
 @Component({
   selector: 'lib-static-web',
@@ -40,6 +41,7 @@ export class StaticwebComponent implements OnInit, OnDestroy {
     private readonly htmlPolicy: StaticHtmlPolicyService,
     private readonly runtimeFacade: StaticRuntimeFacadeService,
     private readonly scriptRunner: StaticScriptRunnerService,
+    @Inject(STATIC_SOURCE_CONFIG) private readonly sourceConfig: StaticSourceConfig,
   ) {}
 
   ngOnInit(): void {
@@ -120,13 +122,7 @@ export class StaticwebComponent implements OnInit, OnDestroy {
   }
 
   private async loadEntry(entry: DracoStaticEntry, loadId: number): Promise<void> {
-    const blob = await this.apiFactory.documentsApi.getDocument({
-      bucket: StaticwebComponent.DRACO_STATIC_BUCKET,
-      key: entry.htmlKey,
-    });
-    if (loadId !== this.loadId) return;
-
-    const html = await blob.text();
+    const html = await this.loadHtml(entry);
     if (loadId !== this.loadId) return;
 
     const rewrittenHtml = this.assetRewriter.rewrite(html, entry.basePath);
@@ -183,6 +179,33 @@ export class StaticwebComponent implements OnInit, OnDestroy {
     }
 
     return undefined;
+  }
+
+  private async loadHtml(entry: DracoStaticEntry): Promise<string> {
+    if (this.sourceConfig.source === 'local') {
+      const response = await fetch(this.localUrlForKey(entry.htmlKey));
+      if (!response.ok) {
+        throw { status: response.status, message: 'Static page could not be loaded' };
+      }
+
+      return response.text();
+    }
+
+    const blob = await this.apiFactory.documentsApi.getDocument({
+      bucket: StaticwebComponent.DRACO_STATIC_BUCKET,
+      key: entry.htmlKey,
+    });
+
+    return blob.text();
+  }
+
+  private localUrlForKey(key: string): string {
+    const basePath = this.sourceConfig.source === 'local' ? this.sourceConfig.local.basePath.replace(/\/+$/, '') : '';
+
+    return `${basePath}/${key
+      .split('/')
+      .map((part) => encodeURIComponent(part))
+      .join('/')}`;
   }
 
   private handleError(code: number, url: string): void {

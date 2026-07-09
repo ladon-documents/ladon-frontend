@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { StaticAssetUrlService } from './static-asset-url.service';
+import { STATIC_SOURCE_CONFIG } from './static-source-config';
 
 describe('StaticAssetUrlService', () => {
   let service: StaticAssetUrlService;
@@ -14,6 +15,29 @@ describe('StaticAssetUrlService', () => {
     expect(service.buildAssetUrl('demo/', './style.css')).toBe(
       '/admin/api/rest/v1/content/buckets/draco-statics/documents?key=demo%2Fstyle.css',
     );
+  });
+
+  it('builds local dev static asset urls when the static source is local', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        StaticAssetUrlService,
+        {
+          provide: STATIC_SOURCE_CONFIG,
+          useValue: {
+            source: 'local',
+            local: {
+              basePath: '/ui/draco/ladon-core/public/dev-statics',
+              manifestPath: '/ui/draco/ladon-core/public/dev-statics/static-pages.json',
+            },
+          },
+        },
+      ],
+    });
+    const localService = TestBed.inject(StaticAssetUrlService);
+
+    expect(localService.buildAssetUrl('demo/', './style.css')).toBe('/ui/draco/ladon-core/public/dev-statics/demo/style.css');
+    expect(StaticAssetUrlService.documentEndpoint).toBe('/admin/api/rest/v1/content/buckets/draco-statics/documents');
   });
 
   it('encodes keys as query parameter values', () => {

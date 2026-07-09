@@ -16,6 +16,8 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { tokenInterceptor } from './interceptors/token.interceptor';
 import { CustomUrlSerializer } from './app.navconfig';
+import { STATIC_TRUSTED_EXECUTION_ENABLED } from './staticweb/static-trust-boundary.service';
+import { environment } from '../environments/environment';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, './public/i18n/', '.json');
@@ -29,6 +31,7 @@ export const appConfig: ApplicationConfig = {
     { provide: UrlSerializer, useClass: CustomUrlSerializer },
 
     { provide: APP_BASE_HREF, useValue: '/' },
+    { provide: STATIC_TRUSTED_EXECUTION_ENABLED, useValue: environment.statics.trustedExecutionEnabled === true },
     provideHttpClient(withInterceptors([tokenInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(

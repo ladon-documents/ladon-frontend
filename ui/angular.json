@@ -40,6 +40,11 @@
                 "glob": "**/*",
                 "input": "../public/dev-wc",
                 "output": "public/dev-wc"
+              },
+              {
+                "glob": "**/*",
+                "input": "../public/dev-statics",
+                "output": "public/dev-statics"
               }
             ],
             "styles": [
@@ -116,6 +121,11 @@
                 "glob": "**/*",
                 "input": "../public/dev-wc",
                 "output": "public/dev-wc"
+              },
+              {
+                "glob": "**/*",
+                "input": "../public/dev-statics",
+                "output": "public/dev-statics"
               }
             ],
             "styles": [

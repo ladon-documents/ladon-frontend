@@ -117,17 +117,61 @@ export class PluginService {
     return this.isLoadingPlugins$.asReadonly();
   }
 
-  getPluginChannels(): Observable<Array<ChannelList>> {
+  loadChannels(): Observable<Array<ChannelList>> {
     return this.pluginMetaService.getPluginConfig().pipe(
       take(1),
       map((config) => {
         if (config && Array.isArray(config) && config.length > 0) {
-          config = sortChannels(config);
-          this.product = config[0].product || this.product;
-          this.channel = config[0].channel || this.channel;
-          return config;
+          return sortChannels([...config]);
         }
-        return null;
+        return [];
+      }),
+    );
+  }
+
+  loadPlugins(product: string, channel: string): Observable<Array<PluginModel>> {
+    return this.apiFactory.fromApi(() => this.apiFactory.pluginV1Api.plugins({ product, channel: channel as any }));
+  }
+
+  loadBundleContent(product: string, channel: string, pluginId: string): Observable<Array<PluginModel>> {
+    return this.apiFactory.fromApi(() =>
+      this.apiFactory.pluginV1Api.bundleContent({
+        product,
+        channel: channel as any,
+        id: pluginId,
+      }),
+    );
+  }
+
+  loadInstalledVersions(): Observable<Record<string, string>> {
+    return this.apiFactory.fromApi(() => this.apiFactory.pluginmanagerApi.installedPlugins());
+  }
+
+  loadPluginReadme(product: string, channel: string, pluginId: string): Observable<string> {
+    return this.apiFactory.fromApi(() =>
+      this.apiFactory.pluginV1Api.pluginReadme({
+        product,
+        channel: channel as any,
+        id: pluginId,
+      }),
+    );
+  }
+
+  resolveDocumentationUrl(product: string, channel: string, pluginId?: string): string {
+    if (pluginId) {
+      return `https://plugins.mind-consulting.de/plugins/mind/channel/${product}/${channel}/readme/${pluginId}`;
+    }
+    return this.PLUGIN_DEFAULT_README_PAGE;
+  }
+
+  getPluginChannels(): Observable<Array<ChannelList>> {
+    return this.loadChannels().pipe(
+      map((channels) => {
+        if (channels.length > 0) {
+          this.product = channels[0].product || this.product;
+          this.channel = channels[0].channel || this.channel;
+        }
+        return channels;
       }),
     );
   }
@@ -267,12 +311,7 @@ export class PluginService {
   }
 
   private getDocsUrl(id?: string): string {
-    if (id) {
-      //return this.pluginmanagerService.pluginReadme(this.product, this.channel, id);
-      return `https://plugins.mind-consulting.de/plugins/mind/channel/${this.product}/${this.channel}/readme/${id}`;
-    } else {
-      return this.PLUGIN_DEFAULT_README_PAGE;
-    }
+    return this.resolveDocumentationUrl(this.product, this.channel, id);
   }
 
   public installBundle(webBundle: PluginModel): Observable<any> {

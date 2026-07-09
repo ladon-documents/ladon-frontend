@@ -1,41 +1,33 @@
-import { Component, computed, input, InputSignal, OnInit, output, signal, Signal, WritableSignal } from '@angular/core';
-import { PluginService, PluginWithVersionStatus } from '../services/plugin.service';
-import { SearchfilterPipe } from '../pipe/searchfilter.pipe';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
-import { heroCheck, heroChevronRight } from '@ng-icons/heroicons/outline';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { PillComponent } from '@ladon/shared';
-import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { heroCheck, heroChevronRight, heroCube, heroExclamationTriangle } from '@ng-icons/heroicons/outline';
+import { PluginManagerAction, PluginManagerItem } from '../models/pluginmanager.models';
 
 @Component({
   selector: 'app-plugin-list',
-  imports: [CommonModule, SearchfilterPipe, TranslatePipe, NgIcon, PillComponent, SpinnerComponent],
-  providers: [provideIcons({ heroCheck, heroChevronRight })],
+  imports: [CommonModule, NgIcon],
+  providers: [provideIcons({ heroCheck, heroChevronRight, heroCube, heroExclamationTriangle })],
   templateUrl: './plugin-list.component.html',
   styleUrl: './plugin-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PluginListComponent implements OnInit {
-  pluginList$: Signal<Array<PluginWithVersionStatus>> = signal([]);
-  isLoading$: Signal<boolean> = signal(true);
-  filterText$: Signal<string> = signal('');
-  selectedItem: PluginWithVersionStatus | undefined;
+export class PluginListComponent {
+  plugins = input<PluginManagerItem[]>([]);
+  selectedPluginId = input<string | null>(null);
+  activeAction = input<PluginManagerAction | null>(null);
+  isLoading = input(false);
+  pluginSelected = output<string>();
 
-  onSelect(item: PluginWithVersionStatus | undefined): void {
-    if (!item) {
-      return;
-    }
-    this.selectedItem = item;
-    this.pluginService.setSelectedItem(item);
+  selectPlugin(plugin: PluginManagerItem): void {
+    this.pluginSelected.emit(plugin.pluginId);
   }
 
-  constructor(private pluginService: PluginService) {
-    this.pluginList$ = computed(() => this.pluginService.plugins());
-    this.filterText$ = computed(() => this.pluginService.filteredText());
-    this.isLoading$ = computed(() => this.pluginService.isLoadingPlugins());
+  isSelected(plugin: PluginManagerItem): boolean {
+    return plugin.pluginId === this.selectedPluginId();
   }
 
-  ngOnInit() {
-    console.log('on init');
+  isActionRunning(plugin: PluginManagerItem): boolean {
+    return plugin.pluginId === this.activeAction()?.pluginId;
   }
 }

@@ -1,0 +1,5 @@
+@if (safeDocumentationUrl(); as url) {
+  <iframe [src]="url" class="h-full min-h-80 w-full border-0"></iframe>
+} @else {
+  <div class="flex min-h-80 items-center justify-center text-sm text-base-content/60">No documentation available</div>
+}

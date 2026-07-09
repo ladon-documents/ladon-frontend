@@ -1,0 +1,104 @@
+<section class="flex h-full flex-col overflow-hidden">
+  <div class="border-b border-base-300 p-5">
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="min-w-0">
+        <h2 class="truncate text-xl font-semibold">{{ plugin().name }}</h2>
+        <div class="mt-2 flex flex-wrap gap-2 text-sm text-base-content/70">
+          <span class="badge badge-outline">{{ plugin().pluginId }}</span>
+          @if (plugin().type) {
+            <span class="badge badge-ghost">{{ plugin().type }}</span>
+          }
+          @if (plugin().isBundle) {
+            <span class="badge badge-primary badge-outline">Bundle</span>
+          }
+          @if (plugin().isRequired) {
+            <span class="badge badge-warning badge-outline">Required</span>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        @if (primaryAction(); as action) {
+          <button type="button" class="btn btn-primary" [disabled]="!!activeAction()" (click)="triggerPrimaryAction()">
+            @if (isActionRunning()) {
+              <span class="loading loading-spinner loading-sm"></span>
+            }
+            {{ primaryActionLabel() }}
+          </button>
+        }
+        @if (plugin().canDeinstall) {
+          <button
+            type="button"
+            class="btn btn-outline btn-error"
+            [disabled]="!!activeAction()"
+            (click)="triggerDeinstall()">
+            Remove
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="mt-4 grid gap-3 md:grid-cols-3">
+      <div class="rounded border border-base-300 p-3">
+        <div class="text-xs uppercase text-base-content/60">Installed</div>
+        <div class="font-medium">{{ plugin().installedVersion || 'Not installed' }}</div>
+      </div>
+      <div class="rounded border border-base-300 p-3">
+        <div class="text-xs uppercase text-base-content/60">Available</div>
+        <div class="font-medium">{{ plugin().availableVersion || 'Unknown' }}</div>
+      </div>
+      <div class="rounded border border-base-300 p-3">
+        <div class="text-xs uppercase text-base-content/60">Status</div>
+        <div class="font-medium">{{ plugin().status }}</div>
+      </div>
+    </div>
+
+    @if (isActionRunning()) {
+      <div class="mt-4">
+        <div class="mb-1 flex justify-between text-sm">
+          <span>{{ activeAction()?.phase }}</span>
+          <span>{{ activeAction()?.progress }}%</span>
+        </div>
+        <progress class="progress progress-primary" [value]="activeAction()?.progress || 0" max="100"></progress>
+      </div>
+    }
+
+    @if (actionError(); as error) {
+      @if (!error.pluginId || error.pluginId === plugin().pluginId) {
+        <div class="alert alert-error mt-4">{{ error.message }}</div>
+      }
+    }
+  </div>
+
+  @if (plugin().isBundle) {
+    <div class="border-b border-base-300 p-5">
+      <h3 class="mb-3 font-semibold">Bundle contents</h3>
+      <div class="overflow-x-auto">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Installed</th>
+              <th>Available</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (bundleItem of plugin().bundleItems; track bundleItem.pluginId) {
+              <tr>
+                <td>{{ bundleItem.name }}</td>
+                <td>{{ bundleItem.installedVersion || '-' }}</td>
+                <td>{{ bundleItem.availableVersion || '-' }}</td>
+                <td>{{ bundleItem.status }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+
+  <div class="min-h-0 flex-1">
+    <app-plugin-documentation-panel [documentationUrl]="plugin().documentationUrl"></app-plugin-documentation-panel>
+  </div>
+</section>

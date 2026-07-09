@@ -1,0 +1,12 @@
+<div role="tablist" class="tabs tabs-boxed">
+  @for (channel of channels(); track channel.channel) {
+    <button
+      type="button"
+      role="tab"
+      class="tab"
+      [class.tab-active]="channel.channel === activeChannel()"
+      (click)="channelSelected.emit(channel.channel)">
+      {{ channel.channel }}
+    </button>
+  }
+</div>

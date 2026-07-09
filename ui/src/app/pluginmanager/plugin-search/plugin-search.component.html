@@ -1,0 +1,14 @@
+<label class="input input-bordered flex items-center gap-2">
+  <ng-icon name="heroMagnifyingGlass" size="1rem" class="opacity-60"></ng-icon>
+  <input
+    type="search"
+    class="grow"
+    placeholder="Search plugins"
+    [value]="searchTerm()"
+    (input)="updateSearchTerm($event)" />
+  @if (searchTerm()) {
+    <button type="button" class="btn btn-ghost btn-xs btn-square" aria-label="Clear search" (click)="clear()">
+      <ng-icon name="heroXMark" size="1rem"></ng-icon>
+    </button>
+  }
+</label>

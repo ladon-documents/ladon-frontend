@@ -1,45 +1,56 @@
-@if (isLoading$()) {
-  <lib-spinner></lib-spinner>
+@if (isLoading()) {
+  <div class="flex h-32 items-center justify-center text-sm text-base-content/60">Loading plugins...</div>
+} @else if (plugins().length === 0) {
+  <div class="flex h-32 items-center justify-center text-sm text-base-content/60">No plugins found</div>
 } @else {
-  <ul role="list" class="divide-y divide-gray-500/20">
-    @for (item of pluginList$() | searchfilter: filterText$(); track item.id) {
-      <li
-        (click)="onSelect(item)"
-        class="flex cursor-pointer py-2 px-4 items-center border-l-4 hover:bg-primary/50"
-        [ngClass]="item === selectedItem ? 'bg-primary/10 border-l-primary' : 'border-transparent'">
-        <div class="grow">
-          <h3>{{ item.name }}</h3>
-          <div class="mt-2 flex gap-2">
-            @if (item.current === item.version) {
-              @if (item.current) {
-                <app-pill
-                  [class]="'bg-success/30 border-success'"
-                  [attr.datacaption]="'PLUGIN.VERSION' | translate"
-                  [label]="item.current"
-                  [isDeletable]="false">
-                </app-pill>
+  <ul role="list" class="divide-y divide-base-300">
+    @for (plugin of plugins(); track plugin.pluginId) {
+      <li>
+        <button
+          type="button"
+          class="grid w-full grid-cols-[1fr_auto] gap-3 border-l-4 px-4 py-3 text-left hover:bg-base-200"
+          [class.border-primary]="isSelected(plugin)"
+          [class.border-transparent]="!isSelected(plugin)"
+          [class.bg-primary]="isSelected(plugin)"
+          [class.bg-opacity-10]="isSelected(plugin)"
+          (click)="selectPlugin(plugin)">
+          <span class="min-w-0">
+            <span class="flex items-center gap-2">
+              <span class="truncate font-medium">{{ plugin.name }}</span>
+              @if (plugin.isBundle) {
+                <span class="badge badge-outline badge-sm gap-1">
+                  <ng-icon name="heroCube" size="0.875rem"></ng-icon>
+                  Bundle
+                </span>
               }
+            </span>
+            <span class="mt-2 flex flex-wrap items-center gap-2 text-xs text-base-content/70">
+              @if (plugin.installedVersion) {
+                <span class="badge badge-success badge-outline badge-sm">Current {{ plugin.installedVersion }}</span>
+              }
+              @if (plugin.availableVersion) {
+                <span
+                  class="badge badge-sm"
+                  [class.badge-primary]="plugin.canUpdate || plugin.canInstall"
+                  [class.badge-outline]="!plugin.canUpdate && !plugin.canInstall">
+                  Latest {{ plugin.availableVersion }}
+                </span>
+              }
+              <span class="badge badge-ghost badge-sm">{{ plugin.status }}</span>
+            </span>
+          </span>
+          <span class="flex items-center">
+            @if (isActionRunning(plugin)) {
+              <span class="loading loading-spinner loading-sm"></span>
+            } @else if (plugin.status === 'installed' || plugin.status === 'required') {
+              <ng-icon name="heroCheck" size="1.25rem" class="text-success"></ng-icon>
+            } @else if (plugin.status === 'actionFailed') {
+              <ng-icon name="heroExclamationTriangle" size="1.25rem" class="text-error"></ng-icon>
             } @else {
-              @if (item.current) {
-                <app-pill [class]="'bg-success/30 border-success'" [label]="item.current" [isDeletable]="false">
-                </app-pill>
-              }
-
-              <app-pill
-                [class]="item.canUpdate ? 'bg-primary/30 border-primary' : 'bg-success/30 border-success'"
-                [attr.datacaption]="
-                  item.canUpdate ? ('PLUGIN.CAN_UPDATE' | translate) : ('PLUGIN.CAN_INSTALL' | translate)
-                "
-                [label]="item.version"
-                [isDeletable]="false"></app-pill>
+              <ng-icon name="heroChevronRight" size="1.25rem" class="opacity-40"></ng-icon>
             }
-          </div>
-        </div>
-        @if (!item.canInstall && !item.canUpdate) {
-          <ng-icon name="heroCheck" size="1.25rem" style="color: var(--color-success)"></ng-icon>
-        } @else {
-          <ng-icon name="heroChevronRight" size="1.25rem" style="color: currentColor" class="opacity-30"></ng-icon>
-        }
+          </span>
+        </button>
       </li>
     }
   </ul>

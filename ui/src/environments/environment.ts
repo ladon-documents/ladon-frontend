@@ -19,6 +19,11 @@ export const environment = {
     acceptedFiles: ['jpg', 'jpeg', 'png', 'pdf'],
   },
   webComponents,
+  statics: {
+    source: 'server',
+    bucket: 'draco-statics',
+    trustedExecutionEnabled: false,
+  },
   storage: 'sessionStorage',
   production: true,
 };

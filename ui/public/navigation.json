@@ -37,15 +37,7 @@
     "type": "main",
     "index": 32
   },
-  {
-    "label": "Static Example",
-    "target": "static",
-    "component": "Staticweb",
-    "path": "./public/html/test.html",
-    "icon": "heroGlobeAlt",
-    "type": "main",
-    "index": 35
-  },
+
   {
     "label": "Usermanager",
     "target": "internal",

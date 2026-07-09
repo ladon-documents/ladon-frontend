@@ -86,7 +86,7 @@ export class NavigationComponent implements OnInit {
         await this.router.navigate([`${environment.baseHref}/${item.path}`]);
         break;
       case 'static':
-        await this.router.navigate([`${environment.baseHref}/static`], { queryParams: { page: item.path } });
+        await this.router.navigate([`${environment.baseHref}/static/${item.path}`]);
         break;
       case 'action':
         this.dispatchNavigationEvent(item);
@@ -101,11 +101,17 @@ export class NavigationComponent implements OnInit {
     this.appStore.toggleSidebar();
   }
 
-  /*
-   * Extracts fourth segment from url because we need to be careful of sub routes.
-   */
   private extractPathFromUrl(url: string): string | undefined {
-    return url.split('/')[4];
+    const [path] = url.split(/[?#]/);
+    const baseSegments = environment.baseHref.split('/').filter(Boolean).length;
+    const routeSegments = path.split('/').filter(Boolean);
+    const activePath = routeSegments[baseSegments];
+
+    if (activePath === 'static') {
+      return routeSegments[baseSegments + 1] ?? activePath;
+    }
+
+    return activePath;
   }
 
   private animateHighlight() {

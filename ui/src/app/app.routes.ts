@@ -25,12 +25,7 @@ const loginRoutes: Routes = [
 ];
 
 const staticnRoutes: Routes = [
-  {
-    path: `${environment.baseHref}/static`,
-    component: StaticwebComponent,
-    canActivate: [AuthGuard],
-  },
-  { path: `${environment.baseHref}/static/:htmlId`, component: StaticwebComponent },
+  { path: `${environment.baseHref}/static/:staticId`, component: StaticwebComponent, canActivate: [AuthGuard] },
 ];
 
 const pdfViewer: Routes = [

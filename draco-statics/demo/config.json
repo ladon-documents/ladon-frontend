@@ -1,0 +1,7 @@
+{
+  "staticId": "demo",
+  "html": "demo.html",
+  "mode": "trusted",
+  "allowScripts": true,
+  "allowedScriptSources": "same-origin"
+}

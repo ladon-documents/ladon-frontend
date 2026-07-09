@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavigationComponent } from './navigation.component';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { signal } from '@angular/core';
 import { NavigationEntry } from '../interfaces/navigation-entry';
+import { provideRouter, Router } from '@angular/router';
+import { environment } from '../../environments/environment';
+import { TranslateModule } from '@ngx-translate/core';
+import { AppStore } from '../store/app.store';
 
 export class NavigationTestObject {
   returnMockNavigation(): NavigationEntry[] {
@@ -89,16 +92,25 @@ export class NavigationTestObject {
 const navigationTO = new NavigationTestObject();
 
 describe('NavigationComponent', () => {
-  let component: NavigationComponent, fixture: ComponentFixture<NavigationComponent>, debugElement: DebugElement;
+  let component: NavigationComponent, fixture: ComponentFixture<NavigationComponent>;
+  let router: Router;
+  let appStoreStub: { ui: { isSidenavClosed: ReturnType<typeof signal<boolean>> }; logout: jasmine.Spy; toggleSidebar: jasmine.Spy };
 
   beforeEach(async () => {
+    appStoreStub = {
+      ui: { isSidenavClosed: signal(false) },
+      logout: jasmine.createSpy('logout'),
+      toggleSidebar: jasmine.createSpy('toggleSidebar'),
+    };
+
     await TestBed.configureTestingModule({
-      imports: [NavigationComponent],
+      imports: [NavigationComponent, TranslateModule.forRoot()],
+      providers: [provideRouter([]), { provide: AppStore, useValue: appStoreStub }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NavigationComponent);
     component = fixture.componentInstance;
-    debugElement = fixture.debugElement;
+    router = TestBed.inject(Router);
   });
 
   it('should create', () => {
@@ -120,18 +132,42 @@ describe('NavigationComponent', () => {
   });
 
   describe('test invokeItem', () => {
-    let invokeItemSpy: any;
-    beforeEach(() => {
-      invokeItemSpy = spyOn(component, 'invokeItem');
-      fixture.componentRef.setInput('navigation', navigationTO.returnMockNavigation());
-      fixture.detectChanges();
-    });
-
     it('action', () => {
-      const navItems = debugElement.queryAll(By.css('nav li'));
-      const actionItems = navItems.filter((item: DebugElement) => item.attributes['data-target'] === 'action');
-      actionItems[0].query(By.css('a')).triggerEventHandler('click');
-      //		expect(invokeItemSpy).toHaveBeenCalledWith(expect.objectContaining({ target: "action" }));
+      const dispatchEvent = spyOn(window, 'dispatchEvent').and.callThrough();
+      const item = navigationTO.returnMockNavigation().find(({ target }) => target === 'action')!;
+
+      component.invokeItem({ ...item, id: 'ladon:custom-action' });
+
+      expect(dispatchEvent).toHaveBeenCalledOnceWith(
+        jasmine.objectContaining({
+          type: 'ladon:navigation:item',
+          detail: { ...item, id: 'ladon:custom-action' },
+        }),
+      );
     });
+  });
+
+  it('navigates static items by static id without page query params', async () => {
+    const navigate = spyOn(router, 'navigate').and.resolveTo(true);
+    const item = navigationTO.returnMockNavigation().find(({ target }) => target === 'static')!;
+
+    await component.invokeItem({ ...item, path: 'demo' });
+
+    expect(navigate).toHaveBeenCalledOnceWith([`${environment.baseHref}/static/demo`]);
+  });
+
+  it('marks static navigation active by static id', () => {
+    const extractPathFromUrl = (component as unknown as { extractPathFromUrl(url: string): string | undefined })
+      .extractPathFromUrl;
+
+    expect(extractPathFromUrl(`${environment.baseHref}/static/demo`)).toBe('demo');
+    expect(extractPathFromUrl(`${environment.baseHref}/static/demo?foo=bar#section`)).toBe('demo');
+  });
+
+  it('keeps existing active link extraction for non-static routes', () => {
+    const extractPathFromUrl = (component as unknown as { extractPathFromUrl(url: string): string | undefined })
+      .extractPathFromUrl;
+
+    expect(extractPathFromUrl(`${environment.baseHref}/buckets/details`)).toBe('buckets');
   });
 });

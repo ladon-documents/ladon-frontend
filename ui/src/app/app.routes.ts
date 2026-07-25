@@ -6,7 +6,7 @@ const NO_ROUTING_TARGETS = ['action', 'external'];
 import { LoginComponent } from './login/login.component';
 import { environment } from '../environments/environment';
 import { setNavigation } from './app.navconfig';
-import { StaticwebComponent } from './staticweb/staticweb.component';
+import { RapidwebComponent } from './rapidweb/rapidweb.component';
 import { AuthGuard } from './shared/guards/auth/auth.guard';
 import { CanActivateLogin } from './shared/guards/auth/can-activate.login';
 import { PdfViewerComponent } from './pdf-viewer/pdf-viewer.component';
@@ -24,8 +24,8 @@ const loginRoutes: Routes = [
   { path: environment.baseHref, redirectTo: `${environment.baseHref}/login`, pathMatch: 'full' },
 ];
 
-const staticnRoutes: Routes = [
-  { path: `${environment.baseHref}/static/:staticId`, component: StaticwebComponent, canActivate: [AuthGuard] },
+const rapidnRoutes: Routes = [
+  { path: `${environment.baseHref}/rapid/:rapidId`, component: RapidwebComponent, canActivate: [AuthGuard] },
 ];
 
 const pdfViewer: Routes = [
@@ -45,7 +45,7 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
   setNavigation();
 
   const _appRoutes: any = [];
-  _appRoutes.push(...loginRoutes, ...staticnRoutes, ...pdfviewerRoutes);
+  _appRoutes.push(...loginRoutes, ...rapidnRoutes, ...pdfviewerRoutes);
   navigation.forEach((navItem) => {
     if (NO_ROUTING_TARGETS.includes(navItem.target)) return;
     const navPath = `${environment.baseHref}/${navItem.path}`;
@@ -69,7 +69,7 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
         import('./' + navItem.component + '/' + navItem.component + '.component.ts').then((m) => m[compName]);
     }
 
-    if (navItem.target !== 'static') {
+    if (navItem.target !== 'rapid') {
       _appRoutes.push(data);
     }
   });

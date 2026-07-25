@@ -4,6 +4,7 @@ import { pluginFetchClient } from '@ladon/api';
 import { catchError, delay, map, mergeMap, Observable, of, scan, throwError } from 'rxjs';
 import { FetchApiFactory } from '../../services/api/fetch-api.factory';
 import { PluginMetaService } from './plugin-meta.service';
+import { PluginChannel, PluginProduct } from '../models/pluginmanager.models';
 
 type PluginModel = pluginFetchClient.Plugin;
 type PluginMode = 'UPLOAD' | 'DOWNLOAD' | 'DEINSTALL' | 'FINISH';
@@ -31,7 +32,11 @@ export class PluginInstallationService {
     private pluginMetaService: PluginMetaService,
   ) {}
 
-  installPlugin(plugin: PluginModel, product: string, channel: string): Observable<PluginInstallationState> {
+  installPlugin(
+    plugin: PluginModel,
+    product: PluginProduct,
+    channel: PluginChannel,
+  ): Observable<PluginInstallationState> {
     return this.startInstallation(plugin).pipe(
       mergeMap((state) => this.downloadPlugin(product, channel, state)),
       mergeMap((state) => (this.isPluginStateDone(state) ? this.uploadPlugin(state) : of(state))),
@@ -51,8 +56,8 @@ export class PluginInstallationService {
 
   installPluginFromBundle(
     plugin: PluginModel,
-    product: string,
-    channel: string,
+    product: PluginProduct,
+    channel: PluginChannel,
   ): Observable<PluginInstallationState> {
     const initialState: PluginInstallationState = {
       state: 'PENDING',
@@ -168,8 +173,8 @@ export class PluginInstallationService {
   }
 
   private downloadPlugin(
-    product: string,
-    channel: string,
+    product: PluginProduct,
+    channel: PluginChannel,
     state: PluginInstallationState,
   ): Observable<PluginInstallationState> {
     if (!state.plugin?.id) {
@@ -180,7 +185,7 @@ export class PluginInstallationService {
       .fromApi(() =>
         this.apiFactory.pluginV1Api.pluginContentRaw({
           product,
-          channel: channel as any,
+          channel,
           id: state.plugin?.id || '',
         }),
       )

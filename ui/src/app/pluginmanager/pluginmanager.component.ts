@@ -4,7 +4,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PluginManagerStore } from '../store/pluginmanager.store';
 import { PluginWorkbenchComponent } from './plugin-workbench/plugin-workbench.component';
-import { PluginManagerActionType, PluginManagerItem } from './models/pluginmanager.models';
+import { PluginChannel, PluginManagerActionType, PluginManagerItem } from './models/pluginmanager.models';
+import { FilemanagerStore } from '../store/filemanager.store';
 
 @Component({
   standalone: true,
@@ -16,17 +17,20 @@ import { PluginManagerActionType, PluginManagerItem } from './models/pluginmanag
 })
 export class PluginmanagerComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  readonly store = inject(PluginManagerStore);
+  private readonly pluginmanagerRoute: ActivatedRoute;
 
   constructor(
-    readonly store: PluginManagerStore,
     private router: Router,
     private route: ActivatedRoute,
   ) {
+    this.pluginmanagerRoute = this.route.parent ?? this.route;
+
     effect(() => {
       const normalizedChannel = this.store.normalizedChannel();
       if (normalizedChannel) {
-        this.router.navigate(['../', normalizedChannel], {
-          relativeTo: this.route,
+        this.router.navigate([normalizedChannel], {
+          relativeTo: this.pluginmanagerRoute,
           replaceUrl: true,
         });
       }
@@ -39,9 +43,9 @@ export class PluginmanagerComponent implements OnInit {
     });
   }
 
-  onChannelSelected(channel: string): void {
+  onChannelSelected(channel: PluginChannel): void {
     this.store.changeChannel(channel);
-    this.router.navigate(['../', channel], { relativeTo: this.route });
+    this.router.navigate([channel], { relativeTo: this.pluginmanagerRoute });
   }
 
   onActionTriggered(event: { item: PluginManagerItem; actionType: PluginManagerActionType }): void {

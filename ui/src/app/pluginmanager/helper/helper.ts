@@ -1,5 +1,5 @@
 import { HttpEvent, HttpEventType, HttpProgressEvent, HttpResponse } from '@angular/common/http';
-import { ChannelList } from '../services/plugin.service';
+import { ChannelList } from '../models/pluginmanager.models';
 
 const isHttpResponse = <T>(event: HttpEvent<T>): event is HttpResponse<T> => {
   return event.type === HttpEventType.Response || event.type === HttpEventType.ResponseHeader;

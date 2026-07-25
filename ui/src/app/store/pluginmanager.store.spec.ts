@@ -99,6 +99,14 @@ describe('PluginManagerStore', () => {
     expect(pluginService.loadPlugins).toHaveBeenCalledWith('ladon', 'beta');
   });
 
+  it('keeps the base pluginmanager route when no route channel is provided', () => {
+    store.initialize(null);
+
+    expect(store.activeChannel()).toBe('stable');
+    expect(store.normalizedChannel()).toBeNull();
+    expect(pluginService.loadPlugins).toHaveBeenCalledWith('ladon', 'stable');
+  });
+
   it('normalizes an invalid route channel to the first API channel', () => {
     store.initialize('nightly');
 

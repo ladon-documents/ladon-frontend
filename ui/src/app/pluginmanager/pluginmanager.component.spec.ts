@@ -10,6 +10,7 @@ describe('PluginmanagerComponent', () => {
   let fixture: ComponentFixture<PluginmanagerComponent>;
   let store: jasmine.SpyObj<any>;
   let router: jasmine.SpyObj<Router>;
+  let pluginmanagerRoute: ActivatedRoute;
 
   beforeEach(async () => {
     store = jasmine.createSpyObj(
@@ -41,6 +42,7 @@ describe('PluginmanagerComponent', () => {
       },
     );
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    pluginmanagerRoute = {} as ActivatedRoute;
 
     await TestBed.configureTestingModule({
       imports: [PluginmanagerComponent],
@@ -50,6 +52,7 @@ describe('PluginmanagerComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: of(convertToParamMap({ channelName: 'stable' })),
+            parent: pluginmanagerRoute,
           },
         },
         { provide: Router, useValue: router },
@@ -65,10 +68,10 @@ describe('PluginmanagerComponent', () => {
     expect(store.initialize).toHaveBeenCalledWith('stable');
   });
 
-  it('changes channel and navigates', () => {
+  it('changes channel within the pluginmanager route', () => {
     component.onChannelSelected('beta');
 
     expect(store.changeChannel).toHaveBeenCalledWith('beta');
-    expect(router.navigate).toHaveBeenCalledWith(['../', 'beta'], jasmine.any(Object));
+    expect(router.navigate).toHaveBeenCalledWith(['beta'], { relativeTo: pluginmanagerRoute });
   });
 });

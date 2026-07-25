@@ -7,6 +7,7 @@ import { PluginOverviewComponent } from '../plugin-overview/plugin-overview.comp
 import { PluginDetailComponent } from '../plugin-detail/plugin-detail.component';
 import {
   ChannelList,
+  PluginChannel,
   PluginManagerAction,
   PluginManagerActionType,
   PluginManagerError,
@@ -30,7 +31,7 @@ import {
 })
 export class PluginWorkbenchComponent {
   channels = input<ChannelList[]>([]);
-  activeChannel = input<string | null>(null);
+  activeChannel = input<PluginChannel | null>(null);
   plugins = input<PluginManagerItem[]>([]);
   selectedPlugin = input<PluginManagerItem | null>(null);
   selectedPluginId = input<string | null>(null);
@@ -41,7 +42,7 @@ export class PluginWorkbenchComponent {
   actionError = input<PluginManagerError | null>(null);
   isLoadingPlugins = input(false);
 
-  channelSelected = output<string>();
+  channelSelected = output<PluginChannel>();
   searchTermChange = output<string>();
   pluginSelected = output<string>();
   actionTriggered = output<{ item: PluginManagerItem; actionType: PluginManagerActionType }>();

@@ -5,10 +5,12 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pluginFetchClient } from '@ladon/api';
 import {
   ChannelList,
+  PluginChannel,
   PluginManagerAction,
   PluginManagerActionType,
   PluginManagerError,
   PluginManagerItem,
+  PluginProduct,
 } from '../pluginmanager/models/pluginmanager.models';
 import {
   calculatePluginOverview,
@@ -19,7 +21,7 @@ import { PluginService } from '../pluginmanager/services/plugin.service';
 import { PluginInstallationService } from '../pluginmanager/services/plugin-installation.service';
 import { ToastService } from '../shared/services/toast.service';
 
-const DEFAULT_PRODUCT = 'ladon';
+const DEFAULT_PRODUCT: PluginProduct = 'ladon';
 const SPEC_TYPE_WEB_BUNDLE = 'web-bundle';
 const REQUIRED_PLUGIN_IDS = [
   'mind/mf-ladon-config',
@@ -32,9 +34,9 @@ type Plugin = pluginFetchClient.Plugin;
 type BundleContentByPluginId = Record<string, Plugin[]>;
 
 interface PluginManagerState {
-  product: string;
+  product: PluginProduct;
   channels: ChannelList[];
-  activeChannel: string | null;
+  activeChannel: PluginChannel | null;
   items: PluginManagerItem[];
   selectedPluginId: string | null;
   searchTerm: string;
@@ -94,7 +96,7 @@ export const PluginManagerStore = signalStore(
       installationService = inject(PluginInstallationService),
       toastService = inject(ToastService),
     ) => {
-      const loadPluginsForChannel = (channel: string, preserveSelection = false) => {
+      const loadPluginsForChannel = (channel: PluginChannel, preserveSelection = false) => {
         const product = store.product();
         const selectedPluginId = preserveSelection ? store.selectedPluginId() : null;
 
@@ -115,7 +117,7 @@ export const PluginManagerStore = signalStore(
             const bundleRequests = bundlePlugins.map((bundlePlugin) =>
               pluginService.loadBundleContent(product, channel, bundlePlugin.id || '').pipe(
                 map((bundleContent) => [getPluginKey(bundlePlugin), bundleContent] as const),
-                catchError(() => of([getPluginKey(bundlePlugin), []] as const)),
+                catchError(() => of([getPluginKey(bundlePlugin), [] as Plugin[]] as const)),
               ),
             );
 
@@ -181,13 +183,13 @@ export const PluginManagerStore = signalStore(
                 switchMap((channels) => {
                   const fallbackChannel = channels[0]?.channel || null;
                   const routeChannelExists = !!routeChannel && channels.some((item) => item.channel === routeChannel);
-                  const activeChannel = routeChannelExists ? routeChannel : fallbackChannel;
+                  const activeChannel = routeChannelExists ? (routeChannel as PluginChannel) : fallbackChannel;
 
                   patchState(store, {
                     channels,
                     product: channels[0]?.product || DEFAULT_PRODUCT,
                     activeChannel,
-                    normalizedChannel: routeChannelExists || !activeChannel ? null : activeChannel,
+                    normalizedChannel: routeChannel && !routeChannelExists && activeChannel ? activeChannel : null,
                     isLoadingChannels: false,
                   });
 
@@ -220,7 +222,7 @@ export const PluginManagerStore = signalStore(
           ),
         ),
 
-        changeChannel: rxMethod<string>(
+        changeChannel: rxMethod<PluginChannel>(
           pipe(
             switchMap((channel) => {
               patchState(store, {
@@ -239,6 +241,10 @@ export const PluginManagerStore = signalStore(
               if (store.activeAction()) {
                 return of(null);
               }
+              const activeChannel = store.activeChannel();
+              if (!activeChannel) {
+                return of(null);
+              }
 
               patchState(store, {
                 activeAction: {
@@ -253,11 +259,7 @@ export const PluginManagerStore = signalStore(
               const action$ =
                 actionType === 'deinstall'
                   ? installationService.deinstallPlugin(item.rawPlugin)
-                  : installationService.installPlugin(
-                      item.rawPlugin,
-                      store.product(),
-                      store.activeChannel() || '',
-                    );
+                  : installationService.installPlugin(item.rawPlugin, store.product(), activeChannel);
 
               return action$.pipe(
                 switchMap((state) => {
@@ -271,7 +273,7 @@ export const PluginManagerStore = signalStore(
                         }
                       : null,
                   });
-                  return loadPluginsForChannel(store.activeChannel() || '', true);
+                  return loadPluginsForChannel(activeChannel, true);
                 }),
                 tap(() => {
                   patchState(store, { activeAction: null });

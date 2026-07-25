@@ -33,16 +33,20 @@ export class FilemanagerService {
     return throwError(new Error('Not Found'));
   }
 
-  public saveDocument(document: Document, content: any) {
+  public saveDocument(document: Document, content: Blob) {
     const { bucket, key } = document;
     if (bucket && key) {
       return this.apiFactory.fromApi(
         () =>
-          this.apiFactory.documentsApi.putDocument({
-            bucket,
-            key,
-            zipUploadRequest: content,
-          }) as Promise<Document>,
+          this.apiFactory.documentsApi.putDocument(
+            {
+              bucket,
+              key,
+            },
+            {
+              body: content,
+            },
+          ) as Promise<Document>,
       );
     }
     return throwError(new Error('Not Found'));

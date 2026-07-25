@@ -1,5 +1,8 @@
 import { pluginFetchClient } from '@ladon/api';
 
+export type PluginProduct = pluginFetchClient.PluginsProductEnum;
+export type PluginChannel = pluginFetchClient.PluginsChannelEnum;
+
 export type PluginManagerStatus =
   | 'installed'
   | 'updateAvailable'
@@ -13,8 +16,8 @@ export type PluginManagerActionType = 'install' | 'update' | 'deinstall' | 'bund
 export type PluginActionPhase = 'idle' | 'starting' | 'download' | 'upload' | 'finish' | 'rollback' | 'done' | 'error';
 
 export interface ChannelList {
-  product: string;
-  channel: string;
+  product: PluginProduct;
+  channel: PluginChannel;
 }
 
 export interface PluginManagerItem {

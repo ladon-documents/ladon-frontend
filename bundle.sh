@@ -178,11 +178,11 @@ create_release_package() {
     log_warning "Static-Verzeichnis nicht gefunden"
   fi
 
-  if [ -d "./draco-statics" ]; then
+  if [ -d "./draco-rapids" ]; then
     log_message "Kopiere Draco Statics …"
-    cp -r ./draco-statics "$RELEASE_DIR/"
+    cp -r ./draco-rapids "$RELEASE_DIR/"
   else
-    log_warning "Draco-Statics-Verzeichnis nicht gefunden"
+    log_warning "Draco-Rapid-Verzeichnis nicht gefunden"
   fi
 
   if [ -d "./wc" ]; then

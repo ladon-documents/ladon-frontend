@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChannelList } from '../models/pluginmanager.models';
+import { ChannelList, PluginChannel } from '../models/pluginmanager.models';
 
 @Component({
   selector: 'app-plugin-channel-nav',
@@ -11,6 +11,6 @@ import { ChannelList } from '../models/pluginmanager.models';
 })
 export class PluginChannelNavComponent {
   channels = input<ChannelList[]>([]);
-  activeChannel = input<string | null>(null);
-  channelSelected = output<string>();
+  activeChannel = input<PluginChannel | null>(null);
+  channelSelected = output<PluginChannel>();
 }

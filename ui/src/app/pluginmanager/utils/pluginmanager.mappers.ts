@@ -18,7 +18,7 @@ function getPluginId(plugin: Plugin): string {
 }
 
 function getPluginType(plugin: Plugin): string | null {
-  return plugin.spec?.type || plugin.type || null;
+  return plugin.spec?.type  || null;
 }
 
 function getPluginName(plugin: Plugin, pluginId: string): string {
@@ -56,7 +56,7 @@ export function toPluginManagerItem(
   const isBundle = type === SPEC_TYPE_WEB_BUNDLE;
   const isRequired = requiredPluginIds.includes(pluginId);
   const installedVersion = installedVersions[pluginId] || null;
-  const availableVersion = plugin.version || null;
+  const availableVersion = plugin.spec?.version || null;
   const bundleItems = bundleContent.map((bundlePlugin) =>
     toPluginManagerItem(bundlePlugin, installedVersions, requiredPluginIds),
   );

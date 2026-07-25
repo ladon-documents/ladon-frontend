@@ -11,13 +11,13 @@ const webComponents: WebComponentLoaderOptions = {
   },
 };
 
-const statics = {
+const rapids = {
   source: 'local',
-  bucket: 'draco-statics',
+  bucket: 'draco-rapids',
   trustedExecutionEnabled: true,
   local: {
-    basePath: `/${baseHref}/public/dev-statics`,
-    manifestPath: `/${baseHref}/public/dev-statics/static-pages.json`,
+    basePath: `/${baseHref}/public/dev-rapids`,
+    manifestPath: `/${baseHref}/public/dev-rapids/rapid-pages.json`,
   },
 };
 
@@ -35,7 +35,7 @@ export const environment = {
     acceptedFiles: ['jpg', 'jpeg', 'png', 'pdf'],
   },
   webComponents,
-  statics,
+  rapids,
   storage: 'sessionStorage',
   production: false,
 };

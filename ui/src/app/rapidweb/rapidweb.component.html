@@ -1,0 +1,7 @@
+@if (loading) {
+  <div id="rapid-page-loading">Loading...</div>
+} @else if (error) {
+  <div id="rapid-page-error">{{ error }}</div>
+} @else if (rapidHTML) {
+  <div id="rapid-page-content" [innerHTML]="rapidHTML" class="h-full overflow-y-auto"></div>
+}

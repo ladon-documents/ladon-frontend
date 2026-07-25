@@ -5,13 +5,9 @@ import { pluginFetchClient } from '@ladon/api';
 import { sortChannels } from '../helper/helper';
 import { PluginMetaService } from './plugin-meta.service';
 import { FetchApiFactory } from '../../services/api/fetch-api.factory';
+import { ChannelList, PluginChannel, PluginProduct } from '../models/pluginmanager.models';
 
 type PluginModel = pluginFetchClient.Plugin;
-
-export interface ChannelList {
-  product: string;
-  channel: string;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -36,15 +32,15 @@ export class PluginService {
     );
   }
 
-  loadPlugins(product: string, channel: string): Observable<Array<PluginModel>> {
-    return this.apiFactory.fromApi(() => this.apiFactory.pluginV1Api.plugins({ product, channel: channel as any }));
+  loadPlugins(product: PluginProduct, channel: PluginChannel): Observable<Array<PluginModel>> {
+    return this.apiFactory.fromApi(() => this.apiFactory.pluginV1Api.plugins({ product, channel }));
   }
 
-  loadBundleContent(product: string, channel: string, pluginId: string): Observable<Array<PluginModel>> {
+  loadBundleContent(product: PluginProduct, channel: PluginChannel, pluginId: string): Observable<Array<PluginModel>> {
     return this.apiFactory.fromApi(() =>
       this.apiFactory.pluginV1Api.bundleContent({
         product,
-        channel: channel as any,
+        channel,
         id: pluginId,
       }),
     );
@@ -54,17 +50,17 @@ export class PluginService {
     return this.apiFactory.fromApi(() => this.apiFactory.pluginmanagerApi.installedPlugins());
   }
 
-  loadPluginReadme(product: string, channel: string, pluginId: string): Observable<string> {
+  loadPluginReadme(product: PluginProduct, channel: PluginChannel, pluginId: string): Observable<string> {
     return this.apiFactory.fromApi(() =>
       this.apiFactory.pluginV1Api.pluginReadme({
         product,
-        channel: channel as any,
+        channel,
         id: pluginId,
       }),
     );
   }
 
-  resolveDocumentationUrl(product: string, channel: string, pluginId?: string): string {
+  resolveDocumentationUrl(product: PluginProduct, channel: PluginChannel, pluginId?: string): string {
     if (pluginId) {
       return `https://plugins.mind-consulting.de/plugins/mind/channel/${product}/${channel}/readme/${pluginId}`;
     }

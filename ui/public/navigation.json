@@ -62,5 +62,13 @@
     "path": "https://ladon.org/doc",
     "type": "menu",
     "index": 40
+  },
+  {
+    "label": "Alte UI",
+    "target": "external",
+    "path": "https://cluster.mind-consulting.de/ui/root",
+    "icon": "heroPuzzlePiece",
+    "type": "main",
+    "index": 35
   }
 ]

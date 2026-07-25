@@ -21,72 +21,69 @@ describe('NavigationStore', () => {
 
   it('does not expose later mutations to entries passed into the store', () => {
     const globalEntries = [entry('global:filemanager', 'Filemanager', 10)];
-    const staticEntries = [staticEntry('static:reports', 'Reports', 20)];
+    const rapidEntries = [rapidEntry('rapid:reports', 'Reports', 20)];
 
     store.setGlobal(globalEntries);
-    store.setStatic(staticEntries);
+    store.setRapid(rapidEntries);
 
     globalEntries[0].label = 'Mutated Global';
-    staticEntries[0].label = 'Mutated Static';
+    rapidEntries[0].label = 'Mutated Rapid';
 
     expect(store.entries().map((entry) => entry.label)).toEqual(['Filemanager', 'Reports']);
   });
 
-  it('appends static navigation sorted by index', () => {
+  it('appends rapid navigation sorted by index', () => {
     const globalEntries = [entry('global:filemanager', 'Filemanager', 10)];
-    const staticEntries = [staticEntry('static:reports', 'Reports', 30), staticEntry('static:alpha', 'Alpha', 20)];
+    const rapidEntries = [rapidEntry('rapid:reports', 'Reports', 30), rapidEntry('rapid:alpha', 'Alpha', 20)];
 
     store.setGlobal(globalEntries);
-    store.setStatic(staticEntries);
+    store.setRapid(rapidEntries);
 
-    expect(ids()).toEqual(['global:filemanager', 'static:alpha', 'static:reports']);
+    expect(ids()).toEqual(['global:filemanager', 'rapid:alpha', 'rapid:reports']);
   });
 
-  it('keeps global entries before static entries for equal index', () => {
+  it('keeps global entries before rapid entries for equal index', () => {
     store.setGlobal([entry('global:filemanager', 'Filemanager', 10)]);
-    store.setStatic([staticEntry('static:reports', 'Reports', 10)]);
+    store.setRapid([rapidEntry('rapid:reports', 'Reports', 10)]);
 
-    expect(ids()).toEqual(['global:filemanager', 'static:reports']);
+    expect(ids()).toEqual(['global:filemanager', 'rapid:reports']);
   });
 
-  it('ignores static navigation id duplicates when global id exists', () => {
-    store.setGlobal([entry('static:reports', 'Global Reports', 10)]);
-    store.setStatic([staticEntry('static:reports', 'Static Reports', 20)]);
+  it('ignores rapid navigation id duplicates when global id exists', () => {
+    store.setGlobal([entry('rapid:reports', 'Global Reports', 10)]);
+    store.setRapid([rapidEntry('rapid:reports', 'Rapid Reports', 20)]);
 
-    expect(store.entries()).toEqual([entry('static:reports', 'Global Reports', 10)]);
+    expect(store.entries()).toEqual([entry('rapid:reports', 'Global Reports', 10)]);
   });
 
-  it('ignores static navigation raw id duplicates when global id exists', () => {
+  it('ignores rapid navigation raw id duplicates when global id exists', () => {
     store.setGlobal([entry('global:filemanager', 'Filemanager', 10)]);
-    store.setStatic([staticEntry('global:filemanager', 'Reports', 20, 'reports')]);
+    store.setRapid([rapidEntry('global:filemanager', 'Reports', 20, 'reports')]);
 
     expect(store.entries()).toEqual([entry('global:filemanager', 'Filemanager', 10)]);
   });
 
-  it('keeps the first static navigation entry when duplicate static ids exist', () => {
-    store.setStatic([
-      staticEntry('static:reports', 'Reports', 20),
-      staticEntry('static:reports', 'Reports Duplicate', 10),
-    ]);
+  it('keeps the first rapid navigation entry when duplicate rapid ids exist', () => {
+    store.setRapid([rapidEntry('rapid:reports', 'Reports', 20), rapidEntry('rapid:reports', 'Reports Duplicate', 10)]);
 
-    expect(store.entries()).toEqual([staticEntry('static:reports', 'Reports', 20)]);
+    expect(store.entries()).toEqual([rapidEntry('rapid:reports', 'Reports', 20)]);
   });
 
-  it('sorts missing static indexes after indexed global entries', () => {
+  it('sorts missing rapid indexes after indexed global entries', () => {
     store.setGlobal([entry('global:filemanager', 'Filemanager', 10)]);
-    store.setStatic([staticEntry('static:reports', 'Reports')]);
+    store.setRapid([rapidEntry('rapid:reports', 'Reports')]);
 
-    expect(ids()).toEqual(['global:filemanager', 'static:reports']);
+    expect(ids()).toEqual(['global:filemanager', 'rapid:reports']);
   });
 
-  it('sorts static entries with same index alphabetically', () => {
-    store.setStatic([
-      staticEntry('static:reports', 'Reports', 10),
-      staticEntry('static:alpha', 'Alpha', 10),
-      staticEntry('static:beta', 'Alpha', 10),
+  it('sorts rapid entries with same index alphabetically', () => {
+    store.setRapid([
+      rapidEntry('rapid:reports', 'Reports', 10),
+      rapidEntry('rapid:alpha', 'Alpha', 10),
+      rapidEntry('rapid:beta', 'Alpha', 10),
     ]);
 
-    expect(ids()).toEqual(['static:alpha', 'static:beta', 'static:reports']);
+    expect(ids()).toEqual(['rapid:alpha', 'rapid:beta', 'rapid:reports']);
   });
 
   function ids(): string[] {
@@ -105,12 +102,12 @@ function entry(id: string, label: string, index?: number): NavigationEntry {
   };
 }
 
-function staticEntry(id: string, label: string, index?: number, path = id.replace(/^static:/, '')): NavigationEntry {
+function rapidEntry(id: string, label: string, index?: number, path = id.replace(/^rapid:/, '')): NavigationEntry {
   return {
     id,
     label,
     path,
-    target: 'static',
+    target: 'rapid',
     type: 'main',
     ...(index === undefined ? {} : { index }),
   };

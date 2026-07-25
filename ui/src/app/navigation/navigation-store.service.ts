@@ -3,7 +3,7 @@ import { computed, Injectable, Signal, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { NavigationEntry } from '../interfaces/navigation-entry';
 
-type NavigationOrigin = 'global' | 'static';
+type NavigationOrigin = 'global' | 'rapid';
 
 interface StoredNavigationEntry {
   entry: NavigationEntry;
@@ -15,10 +15,10 @@ interface StoredNavigationEntry {
 @Injectable({ providedIn: 'root' })
 export class NavigationStore {
   private readonly globalNavigationEntries = signal<NavigationEntry[]>(this.cloneEntries(environment.navigation));
-  private readonly staticNavigationEntries = signal<NavigationEntry[]>([]);
+  private readonly rapidNavigationEntries = signal<NavigationEntry[]>([]);
 
   readonly entries: Signal<NavigationEntry[]> = computed(() => {
-    return [...this.storedGlobalEntries(), ...this.validStaticEntries()]
+    return [...this.storedGlobalEntries(), ...this.validRapidEntries()]
       .sort((a, b) => this.compareEntries(a, b))
       .map(({ entry }) => this.cloneEntry(entry));
   });
@@ -27,31 +27,31 @@ export class NavigationStore {
     this.globalNavigationEntries.set(this.cloneEntries(entries));
   }
 
-  setStatic(entries: NavigationEntry[]): void {
-    this.staticNavigationEntries.set(this.cloneEntries(entries));
+  setRapid(entries: NavigationEntry[]): void {
+    this.rapidNavigationEntries.set(this.cloneEntries(entries));
   }
 
-  private validStaticEntries(): StoredNavigationEntry[] {
+  private validRapidEntries(): StoredNavigationEntry[] {
     const globalIds = new Set(
       this.globalNavigationEntries()
         .map((entry) => entry.id)
         .filter((id): id is string => !!id),
     );
-    const staticIds = new Set<string>();
+    const rapidIds = new Set<string>();
     const validEntries: StoredNavigationEntry[] = [];
 
-    this.staticNavigationEntries().forEach((entry, position) => {
+    this.rapidNavigationEntries().forEach((entry, position) => {
       if (entry.id && globalIds.has(entry.id)) {
         return;
       }
 
-      const effectiveId = this.effectiveStaticId(entry);
-      if (!effectiveId || globalIds.has(effectiveId) || staticIds.has(effectiveId)) {
+      const effectiveId = this.effectiveRapidId(entry);
+      if (!effectiveId || globalIds.has(effectiveId) || rapidIds.has(effectiveId)) {
         return;
       }
 
-      staticIds.add(effectiveId);
-      validEntries.push({ entry: { ...entry, id: effectiveId }, origin: 'static', position, effectiveId });
+      rapidIds.add(effectiveId);
+      validEntries.push({ entry: { ...entry, id: effectiveId }, origin: 'rapid', position, effectiveId });
     });
 
     return validEntries;
@@ -66,13 +66,13 @@ export class NavigationStore {
     }));
   }
 
-  private effectiveStaticId(entry: NavigationEntry): string | undefined {
-    if (entry.target !== 'static' || typeof entry.path !== 'string' || entry.path.trim().length === 0) {
+  private effectiveRapidId(entry: NavigationEntry): string | undefined {
+    if (entry.target !== 'rapid' || typeof entry.path !== 'string' || entry.path.trim().length === 0) {
       return undefined;
     }
 
-    const staticId = entry.id?.startsWith('static:') ? entry.id.slice('static:'.length) : entry.path;
-    return staticId ? `static:${staticId}` : undefined;
+    const rapidId = entry.id?.startsWith('rapid:') ? entry.id.slice('rapid:'.length) : entry.path;
+    return rapidId ? `rapid:${rapidId}` : undefined;
   }
 
   private compareEntries(a: StoredNavigationEntry, b: StoredNavigationEntry): number {
@@ -85,8 +85,8 @@ export class NavigationStore {
       return a.origin === 'global' ? -1 : 1;
     }
 
-    if (a.origin === 'static') {
-      const labelComparison = this.staticLabel(a).localeCompare(this.staticLabel(b));
+    if (a.origin === 'rapid') {
+      const labelComparison = this.rapidLabel(a).localeCompare(this.rapidLabel(b));
       if (labelComparison !== 0) {
         return labelComparison;
       }
@@ -104,7 +104,7 @@ export class NavigationStore {
     return typeof entry.index === 'number' && Number.isFinite(entry.index) ? entry.index : Number.POSITIVE_INFINITY;
   }
 
-  private staticLabel(entry: StoredNavigationEntry): string {
+  private rapidLabel(entry: StoredNavigationEntry): string {
     return entry.entry.label.toLocaleLowerCase();
   }
 

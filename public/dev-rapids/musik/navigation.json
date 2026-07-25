@@ -1,0 +1,10 @@
+{
+  "id": "rapid:musik",
+  "label": "Omas Musik Demo Rapid",
+  "target": "rapid",
+  "component": "Rapidweb",
+  "path": "musik",
+  "icon": "heroGlobeAlt",
+  "type": "main",
+  "index": 36
+}

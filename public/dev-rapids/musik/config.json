@@ -1,0 +1,7 @@
+{
+  "rapidId": "musik",
+  "html": "musik.html",
+  "mode": "trusted",
+  "allowScripts": true,
+  "allowedScriptSources": "same-origin"
+}

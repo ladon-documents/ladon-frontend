@@ -141,6 +141,9 @@ build_all() {
   log_message "Baue alle APIs … 🤖"
   npm --prefix ./api run build:all
 
+  log_message "Baue UI  🤖"
+  npm --prefix ./ui run build
+
   log_message "Alle Projekte erfolgreich gebaut!"
 }
 

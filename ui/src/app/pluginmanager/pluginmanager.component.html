@@ -1,42 +1,17 @@
-<div role="tablist" class="tabs tabs-lift">
-  @for (channelItem of channels$ | async; track channelItem.channel) {
-    <a
-      (click)="changeChannel(channelItem.channel)"
-      role="tab"
-      class="tab"
-      [class.tab-active]="selectedChannel === channelItem.channel"
-      [attr.aria-label]="channelItem.channel"
-      >{{ channelItem.channel }}</a
-    >
-  }
-</div>
-
-<div class="grid md:grid-cols-2 gap-4 h-[calc(100%-2.5rem)]">
-  <div class="h-full overflow-auto bg-base-100">
-    <router-outlet></router-outlet>
-  </div>
-
-  <div class="h-full overflow-auto hidden md:block">
-    <div id="iframe" slot="right" class="h-full">
-      <ng-container *ngTemplateOutlet="iframeWithControls"></ng-container>
-    </div>
-  </div>
-</div>
-
-<app-dialog [title]="(selectedItem$ | async)?.name">
-  <ng-container *ngTemplateOutlet="iframeWithControls"></ng-container>
-</app-dialog>
-
-<ng-template #iframeWithControls>
-  @if (selectedItem$ | async; as selectedItem) {
-    @if (selectedItem && selectedItem.name) {
-      <plugin-progressbar
-        [pluginInstalState]="pluginInstallList[selectedItem.name]"
-        [plugin]="selectedItem"
-        (update)="install($event)"
-        (deinstall)="deinstall($event)">
-      </plugin-progressbar>
-    }
-  }
-  <iframe [src]="pluginInfoUrl$()" class="w-full h-full"></iframe>
-</ng-template>
+<app-plugin-workbench
+  [channels]="store.channels()"
+  [activeChannel]="store.activeChannel()"
+  [plugins]="store.filteredItems()"
+  [selectedPlugin]="store.selectedPlugin()"
+  [selectedPluginId]="store.selectedPluginId()"
+  [searchTerm]="store.searchTerm()"
+  [overview]="store.overview()"
+  [activeAction]="store.activeAction()"
+  [loadError]="store.loadError()"
+  [actionError]="store.actionError()"
+  [isLoadingPlugins]="store.isLoadingPlugins()"
+  (channelSelected)="onChannelSelected($event)"
+  (searchTermChange)="store.setSearchTerm($event)"
+  (pluginSelected)="store.selectPlugin($event)"
+  (actionTriggered)="onActionTriggered($event)">
+</app-plugin-workbench>

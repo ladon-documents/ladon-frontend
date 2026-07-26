@@ -1,0 +1,10 @@
+{
+  "id": "rapid:demo",
+  "label": "Authenticated Demo Test",
+  "target": "rapid",
+  "component": "Rapidweb",
+  "path": "demo",
+  "icon": "heroGlobeAlt",
+  "type": "main",
+  "index": 35
+}

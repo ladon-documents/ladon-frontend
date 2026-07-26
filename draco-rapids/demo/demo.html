@@ -1,0 +1,226 @@
+<main class="mx-auto p-6">
+  <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-base-content">
+        UI Rapid Authenticated Test
+      </h1>
+      <p id="rapid-auth-status" class="text-sm text-base-content/70">
+        Waiting for Ladon rapid runtime...
+      </p>
+    </div>
+  </header>
+
+  <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+    <div class="rounded-lg bg-base-100 p-4 shadow">
+      <div class="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-medium text-base-content">
+            test/test/Musik Oma
+          </h2>
+          <p id="rapid-auth-count" class="text-sm text-base-content/60">
+            No files loaded.
+          </p>
+        </div>
+        <button
+          id="rapid-auth-refresh"
+          class="btn btn-ghost btn-sm"
+          type="button"
+        >
+          Refresh
+        </button>
+      </div>
+      <div id="rapid-auth-message" class="alert hidden"></div>
+      <ul id="rapid-auth-tracks" class="menu rounded-box bg-base-100 p-0"></ul>
+    </div>
+
+    <aside class="rounded-lg bg-base-100 p-4 shadow">
+      <h2 class="mb-4 text-lg font-medium text-base-content">Runtime</h2>
+      <dl class="grid grid-cols-[auto,1fr] gap-x-4 gap-y-2 text-sm">
+        <dt class="font-medium">fetchClient</dt>
+        <dd id="rapid-auth-fetch-client">pending</dd>
+        <dt class="font-medium">auth</dt>
+        <dd id="rapid-auth-auth">pending</dd>
+        <dt class="font-medium">utility</dt>
+        <dd id="rapid-auth-utility">pending</dd>
+      </dl>
+
+      <div class="divider"></div>
+
+      <h2 class="mb-4 text-lg font-medium text-base-content">Player</h2>
+      <div
+        id="rapid-auth-empty-player"
+        class="rounded-lg border border-dashed border-base-300 p-6 text-center text-sm text-base-content/60"
+      >
+        Select an audio file.
+      </div>
+      <ladon-audioplayer
+        id="rapid-auth-audio-player"
+        class="hidden"
+      ></ladon-audioplayer>
+    </aside>
+  </section>
+</main>
+
+<script type="module">
+  const status = document.querySelector("#rapid-auth-status");
+  const refreshButton = document.querySelector("#rapid-auth-refresh");
+  const count = document.querySelector("#rapid-auth-count");
+  const tracks = document.querySelector("#rapid-auth-tracks");
+  const message = document.querySelector("#rapid-auth-message");
+  const emptyPlayer = document.querySelector("#rapid-auth-empty-player");
+  const audioPlayer = document.querySelector("#rapid-auth-audio-player");
+  const fetchClientStatus = document.querySelector("#rapid-auth-fetch-client");
+  const authStatus = document.querySelector("#rapid-auth-auth");
+  const utilityStatus = document.querySelector("#rapid-auth-utility");
+  const loginUrl = `/ui/draco/ladon-core/login?redirectUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+  const bucket = "test";
+  const folder = "test/Musik Oma/";
+
+  let ladonRapid;
+
+  function showMessage(text, type = "alert-info") {
+    message.className = `alert ${type}`;
+    message.textContent = text;
+    message.classList.toggle("hidden", !text);
+  }
+
+  function setRuntimeStatus() {
+    fetchClientStatus.textContent = ladonRapid.fetchClient?.DocumentsApi
+      ? "available"
+      : "missing";
+    authStatus.textContent = ladonRapid.auth?.ensureAuthenticated
+      ? "available"
+      : "missing";
+    utilityStatus.textContent = ladonRapid.utility?.formatFileSize
+      ? "available"
+      : "missing";
+  }
+
+  function normalizeDocument(document) {
+    return {
+      ...document,
+      bucket: document.bucket || bucket,
+      key: document.key || document.path || document.name,
+      name:
+        document.name || (document.key || document.path || "").split("/").pop(),
+      path: document.path || document.key,
+      "content-type":
+        document["content-type"] ||
+        document.contentType ||
+        document.metadata?.["content-type"],
+      lastModified: document.lastModified || document["last-modified"],
+    };
+  }
+
+  function formatTrackLabel(document) {
+    return (
+      document.name || document.key || document.path || "Unnamed audio file"
+    );
+  }
+
+  function renderTracks(documents) {
+    tracks.innerHTML = "";
+    count.textContent = `${documents.length} audio file${documents.length === 1 ? "" : "s"}`;
+
+    if (documents.length === 0) {
+      showMessage("No audio files found in this folder.", "alert-warning");
+      return;
+    }
+
+    showMessage("");
+    for (const document of documents) {
+      const item = window.document.createElement("li");
+      const button = window.document.createElement("button");
+      const label = window.document.createElement("span");
+      const size = window.document.createElement("span");
+
+      button.type = "button";
+      button.className = "flex items-center justify-between gap-3";
+      label.className = "truncate";
+      label.textContent = formatTrackLabel(document);
+      size.className = "badge badge-ghost";
+      size.textContent = ladonRapid.utility.formatFileSize(document.size || 0);
+
+      button.append(label, size);
+      button.addEventListener("click", () => selectTrack(document, button));
+      item.appendChild(button);
+      tracks.appendChild(item);
+    }
+  }
+
+  async function selectTrack(document, selectedButton) {
+    tracks
+      .querySelectorAll("button")
+      .forEach((button) => button.classList.remove("active"));
+    selectedButton.classList.add("active");
+
+    if (!window.customElements?.get("ladon-audioplayer")) {
+      showMessage(
+        "ladon-audioplayer is not registered in this UI runtime.",
+        "alert-warning",
+      );
+      return;
+    }
+
+    emptyPlayer.classList.add("hidden");
+    audioPlayer.classList.remove("hidden");
+    await customElements.whenDefined("ladon-audioplayer");
+    audioPlayer.document = document;
+  }
+
+  async function loadTracks() {
+    refreshButton.disabled = true;
+    status.textContent = `Loading ${bucket}/${folder}...`;
+    showMessage("");
+
+    try {
+      const documentsApi = ladonRapid.auth.createAuthenticatedApi(
+        ladonRapid.fetchClient.DocumentsApi,
+      );
+      const documents = await documentsApi.listDocuments({
+        bucket,
+        limit: 1000,
+        prefix: folder,
+        currentFolder: true,
+      });
+      const audioDocuments = documents
+        .map(normalizeDocument)
+        .filter((document) => ladonRapid.utility.isAudioDocument(document))
+        .sort((a, b) => formatTrackLabel(a).localeCompare(formatTrackLabel(b)));
+
+      renderTracks(audioDocuments);
+      status.textContent = "Authenticated.";
+    } catch (error) {
+      status.textContent = `Failed to load audio files: ${error.message}`;
+      showMessage(error.message, "alert-error");
+      console.error(error);
+    } finally {
+      refreshButton.disabled = false;
+    }
+  }
+
+  try {
+    ladonRapid = await window.ladonRapidReady;
+    setRuntimeStatus();
+
+    const isAuthenticated = ladonRapid.auth.ensureAuthenticated({
+      redirectTo: loginUrl,
+    });
+
+    if (!isAuthenticated) {
+      status.textContent = "Redirecting to login...";
+    } else {
+      const userApi = ladonRapid.auth.createAuthenticatedApi(
+        ladonRapid.fetchClient.UserControllerApi,
+      );
+      const user = await userApi.getCurrentUser();
+      status.textContent = `Authenticated as ${user.fullName || user.email || user.userId || "user"}.`;
+      refreshButton.addEventListener("click", loadTracks);
+      await loadTracks();
+    }
+  } catch (error) {
+    status.textContent = `Authentication failed: ${error.message}`;
+    showMessage(error.message, "alert-error");
+    console.error(error);
+  }
+</script>

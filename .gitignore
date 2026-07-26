@@ -2,6 +2,7 @@
 
 # Compiled output
 /dist
+/docs
 /**/dist
 /tmp
 /api/angular-client

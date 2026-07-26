@@ -23,7 +23,7 @@ import { ToastComponent } from './shared/components/toast/toast.component';
 import { ConfirmationDialogComponent } from './shared/components/confirmation-dialog/confirmation-dialog.component';
 import { InputDialogComponent } from './shared/components/input-dialog/input-dialog.component';
 import { NavigationStore } from './navigation/navigation-store.service';
-import { DracoStaticRegistryService } from './staticweb/draco-static-registry.service';
+import { DracoRapidRegistryService } from './rapidweb/draco-rapid-registry.service';
 
 @Component({
   imports: [
@@ -47,10 +47,10 @@ import { DracoStaticRegistryService } from './staticweb/draco-static-registry.se
 export class AppComponent implements OnInit, OnDestroy {
   readonly store = inject(AppStore);
   private readonly navigationStore = inject(NavigationStore);
-  private readonly staticRegistry = inject(DracoStaticRegistryService);
+  private readonly rapidRegistry = inject(DracoRapidRegistryService);
   private mql: MediaQueryList | undefined;
-  private staticNavigationDiscoveryInFlight = false;
-  private staticNavigationDiscoveryReady = false;
+  private rapidNavigationDiscoveryInFlight = false;
+  private rapidNavigationDiscoveryReady = false;
 
   isAuthenticated: Signal<boolean> = this.store.auth.isAuthenticated;
   isAuthenticating: Signal<boolean> = this.store.auth.isAuthenticating;
@@ -64,8 +64,8 @@ export class AppComponent implements OnInit, OnDestroy {
     effect(() => {
       this.navigationEntries = this.navigationStore.entries();
 
-      if (this.isAuthenticated() && !this.staticNavigationDiscoveryReady && !this.staticNavigationDiscoveryInFlight) {
-        void this.discoverStaticNavigation();
+      if (this.isAuthenticated() && !this.rapidNavigationDiscoveryReady && !this.rapidNavigationDiscoveryInFlight) {
+        void this.discoverRapidNavigation();
       }
     });
 
@@ -123,32 +123,32 @@ export class AppComponent implements OnInit, OnDestroy {
     console.log('PDF Viewer geschlossen für:', event.document?.name);
   }
 
-  private async discoverStaticNavigation(): Promise<void> {
-    this.staticNavigationDiscoveryInFlight = true;
+  private async discoverRapidNavigation(): Promise<void> {
+    this.rapidNavigationDiscoveryInFlight = true;
 
     try {
-      const snapshot = await this.staticRegistry.discover();
+      const snapshot = await this.rapidRegistry.discover();
       if (snapshot.state === 'ready') {
-        this.navigationStore.setStatic(
+        this.navigationStore.setRapid(
           snapshot.entries
             .map((entry) => entry.navigation)
-            .filter((entry): entry is NavigationEntry => this.isStaticNavigationEntry(entry)),
+            .filter((entry): entry is NavigationEntry => this.isRapidNavigationEntry(entry)),
         );
-        this.staticNavigationDiscoveryReady = true;
+        this.rapidNavigationDiscoveryReady = true;
       }
     } catch (error) {
-      console.warn('Static navigation discovery failed.', error);
+      console.warn('Rapid navigation discovery failed.', error);
     } finally {
-      this.staticNavigationDiscoveryInFlight = false;
+      this.rapidNavigationDiscoveryInFlight = false;
     }
   }
 
-  private isStaticNavigationEntry(entry: NavigationEntry | undefined): entry is NavigationEntry {
+  private isRapidNavigationEntry(entry: NavigationEntry | undefined): entry is NavigationEntry {
     return (
       !!entry &&
-      entry.target === 'static' &&
+      entry.target === 'rapid' &&
       typeof entry.id === 'string' &&
-      entry.id.startsWith('static:') &&
+      entry.id.startsWith('rapid:') &&
       typeof entry.label === 'string' &&
       entry.label.trim().length > 0 &&
       typeof entry.path === 'string' &&

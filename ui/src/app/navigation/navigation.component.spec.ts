@@ -70,11 +70,11 @@ export class NavigationTestObject {
         index: 20,
       },
       {
-        label: 'STATIC.TASKMANAGER',
+        label: 'RAPID.TASKMANAGER',
         path: '_ui/task-manager/module.html',
-        id: '@mind/mf-ladon-static-page',
+        id: '@mind/mf-ladon-rapid-page',
         icon: 'heroListBullet',
-        target: 'static',
+        target: 'rapid',
         type: 'main',
         index: 40,
       },
@@ -94,7 +94,11 @@ const navigationTO = new NavigationTestObject();
 describe('NavigationComponent', () => {
   let component: NavigationComponent, fixture: ComponentFixture<NavigationComponent>;
   let router: Router;
-  let appStoreStub: { ui: { isSidenavClosed: ReturnType<typeof signal<boolean>> }; logout: jasmine.Spy; toggleSidebar: jasmine.Spy };
+  let appStoreStub: {
+    ui: { isSidenavClosed: ReturnType<typeof signal<boolean>> };
+    logout: jasmine.Spy;
+    toggleSidebar: jasmine.Spy;
+  };
 
   beforeEach(async () => {
     appStoreStub = {
@@ -147,24 +151,24 @@ describe('NavigationComponent', () => {
     });
   });
 
-  it('navigates static items by static id without page query params', async () => {
+  it('navigates rapid items by rapid id without page query params', async () => {
     const navigate = spyOn(router, 'navigate').and.resolveTo(true);
-    const item = navigationTO.returnMockNavigation().find(({ target }) => target === 'static')!;
+    const item = navigationTO.returnMockNavigation().find(({ target }) => target === 'rapid')!;
 
     await component.invokeItem({ ...item, path: 'demo' });
 
-    expect(navigate).toHaveBeenCalledOnceWith([`${environment.baseHref}/static/demo`]);
+    expect(navigate).toHaveBeenCalledOnceWith([`${environment.baseHref}/rapid/demo`]);
   });
 
-  it('marks static navigation active by static id', () => {
+  it('marks rapid navigation active by rapid id', () => {
     const extractPathFromUrl = (component as unknown as { extractPathFromUrl(url: string): string | undefined })
       .extractPathFromUrl;
 
-    expect(extractPathFromUrl(`${environment.baseHref}/static/demo`)).toBe('demo');
-    expect(extractPathFromUrl(`${environment.baseHref}/static/demo?foo=bar#section`)).toBe('demo');
+    expect(extractPathFromUrl(`${environment.baseHref}/rapid/demo`)).toBe('demo');
+    expect(extractPathFromUrl(`${environment.baseHref}/rapid/demo?foo=bar#section`)).toBe('demo');
   });
 
-  it('keeps existing active link extraction for non-static routes', () => {
+  it('keeps existing active link extraction for non-rapid routes', () => {
     const extractPathFromUrl = (component as unknown as { extractPathFromUrl(url: string): string | undefined })
       .extractPathFromUrl;
 

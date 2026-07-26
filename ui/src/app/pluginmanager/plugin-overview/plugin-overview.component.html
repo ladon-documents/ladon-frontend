@@ -1,0 +1,37 @@
+<section class="flex h-full flex-col gap-4 p-5">
+  <header>
+    <h2 class="text-lg font-semibold">Channel overview</h2>
+    <p class="text-sm text-base-content/60">Status summary for the selected plugin channel.</p>
+  </header>
+
+  @if (error(); as currentError) {
+    <div class="alert alert-error">{{ currentError.message }}</div>
+  }
+
+  <div class="grid grid-cols-2 gap-3 lg:grid-cols-3">
+    <div class="rounded border border-base-300 p-3">
+      <div class="text-2xl font-semibold">{{ overview().installedCount }}</div>
+      <div class="text-xs uppercase text-base-content/60">Installed</div>
+    </div>
+    <div class="rounded border border-base-300 p-3">
+      <div class="text-2xl font-semibold">{{ overview().updateCount }}</div>
+      <div class="text-xs uppercase text-base-content/60">Updates</div>
+    </div>
+    <div class="rounded border border-base-300 p-3">
+      <div class="text-2xl font-semibold">{{ overview().notInstalledCount }}</div>
+      <div class="text-xs uppercase text-base-content/60">Not installed</div>
+    </div>
+    <div class="rounded border border-base-300 p-3">
+      <div class="text-2xl font-semibold">{{ overview().bundleUpdateCount }}</div>
+      <div class="text-xs uppercase text-base-content/60">Bundle updates</div>
+    </div>
+    <div class="rounded border border-base-300 p-3">
+      <div class="text-2xl font-semibold">{{ overview().activeActionCount }}</div>
+      <div class="text-xs uppercase text-base-content/60">Running</div>
+    </div>
+    <div class="rounded border border-base-300 p-3">
+      <div class="text-2xl font-semibold">{{ overview().failedActionCount }}</div>
+      <div class="text-xs uppercase text-base-content/60">Failed</div>
+    </div>
+  </div>
+</section>

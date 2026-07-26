@@ -85,8 +85,8 @@ export class NavigationComponent implements OnInit {
       case 'remote':
         await this.router.navigate([`${environment.baseHref}/${item.path}`]);
         break;
-      case 'static':
-        await this.router.navigate([`${environment.baseHref}/static/${item.path}`]);
+      case 'rapid':
+        await this.router.navigate([`${environment.baseHref}/rapid/${item.path}`]);
         break;
       case 'action':
         this.dispatchNavigationEvent(item);
@@ -107,7 +107,7 @@ export class NavigationComponent implements OnInit {
     const routeSegments = path.split('/').filter(Boolean);
     const activePath = routeSegments[baseSegments];
 
-    if (activePath === 'static') {
+    if (activePath === 'rapid') {
       return routeSegments[baseSegments + 1] ?? activePath;
     }
 

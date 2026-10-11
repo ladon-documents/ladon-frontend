@@ -11,6 +11,34 @@ describe('FetchApiFactory', () => {
     factory = TestBed.inject(FetchApiFactory);
   });
 
+  it('provides the two-factor authentication api', () => {
+    expect(factory.twoFactorAuthenticationApi).toBeInstanceOf(fetchClient.TwoFactorAuthenticationApi);
+  });
+
+  it('includes cookies in login requests and returns the typed auth response', async () => {
+    const authResponse: fetchClient.AuthResponse = {
+      accessToken: 'access-token',
+      tokenType: 'Bearer',
+      requiresTwoFactor: true,
+    };
+    const fetchSpy = spyOn(globalThis, 'fetch').and.resolveTo(
+      new Response(JSON.stringify(authResponse), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    const result = await factory.authControllerApi.authenticateUser({
+      loginRequest: { email: 'user@example.com', password: 'password' },
+    });
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      '/admin/auth/login',
+      jasmine.objectContaining({ credentials: 'include' }),
+    );
+    expect(result).toEqual(authResponse);
+  });
+
   it('normalizes generated response errors for RxJS consumers', (done) => {
     const response = new Response(JSON.stringify({ reason: 'Bucket nicht gefunden' }), {
       status: 404,

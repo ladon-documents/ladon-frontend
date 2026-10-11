@@ -9,6 +9,10 @@ test('static api exposes auth utilities', () => {
   assert.equal(typeof api.auth.createAuthenticatedConfiguration, 'function');
 });
 
+test('authenticated configuration includes cookies by default', () => {
+  assert.equal(api.auth.createAuthenticatedConfiguration().credentials, 'include');
+});
+
 test('auth middleware adds bearer token from Ladon auth storage', async () => {
   const storage = {
     getItem: (key) =>

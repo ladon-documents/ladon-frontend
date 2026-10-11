@@ -1,4 +1,4 @@
-import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
 import { LoginRequest, User } from '@ladon/api';
 import { inject } from '@angular/core';
 import { catchError, EMPTY, pipe, Subject, switchMap, takeUntil, tap } from 'rxjs';
@@ -55,7 +55,7 @@ function fallbackRedirectUrl(): string {
 }
 
 function normalizeRedirectUrl(value: string): SafeRedirect | null {
-  if (!value || value.includes('\\') || ENCODED_PATH_SEPARATOR.test(value)) {
+  if (!value || value.includes('\\')) {
     return null;
   }
 
@@ -66,6 +66,10 @@ function normalizeRedirectUrl(value: string): SafeRedirect | null {
   try {
     const url = new URL(urlValue, window.location.origin);
     if (url.origin !== window.location.origin) {
+      return null;
+    }
+
+    if (ENCODED_PATH_SEPARATOR.test(url.pathname)) {
       return null;
     }
 
@@ -136,6 +140,7 @@ function normalizeLoginError(error: unknown): string {
 export const AppStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
+  withProps(() => ({ _authenticationCancellation$: new Subject<void>() })),
   withHooks({
     onInit: (store, authService = inject(AuthService), router = inject(Router)) => {
       const toggleSidenavState = () => {
@@ -160,6 +165,7 @@ export const AppStore = signalStore(
           }),
           switchMap(() =>
             authService.getCurrentUser().pipe(
+              takeUntil(store._authenticationCancellation$),
               tap((user) => {
                 patchState(store, (state) => ({
                   ...state,
@@ -196,9 +202,9 @@ export const AppStore = signalStore(
       loadCurrentUser();
       toggleSidenavState();
     },
+    onDestroy: (store) => store._authenticationCancellation$.complete(),
   }),
   withMethods((store, authService = inject(AuthService), router = inject(Router)) => {
-    const loginCancellation$ = new Subject<void>();
     const resetAuthenticationState = (redirectUrl: string | null): void => {
       patchState(store, (state) => ({
         ...state,
@@ -226,7 +232,7 @@ export const AppStore = signalStore(
           }),
           switchMap((credentials) =>
             authService.login(credentials).pipe(
-              takeUntil(loginCancellation$),
+              takeUntil(store._authenticationCancellation$),
               tap((result) => {
                 if (result.kind === 'two-factor-required') {
                   patchState(store, (state) => ({
@@ -279,7 +285,7 @@ export const AppStore = signalStore(
         ),
       ),
       logout() {
-        loginCancellation$.next();
+        store._authenticationCancellation$.next();
         authService.clearLocalSession();
         resetAuthenticationState(null);
         router.navigateByUrl(`${environment.baseHref}/login`);
@@ -295,7 +301,7 @@ export const AppStore = signalStore(
         }));
       },
       resetLoginFlow() {
-        loginCancellation$.next();
+        store._authenticationCancellation$.next();
         patchState(store, (state) => ({
           ...state,
           auth: {
@@ -307,7 +313,7 @@ export const AppStore = signalStore(
         }));
       },
       requireReauthentication(redirectUrl: string) {
-        loginCancellation$.next();
+        store._authenticationCancellation$.next();
         authService.clearLocalSession();
         resetAuthenticationState(resolveRedirectUrl(redirectUrl));
         router.navigateByUrl(`${environment.baseHref}/login`);

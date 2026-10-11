@@ -206,6 +206,14 @@ describe('AppStore authentication flow', () => {
       { input: `${environment.baseHref}/documents`, expected: `/${environment.baseHref}/documents` },
       { input: '/shared/documents?tab=recent', expected: '/shared/documents?tab=recent' },
       { input: `${window.location.origin}/shared/documents`, expected: '/shared/documents' },
+      {
+        input: `/${environment.baseHref}/documents?next=%2Fshared%5Cpath#return=%2Fhome%5Cfolder`,
+        expected: `/${environment.baseHref}/documents?next=%2Fshared%5Cpath#return=%2Fhome%5Cfolder`,
+      },
+      {
+        input: '/shared/documents?next=%5Cfolder#return=%2Fhome',
+        expected: '/shared/documents?next=%5Cfolder#return=%2Fhome',
+      },
     ];
 
     for (const { input, expected } of redirects) {
@@ -222,6 +230,7 @@ describe('AppStore authentication flow', () => {
     expect(store.auth.isAuthenticating()).toBeTrue();
 
     store.resetLoginFlow();
+    expect(loginResult.observed).toBeFalse();
     loginResult.next({ kind: 'authenticated', user });
 
     expect(store.auth.isAuthenticating()).toBeFalse();
@@ -239,6 +248,7 @@ describe('AppStore authentication flow', () => {
     expect(store.auth.isAuthenticating()).toBeTrue();
 
     store.requireReauthentication(`/${environment.baseHref}/documents`);
+    expect(loginResult.observed).toBeFalse();
     loginResult.next({ kind: 'two-factor-required' });
 
     expect(store.auth.isAuthenticating()).toBeFalse();
@@ -257,6 +267,7 @@ describe('AppStore authentication flow', () => {
     expect(store.auth.isAuthenticating()).toBeTrue();
 
     store.logout();
+    expect(loginResult.observed).toBeFalse();
     loginResult.next({ kind: 'authenticated', user });
 
     expect(store.auth.isAuthenticating()).toBeFalse();
@@ -308,6 +319,47 @@ describe('AppStore authentication flow', () => {
 
     expect(store.auth.requiresTwoFactor()).toBeFalse();
     expect(store.auth.isAuthenticating()).toBeFalse();
+  });
+
+  it('cancels the pending initial user load before logout', () => {
+    const currentUser = new Subject<User>();
+    const store = createStore(currentUser);
+    expect(store.auth.isAuthenticating()).toBeTrue();
+
+    store.logout();
+    expect(currentUser.observed).toBeFalse();
+    currentUser.next(user);
+
+    expect(store.auth()).toEqual({
+      isAuthenticated: false,
+      user: null,
+      loginError: null,
+      isAuthenticating: false,
+      redirectUrl: null,
+      requiresTwoFactor: false,
+    });
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
+  });
+
+  it('cancels the pending initial user load before requiring reauthentication', () => {
+    const currentUser = new Subject<User>();
+    const store = createStore(currentUser);
+    const redirectUrl = `/${environment.baseHref}/documents/123`;
+    expect(store.auth.isAuthenticating()).toBeTrue();
+
+    store.requireReauthentication(redirectUrl);
+    expect(currentUser.observed).toBeFalse();
+    currentUser.next(user);
+
+    expect(store.auth()).toEqual({
+      isAuthenticated: false,
+      user: null,
+      loginError: null,
+      isAuthenticating: false,
+      redirectUrl,
+      requiresTwoFactor: false,
+    });
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
   });
 
   function createStore(

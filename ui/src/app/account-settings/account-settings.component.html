@@ -1,0 +1,148 @@
+<main class="bg-base-200 min-h-screen flex items-center justify-center p-4 sm:p-6">
+  <section class="card bg-base-100 shadow-xl w-full max-w-3xl" aria-labelledby="account-settings-title">
+    <div class="card-body gap-6">
+      <div>
+        <h1 id="account-settings-title" class="card-title text-2xl font-bold">Kontoeinstellungen</h1>
+        <p class="text-base-content/70 mt-2">Schütze dein Konto mit einer Authenticator-App.</p>
+      </div>
+
+      <ul class="steps steps-horizontal w-full text-xs sm:text-sm" aria-label="Fortschritt der 2FA-Einrichtung">
+        <li class="step step-primary">Aktivieren</li>
+        <li class="step" [class.step-primary]="step() === 'verify' || step() === 'backup' || step() === 'complete'">
+          Scannen
+        </li>
+        <li class="step" [class.step-primary]="step() === 'backup' || step() === 'complete'">Codes sichern</li>
+        <li class="step" [class.step-primary]="step() === 'complete'">Fertig</li>
+      </ul>
+
+      @if (errorMessage(); as error) {
+        <div class="alert alert-error" role="alert" aria-live="assertive">{{ error }}</div>
+      }
+
+      @switch (step()) {
+        @case ("start") {
+          <div class="space-y-4">
+            <h2 class="text-xl font-semibold">Zwei-Faktor-Authentifizierung</h2>
+            <p>
+              Nach der Aktivierung benötigst du beim Anmelden zusätzlich einen sechsstelligen Code aus deiner
+              Authenticator-App.
+            </p>
+            <button type="button" class="btn btn-primary" (click)="startSetup()">2FA aktivieren</button>
+          </div>
+        }
+
+        @case ("loading") {
+          <div class="flex flex-col items-center gap-3 py-10 text-center" role="status" aria-live="polite">
+            <span class="loading loading-spinner loading-lg text-primary" aria-hidden="true"></span>
+            <p>QR-Code wird geladen …</p>
+          </div>
+        }
+
+        @case ("verify") {
+          <div class="space-y-6">
+            <div class="flex justify-center">
+              @if (qrCodeUrl(); as qrUrl) {
+                <img
+                  class="rounded-box border border-base-300 w-64 h-64"
+                  [src]="qrUrl"
+                  alt="QR-Code zur Einrichtung der Zwei-Faktor-Authentifizierung" />
+              }
+            </div>
+
+            <div class="space-y-2">
+              <h2 class="text-xl font-semibold">Authenticator-App verbinden</h2>
+              <p>Scanne den QR-Code und gib anschließend den sechsstelligen Code aus deiner App ein.</p>
+            </div>
+
+            <form class="space-y-4" [formGroup]="verificationForm" (ngSubmit)="confirmSetup()">
+              <div class="form-control">
+                <label class="label" for="two-factor-setup-code">
+                  <span class="label-text">Bestätigungscode</span>
+                </label>
+                <input
+                  id="two-factor-setup-code"
+                  type="text"
+                  class="input input-bordered w-full tracking-[0.35em]"
+                  formControlName="code"
+                  inputmode="numeric"
+                  autocomplete="one-time-code"
+                  maxlength="6"
+                  aria-label="Sechsstelliger Bestätigungscode"
+                  [attr.aria-invalid]="
+                    verificationForm.controls.code.touched && verificationForm.controls.code.invalid ? 'true' : null
+                  "
+                  [attr.aria-describedby]="
+                    verificationForm.controls.code.touched && verificationForm.controls.code.invalid
+                      ? 'two-factor-setup-code-error'
+                      : null
+                  " />
+                @if (verificationForm.controls.code.touched && verificationForm.controls.code.invalid) {
+                  <p id="two-factor-setup-code-error" class="text-error text-sm mt-2">
+                    Der Code muss aus exakt sechs Ziffern bestehen.
+                  </p>
+                }
+              </div>
+
+              <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button type="button" class="btn btn-ghost" (click)="cancelSetup()">Abbrechen</button>
+                <button type="button" class="btn btn-outline" (click)="startSetup()">QR-Code neu laden</button>
+                <button type="submit" class="btn btn-primary" [disabled]="verificationForm.invalid">
+                  2FA bestätigen
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+        @case ("backup") {
+          <div class="space-y-6">
+            <div class="alert alert-warning" role="alert">
+              <span>Bewahre diese Backup-Codes sicher auf. Jeder Code kann nur einmal verwendet werden.</span>
+            </div>
+
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2" aria-label="Backup-Codes">
+              @for (code of backupCodes(); track $index) {
+                <li class="bg-base-200 rounded-box px-4 py-3 text-center">
+                  <code class="font-mono text-sm break-all">{{ code }}</code>
+                </li>
+              }
+            </ul>
+
+            <div class="flex flex-col gap-2 sm:flex-row">
+              <button type="button" class="btn btn-outline" (click)="copyBackupCodes()">Alle kopieren</button>
+              @if (backupDownloadUrl(); as downloadUrl) {
+                <a class="btn btn-outline" [href]="downloadUrl" [download]="downloadFilename"
+                  >Als Datei herunterladen</a
+                >
+              }
+            </div>
+
+            <div aria-live="polite">
+              @if (copySucceeded() === true) {
+                <p class="text-success">Backup-Codes wurden kopiert.</p>
+              } @else if (copySucceeded() === false) {
+                <p class="text-error">Backup-Codes konnten nicht kopiert werden.</p>
+              }
+            </div>
+
+            <form class="space-y-4" [formGroup]="savedSafelyForm" (ngSubmit)="acknowledgeBackupCodes()">
+              <label class="label cursor-pointer justify-start gap-3">
+                <input type="checkbox" class="checkbox checkbox-primary" formControlName="savedSafely" />
+                <span class="label-text">Ich habe die Backup-Codes sicher gespeichert.</span>
+              </label>
+              <button type="submit" class="btn btn-primary" [disabled]="savedSafelyForm.invalid">
+                Einrichtung abschließen
+              </button>
+            </form>
+          </div>
+        }
+
+        @case ("complete") {
+          <div class="alert alert-success" role="status" aria-live="polite">
+            <span>2FA wurde aktiviert. Dein Konto ist jetzt zusätzlich geschützt.</span>
+          </div>
+        }
+      }
+    </div>
+  </section>
+</main>

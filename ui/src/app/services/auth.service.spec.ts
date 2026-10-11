@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, flushMicrotasks, TestBed } from '@angular/core/testing';
 import { auth, AuthResponse, fetchClient, LoginRequest, User } from '@ladon/api';
-import { defer, firstValueFrom } from 'rxjs';
+import { defer, firstValueFrom, Subject } from 'rxjs';
 import { FetchApiFactory } from './api/fetch-api.factory';
 import { AuthService } from './auth.service';
 import { AuthStorageService } from './auth.storage.service';
@@ -101,6 +101,7 @@ describe('AuthService', () => {
     expect(userControllerApi.getCurrentUser).toHaveBeenCalled();
     expect(calls).toEqual(['store', 'load']);
     expect(result).toEqual({ kind: 'authenticated', user });
+    expect(authStorage.removeData).not.toHaveBeenCalled();
   });
 
   it('rejects a completed login response without an access token', async () => {
@@ -166,6 +167,22 @@ describe('AuthService', () => {
     expect(authStorage.removeData).toHaveBeenCalled();
     expectStoredTokensToBeRemoved();
   });
+
+  it('clears the local session when login is cancelled before the user is returned', fakeAsync(() => {
+    const currentUser$ = new Subject<User>();
+    authControllerApi.authenticateUser.and.resolveTo(authResponse);
+    spyOn(service, 'getCurrentUser').and.returnValue(currentUser$);
+    seedStoredTokens();
+
+    const subscription = service.login(loginRequest).subscribe();
+    flushMicrotasks();
+
+    expect(authStorage.setData).toHaveBeenCalledWith({ accessToken: 'token', tokenType: 'Bearer' });
+    subscription.unsubscribe();
+
+    expect(authStorage.removeData).toHaveBeenCalled();
+    expectStoredTokensToBeRemoved();
+  }));
 
   it('clears structured and legacy tokens from browser storage without backend logout', () => {
     for (const storage of [sessionStorage, localStorage]) {

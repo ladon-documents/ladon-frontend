@@ -136,6 +136,8 @@ The backup-code state:
 - requires an explicit `Ich habe die Codes sicher gespeichert` acknowledgement before finishing;
 - keeps codes only in component memory and clears them when the component is destroyed or the flow finishes.
 
+After acknowledgement, the component clears the codes and shows a local success confirmation for the remainder of the current page visit. It does not return immediately to the activation entry point or imply that it queried a persistent 2FA status. A later visit still starts at the activation entry point because no status endpoint is available.
+
 ## Error Handling
 
 The existing `FetchApiFactory` normalization remains the common error shape for Angular consumers.

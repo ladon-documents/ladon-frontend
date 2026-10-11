@@ -2,7 +2,7 @@ import { fakeAsync, flushMicrotasks, TestBed } from '@angular/core/testing';
 import { auth, AuthResponse, fetchClient, LoginRequest, User } from '@ladon/api';
 import { defer, firstValueFrom, Subject } from 'rxjs';
 import { FetchApiFactory } from './api/fetch-api.factory';
-import { AuthService } from './auth.service';
+import { AuthService, LoginResult } from './auth.service';
 import { AuthStorageService } from './auth.storage.service';
 
 describe('AuthService', () => {
@@ -153,7 +153,7 @@ describe('AuthService', () => {
 
     await expectAsync(firstValueFrom(service.login(loginRequest))).toBeRejectedWith(currentUserError);
 
-    expect(authStorage.removeData).toHaveBeenCalled();
+    expect(authStorage.removeData).toHaveBeenCalledTimes(1);
     expectStoredTokensToBeRemoved();
   });
 
@@ -164,7 +164,7 @@ describe('AuthService', () => {
 
     await expectAsync(firstValueFrom(service.login(loginRequest))).toBeRejectedWithError('No user returned');
 
-    expect(authStorage.removeData).toHaveBeenCalled();
+    expect(authStorage.removeData).toHaveBeenCalledTimes(1);
     expectStoredTokensToBeRemoved();
   });
 
@@ -180,8 +180,69 @@ describe('AuthService', () => {
     expect(authStorage.setData).toHaveBeenCalledWith({ accessToken: 'token', tokenType: 'Bearer' });
     subscription.unsubscribe();
 
-    expect(authStorage.removeData).toHaveBeenCalled();
+    expect(authStorage.removeData).toHaveBeenCalledTimes(1);
     expectStoredTokensToBeRemoved();
+  }));
+
+  it('does not let a cancelled stale login clear a newer session', fakeAsync(() => {
+    const firstCurrentUser$ = new Subject<User>();
+    const secondCurrentUser$ = new Subject<User>();
+    const secondResults: LoginResult[] = [];
+    authControllerApi.authenticateUser.and.returnValues(
+      Promise.resolve({ ...authResponse, accessToken: 'token-a' }),
+      Promise.resolve({ ...authResponse, accessToken: 'token-b' }),
+    );
+    spyOn(service, 'getCurrentUser').and.returnValues(firstCurrentUser$, secondCurrentUser$);
+    authStorage.setData.and.callFake(({ accessToken, tokenType }) => {
+      for (const storage of [sessionStorage, localStorage]) {
+        storage.setItem(auth.LADON_AUTH_STORAGE_KEY, JSON.stringify({ accessToken, tokenType }));
+        storage.setItem(auth.LEGACY_ACCESS_TOKEN_KEY, accessToken);
+      }
+    });
+
+    const firstSubscription = service.login(loginRequest).subscribe();
+    flushMicrotasks();
+    const secondSubscription = service.login(loginRequest).subscribe((result) => secondResults.push(result));
+    flushMicrotasks();
+
+    secondCurrentUser$.next(user);
+    firstSubscription.unsubscribe();
+    secondSubscription.unsubscribe();
+
+    expect(secondResults).toEqual([{ kind: 'authenticated', user }]);
+    expect(authStorage.removeData).not.toHaveBeenCalled();
+    for (const storage of [sessionStorage, localStorage]) {
+      expect(storage.getItem(auth.LADON_AUTH_STORAGE_KEY)).toBe(
+        JSON.stringify({ accessToken: 'token-b', tokenType: 'Bearer' }),
+      );
+      expect(storage.getItem(auth.LEGACY_ACCESS_TOKEN_KEY)).toBe('token-b');
+    }
+  }));
+
+  it('does not emit authenticated from a stale login', fakeAsync(() => {
+    const firstCurrentUser$ = new Subject<User>();
+    const secondCurrentUser$ = new Subject<User>();
+    const firstResults: LoginResult[] = [];
+    const secondResults: LoginResult[] = [];
+    authControllerApi.authenticateUser.and.returnValues(
+      Promise.resolve({ ...authResponse, accessToken: 'token-a' }),
+      Promise.resolve({ ...authResponse, accessToken: 'token-b' }),
+    );
+    spyOn(service, 'getCurrentUser').and.returnValues(firstCurrentUser$, secondCurrentUser$);
+
+    const firstSubscription = service.login(loginRequest).subscribe((result) => firstResults.push(result));
+    flushMicrotasks();
+    const secondSubscription = service.login(loginRequest).subscribe((result) => secondResults.push(result));
+    flushMicrotasks();
+
+    secondCurrentUser$.next(user);
+    firstCurrentUser$.next(user);
+    firstSubscription.unsubscribe();
+    secondSubscription.unsubscribe();
+
+    expect(secondResults).toEqual([{ kind: 'authenticated', user }]);
+    expect(firstResults).toEqual([]);
+    expect(authStorage.removeData).not.toHaveBeenCalled();
   }));
 
   it('clears structured and legacy tokens from browser storage without backend logout', () => {

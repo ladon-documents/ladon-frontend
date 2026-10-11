@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, defer, finalize, map, mergeMap, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, defer, EMPTY, finalize, mergeMap, Observable, of, tap, throwError } from 'rxjs';
 import { auth, LoginRequest, User } from '@ladon/api';
 import { AuthStorageService } from './auth.storage.service';
 import { FetchApiFactory } from './api/fetch-api.factory';
@@ -12,6 +12,8 @@ export type LoginResult =
   providedIn: 'root',
 })
 export class AuthService {
+  private currentLoginOwner: symbol | null = null;
+
   constructor(
     private apiFactory: FetchApiFactory,
     private authStorage: AuthStorageService,
@@ -19,14 +21,17 @@ export class AuthService {
 
   public login(request: LoginRequest): Observable<LoginResult> {
     return defer(() => {
+      const owner = Symbol('login-owner');
       let credentialsStored = false;
       let authenticated = false;
       let sessionCleared = false;
       const clearIncompleteSession = () => {
-        if (!sessionCleared) {
-          this.clearLocalSession();
-          sessionCleared = true;
+        if (sessionCleared || this.currentLoginOwner !== owner) {
+          return;
         }
+
+        sessionCleared = true;
+        this.clearLocalSession();
       };
 
       return this.apiFactory
@@ -44,13 +49,22 @@ export class AuthService {
             }
 
             this.authStorage.setData({ accessToken, tokenType });
+            this.currentLoginOwner = owner;
             credentialsStored = true;
             return this.getCurrentUser().pipe(
-              map((user) => {
+              mergeMap((user) => {
+                if (this.currentLoginOwner !== owner) {
+                  return EMPTY;
+                }
+
                 authenticated = true;
-                return { kind: 'authenticated', user } satisfies LoginResult;
+                return of({ kind: 'authenticated', user } satisfies LoginResult);
               }),
               catchError((error: unknown) => {
+                if (this.currentLoginOwner !== owner) {
+                  return EMPTY;
+                }
+
                 clearIncompleteSession();
                 return throwError(() => error);
               }),
@@ -66,6 +80,7 @@ export class AuthService {
   }
 
   public clearLocalSession(): void {
+    this.currentLoginOwner = null;
     this.authStorage.removeData();
     auth.clearAccessToken();
   }

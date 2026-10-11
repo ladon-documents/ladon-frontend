@@ -75,7 +75,11 @@
                 autocomplete="one-time-code"
                 maxlength="6"
                 aria-label="Zwei-Faktor-Code"
-                aria-describedby="two-factor-code-error"
+                [attr.aria-describedby]="
+                  loginForm.controls.twoFactorCode?.touched && loginForm.controls.twoFactorCode?.invalid
+                    ? 'two-factor-code-error'
+                    : null
+                "
                 [attr.aria-invalid]="
                   loginForm.controls.twoFactorCode?.touched && loginForm.controls.twoFactorCode?.invalid ? 'true' : null
                 " />

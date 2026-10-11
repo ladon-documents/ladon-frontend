@@ -21,6 +21,7 @@ interface AuthState {
   loginError: string | null;
   isAuthenticating: boolean;
   redirectUrl: string | null;
+  requiresTwoFactor: boolean;
 }
 
 type AppState = {
@@ -30,7 +31,14 @@ type AppState = {
 
 const initialState: AppState = {
   ui: { isLoading: false, isDarkMode: false, isSidenavClosed: false, isBurgerMenuOpen: false },
-  auth: { isAuthenticated: false, user: null, loginError: null, isAuthenticating: true, redirectUrl: null },
+  auth: {
+    isAuthenticated: false,
+    user: null,
+    loginError: null,
+    isAuthenticating: true,
+    redirectUrl: null,
+    requiresTwoFactor: false,
+  },
 };
 
 function isSameOriginPath(url: string): boolean {
@@ -38,7 +46,10 @@ function isSameOriginPath(url: string): boolean {
 }
 
 function isInternalRoute(url: string): boolean {
-  return url.includes(environment.baseHref);
+  return (
+    (isSameOriginPath(url) && url.includes(environment.baseHref)) ||
+    url.startsWith(`${environment.baseHref}/`)
+  );
 }
 
 function fallbackRedirectUrl(): string {
@@ -64,6 +75,10 @@ function redirectAfterLogin(router: Router, redirectUrl: string): void {
   }
 
   window.location.assign(redirectUrl);
+}
+
+function normalizeLoginError(error: unknown): string {
+  return error instanceof Error && error.message ? error.message : 'Anmeldung fehlgeschlagen';
 }
 
 export const AppStore = signalStore(
@@ -103,6 +118,7 @@ export const AppStore = signalStore(
                     user,
                     loginError: null,
                     isAuthenticating: false,
+                    requiresTwoFactor: false,
                   },
                 }));
               }),
@@ -116,6 +132,7 @@ export const AppStore = signalStore(
                     user: null,
                     loginError: null,
                     isAuthenticating: false,
+                    requiresTwoFactor: false,
                   },
                 }));
                 return EMPTY;
@@ -141,22 +158,40 @@ export const AppStore = signalStore(
           }),
           switchMap((credentials) =>
             authService.login(credentials).pipe(
-              tap((user) => {
+              tap((result) => {
+                if (result.kind === 'two-factor-required') {
+                  patchState(store, (state) => ({
+                    ...state,
+                    auth: {
+                      ...state.auth,
+                      isAuthenticated: false,
+                      user: null,
+                      loginError: credentials.twoFactorCode != null
+                        ? 'Zwei-Faktor-Code konnte nicht bestätigt werden. Bitte erneut versuchen.'
+                        : null,
+                      isAuthenticating: false,
+                      requiresTwoFactor: true,
+                    },
+                  }));
+                  return;
+                }
+
                 patchState(store, (state) => ({
                   ...state,
                   ui: { ...state.ui },
                   auth: {
                     ...state.auth,
                     isAuthenticated: true,
-                    user,
+                    user: result.user,
                     loginError: null,
                     isAuthenticating: false,
+                    requiresTwoFactor: false,
                   },
                 }));
                 const redirectUrl = resolveRedirectUrl(store.auth.redirectUrl());
                 redirectAfterLogin(router, redirectUrl);
               }),
-              catchError((error) => {
+              catchError((error: unknown) => {
                 patchState(store, (state) => ({
                   ...state,
                   ui: { ...state.ui },
@@ -164,7 +199,7 @@ export const AppStore = signalStore(
                     ...state.auth,
                     isAuthenticated: false,
                     user: null,
-                    loginError: error.message || 'Anmeldung fehlgeschlagen',
+                    loginError: normalizeLoginError(error),
                     isAuthenticating: false,
                   },
                 }));
@@ -184,10 +219,10 @@ export const AppStore = signalStore(
                 auth: {
                   isAuthenticated: false,
                   user: null,
-                  accessToken: null,
                   loginError: null,
                   redirectUrl: null,
                   isAuthenticating: false,
+                  requiresTwoFactor: false,
                 },
               }));
               return of(void 0);
@@ -205,6 +240,33 @@ export const AppStore = signalStore(
             redirectUrl: url,
           },
         }));
+      },
+      resetLoginFlow() {
+        patchState(store, (state) => ({
+          ...state,
+          auth: {
+            ...state.auth,
+            requiresTwoFactor: false,
+            loginError: null,
+            isAuthenticating: false,
+          },
+        }));
+      },
+      requireReauthentication(redirectUrl: string) {
+        authService.clearLocalSession();
+        patchState(store, (state) => ({
+          ...state,
+          auth: {
+            ...state.auth,
+            isAuthenticated: false,
+            user: null,
+            loginError: null,
+            isAuthenticating: false,
+            redirectUrl: resolveRedirectUrl(redirectUrl),
+            requiresTwoFactor: false,
+          },
+        }));
+        router.navigateByUrl(`${environment.baseHref}/login`);
       },
       toggleSidebar: () => {
         patchState(store, (state) => ({

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { LoginRequest, User } from '@ladon/api';
 import { Observable, Subject, of, throwError } from 'rxjs';
 import { AuthService, LoginResult } from '../services/auth.service';
+import type { FetchApiError } from '../services/api/fetch-api.factory';
 import { environment } from '../../environments/environment';
 import { AppStore } from './app.store';
 
@@ -88,11 +89,11 @@ describe('AppStore authentication flow', () => {
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith(redirectUrl);
   });
 
-  it('preserves the current step after a login error and stores only the normalized error message', () => {
+  it('preserves the current step and uses a stable fallback for an unstructured login error', () => {
     const store = createStore();
     authService.login.and.returnValues(
       of({ kind: 'two-factor-required' }),
-      throwError(() => new Error('Code ist ungültig')),
+      throwError(() => new Error('password=super-secret-password&twoFactorCode=654321')),
     );
 
     store.login(loginRequest);
@@ -101,10 +102,36 @@ describe('AppStore authentication flow', () => {
     expect(store.auth()).toEqual({
       isAuthenticated: false,
       user: null,
-      loginError: 'Code ist ungültig',
+      loginError: 'Anmeldung fehlgeschlagen. Bitte erneut versuchen.',
       isAuthenticating: false,
       redirectUrl: null,
       requiresTwoFactor: true,
+    });
+  });
+
+  it('exposes only the approved message from a normalized FetchApiError', () => {
+    const store = createStore();
+    const apiError: FetchApiError = {
+      status: 401,
+      error: { reason: 'Anmeldedaten sind ungültig' },
+      message: 'Anmeldedaten sind ungültig',
+      body: { password: 'super-secret-password', twoFactorCode: '654321' },
+      response: new Response(null, { status: 401 }),
+      cause: {
+        request: { ...loginRequest, twoFactorCode: '654321' },
+      },
+    };
+    authService.login.and.returnValue(throwError(() => apiError));
+
+    store.login(loginRequest);
+
+    expect(store.auth()).toEqual({
+      isAuthenticated: false,
+      user: null,
+      loginError: 'Anmeldedaten sind ungültig',
+      isAuthenticating: false,
+      redirectUrl: null,
+      requiresTwoFactor: false,
     });
   });
 
@@ -149,6 +176,96 @@ describe('AppStore authentication flow', () => {
     expect(store.auth.redirectUrl()).toBe(`${environment.baseHref}/buckets`);
   });
 
+  it('rejects ambiguous and encoded redirect URLs', () => {
+    const store = createStore();
+    const unsafeRedirects = [
+      `//attacker.example/${environment.baseHref}/steal`,
+      '/\\attacker.example/path',
+      '/%2fattacker.example/path',
+      '/%2Fattacker.example/path',
+      '/%5cattacker.example/path',
+      '/%255cattacker.example/path',
+      `/${environment.baseHref}-evil/documents`,
+    ];
+
+    for (const redirectUrl of unsafeRedirects) {
+      store.requireReauthentication(redirectUrl);
+      expect(store.auth.redirectUrl())
+        .withContext(redirectUrl)
+        .toBe(`${environment.baseHref}/buckets`);
+    }
+  });
+
+  it('preserves canonical same-origin paths and internal base-href routes', () => {
+    const store = createStore();
+    const redirects = [
+      {
+        input: `/${environment.baseHref}/documents?tab=recent#selection`,
+        expected: `/${environment.baseHref}/documents?tab=recent#selection`,
+      },
+      { input: `${environment.baseHref}/documents`, expected: `/${environment.baseHref}/documents` },
+      { input: '/shared/documents?tab=recent', expected: '/shared/documents?tab=recent' },
+      { input: `${window.location.origin}/shared/documents`, expected: '/shared/documents' },
+    ];
+
+    for (const { input, expected } of redirects) {
+      store.requireReauthentication(input);
+      expect(store.auth.redirectUrl()).withContext(input).toBe(expected);
+    }
+  });
+
+  it('cancels a pending login when the login flow is reset', () => {
+    const loginResult = new Subject<LoginResult>();
+    const store = createStore();
+    authService.login.and.returnValue(loginResult);
+    store.login(loginRequest);
+    expect(store.auth.isAuthenticating()).toBeTrue();
+
+    store.resetLoginFlow();
+    loginResult.next({ kind: 'authenticated', user });
+
+    expect(store.auth.isAuthenticating()).toBeFalse();
+    expect(store.auth.isAuthenticated()).toBeFalse();
+    expect(store.auth.user()).toBeNull();
+    expect(store.auth.requiresTwoFactor()).toBeFalse();
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+  });
+
+  it('cancels a pending login when reauthentication is required', () => {
+    const loginResult = new Subject<LoginResult>();
+    const store = createStore();
+    authService.login.and.returnValue(loginResult);
+    store.login(loginRequest);
+    expect(store.auth.isAuthenticating()).toBeTrue();
+
+    store.requireReauthentication(`/${environment.baseHref}/documents`);
+    loginResult.next({ kind: 'two-factor-required' });
+
+    expect(store.auth.isAuthenticating()).toBeFalse();
+    expect(store.auth.isAuthenticated()).toBeFalse();
+    expect(store.auth.user()).toBeNull();
+    expect(store.auth.requiresTwoFactor()).toBeFalse();
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
+  });
+
+  it('cancels a pending login before logout', () => {
+    const loginResult = new Subject<LoginResult>();
+    const store = createStore();
+    authService.login.and.returnValue(loginResult);
+    authService.logout.and.returnValue(of({}));
+    store.login(loginRequest);
+    expect(store.auth.isAuthenticating()).toBeTrue();
+
+    store.logout();
+    loginResult.next({ kind: 'authenticated', user });
+
+    expect(store.auth.isAuthenticating()).toBeFalse();
+    expect(store.auth.isAuthenticated()).toBeFalse();
+    expect(store.auth.user()).toBeNull();
+    expect(store.auth.requiresTwoFactor()).toBeFalse();
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
+  });
+
   it('clears the two-factor step on logout', () => {
     const store = createStore();
     authService.login.and.returnValue(of({ kind: 'two-factor-required' }));
@@ -158,6 +275,26 @@ describe('AppStore authentication flow', () => {
     store.logout();
 
     expect(store.auth.requiresTwoFactor()).toBeFalse();
+  });
+
+  it('clears local auth and navigates when backend logout fails', () => {
+    const store = createStore();
+    authService.login.and.returnValue(of({ kind: 'two-factor-required' }));
+    authService.logout.and.returnValue(throwError(() => new Error('Backend unavailable')));
+    store.login(loginRequest);
+
+    store.logout();
+
+    expect(authService.clearLocalSession).toHaveBeenCalledTimes(1);
+    expect(store.auth()).toEqual({
+      isAuthenticated: false,
+      user: null,
+      loginError: null,
+      isAuthenticating: false,
+      redirectUrl: null,
+      requiresTwoFactor: false,
+    });
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
   });
 
   it('clears the two-factor step when loading the initial user fails', () => {

@@ -1,8 +1,9 @@
 import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
 import { LoginRequest, User } from '@ladon/api';
 import { inject } from '@angular/core';
-import { catchError, EMPTY, of, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, pipe, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import type { FetchApiError } from '../services/api/fetch-api.factory';
 import { environment } from '../../environments/environment';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Router } from '@angular/router';
@@ -41,19 +42,49 @@ const initialState: AppState = {
   },
 };
 
-function isSameOriginPath(url: string): boolean {
-  return url.startsWith('/') && !url.startsWith('//');
-}
+const LOGIN_ERROR_FALLBACK = 'Anmeldung fehlgeschlagen. Bitte erneut versuchen.';
+const ENCODED_PATH_SEPARATOR = /%(?:25)*(?:2f|5c)/i;
 
-function isInternalRoute(url: string): boolean {
-  return (
-    (isSameOriginPath(url) && url.includes(environment.baseHref)) ||
-    url.startsWith(`${environment.baseHref}/`)
-  );
+interface SafeRedirect {
+  url: string;
+  isInternal: boolean;
 }
 
 function fallbackRedirectUrl(): string {
   return `${environment.baseHref}/buckets`;
+}
+
+function normalizeRedirectUrl(value: string): SafeRedirect | null {
+  if (!value || value.includes('\\') || ENCODED_PATH_SEPARATOR.test(value)) {
+    return null;
+  }
+
+  const baseHref = environment.baseHref.replace(/^\/+|\/+$/g, '');
+  const basePath = `/${baseHref}`;
+  const urlValue = value === baseHref || value.startsWith(`${baseHref}/`) ? `/${value}` : value;
+
+  try {
+    const url = new URL(urlValue, window.location.origin);
+    if (url.origin !== window.location.origin) {
+      return null;
+    }
+
+    const isInternal = url.pathname === basePath || url.pathname.startsWith(`${basePath}/`);
+    if (url.pathname.startsWith(basePath) && !isInternal) {
+      return null;
+    }
+
+    return {
+      url: `${url.pathname}${url.search}${url.hash}`,
+      isInternal,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function isInternalRoute(url: string): boolean {
+  return normalizeRedirectUrl(url)?.isInternal ?? false;
 }
 
 function resolveRedirectUrl(redirectUrl: string | null): string {
@@ -61,11 +92,7 @@ function resolveRedirectUrl(redirectUrl: string | null): string {
     return fallbackRedirectUrl();
   }
 
-  if (isInternalRoute(redirectUrl) || isSameOriginPath(redirectUrl)) {
-    return redirectUrl;
-  }
-
-  return fallbackRedirectUrl();
+  return normalizeRedirectUrl(redirectUrl)?.url ?? fallbackRedirectUrl();
 }
 
 function redirectAfterLogin(router: Router, redirectUrl: string): void {
@@ -77,8 +104,33 @@ function redirectAfterLogin(router: Router, redirectUrl: string): void {
   window.location.assign(redirectUrl);
 }
 
+function isFetchApiError(error: unknown): error is FetchApiError {
+  if (typeof error !== 'object' || error === null || !('error' in error)) {
+    return false;
+  }
+
+  const normalizedError = error.error;
+  return (
+    typeof normalizedError === 'object' &&
+    normalizedError !== null &&
+    'reason' in normalizedError &&
+    typeof normalizedError.reason === 'string' &&
+    'status' in error &&
+    typeof error.status === 'number' &&
+    'message' in error &&
+    typeof error.message === 'string' &&
+    'body' in error &&
+    'response' in error &&
+    'cause' in error
+  );
+}
+
 function normalizeLoginError(error: unknown): string {
-  return error instanceof Error && error.message ? error.message : 'Anmeldung fehlgeschlagen';
+  if (!isFetchApiError(error)) {
+    return LOGIN_ERROR_FALLBACK;
+  }
+
+  return error.error.reason.trim() || error.message.trim() || LOGIN_ERROR_FALLBACK;
 }
 
 export const AppStore = signalStore(
@@ -146,6 +198,22 @@ export const AppStore = signalStore(
     },
   }),
   withMethods((store, authService = inject(AuthService), router = inject(Router)) => {
+    const loginCancellation$ = new Subject<void>();
+    const resetAuthenticationState = (redirectUrl: string | null): void => {
+      patchState(store, (state) => ({
+        ...state,
+        auth: {
+          ...state.auth,
+          isAuthenticated: false,
+          user: null,
+          loginError: null,
+          isAuthenticating: false,
+          redirectUrl,
+          requiresTwoFactor: false,
+        },
+      }));
+    };
+
     return {
       login: rxMethod<LoginRequest>(
         pipe(
@@ -158,6 +226,7 @@ export const AppStore = signalStore(
           }),
           switchMap((credentials) =>
             authService.login(credentials).pipe(
+              takeUntil(loginCancellation$),
               tap((result) => {
                 if (result.kind === 'two-factor-required') {
                   patchState(store, (state) => ({
@@ -210,27 +279,11 @@ export const AppStore = signalStore(
         ),
       ),
       logout() {
-        return authService
-          .logout()
-          .pipe(
-            switchMap(() => {
-              patchState(store, (state) => ({
-                ...state,
-                auth: {
-                  isAuthenticated: false,
-                  user: null,
-                  loginError: null,
-                  redirectUrl: null,
-                  isAuthenticating: false,
-                  requiresTwoFactor: false,
-                },
-              }));
-              return of(void 0);
-            }),
-          )
-          .subscribe(() => {
-            router.navigateByUrl(`${environment.baseHref}/login`);
-          });
+        loginCancellation$.next();
+        authService.clearLocalSession();
+        resetAuthenticationState(null);
+        router.navigateByUrl(`${environment.baseHref}/login`);
+        return authService.logout().pipe(catchError(() => EMPTY)).subscribe();
       },
       setRedirectUrl(url: string) {
         patchState(store, (state) => ({
@@ -242,6 +295,7 @@ export const AppStore = signalStore(
         }));
       },
       resetLoginFlow() {
+        loginCancellation$.next();
         patchState(store, (state) => ({
           ...state,
           auth: {
@@ -253,19 +307,9 @@ export const AppStore = signalStore(
         }));
       },
       requireReauthentication(redirectUrl: string) {
+        loginCancellation$.next();
         authService.clearLocalSession();
-        patchState(store, (state) => ({
-          ...state,
-          auth: {
-            ...state.auth,
-            isAuthenticated: false,
-            user: null,
-            loginError: null,
-            isAuthenticating: false,
-            redirectUrl: resolveRedirectUrl(redirectUrl),
-            requiresTwoFactor: false,
-          },
-        }));
+        resetAuthenticationState(resolveRedirectUrl(redirectUrl));
         router.navigateByUrl(`${environment.baseHref}/login`);
       },
       toggleSidebar: () => {

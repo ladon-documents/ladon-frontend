@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthResponse, fetchClient, LoginRequest, User } from '@ladon/api';
-import { firstValueFrom, from } from 'rxjs';
+import { auth, AuthResponse, fetchClient, LoginRequest, User } from '@ladon/api';
+import { defer, firstValueFrom } from 'rxjs';
 import { FetchApiFactory } from './api/fetch-api.factory';
 import { AuthService } from './auth.service';
 import { AuthStorageService } from './auth.storage.service';
@@ -11,6 +11,11 @@ describe('AuthService', () => {
   let authControllerApi: jasmine.SpyObj<fetchClient.AuthControllerApi>;
   let userControllerApi: jasmine.SpyObj<fetchClient.UserControllerApi>;
   let authStorage: jasmine.SpyObj<AuthStorageService>;
+  let storedAuthValues: Array<{
+    storage: Storage;
+    authData: string | null;
+    legacyAccessToken: string | null;
+  }>;
 
   const loginRequest: LoginRequest = {
     email: 'user@example.com',
@@ -45,8 +50,13 @@ describe('AuthService', () => {
       authControllerApi,
       userControllerApi,
     });
-    apiFactory.fromApi.and.callFake((request) => from(request()));
+    apiFactory.fromApi.and.callFake((request) => defer(request));
     authStorage = jasmine.createSpyObj<AuthStorageService>('AuthStorageService', ['setData', 'removeData']);
+    storedAuthValues = [sessionStorage, localStorage].map((storage) => ({
+      storage,
+      authData: storage.getItem(auth.LADON_AUTH_STORAGE_KEY),
+      legacyAccessToken: storage.getItem(auth.LEGACY_ACCESS_TOKEN_KEY),
+    }));
 
     TestBed.configureTestingModule({
       providers: [
@@ -59,8 +69,10 @@ describe('AuthService', () => {
   });
 
   afterEach(() => {
-    sessionStorage.clear();
-    localStorage.clear();
+    for (const { storage, authData, legacyAccessToken } of storedAuthValues) {
+      restoreStorageValue(storage, auth.LADON_AUTH_STORAGE_KEY, authData);
+      restoreStorageValue(storage, auth.LEGACY_ACCESS_TOKEN_KEY, legacyAccessToken);
+    }
   });
 
   it('returns two-factor-required without storing an empty token or loading the user', async () => {
@@ -95,25 +107,99 @@ describe('AuthService', () => {
     authControllerApi.authenticateUser.and.resolveTo({ ...authResponse, accessToken: '' });
 
     await expectAsync(firstValueFrom(service.login(loginRequest))).toBeRejectedWithError(
-      'Login response did not include an access token',
+      'Login response did not include valid credentials',
     );
     expect(authStorage.setData).not.toHaveBeenCalled();
     expect(userControllerApi.getCurrentUser).not.toHaveBeenCalled();
   });
 
+  it('rejects a whitespace-only access token', async () => {
+    authControllerApi.authenticateUser.and.resolveTo({ ...authResponse, accessToken: '   ' });
+
+    await expectAsync(firstValueFrom(service.login(loginRequest))).toBeRejectedWithError(
+      'Login response did not include valid credentials',
+    );
+    expect(authStorage.setData).not.toHaveBeenCalled();
+    expect(userControllerApi.getCurrentUser).not.toHaveBeenCalled();
+  });
+
+  it('rejects a whitespace-only token type', async () => {
+    authControllerApi.authenticateUser.and.resolveTo({ ...authResponse, tokenType: '   ' });
+
+    await expectAsync(firstValueFrom(service.login(loginRequest))).toBeRejectedWithError(
+      'Login response did not include valid credentials',
+    );
+    expect(authStorage.setData).not.toHaveBeenCalled();
+    expect(userControllerApi.getCurrentUser).not.toHaveBeenCalled();
+  });
+
+  it('rejects a missing token type', async () => {
+    const { tokenType: _tokenType, ...responseWithoutTokenType } = authResponse;
+    authControllerApi.authenticateUser.and.resolveTo(responseWithoutTokenType as AuthResponse);
+
+    await expectAsync(firstValueFrom(service.login(loginRequest))).toBeRejectedWithError(
+      'Login response did not include valid credentials',
+    );
+    expect(authStorage.setData).not.toHaveBeenCalled();
+    expect(userControllerApi.getCurrentUser).not.toHaveBeenCalled();
+  });
+
+  it('clears the local session and forwards the current-user error', async () => {
+    const currentUserError = new Error('Could not load current user');
+    authControllerApi.authenticateUser.and.resolveTo(authResponse);
+    userControllerApi.getCurrentUser.and.rejectWith(currentUserError);
+    seedStoredTokens();
+
+    await expectAsync(firstValueFrom(service.login(loginRequest))).toBeRejectedWith(currentUserError);
+
+    expect(authStorage.removeData).toHaveBeenCalled();
+    expectStoredTokensToBeRemoved();
+  });
+
+  it('clears the local session when no current user is returned', async () => {
+    authControllerApi.authenticateUser.and.resolveTo(authResponse);
+    userControllerApi.getCurrentUser.and.resolveTo(null as unknown as User);
+    seedStoredTokens();
+
+    await expectAsync(firstValueFrom(service.login(loginRequest))).toBeRejectedWithError('No user returned');
+
+    expect(authStorage.removeData).toHaveBeenCalled();
+    expectStoredTokensToBeRemoved();
+  });
+
   it('clears structured and legacy tokens from browser storage without backend logout', () => {
     for (const storage of [sessionStorage, localStorage]) {
-      storage.setItem('@mind/ladon-auth-name', JSON.stringify({ accessToken: 'stale-token' }));
-      storage.setItem('accessToken', 'stale-token');
+      storage.setItem(auth.LADON_AUTH_STORAGE_KEY, JSON.stringify({ accessToken: 'stale-token' }));
+      storage.setItem(auth.LEGACY_ACCESS_TOKEN_KEY, 'stale-token');
     }
 
     service.clearLocalSession();
 
     expect(authStorage.removeData).toHaveBeenCalled();
     expect(authControllerApi.logout).not.toHaveBeenCalled();
-    for (const storage of [sessionStorage, localStorage]) {
-      expect(storage.getItem('@mind/ladon-auth-name')).toBeNull();
-      expect(storage.getItem('accessToken')).toBeNull();
-    }
+    expectStoredTokensToBeRemoved();
   });
+
+  function seedStoredTokens(): void {
+    for (const storage of [sessionStorage, localStorage]) {
+      storage.setItem(auth.LADON_AUTH_STORAGE_KEY, JSON.stringify({ accessToken: 'stale-token' }));
+      storage.setItem(auth.LEGACY_ACCESS_TOKEN_KEY, 'stale-token');
+    }
+  }
+
+  function expectStoredTokensToBeRemoved(): void {
+    for (const storage of [sessionStorage, localStorage]) {
+      expect(storage.getItem(auth.LADON_AUTH_STORAGE_KEY)).toBeNull();
+      expect(storage.getItem(auth.LEGACY_ACCESS_TOKEN_KEY)).toBeNull();
+    }
+  }
+
+  function restoreStorageValue(storage: Storage, key: string, value: string | null): void {
+    if (value === null) {
+      storage.removeItem(key);
+      return;
+    }
+
+    storage.setItem(key, value);
+  }
 });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, mergeMap, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, map, mergeMap, Observable, of, tap, throwError } from 'rxjs';
 import { auth, LoginRequest, User } from '@ladon/api';
 import { AuthStorageService } from './auth.storage.service';
 import { FetchApiFactory } from './api/fetch-api.factory';
@@ -26,13 +26,19 @@ export class AuthService {
             return of<LoginResult>({ kind: 'two-factor-required' });
           }
 
-          if (!response.accessToken) {
-            return throwError(() => new Error('Login response did not include an access token'));
+          const accessToken = response.accessToken?.trim();
+          const tokenType = response.tokenType?.trim();
+          if (!accessToken || !tokenType) {
+            return throwError(() => new Error('Login response did not include valid credentials'));
           }
 
-          this.authStorage.setData({ accessToken: response.accessToken, tokenType: response.tokenType });
+          this.authStorage.setData({ accessToken, tokenType });
           return this.getCurrentUser().pipe(
             map((user) => ({ kind: 'authenticated', user }) satisfies LoginResult),
+            catchError((error: unknown) => {
+              this.clearLocalSession();
+              return throwError(() => error);
+            }),
           );
         }),
       );

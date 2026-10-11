@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 
 const api = await import('../dist/ladon-api/ladon-api-static.mjs');
+const apiSpec = await readFile(new URL('../../spec/api.yaml', import.meta.url), 'utf8');
 
 test('static api exposes two-factor authentication client and serializers', () => {
   assert.equal(typeof api.fetchClient.TwoFactorAuthenticationApi, 'function');
@@ -22,6 +24,33 @@ test('login request serializer preserves the two-factor code', () => {
       twoFactorCode: '123456',
     },
   );
+});
+
+test('login request serialization omits an absent two-factor code', () => {
+  const serialized = JSON.stringify(
+    api.fetchClient.LoginRequestToJSON({
+      email: 'admin@example.com',
+      password: 'secret',
+    }),
+  );
+
+  assert.deepEqual(JSON.parse(serialized), {
+    email: 'admin@example.com',
+    password: 'secret',
+  });
+  assert.equal(serialized.includes('twoFactorCode'), false);
+});
+
+test('QR setup contract documents security-sensitive response headers', () => {
+  const qrSetupContract = apiSpec
+    .split('  /auth/2fa/confirm:')[0]
+    .split('  /auth/2fa/setup/qr:')[1];
+
+  assert.match(qrSetupContract, /description: PNG QR code for configuring two-factor authentication/);
+  assert.match(qrSetupContract, /headers:\n\s+Cache-Control:/);
+  assert.match(qrSetupContract, /\n\s+Pragma:/);
+  assert.match(qrSetupContract, /\n\s+Content-Disposition:/);
+  assert.match(qrSetupContract, /description: Authentication is required to set up two-factor authentication/);
 });
 
 test('setup requests a QR code with configured credentials and returns an image blob', async () => {
@@ -72,6 +101,7 @@ test('confirmation posts the verification code and returns backup codes', async 
   assert.equal(requests.length, 1);
   assert.equal(requests[0].url, '/admin/auth/2fa/confirm');
   assert.equal(requests[0].init.method, 'POST');
+  assert.equal(requests[0].init.headers['Content-Type'], 'application/json');
   assert.deepEqual(JSON.parse(requests[0].init.body), { code: '123456' });
   assert.deepEqual(result.backupCodes, ['backup-one', 'backup-two']);
 });

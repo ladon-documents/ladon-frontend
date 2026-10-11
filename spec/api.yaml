@@ -992,14 +992,30 @@ paths:
       operationId: setupTwoFactorQrCode
       responses:
         '200':
-          description: OK
+          description: PNG QR code for configuring two-factor authentication
+          headers:
+            Cache-Control:
+              description: Prevents the QR code response from being cached.
+              schema:
+                type: string
+                example: no-store
+            Pragma:
+              description: Prevents caching by HTTP/1.0-compatible clients and proxies.
+              schema:
+                type: string
+                example: no-cache
+            Content-Disposition:
+              description: Displays the QR code inline with a stable filename.
+              schema:
+                type: string
+                example: inline; filename="ladon-2fa-setup.png"
           content:
             image/png:
               schema:
                 type: string
                 format: binary
         '401':
-          description: Unauthorized
+          description: Authentication is required to set up two-factor authentication
   /auth/2fa/confirm:
     post:
       tags:

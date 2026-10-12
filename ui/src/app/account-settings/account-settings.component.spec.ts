@@ -44,6 +44,14 @@ describe('AccountSettingsComponent', () => {
     cause: new Error('must not be rendered'),
   });
 
+  const button = (label: string): HTMLButtonElement =>
+    Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('button')).find(
+      (candidate) => candidate.textContent?.trim() === label,
+    )!;
+
+  const currentStep = (): string | undefined =>
+    fixture.nativeElement.querySelector('li[aria-current="step"]')?.textContent?.trim();
+
   beforeEach(async () => {
     twoFactorService = jasmine.createSpyObj<TwoFactorService>('TwoFactorService', ['loadSetupQrCode', 'confirm']);
     clipboard = jasmine.createSpyObj<Clipboard>('Clipboard', ['copy']);
@@ -95,6 +103,34 @@ describe('AccountSettingsComponent', () => {
     expect(image.src).toContain('blob:test-1');
   });
 
+  it('marks exactly the current setup step for assistive technology', () => {
+    expect(currentStep()).toBe('Aktivieren');
+    expect(fixture.nativeElement.querySelectorAll('li[aria-current="step"]').length).toBe(1);
+
+    const qrResult = new Subject<Blob>();
+    twoFactorService.loadSetupQrCode.and.returnValue(qrResult);
+    component.startSetup();
+    fixture.detectChanges();
+    expect(currentStep()).toBe('Aktivieren');
+
+    qrResult.next(new Blob(['qr'], { type: 'image/png' }));
+    fixture.detectChanges();
+    expect(currentStep()).toBe('Scannen');
+
+    twoFactorService.confirm.and.returnValue(
+      of({ success: true, backupCodes: ['backup'] } as TwoFactorConfirmResponse),
+    );
+    component.verificationForm.controls.code.setValue('123456');
+    component.confirmSetup();
+    fixture.detectChanges();
+    expect(currentStep()).toBe('Codes sichern');
+
+    component.savedSafelyForm.controls.savedSafely.setValue(true);
+    component.acknowledgeBackupCodes();
+    fixture.detectChanges();
+    expect(currentStep()).toBe('Fertig');
+  });
+
   it('shows a stable QR loading error and retries the request', () => {
     twoFactorService.loadSetupQrCode.and.returnValues(
       throwError(() => new Error('private network detail')),
@@ -115,6 +151,17 @@ describe('AccountSettingsComponent', () => {
     expect(component.step()).toBe('verify');
   });
 
+  it('does not overlap setup requests while a QR code is loading', () => {
+    const qrResult = new Subject<Blob>();
+    twoFactorService.loadSetupQrCode.and.returnValue(qrResult);
+
+    component.startSetup();
+    component.startSetup();
+
+    expect(twoFactorService.loadSetupQrCode).toHaveBeenCalledTimes(1);
+    expect(component.step()).toBe('loading');
+  });
+
   it('accepts exactly six digits and never confirms invalid values', () => {
     startSetup();
     twoFactorService.confirm.and.returnValue(of({ success: true, backupCodes: ['code'] } as TwoFactorConfirmResponse));
@@ -131,6 +178,53 @@ describe('AccountSettingsComponent', () => {
     component.confirmSetup();
 
     expect(twoFactorService.confirm).toHaveBeenCalledOnceWith('012345');
+  });
+
+  it('sends only one confirmation while a request is pending and disables conflicting actions', () => {
+    startSetup();
+    const confirmation = new Subject<TwoFactorConfirmResponse>();
+    twoFactorService.confirm.and.returnValue(confirmation);
+    component.verificationForm.controls.code.setValue('123456');
+
+    component.confirmSetup();
+    component.confirmSetup();
+    fixture.detectChanges();
+
+    expect(twoFactorService.confirm).toHaveBeenCalledOnceWith('123456');
+    expect(component.isConfirming()).toBeTrue();
+    expect(button('2FA bestätigen').disabled).toBeTrue();
+    expect(button('Abbrechen').disabled).toBeTrue();
+    expect(button('QR-Code neu laden').disabled).toBeTrue();
+    expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('2FA wird bestätigt');
+
+    component.cancelSetup();
+    component.startSetup();
+
+    expect(twoFactorService.loadSetupQrCode).toHaveBeenCalledTimes(1);
+    expect(component.step()).toBe('verify');
+    expect(component.isConfirming()).toBeTrue();
+  });
+
+  it('ignores late QR responses after cancellation and a newer setup attempt', () => {
+    const firstQr = new Subject<Blob>();
+    const secondQr = new Subject<Blob>();
+    twoFactorService.loadSetupQrCode.and.returnValues(firstQr, secondQr);
+
+    component.startSetup();
+    component.cancelSetup();
+    firstQr.next(new Blob(['stale'], { type: 'image/png' }));
+
+    expect(component.step()).toBe('start');
+    expect(component.qrCodeUrl()).toBeNull();
+    expect(createObjectUrl).not.toHaveBeenCalled();
+
+    component.startSetup();
+    secondQr.next(new Blob(['current'], { type: 'image/png' }));
+    firstQr.error(new Error('late private detail'));
+
+    expect(component.step()).toBe('verify');
+    expect(component.qrCodeUrl()).toBe('blob:test-1');
+    expect(component.errorMessage()).toBeNull();
   });
 
   it('keeps verification active, clears the code, and shows only a normalized 400 message', () => {
@@ -155,6 +249,68 @@ describe('AccountSettingsComponent', () => {
     component.confirmSetup();
 
     expect(store.requireReauthentication).toHaveBeenCalledOnceWith(router.url);
+  });
+
+  it('rejects an unsuccessful confirmation response without exposing backup actions', () => {
+    startSetup();
+    twoFactorService.confirm.and.returnValue(
+      of({ success: false, backupCodes: ['must-not-be-used'] } as TwoFactorConfirmResponse),
+    );
+    component.verificationForm.controls.code.setValue('123456');
+
+    component.confirmSetup();
+    fixture.detectChanges();
+
+    expect(component.step()).toBe('verify');
+    expect(component.verificationForm.controls.code.value).toBe('');
+    expect(component.errorMessage()).toBe('2FA konnte nicht aktiviert werden. Bitte erneut versuchen.');
+    expect(component.backupCodes()).toEqual([]);
+    expect(component.backupDownloadUrl()).toBeNull();
+    expect(createObjectUrl).toHaveBeenCalledTimes(1);
+    expect(fixture.nativeElement.querySelector('a[download]')).toBeNull();
+  });
+
+  it('rejects a successful confirmation response without usable backup codes', () => {
+    startSetup();
+    twoFactorService.confirm.and.returnValue(
+      of({ success: true, backupCodes: ['', '   '] } as TwoFactorConfirmResponse),
+    );
+    component.verificationForm.controls.code.setValue('123456');
+
+    component.confirmSetup();
+
+    expect(component.step()).toBe('verify');
+    expect(component.verificationForm.controls.code.value).toBe('');
+    expect(component.errorMessage()).toBe('2FA konnte nicht aktiviert werden. Bitte erneut versuchen.');
+    expect(component.backupCodes()).toEqual([]);
+    expect(component.copySucceeded()).toBeNull();
+  });
+
+  it('rejects a malformed confirmation response without throwing', () => {
+    startSetup();
+    twoFactorService.confirm.and.returnValue(
+      of({ success: true, backupCodes: null } as unknown as TwoFactorConfirmResponse),
+    );
+    component.verificationForm.controls.code.setValue('123456');
+
+    expect(() => component.confirmSetup()).not.toThrow();
+
+    expect(component.step()).toBe('verify');
+    expect(component.verificationForm.controls.code.value).toBe('');
+    expect(component.errorMessage()).toBe('2FA konnte nicht aktiviert werden. Bitte erneut versuchen.');
+    expect(component.backupCodes()).toEqual([]);
+  });
+
+  it('rejects a missing confirmation response without throwing', () => {
+    startSetup();
+    twoFactorService.confirm.and.returnValue(of(null as unknown as TwoFactorConfirmResponse));
+    component.verificationForm.controls.code.setValue('123456');
+
+    expect(() => component.confirmSetup()).not.toThrow();
+
+    expect(component.step()).toBe('verify');
+    expect(component.verificationForm.controls.code.value).toBe('');
+    expect(component.errorMessage()).toBe('2FA konnte nicht aktiviert werden. Bitte erneut versuchen.');
   });
 
   it('renders each returned backup code exactly once after confirmation', () => {
@@ -186,6 +342,13 @@ describe('AccountSettingsComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Backup-Codes konnten nicht kopiert werden.');
   });
 
+  it('does not access the clipboard when there are no backup codes', () => {
+    component.copyBackupCodes();
+
+    expect(clipboard.copy).not.toHaveBeenCalled();
+    expect(component.copySucceeded()).toBeFalse();
+  });
+
   it('provides a short-lived download URL with the exact filename and useful file content', async () => {
     reachBackupStep(['first-code', 'second-code']);
 
@@ -195,8 +358,8 @@ describe('AccountSettingsComponent', () => {
 
     const downloadBlob = createObjectUrl.calls.mostRecent().args[0] as Blob;
     const content = await downloadBlob.text();
-    expect(content).toContain('Ladon 2FA Backup-Codes');
-    expect(content).toContain('first-code\nsecond-code');
+    expect(downloadBlob.type).toBe('text/plain;charset=utf-8');
+    expect(content).toBe('Ladon 2FA Backup-Codes\n\nfirst-code\nsecond-code\n');
   });
 
   it('keeps completion disabled until safe storage is acknowledged', () => {
@@ -228,7 +391,9 @@ describe('AccountSettingsComponent', () => {
     expect(observedSteps).toEqual(['backup', 'backup']);
     expect(revokeObjectUrl.calls.allArgs()).toEqual([['blob:test-2'], ['blob:test-1']]);
     expect(component.verificationForm.controls.code.value).toBe('');
+    expect(component.savedSafelyForm.controls.savedSafely.value).toBeFalse();
     expect(component.backupCodes()).toEqual([]);
+    expect(component.copySucceeded()).toBeNull();
     expect(component.backupDownloadUrl()).toBeNull();
     expect(component.qrCodeUrl()).toBeNull();
     expect(component.step()).toBe('complete');
@@ -247,6 +412,9 @@ describe('AccountSettingsComponent', () => {
     expect(revokeObjectUrl.calls.allArgs()).toEqual([['blob:test-1'], ['blob:test-2']]);
     expect(component.qrCodeUrl()).toBe('blob:test-3');
     expect(component.backupDownloadUrl()).toBe('blob:test-4');
+    component.verificationForm.controls.code.setValue('654321');
+    component.savedSafelyForm.controls.savedSafely.setValue(true);
+    component.copySucceeded.set(true);
 
     fixture.destroy();
 
@@ -256,21 +424,37 @@ describe('AccountSettingsComponent', () => {
       ['blob:test-4'],
       ['blob:test-3'],
     ]);
+    expect(component.verificationForm.controls.code.value).toBe('');
+    expect(component.savedSafelyForm.controls.savedSafely.value).toBeFalse();
+    expect(component.backupCodes()).toEqual([]);
+    expect(component.copySucceeded()).toBeNull();
+    expect(component.qrCodeUrl()).toBeNull();
+    expect(component.backupDownloadUrl()).toBeNull();
   });
 
-  it('revokes a download URL when a later confirmation result replaces it', () => {
+  it('clears all sensitive values and invalidates a pending confirmation when destroyed', () => {
     startSetup();
-    const firstConfirmation = new Subject<TwoFactorConfirmResponse>();
-    const secondConfirmation = new Subject<TwoFactorConfirmResponse>();
-    twoFactorService.confirm.and.returnValues(firstConfirmation, secondConfirmation);
-    component.verificationForm.controls.code.setValue('123456');
-
+    const confirmation = new Subject<TwoFactorConfirmResponse>();
+    twoFactorService.confirm.and.returnValue(confirmation);
+    component.verificationForm.controls.code.setValue('654321');
+    component.backupCodes.set(['temporary-code']);
+    component.savedSafelyForm.controls.savedSafely.setValue(true);
+    component.copySucceeded.set(true);
     component.confirmSetup();
-    component.confirmSetup();
-    firstConfirmation.next({ success: true, backupCodes: ['first'] } as TwoFactorConfirmResponse);
-    secondConfirmation.next({ success: true, backupCodes: ['second'] } as TwoFactorConfirmResponse);
 
-    expect(component.backupDownloadUrl()).toBe('blob:test-3');
-    expect(revokeObjectUrl).toHaveBeenCalledOnceWith('blob:test-2');
+    fixture.destroy();
+    confirmation.next({ success: true, backupCodes: ['late-code'] } as TwoFactorConfirmResponse);
+    confirmation.error(fetchApiError(400, 'late error'));
+
+    expect(component.isConfirming()).toBeFalse();
+    expect(component.verificationForm.controls.code.value).toBe('');
+    expect(component.savedSafelyForm.controls.savedSafely.value).toBeFalse();
+    expect(component.backupCodes()).toEqual([]);
+    expect(component.copySucceeded()).toBeNull();
+    expect(component.qrCodeUrl()).toBeNull();
+    expect(component.backupDownloadUrl()).toBeNull();
+    expect(component.errorMessage()).toBeNull();
+    expect(createObjectUrl).toHaveBeenCalledTimes(1);
+    expect(revokeObjectUrl).toHaveBeenCalledOnceWith('blob:test-1');
   });
 });

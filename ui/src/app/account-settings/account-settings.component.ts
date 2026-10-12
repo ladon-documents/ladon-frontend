@@ -27,6 +27,7 @@ export class AccountSettingsComponent implements OnDestroy {
   readonly backupCodes = signal<readonly string[]>([]);
   readonly backupDownloadUrl = signal<string | null>(null);
   readonly copySucceeded = signal<boolean | null>(null);
+  readonly isConfirming = signal(false);
 
   readonly #twoFactorService = inject(TwoFactorService);
   readonly #clipboard = inject(Clipboard);
@@ -42,10 +43,17 @@ export class AccountSettingsComponent implements OnDestroy {
     savedSafely: [false, Validators.requiredTrue],
   });
 
+  #operationGeneration = 0;
+  #destroyed = false;
+
   startSetup(): void {
+    if (this.#destroyed || this.step() === 'loading' || this.isConfirming()) {
+      return;
+    }
+
+    const operation = this.#beginOperation();
+    this.#clearSensitiveState();
     this.errorMessage.set(null);
-    this.copySucceeded.set(null);
-    this.#clearQrCodeUrl();
     this.step.set('loading');
 
     this.#twoFactorService
@@ -53,10 +61,18 @@ export class AccountSettingsComponent implements OnDestroy {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: (qrCode) => {
+          if (!this.#isCurrentOperation(operation)) {
+            return;
+          }
+
           this.#replaceQrCodeUrl(URL.createObjectURL(qrCode));
           this.step.set('verify');
         },
         error: (error: unknown) => {
+          if (!this.#isCurrentOperation(operation)) {
+            return;
+          }
+
           this.errorMessage.set(this.#normalizeError(error, QR_ERROR_FALLBACK));
           this.step.set('start');
         },
@@ -64,11 +80,17 @@ export class AccountSettingsComponent implements OnDestroy {
   }
 
   confirmSetup(): void {
+    if (this.#destroyed || this.isConfirming()) {
+      return;
+    }
+
     if (this.verificationForm.invalid || this.step() !== 'verify') {
       this.verificationForm.markAllAsTouched();
       return;
     }
 
+    const operation = this.#beginOperation();
+    this.isConfirming.set(true);
     this.errorMessage.set(null);
     const code = this.verificationForm.controls.code.value;
     this.#twoFactorService
@@ -76,22 +98,64 @@ export class AccountSettingsComponent implements OnDestroy {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: (response) => {
-          const codes = [...response.backupCodes];
+          if (!this.#isCurrentOperation(operation)) {
+            return;
+          }
+
+          this.isConfirming.set(false);
+          const rawResponse: unknown = response;
+          if (typeof rawResponse !== 'object' || rawResponse === null) {
+            this.#handleInvalidConfirmationResponse();
+            return;
+          }
+
+          const candidate = rawResponse as { success?: unknown; backupCodes?: unknown };
+          const rawCodes = candidate.backupCodes;
+          if (
+            candidate.success !== true ||
+            !Array.isArray(rawCodes) ||
+            rawCodes.length === 0 ||
+            !rawCodes.every(
+              (backupCode): backupCode is string => typeof backupCode === 'string' && backupCode.trim().length > 0,
+            )
+          ) {
+            this.#handleInvalidConfirmationResponse();
+            return;
+          }
+
+          const codes = rawCodes.map((backupCode) => backupCode.trim());
           this.backupCodes.set(codes);
           this.copySucceeded.set(null);
           this.savedSafelyForm.reset();
           this.#replaceBackupDownloadUrl(URL.createObjectURL(this.#createBackupCodesBlob(codes)));
           this.step.set('backup');
         },
-        error: (error: unknown) => this.#handleConfirmationError(error),
+        error: (error: unknown) => {
+          if (!this.#isCurrentOperation(operation)) {
+            return;
+          }
+
+          this.isConfirming.set(false);
+          this.#handleConfirmationError(error);
+        },
       });
   }
 
   copyBackupCodes(): void {
+    if (this.backupCodes().length === 0) {
+      this.copySucceeded.set(false);
+      return;
+    }
+
     this.copySucceeded.set(this.#clipboard.copy(this.backupCodes().join('\n')));
   }
 
   cancelSetup(): void {
+    if (this.#destroyed || this.isConfirming()) {
+      return;
+    }
+
+    this.#invalidateOperations();
     this.#clearSensitiveState();
     this.errorMessage.set(null);
     this.step.set('start');
@@ -103,14 +167,28 @@ export class AccountSettingsComponent implements OnDestroy {
       return;
     }
 
+    this.#invalidateOperations();
     this.#clearSensitiveState();
     this.errorMessage.set(null);
     this.step.set('complete');
   }
 
   ngOnDestroy(): void {
+    this.#destroyed = true;
+    this.#invalidateOperations();
+    this.isConfirming.set(false);
+    this.#clearSensitiveState();
+    this.errorMessage.set(null);
+  }
+
+  #handleInvalidConfirmationResponse(): void {
+    this.verificationForm.controls.code.setValue('');
+    this.savedSafelyForm.reset();
+    this.backupCodes.set([]);
+    this.copySucceeded.set(null);
     this.#clearBackupDownloadUrl();
-    this.#clearQrCodeUrl();
+    this.errorMessage.set(CONFIRM_ERROR_FALLBACK);
+    this.step.set('verify');
   }
 
   #handleConfirmationError(error: unknown): void {
@@ -134,6 +212,18 @@ export class AccountSettingsComponent implements OnDestroy {
     this.copySucceeded.set(null);
     this.#clearBackupDownloadUrl();
     this.#clearQrCodeUrl();
+  }
+
+  #beginOperation(): number {
+    return ++this.#operationGeneration;
+  }
+
+  #invalidateOperations(): void {
+    this.#operationGeneration++;
+  }
+
+  #isCurrentOperation(operation: number): boolean {
+    return !this.#destroyed && operation === this.#operationGeneration;
   }
 
   #createBackupCodesBlob(codes: readonly string[]): Blob {

@@ -7,12 +7,27 @@
       </div>
 
       <ul class="steps steps-horizontal w-full text-xs sm:text-sm" aria-label="Fortschritt der 2FA-Einrichtung">
-        <li class="step step-primary">Aktivieren</li>
-        <li class="step" [class.step-primary]="step() === 'verify' || step() === 'backup' || step() === 'complete'">
+        <li class="step step-primary" [attr.aria-current]="step() === 'start' || step() === 'loading' ? 'step' : null">
+          Aktivieren
+        </li>
+        <li
+          class="step"
+          [class.step-primary]="step() === 'verify' || step() === 'backup' || step() === 'complete'"
+          [attr.aria-current]="step() === 'verify' ? 'step' : null">
           Scannen
         </li>
-        <li class="step" [class.step-primary]="step() === 'backup' || step() === 'complete'">Codes sichern</li>
-        <li class="step" [class.step-primary]="step() === 'complete'">Fertig</li>
+        <li
+          class="step"
+          [class.step-primary]="step() === 'backup' || step() === 'complete'"
+          [attr.aria-current]="step() === 'backup' ? 'step' : null">
+          Codes sichern
+        </li>
+        <li
+          class="step"
+          [class.step-primary]="step() === 'complete'"
+          [attr.aria-current]="step() === 'complete' ? 'step' : null">
+          Fertig
+        </li>
       </ul>
 
       @if (errorMessage(); as error) {
@@ -54,7 +69,11 @@
               <p>Scanne den QR-Code und gib anschließend den sechsstelligen Code aus deiner App ein.</p>
             </div>
 
-            <form class="space-y-4" [formGroup]="verificationForm" (ngSubmit)="confirmSetup()">
+            <form
+              class="space-y-4"
+              [formGroup]="verificationForm"
+              (ngSubmit)="confirmSetup()"
+              [attr.aria-busy]="isConfirming() ? 'true' : null">
               <div class="form-control">
                 <label class="label" for="two-factor-setup-code">
                   <span class="label-text">Bestätigungscode</span>
@@ -83,10 +102,21 @@
                 }
               </div>
 
+              @if (isConfirming()) {
+                <div class="flex items-center gap-2" role="status" aria-live="polite">
+                  <span class="loading loading-spinner loading-sm" aria-hidden="true"></span>
+                  <span>2FA wird bestätigt …</span>
+                </div>
+              }
+
               <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                <button type="button" class="btn btn-ghost" (click)="cancelSetup()">Abbrechen</button>
-                <button type="button" class="btn btn-outline" (click)="startSetup()">QR-Code neu laden</button>
-                <button type="submit" class="btn btn-primary" [disabled]="verificationForm.invalid">
+                <button type="button" class="btn btn-ghost" [disabled]="isConfirming()" (click)="cancelSetup()">
+                  Abbrechen
+                </button>
+                <button type="button" class="btn btn-outline" [disabled]="isConfirming()" (click)="startSetup()">
+                  QR-Code neu laden
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="verificationForm.invalid || isConfirming()">
                   2FA bestätigen
                 </button>
               </div>

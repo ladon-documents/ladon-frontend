@@ -241,9 +241,10 @@ export const AppStore = signalStore(
                       ...state.auth,
                       isAuthenticated: false,
                       user: null,
-                      loginError: credentials.twoFactorCode != null
-                        ? 'Zwei-Faktor-Code konnte nicht bestätigt werden. Bitte erneut versuchen.'
-                        : null,
+                      loginError:
+                        credentials.twoFactorCode != null
+                          ? 'Zwei-Faktor-Code konnte nicht bestätigt werden. Bitte erneut versuchen.'
+                          : null,
                       isAuthenticating: false,
                       requiresTwoFactor: true,
                     },
@@ -289,7 +290,10 @@ export const AppStore = signalStore(
         authService.clearLocalSession();
         resetAuthenticationState(null);
         router.navigateByUrl(`${environment.baseHref}/login`);
-        return authService.logout().pipe(catchError(() => EMPTY)).subscribe();
+        return authService
+          .logout()
+          .pipe(catchError(() => EMPTY))
+          .subscribe();
       },
       setRedirectUrl(url: string) {
         patchState(store, (state) => ({

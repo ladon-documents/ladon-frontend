@@ -74,10 +74,7 @@ describe('AppStore authentication flow', () => {
     const store = createStore();
     const redirectUrl = `/${environment.baseHref}/documents`;
     store.setRedirectUrl(redirectUrl);
-    authService.login.and.returnValues(
-      of({ kind: 'two-factor-required' }),
-      of({ kind: 'authenticated', user }),
-    );
+    authService.login.and.returnValues(of({ kind: 'two-factor-required' }), of({ kind: 'authenticated', user }));
 
     store.login(loginRequest);
     store.login({ ...loginRequest, twoFactorCode: '123456' });
@@ -190,9 +187,7 @@ describe('AppStore authentication flow', () => {
 
     for (const redirectUrl of unsafeRedirects) {
       store.requireReauthentication(redirectUrl);
-      expect(store.auth.redirectUrl())
-        .withContext(redirectUrl)
-        .toBe(`${environment.baseHref}/buckets`);
+      expect(store.auth.redirectUrl()).withContext(redirectUrl).toBe(`${environment.baseHref}/buckets`);
     }
   });
 
@@ -367,16 +362,10 @@ describe('AppStore authentication flow', () => {
   ): InstanceType<typeof AppStore> {
     authService.getCurrentUser.and.returnValue(currentUser$);
     authService.logout.and.returnValue(of({}));
-    authService.login.and.returnValue(
-      throwError(() => new Error('Unexpected login call')) as Observable<LoginResult>,
-    );
+    authService.login.and.returnValue(throwError(() => new Error('Unexpected login call')) as Observable<LoginResult>);
 
     TestBed.configureTestingModule({
-      providers: [
-        AppStore,
-        { provide: AuthService, useValue: authService },
-        { provide: Router, useValue: router },
-      ],
+      providers: [AppStore, { provide: AuthService, useValue: authService }, { provide: Router, useValue: router }],
     });
 
     return TestBed.inject(AppStore);

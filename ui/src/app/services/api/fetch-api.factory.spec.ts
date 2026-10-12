@@ -32,10 +32,7 @@ describe('FetchApiFactory', () => {
       loginRequest: { email: 'user@example.com', password: 'password' },
     });
 
-    expect(fetchSpy).toHaveBeenCalledWith(
-      '/admin/auth/login',
-      jasmine.objectContaining({ credentials: 'include' }),
-    );
+    expect(fetchSpy).toHaveBeenCalledWith('/admin/auth/login', jasmine.objectContaining({ credentials: 'include' }));
     expect(result).toEqual(authResponse);
   });
 

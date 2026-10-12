@@ -4,9 +4,7 @@ import { auth, LoginRequest, User } from '@ladon/api';
 import { AuthStorageService } from './auth.storage.service';
 import { FetchApiFactory } from './api/fetch-api.factory';
 
-export type LoginResult =
-  | { kind: 'two-factor-required' }
-  | { kind: 'authenticated'; user: User };
+export type LoginResult = { kind: 'two-factor-required' } | { kind: 'authenticated'; user: User };
 
 @Injectable({
   providedIn: 'root',

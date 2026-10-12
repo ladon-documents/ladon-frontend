@@ -4,15 +4,18 @@ import { AppStore } from '../store/app.store';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent } from '@ng-icons/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'lib-avatar',
-  imports: [CommonModule, ThemesComponent],
+  imports: [CommonModule, RouterLink, ThemesComponent],
   templateUrl: './avatar.component.html',
   styleUrl: './avatar.component.scss',
 })
 export class AvatarComponent {
   readonly #store = inject(AppStore);
+  readonly accountSettingsUrl = `/${environment.baseHref}/account-settings`;
   fullName = this.#store.auth.user()?.fullName;
   userId = this.#store.auth.user()?.userId;
   sidebarCollapsed: Signal<boolean> = this.#store.ui.isSidenavClosed;

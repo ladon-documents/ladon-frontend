@@ -151,6 +151,18 @@ describe('AccountSettingsComponent', () => {
     expect(component.step()).toBe('verify');
   });
 
+  it('requires reauthentication instead of showing a retry after a QR 401', () => {
+    twoFactorService.loadSetupQrCode.and.returnValue(throwError(() => fetchApiError(401, 'expired')));
+
+    component.startSetup();
+    fixture.detectChanges();
+
+    expect(store.requireReauthentication).toHaveBeenCalledOnceWith(router.url);
+    expect(component.step()).toBe('start');
+    expect(component.errorMessage()).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('expired');
+  });
+
   it('does not overlap setup requests while a QR code is loading', () => {
     const qrResult = new Subject<Blob>();
     twoFactorService.loadSetupQrCode.and.returnValue(qrResult);
@@ -249,6 +261,10 @@ describe('AccountSettingsComponent', () => {
     component.confirmSetup();
 
     expect(store.requireReauthentication).toHaveBeenCalledOnceWith(router.url);
+    expect(component.verificationForm.controls.code.value).toBe('');
+    expect(component.qrCodeUrl()).toBeNull();
+    expect(component.errorMessage()).toBeNull();
+    expect(component.step()).toBe('start');
   });
 
   it('rejects an unsuccessful confirmation response without exposing backup actions', () => {

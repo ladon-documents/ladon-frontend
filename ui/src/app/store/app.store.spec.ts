@@ -303,16 +303,19 @@ describe('AppStore authentication flow', () => {
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
   });
 
-  it('clears the two-factor step when loading the initial user fails', () => {
+  it('cancels the pending initial user load when login starts', () => {
     const currentUser = new Subject<User>();
     const store = createStore(currentUser);
     authService.login.and.returnValue(of({ kind: 'two-factor-required' }));
+
     store.login(loginRequest);
+
+    expect(currentUser.observed).toBeFalse();
+    currentUser.next(user);
+
+    expect(store.auth.isAuthenticated()).toBeFalse();
+    expect(store.auth.user()).toBeNull();
     expect(store.auth.requiresTwoFactor()).toBeTrue();
-
-    currentUser.error(new Error('Not authenticated'));
-
-    expect(store.auth.requiresTwoFactor()).toBeFalse();
     expect(store.auth.isAuthenticating()).toBeFalse();
   });
 

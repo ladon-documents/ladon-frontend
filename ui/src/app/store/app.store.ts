@@ -224,6 +224,7 @@ export const AppStore = signalStore(
       login: rxMethod<LoginRequest>(
         pipe(
           tap(() => {
+            store._authenticationCancellation$.next();
             patchState(store, (state) => ({
               ...state,
               ui: { ...state.ui },

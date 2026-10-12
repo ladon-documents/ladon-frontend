@@ -73,6 +73,11 @@ export class AccountSettingsComponent implements OnDestroy {
             return;
           }
 
+          if (this.#isFetchApiError(error) && error.status === 401) {
+            this.#requireReauthentication();
+            return;
+          }
+
           this.errorMessage.set(this.#normalizeError(error, QR_ERROR_FALLBACK));
           this.step.set('start');
         },
@@ -193,7 +198,7 @@ export class AccountSettingsComponent implements OnDestroy {
 
   #handleConfirmationError(error: unknown): void {
     if (this.#isFetchApiError(error) && error.status === 401) {
-      this.#store.requireReauthentication(this.#router.url);
+      this.#requireReauthentication();
       return;
     }
 
@@ -203,6 +208,15 @@ export class AccountSettingsComponent implements OnDestroy {
     }
 
     this.errorMessage.set(this.#normalizeError(error, CONFIRM_ERROR_FALLBACK));
+  }
+
+  #requireReauthentication(): void {
+    this.#invalidateOperations();
+    this.isConfirming.set(false);
+    this.#clearSensitiveState();
+    this.errorMessage.set(null);
+    this.step.set('start');
+    this.#store.requireReauthentication(this.#router.url);
   }
 
   #clearSensitiveState(): void {

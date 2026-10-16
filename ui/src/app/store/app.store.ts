@@ -253,6 +253,7 @@ export const AppStore = signalStore(
                   return;
                 }
 
+                const redirectUrl = resolveRedirectUrl(store.auth.redirectUrl());
                 patchState(store, (state) => ({
                   ...state,
                   ui: { ...state.ui },
@@ -262,10 +263,10 @@ export const AppStore = signalStore(
                     user: result.user,
                     loginError: null,
                     isAuthenticating: false,
+                    redirectUrl,
                     requiresTwoFactor: false,
                   },
                 }));
-                const redirectUrl = resolveRedirectUrl(store.auth.redirectUrl());
                 redirectAfterLogin(router, redirectUrl);
               }),
               catchError((error: unknown) => {

@@ -86,6 +86,16 @@ describe('AppStore authentication flow', () => {
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith(redirectUrl);
   });
 
+  it('stores the fallback redirect before completing a direct login', () => {
+    const store = createStore();
+    authService.login.and.returnValue(of({ kind: 'authenticated', user }));
+
+    store.login(loginRequest);
+
+    expect(store.auth.redirectUrl()).toBe(`${environment.baseHref}/buckets`);
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/buckets`);
+  });
+
   it('preserves the current step and uses a stable fallback for an unstructured login error', () => {
     const store = createStore();
     authService.login.and.returnValues(

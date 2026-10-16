@@ -104,6 +104,25 @@ describe('AuthService', () => {
     expect(authStorage.removeData).not.toHaveBeenCalled();
   });
 
+  it('accepts valid credentials when the response still marks the account as requiring two-factor authentication', async () => {
+    const responseForTwoFactorAccount: AuthResponse = {
+      ...authResponse,
+      requiresTwoFactor: true,
+    };
+    const requestWithTwoFactorCode: LoginRequest = {
+      ...loginRequest,
+      twoFactorCode: '123456',
+    };
+    authControllerApi.authenticateUser.and.resolveTo(responseForTwoFactorAccount);
+    userControllerApi.getCurrentUser.and.resolveTo(user);
+
+    const result = await firstValueFrom(service.login(requestWithTwoFactorCode));
+
+    expect(authStorage.setData).toHaveBeenCalledWith({ accessToken: 'token', tokenType: 'Bearer' });
+    expect(userControllerApi.getCurrentUser).toHaveBeenCalled();
+    expect(result).toEqual({ kind: 'authenticated', user });
+  });
+
   it('rejects a completed login response without an access token', async () => {
     authControllerApi.authenticateUser.and.resolveTo({ ...authResponse, accessToken: '' });
 

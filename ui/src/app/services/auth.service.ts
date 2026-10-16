@@ -36,13 +36,13 @@ export class AuthService {
         .fromApi(() => this.apiFactory.authControllerApi.authenticateUser({ loginRequest: request }))
         .pipe(
           mergeMap((response) => {
-            if (response.requiresTwoFactor) {
-              return of<LoginResult>({ kind: 'two-factor-required' });
-            }
-
             const accessToken = response.accessToken?.trim();
             const tokenType = response.tokenType?.trim();
             if (!accessToken || !tokenType) {
+              if (response.requiresTwoFactor) {
+                return of<LoginResult>({ kind: 'two-factor-required' });
+              }
+
               return throwError(() => new Error('Login response did not include valid credentials'));
             }
 

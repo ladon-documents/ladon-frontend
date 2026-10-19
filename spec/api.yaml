@@ -978,7 +978,70 @@ paths:
           content:
             "application/json":
               schema:
-                type: object
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad Request
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /auth/2fa/setup/qr:
+    post:
+      tags:
+        - TwoFactorAuthentication
+      operationId: setupTwoFactorQrCode
+      responses:
+        '200':
+          description: PNG QR code for configuring two-factor authentication
+          headers:
+            Cache-Control:
+              description: Prevents the QR code response from being cached.
+              schema:
+                type: string
+                example: no-store
+            Pragma:
+              description: Prevents caching by HTTP/1.0-compatible clients and proxies.
+              schema:
+                type: string
+                example: no-cache
+            Content-Disposition:
+              description: Displays the QR code inline with a stable filename.
+              schema:
+                type: string
+                example: inline; filename="ladon-2fa-setup.png"
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Authentication is required to set up two-factor authentication
+  /auth/2fa/confirm:
+    post:
+      tags:
+        - TwoFactorAuthentication
+      operationId: confirmTwoFactorAuthentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TwoFactorVerificationRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/TwoFactorConfirmResponse'
+        '400':
+          description: Bad Request
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '401':
+          description: Unauthorized
   /api/usermanager/users:
     get:
       tags:
@@ -3210,6 +3273,54 @@ components:
           type: string
         password:
           type: string
+        twoFactorCode:
+          type: string
+          nullable: true
+    AuthResponse:
+      required:
+        - accessToken
+        - requiresTwoFactor
+        - tokenType
+      type: object
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+        requiresTwoFactor:
+          type: boolean
+    ApiResponse:
+      required:
+        - success
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        reason:
+          type: string
+    TwoFactorVerificationRequest:
+      required:
+        - code
+      type: object
+      properties:
+        code:
+          type: string
+    TwoFactorConfirmResponse:
+      required:
+        - backupCodes
+        - success
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        backupCodes:
+          type: array
+          items:
+            type: string
     UserWrapper:
       type: object
       properties:

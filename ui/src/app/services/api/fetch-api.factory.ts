@@ -31,6 +31,7 @@ export class FetchApiFactory {
   });
 
   readonly authControllerApi = new fetchClient.AuthControllerApi(this.mainConfiguration);
+  readonly twoFactorAuthenticationApi = new fetchClient.TwoFactorAuthenticationApi(this.mainConfiguration);
   readonly userControllerApi = new fetchClient.UserControllerApi(this.mainConfiguration);
   readonly documentsApi = new fetchClient.DocumentsApi(this.mainConfiguration);
   readonly converterApi = new fetchClient.ConverterApi(this.mainConfiguration);

@@ -144,7 +144,7 @@ export function createAuthMiddleware(options: StaticAuthMiddlewareOptions = {}) 
 export function createAuthenticatedConfiguration(options: StaticAuthOptions = {}): Configuration {
   return new Configuration({
     basePath: options.basePath,
-    credentials: options.credentials,
+    credentials: options.credentials ?? 'include',
     middleware: [createAuthMiddleware(options)],
   });
 }

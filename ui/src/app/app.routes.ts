@@ -28,6 +28,15 @@ const rapidnRoutes: Routes = [
   { path: `${environment.baseHref}/rapid/:rapidId`, component: RapidwebComponent, canActivate: [AuthGuard] },
 ];
 
+const accountRoutes: Routes = [
+  {
+    path: `${environment.baseHref}/account-settings`,
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./account-settings/account-settings.component').then((module) => module.AccountSettingsComponent),
+  },
+];
+
 const pdfViewer: Routes = [
   {
     path: `${environment.baseHref}/pdf`,
@@ -45,7 +54,7 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
   setNavigation();
 
   const _appRoutes: any = [];
-  _appRoutes.push(...loginRoutes, ...rapidnRoutes, ...pdfviewerRoutes);
+  _appRoutes.push(...loginRoutes, ...rapidnRoutes, ...pdfviewerRoutes, ...accountRoutes);
   navigation.forEach((navItem) => {
     if (NO_ROUTING_TARGETS.includes(navItem.target)) return;
     const navPath = `${environment.baseHref}/${navItem.path}`;

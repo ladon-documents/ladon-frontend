@@ -22,7 +22,10 @@ export const environment = {
   rapids: {
     source: 'server',
     bucket: 'draco-rapids',
-    trustedExecutionEnabled: true,
+    // Deny untrusted rapid script execution by default (production / fallback
+    // env). Local dev rapids opt back in via environment.development.ts. This is
+    // the secure default the app.config.spec enforces (provider must be `false`).
+    trustedExecutionEnabled: false,
   },
   storage: 'sessionStorage',
   production: true,

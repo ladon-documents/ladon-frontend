@@ -8,7 +8,12 @@ import { RAPID_SOURCE_CONFIG, RapidSourceConfig } from './rapid-source-config';
 
 const DRACO_RAPID_BUCKET = 'draco-rapids';
 const DOCUMENT_LIST_LIMIT = 1000;
-const MAX_DOCUMENT_LIST_PAGES = 1;
+// Bounded number of document pages a discovery may scan. The loop is 1-based
+// (the backend's `page` index starts at 1). The real stop conditions are the
+// short final page, an explicit final-page flag, and repeated-page detection;
+// this cap only guards a pathological backend that always returns full, distinct
+// pages. Chosen to allow realistic multi-page discovery without an unbounded loop.
+const MAX_DOCUMENT_LIST_PAGES = 10;
 const CONFIG_SUFFIX = '/config.json';
 const NAVIGATION_FILE = 'navigation.json';
 

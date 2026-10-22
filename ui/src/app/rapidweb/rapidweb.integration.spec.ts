@@ -14,6 +14,7 @@ import { RapidAssetUrlService } from './rapid-asset-url.service';
 import { RapidScriptRunnerService } from './rapid-script-runner.service';
 import { RAPID_TRUSTED_EXECUTION_ENABLED } from './rapid-trust-boundary.service';
 import { RapidwebComponent } from './rapidweb.component';
+import { buildFetchApiFactoryMock } from '@ladon/tests/app.test-harness';
 
 type DocumentListItem = { key?: string };
 type DocumentBody = string | Record<string, unknown> | Error;
@@ -49,7 +50,7 @@ describe('RapidwebComponent integration', () => {
     expect(documentsApi.listDocuments).toHaveBeenCalledOnceWith({
       bucket: 'draco-rapids',
       limit: 1000,
-      page: 0,
+      page: 1,
       currentFolder: false,
     });
     expect(documentKeys()).toContain('demo/config.json');
@@ -162,7 +163,7 @@ describe('RapidwebComponent integration', () => {
       providers: [
         provideRouter([]),
         NavigationStore,
-        { provide: FetchApiFactory, useValue: { documentsApi } },
+        { provide: FetchApiFactory, useValue: { ...buildFetchApiFactoryMock(), documentsApi } },
         { provide: RAPID_TRUSTED_EXECUTION_ENABLED, useValue: false },
         { provide: AppStore, useValue: appStore },
         { provide: KeyboardShortcutsService, useValue: jasmine.createSpyObj('KeyboardShortcutsService', ['init']) },
@@ -209,7 +210,7 @@ describe('RapidwebComponent integration', () => {
             paramMap: of(convertToParamMap({ rapidId: options.rapidId })),
           },
         },
-        { provide: FetchApiFactory, useValue: { documentsApi } },
+        { provide: FetchApiFactory, useValue: { ...buildFetchApiFactoryMock(), documentsApi } },
         { provide: RAPID_TRUSTED_EXECUTION_ENABLED, useValue: options.trustedExecutionEnabled },
         ...(options.scriptRunner ? [{ provide: RapidScriptRunnerService, useValue: options.scriptRunner }] : []),
       ],

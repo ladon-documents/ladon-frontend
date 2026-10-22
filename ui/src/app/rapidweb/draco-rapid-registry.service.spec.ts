@@ -94,7 +94,7 @@ describe('DracoRapidRegistryService', () => {
     expect(documentsApi.listDocuments).toHaveBeenCalledOnceWith({
       bucket: 'draco-rapids',
       limit: 1000,
-      page: 0,
+      page: 1,
       currentFolder: false,
     });
     expect(snapshot.state).toBe('ready');
@@ -304,7 +304,7 @@ describe('DracoRapidRegistryService', () => {
   it('paginates document listing until the final short page', async () => {
     documentsApi.listDocuments.and.callFake(({ page }) =>
       Promise.resolve(
-        page === 0
+        page === 1
           ? Array.from({ length: 1000 }, (_, index) => ({ key: `ignored-${index}.txt` }))
           : [{ key: 'demo-rapid/config.json' }],
       ),
@@ -316,13 +316,13 @@ describe('DracoRapidRegistryService', () => {
     const snapshot = await service.discover();
 
     expect(snapshot.entries.map((entry) => entry.rapidId)).toEqual(['demo-rapid']);
-    expect(documentsApi.listDocuments.calls.allArgs().map(([request]) => request['page'])).toEqual([0, 1]);
+    expect(documentsApi.listDocuments.calls.allArgs().map(([request]) => request['page'])).toEqual([1, 2]);
   });
 
   it('continues through full pages with only non-config assets', async () => {
     documentsApi.listDocuments.and.callFake(({ page }) =>
       Promise.resolve(
-        page === 0 || page === 1
+        page === 1 || page === 2
           ? Array.from({ length: 1000 }, (_, index) => ({ key: `assets-${page}-${index}.txt` }))
           : [{ key: 'demo-rapid/config.json' }],
       ),
@@ -334,7 +334,7 @@ describe('DracoRapidRegistryService', () => {
     const snapshot = await service.discover();
 
     expect(snapshot.entries.map((entry) => entry.rapidId)).toEqual(['demo-rapid']);
-    expect(documentsApi.listDocuments.calls.allArgs().map(([request]) => request['page'])).toEqual([0, 1, 2]);
+    expect(documentsApi.listDocuments.calls.allArgs().map(([request]) => request['page'])).toEqual([1, 2, 3]);
   });
 
   it('stops paginating when the same full document page repeats', async () => {
@@ -343,7 +343,7 @@ describe('DracoRapidRegistryService', () => {
       ...Array.from({ length: 999 }, (_, index) => ({ key: `ignored-${index}.txt` })),
     ];
     documentsApi.listDocuments.and.callFake(({ page }) => {
-      if (Number(page) > 1) {
+      if (Number(page) > 2) {
         return Promise.reject(new Error('pagination guard did not stop'));
       }
 
@@ -357,7 +357,7 @@ describe('DracoRapidRegistryService', () => {
 
     expect(snapshot.state).toBe('ready');
     expect(snapshot.entries.map((entry) => entry.rapidId)).toEqual(['demo-rapid']);
-    expect(documentsApi.listDocuments.calls.allArgs().map(([request]) => request['page'])).toEqual([0, 1]);
+    expect(documentsApi.listDocuments.calls.allArgs().map(([request]) => request['page'])).toEqual([1, 2]);
   });
 
   it('does not let snapshot callers mutate registry state', async () => {

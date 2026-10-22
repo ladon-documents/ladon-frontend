@@ -8,20 +8,32 @@ import {
 
 type Plugin = pluginFetchClient.Plugin;
 
-function plugin(overrides: Partial<Plugin> = {}): Plugin {
-  return {
-    id: 'plugin-package-id',
-    pluginId: 'mind/example-plugin',
-    name: 'Example Plugin',
-    version: '1.0.0',
-    file: 'example-plugin-1.0.0.tgz',
-    type: 'static-web',
-    spec: {
+function plugin(
+  overrides: Partial<Plugin> & { version?: string } = {},
+): Plugin {
+  const { version, ...rest } = overrides;
+  // The generated API contract keeps `version` *inside* `spec` (Spec), not on the
+  // top-level Plugin. Defaulting it here keeps the fixture faithful to the contract
+  // while still allowing per-call overrides.
+  const baseSpec =
+    rest.spec ??
+    ({
       type: 'static-web',
-      id: 'mind/example-plugin',
-      name: 'Example Plugin',
-    },
-    ...overrides,
+      id: rest.pluginId ?? 'mind/example-plugin',
+      name: rest.name ?? 'Example Plugin',
+    } as Plugin['spec']);
+  const defaultVersion = version ?? '1.0.0';
+  const spec: Plugin['spec'] =
+    baseSpec?.version !== undefined
+      ? baseSpec
+      : ({ ...baseSpec, version: defaultVersion } as Plugin['spec']);
+
+  return {
+    id: rest.id ?? 'plugin-package-id',
+    file: rest.file ?? 'example-plugin-1.0.0.tgz',
+    name: rest.name ?? 'Example Plugin',
+    pluginId: rest.pluginId ?? 'mind/example-plugin',
+    spec,
   } as Plugin;
 }
 

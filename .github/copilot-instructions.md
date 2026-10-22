@@ -113,18 +113,24 @@ Build: Tailwind processes CSS → `dist/styles/global.css` → imported in `ui/s
 ## API Integration
 
 ### Generated API Clients
-OpenAPI specs in `spec/` generate two client types:
-1. **Fetch Client** (`fetch-client/`) - Lightweight, isomorphic
-2. **Angular Client** (`angular-client/`) - Uses Angular HttpClient
+OpenAPI specs in `spec/` generate **two isomorphic, fetch-based clients** via
+`@openapitools/openapi-generator-cli` (config `api/openapitools.json`, both generators
+use `typescript-fetch`):
 
-Services auto-generated with `@Injectable({ providedIn: 'root' })`:
-```typescript
-// From api/api/documents.service.ts
-@Injectable({ providedIn: 'root' })
-export class DocumentsService { /* ... */ }
-```
+1. **Fetch Client** → `api/fetch-client/` from `spec/api.yaml`
+2. **Plugin Fetch Client** → `api/plugin-fetch-client/` from `spec/plugin-v1.yaml`
 
-**Don't edit** generated API files directly; regenerate from OpenAPI spec via `npm run build:api`.
+Exports are re-exported through `api/index.ts` and consumed in the UI via the
+**`@ladon/api`** (→ `api/index.ts`) and **`@ladon/utility`** (→ `api/utility/index.ts`)
+TypeScript path aliases. These are **plain TypeScript classes** (e.g. `DocumentsApi`);
+the app obtains instances through `FetchApiFactory` (`ui/src/app/services/api/`),
+**not** via Angular `HttpClient` or `@Injectable`. (Note: there is **no** `angular-client`
+and no `ui/src/api/` — this was a historical inaccuracy in this file.)
+
+**Don't edit** generated API files directly; regenerate from the OpenAPI spec via
+`npm run build:api` (runs `generate:apis` + esbuild bundle to `api/dist/ladon-api/`).
+The backend/API contract is a fixed interface — never change endpoints, methods,
+request/response schemas, auth handling, or error conventions to "fix" the UI.
 
 ### HTTP Configuration
 Base paths configured in [app.config.ts](../ui/src/app/app.config.ts#L24):
@@ -169,7 +175,7 @@ import { AuthGuard } from '@ladon/shared';
 | Feature Routes | `ui/src/app/{feature}/{feature}.routes.ts` | `filemanager.routes.ts` |
 | Facades | `ui/src/app/{feature}/{feature}.facade.ts` | `filemanager.facade.ts` |
 | Utilities | `api/utility/` | Custom pipes for API responses |
-| API Clients | `ui/src/api/` | Auto-generated from OpenAPI |
+| API clients (generated) | `api/fetch-client/`, `api/plugin-fetch-client/` | Auto-generated from OpenAPI; consumed via `@ladon/api` / `@ladon/utility` aliases |
 
 ## Component Facades Pattern
 Complex components use **Facade** classes (e.g., `FilemanagerContentFacade`, `FilemanagerFacade`) to delegate store & service logic, keeping components lean:
@@ -230,9 +236,14 @@ Import from global theme:
 ```
 
 ## Testing & Linting
-- Unit tests: `npm run test` (Jasmine/Karma)
-- Formatting: `npm run prettier:format` (120 char width)
-- No explicit linting tool in build, but TypeScript compiler catches errors
+- Unit tests: `npm run test` (Jasmine/Karma; Chromium available).
+- Formatting: `npm run prettier:format` (120 char width).
+- The TypeScript compiler is the effective compile-time check. `tslint` exists in
+  `devDependencies` but is **deprecated and not wired into any script/build**; do not
+  add new `tslint` config. Do not weaken compiler/`strict` settings to make errors
+  disappear.
+- A modernization effort is tracked in `docs/frontend-modernization-plan.md`; agent
+  guardrails are in `AGENTS.md`.
 
 ## Conventional Commits
 

@@ -2,13 +2,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InputDialogComponent } from './input-dialog.component';
 
+import { smokeTestImports, smokeTestProviders } from '@ladon/tests/app.test-harness';
+
+
 describe('InputDialogComponent', () => {
   let component: InputDialogComponent;
   let fixture: ComponentFixture<InputDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InputDialogComponent],
+      imports: [InputDialogComponent, ...smokeTestImports],
+      providers: smokeTestProviders(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(InputDialogComponent);

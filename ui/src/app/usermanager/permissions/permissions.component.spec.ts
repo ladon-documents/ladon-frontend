@@ -2,13 +2,17 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PermissionsComponent } from './permissions.component';
 
+import { smokeTestImports, smokeTestProviders } from '@ladon/tests/app.test-harness';
+
+
 describe('PermissionsComponent', () => {
   let component: PermissionsComponent;
   let fixture: ComponentFixture<PermissionsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PermissionsComponent],
+      imports: [PermissionsComponent, ...smokeTestImports],
+      providers: smokeTestProviders(),
     }).compileComponents();
 
     fixture = TestBed.createComponent(PermissionsComponent);

@@ -1,4 +1,5 @@
 // ui/src/app/shared/services/keyboard-shortcuts.service.ts
+import { devLog } from '../util/dev-log';
 import { Injectable, inject } from '@angular/core';
 import { FilemanagerFacade } from '../../filemanager/filemanager.facade';
 import { ClipboardStore } from '../../store/clipboard.store';
@@ -102,42 +103,42 @@ export class KeyboardShortcutsService {
 
   private selectAll() {
     // TODO: Implement select all logic
-    console.log('Select all');
+    devLog('Select all');
   }
 
   private copy() {
     // TODO: Implement copy logic
-    console.log('Copy');
+    devLog('Copy');
   }
 
   private cut() {
     // TODO: Implement cut logic
-    console.log('Cut');
+    devLog('Cut');
   }
 
   private paste() {
     // TODO: Implement paste logic
-    console.log('Paste');
+    devLog('Paste');
   }
 
   private delete() {
     // TODO: Implement delete logic
-    console.log('Delete');
+    devLog('Delete');
   }
 
   private rename() {
     // TODO: Implement rename logic
-    console.log('Rename');
+    devLog('Rename');
   }
 
   private quickPreview() {
     // TODO: Implement quick preview
-    console.log('Quick preview');
+    devLog('Quick preview');
   }
 
   private deselectAll() {
     // TODO: Implement deselect all
-    console.log('Deselect all');
+    devLog('Deselect all');
   }
 
   getShortcuts(): ShortcutHandler[] {

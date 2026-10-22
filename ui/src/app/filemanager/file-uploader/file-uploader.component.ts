@@ -1,3 +1,4 @@
+import { devLog } from '../../shared/util/dev-log';
 import { Component } from '@angular/core';
 import { FileUploadDirective, FileUploadEvent } from '../../shared/directive/file-upload.directive';
 import { NgIcon } from '@ng-icons/core';
@@ -24,7 +25,7 @@ export class FileUploaderComponent {
   uploadStatus: UploadStatus[] = [];
 
   onFilesDropped(event: FileUploadEvent): void {
-    console.log('Files dropped:', event.files);
+    devLog('Files dropped:', event.files);
     this.uploadError = null;
 
     event.files.forEach((file) => {
@@ -37,7 +38,7 @@ export class FileUploaderComponent {
   }
 
   onFilesRejected(event: { files: File[]; reasons: string[] }): void {
-    console.log('Files rejected:', event);
+    devLog('Files rejected:', event);
     this.uploadError = `Dateien abgelehnt: ${event.reasons.join(', ')}`;
 
     setTimeout(() => {

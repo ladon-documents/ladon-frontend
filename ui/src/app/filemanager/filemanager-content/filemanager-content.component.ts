@@ -1,3 +1,4 @@
+import { devLog } from '../../shared/util/dev-log';
 import {
   AfterViewInit,
   Component,
@@ -133,14 +134,14 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
     });
 
     this.route.params.subscribe((params) => {
-      console.log('Bucket:', params['bucket']);
-      console.log('Subfolders:', params['subfolders']);
+      devLog('Bucket:', params['bucket']);
+      devLog('Subfolders:', params['subfolders']);
       //    this.#currentBucket = params['bucket'];
       this.#subfolder = params['subfolders'];
       if (this.#currentBucket && !this.#subfolder) {
         //   this.showRoot();
       } else if (this.#currentBucket && this.#subfolder) {
-        console.log(this.#subfolder);
+        devLog(this.#subfolder);
       }
     });
   }
@@ -161,7 +162,7 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
   }
 
   copy(file: Document) {
-    console.log('copy');
+    devLog('copy');
   }
 
   async download(file: string | undefined) {

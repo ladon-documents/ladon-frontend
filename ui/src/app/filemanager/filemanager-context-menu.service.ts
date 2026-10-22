@@ -1,3 +1,4 @@
+import { devLog } from '../shared/util/dev-log';
 import { inject, Injectable } from '@angular/core';
 import { Document } from '@ladon/api';
 import { FavoritesStore } from '../store/favorites.store';
@@ -142,7 +143,7 @@ export class FilemanagerContextMenuService {
   }
 
   private rename(document: Document) {
-    console.log('Rename:', document.key);
+    devLog('Rename:', document.key);
   }
 
   private copy(documents: Document[]) {
@@ -154,11 +155,11 @@ export class FilemanagerContextMenuService {
   }
 
   private copyLink(document: Document) {
-    console.log('Copy link:', document.key);
+    devLog('Copy link:', document.key);
   }
 
   private showProperties(document: Document) {
-    console.log('Show properties:', document.key);
+    devLog('Show properties:', document.key);
   }
 
   private deleteDocument(document: Document) {

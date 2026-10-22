@@ -1,3 +1,4 @@
+import { devLog } from '../shared/util/dev-log';
 import { EventEmitter, inject, Injectable, Output } from '@angular/core';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { FilemanagerFacade } from '../filemanager/filemanager.facade';
@@ -140,7 +141,7 @@ export class MonacoEditorService {
     try {
       const blob = new Blob([content], { type: 'text/plain' });
       await this.saveFileToServer(doc, blob);
-      console.log('Datei gespeichert:', doc.key);
+      devLog('Datei gespeichert:', doc.key);
     } catch (error) {
       console.error('Fehler beim Speichern der Datei:', error);
       throw error;
@@ -165,7 +166,7 @@ export class MonacoEditorService {
 
   private async saveFileToServer(document: any, content: Blob): Promise<void> {
     this.filemanagerFacade.saveDocument(document, content).subscribe((res) => {
-      console.log(res);
+      devLog(res);
     });
   }
   private async convertBlobToString(blob: Blob): Promise<string> {

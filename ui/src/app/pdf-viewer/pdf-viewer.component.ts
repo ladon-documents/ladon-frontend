@@ -1,3 +1,4 @@
+import { devLog } from '../shared/util/dev-log';
 import {
   Component,
   ElementRef,
@@ -85,7 +86,7 @@ export class PdfViewerComponent implements OnInit {
   ngOnInit() {
     this.activatedRoute.data.subscribe((data) => {
       const selectedDocument = data['selectedDocument'];
-      console.log(selectedDocument);
+      devLog(selectedDocument);
       if (selectedDocument) {
         this._selectedDocument.set(selectedDocument);
         this.pdfName.set(selectedDocument.name);

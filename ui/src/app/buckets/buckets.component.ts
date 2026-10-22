@@ -1,3 +1,4 @@
+import { devLog } from '../shared/util/dev-log';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons, provideNgIconsConfig } from '@ng-icons/core';
@@ -210,7 +211,7 @@ export class BucketsComponent implements OnInit {
 
   renameBucket(bucket: BucketUiItem) {
     // TODO: Implement rename functionality
-    console.log('Rename bucket:', bucket.id);
+    devLog('Rename bucket:', bucket.id);
   }
 
   deleteBucket(bucket: BucketUiItem) {

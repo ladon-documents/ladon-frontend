@@ -1,3 +1,4 @@
+import { devLog } from '../shared/util/dev-log';
 import { inject, Injectable } from '@angular/core';
 import { ConverterInfo, ConverterJob, Document } from '@ladon/api';
 import { FetchApiFactory } from './api/fetch-api.factory';
@@ -96,7 +97,7 @@ export class ConverterService {
         const body = await response.value();
         if (response && body) {
           const fileName = this.getFileName(response);
-          console.log(`Filename: ${fileName}`);
+          devLog(`Filename: ${fileName}`);
           const blob = URL.createObjectURL(new Blob([body]));
           this.downloadURI(blob, fileName);
         }

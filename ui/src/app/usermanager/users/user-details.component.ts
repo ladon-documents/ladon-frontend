@@ -1,3 +1,4 @@
+import { devLog } from '../../shared/util/dev-log';
 import {
   Component,
   computed,
@@ -140,7 +141,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   changePassword(id: string | undefined) {
-    console.log('No implementation yet', id);
+    devLog('No implementation yet', id);
   }
 
   async onLabelEmit(type: UserSetType, label: string | undefined) {
@@ -252,7 +253,7 @@ export class UserDetailsComponent implements OnInit {
         this.patchFormByType('permissions', this.permissionsSet);
         break;
       default:
-        console.info(`Unknown type: ${type}`);
+        devLog(`Unknown type: ${type}`);
         break;
     }
   }
@@ -290,7 +291,7 @@ export class UserDetailsComponent implements OnInit {
         this.patchFormByType('permissionDeletions', this.permissionDeletionsSet());
         break;
       default:
-        console.info(`Unknown type: ${type}`);
+        devLog(`Unknown type: ${type}`);
         break;
     }
   }

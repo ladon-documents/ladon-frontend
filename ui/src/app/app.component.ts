@@ -1,3 +1,4 @@
+import { devLog } from './shared/util/dev-log';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, effect, inject, OnDestroy, OnInit, Signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AsideComponent } from './layout/aside/aside.component';
@@ -100,7 +101,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onPdfLoaded(event: { document: Document; totalPages: number }): void {
-    console.log(`PDF geladen: ${event.document.name} mit ${event.totalPages} Seiten`);
+    devLog(`PDF geladen: ${event.document.name} mit ${event.totalPages} Seiten`);
   }
 
   onPdfError(event: { document: Document | null; error: string }): void {
@@ -108,19 +109,19 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onPageChanged(event: { document: Document | null; page: number; totalPages: number }): void {
-    console.log(`Seite geändert: ${event.page}/${event.totalPages} für ${event.document?.name}`);
+    devLog(`Seite geändert: ${event.page}/${event.totalPages} für ${event.document?.name}`);
   }
 
   onDownloadRequested(event: { document: Document }): void {
-    console.log('Download angefordert für:', event.document.name);
+    devLog('Download angefordert für:', event.document.name);
   }
 
   onPrintRequested(event: { document: Document }): void {
-    console.log('Druck angefordert für:', event.document.name);
+    devLog('Druck angefordert für:', event.document.name);
   }
 
   onPdfClosed(event: { document: Document | null }): void {
-    console.log('PDF Viewer geschlossen für:', event.document?.name);
+    devLog('PDF Viewer geschlossen für:', event.document?.name);
   }
 
   private async discoverRapidNavigation(): Promise<void> {

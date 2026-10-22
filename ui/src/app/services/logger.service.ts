@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+
+import { environment } from '../../environments/environment';
+
 export enum LogLevel {
   ALL,
   DEBUG,
@@ -10,15 +13,25 @@ export enum LogLevel {
 
 type LogLevelStrings = keyof typeof LogLevel;
 
+// Map the string log level configured in the environment to the LogLevel enum.
+// A missing/unknown value defaults to OFF so an unrecognized setting never leaks
+// debug output.
+function resolveLogLevel(configured: unknown): LogLevel {
+  const key = String(configured ?? '').trim().toUpperCase();
+  const level = (LogLevel as unknown as Record<string, LogLevel>)[key];
+  return level === undefined ? LogLevel.OFF : level;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class LoggerService {
-  private logLevel: LogLevel = LogLevel.ALL;
+  private logLevel: LogLevel = LogLevel.OFF;
   logWithDate: boolean = true;
 
   constructor() {
-    this.logLevel = LogLevel.OFF;
+    // Couple the logger to the environment instead of hard-coding OFF.
+    this.logLevel = resolveLogLevel(environment.logger);
   }
 
   clear() {

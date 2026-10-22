@@ -1,3 +1,4 @@
+import { devLog } from './shared/util/dev-log';
 import { Route, Routes } from '@angular/router';
 import { Component } from '@angular/core';
 import { EmptyRouteComponent } from './app.component';
@@ -83,7 +84,7 @@ export const setNavigationDefinitions = (navigation: Array<any>) => {
     }
   });
   _appRoutes.push({ path: '**', component: EmptyRouteComponent });
-  console.log(_appRoutes);
+  devLog(_appRoutes);
   return _appRoutes;
 };
 export const appRoutes: Route[] = setNavigationDefinitions(environment.navigation);

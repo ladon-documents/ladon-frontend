@@ -1,3 +1,4 @@
+import { devLog } from '../shared/util/dev-log';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { TaskmanagerService } from './taskmanager.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -95,7 +96,7 @@ export class TaskmanagerComponent implements OnInit {
 
   stopTask(name: string) {
     this.taskmanagerService.stopTask(name).subscribe((id) => {
-      console.log(id);
+      devLog(id);
       // this.taskStatusSubject.next(false);
     });
   }

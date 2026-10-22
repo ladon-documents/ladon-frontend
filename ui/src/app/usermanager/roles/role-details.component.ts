@@ -1,3 +1,4 @@
+import { devLog } from '../../shared/util/dev-log';
 import {
   Component,
   computed,
@@ -212,7 +213,7 @@ export class RoleDetailsComponent implements OnInit {
         this.patchFormByKey('userDeletions', this.userDeletionsSet());
         break;
       default:
-        console.info(`Unknown type: ${type}`);
+        devLog(`Unknown type: ${type}`);
         break;
     }
   }

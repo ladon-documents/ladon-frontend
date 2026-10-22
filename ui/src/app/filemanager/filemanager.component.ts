@@ -1,3 +1,4 @@
+import { devLog } from '../shared/util/dev-log';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons, provideNgIconsConfig } from '@ng-icons/core';
@@ -99,7 +100,7 @@ export class FilemanagerComponent implements OnInit {
 
   ngOnInit() {
     if (this.route.firstChild === null) {
-      console.log('route is null');
+      devLog('route is null');
     }
 
     if (this.selectedBucket()) {
@@ -165,7 +166,7 @@ export class FilemanagerComponent implements OnInit {
   }
 
   onBucketSelected(bucket: BucketUiItem) {
-    console.log('Selected bucket:', bucket);
+    devLog('Selected bucket:', bucket);
     this.filemanagerFacade.loadBucket(bucket.id as string);
   }
 }

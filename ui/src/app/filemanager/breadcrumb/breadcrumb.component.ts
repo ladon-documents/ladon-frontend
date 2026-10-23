@@ -2,10 +2,12 @@ import { Component, inject, Signal } from '@angular/core';
 import { BreadcrumbStore } from '../../store/breadcrumb.store';
 import { Document } from '@ladon/api';
 import { FilemanagerFacade } from '../filemanager.facade';
+import { KeyboardActivatableDirective } from '../../shared/directive/keyboard-activatable.directive';
 
 @Component({
   standalone: true,
   selector: 'app-breadcrumb',
+  imports: [KeyboardActivatableDirective],
   templateUrl: './breadcrumb.component.html',
   styleUrl: './breadcrumb.component.scss',
 })

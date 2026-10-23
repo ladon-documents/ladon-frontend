@@ -14,9 +14,13 @@
     <ul>
       @for (task of availableTasks$ | async; track $index) {
         <li class="px-4 py-2 flex justify-between items-center text-sm hover:bg-blue-700/10 group gap-4">
-          <span (click)="selectTask(task)" class="cursor-pointer" [ngClass]="{ active: activeTask === task }">{{
-            task
-          }}</span>
+          <span
+            appKeyboardActivatable
+            (click)="selectTask(task)"
+            class="cursor-pointer"
+            [ngClass]="{ active: activeTask === task }"
+            >{{ task }}</span
+          >
           <button
             class="leading-none cursor-pointer invisible group-hover:visible active:scale-90"
             (click)="playTask(task)">
@@ -64,7 +68,7 @@
           <p class="font-bold">{{ log.created | date: "dd.MM.yyyy" }}</p>
           <ul>
             @for (l of log.logs; track $index) {
-              <li class="px-4 py-2 cursor-pointer hover:bg-blue-700/10" (click)="invokeLog(l)">
+              <li appKeyboardActivatable class="px-4 py-2 cursor-pointer hover:bg-blue-700/10" (click)="invokeLog(l)">
                 <span class="block" [ngClass]="{ active: activeLog === l.key }">{{ l.key }}</span>
               </li>
             }

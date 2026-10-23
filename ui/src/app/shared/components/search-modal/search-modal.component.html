@@ -193,6 +193,7 @@
               <div class="px-4 py-2 text-xs font-medium uppercase tracking-wide">Suchergebnisse</div>
               @for (result of searchResults(); track result.id; let i = $index) {
                 <div
+                  appKeyboardActivatable
                   (click)="selectBucket(result.id)"
                   class="flex items-center bg-base-100 px-4 py-3 hover:bg-primary cursor-pointer transition-colors duration-150 m-2 rounded-sm"
                   [class.bg-gray-100]="selectedIndex() === i">
@@ -238,7 +239,10 @@
               @for (recent of recentSearches(); track recent.term) {
                 <div
                   class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer transition-colors duration-150 group">
-                  <div (click)="selectFromRecentSearch(recent.term)" class="flex-1 flex items-center">
+                  <div
+                    appKeyboardActivatable
+                    (click)="selectFromRecentSearch(recent.term)"
+                    class="flex-1 flex items-center">
                     <svg class="h-4 w-4 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         stroke-linecap="round"

@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
 import { NgIconComponent } from '@ng-icons/core';
+import { KeyboardActivatableDirective } from '../../directive/keyboard-activatable.directive';
 
 @Component({
   selector: 'app-pill',
-  imports: [NgIconComponent, CommonModule],
+  imports: [NgIconComponent, CommonModule, KeyboardActivatableDirective],
   templateUrl: './pill.component.html',
   styles: `
     :host {

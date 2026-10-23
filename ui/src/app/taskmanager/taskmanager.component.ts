@@ -2,6 +2,7 @@ import { devLog } from '../shared/util/dev-log';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { TaskmanagerService } from './taskmanager.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { KeyboardActivatableDirective } from '../shared/directive/keyboard-activatable.directive';
 import { heroPlayCircle, heroStopCircle } from '@ng-icons/heroicons/outline';
 import {
   Observable,
@@ -24,7 +25,7 @@ import { FilemanagerContentFacade } from '../filemanager/filemanager-content/fil
 @Component({
   selector: 'app-taskmanager',
   standalone: true,
-  imports: [NgIconComponent, CommonModule],
+  imports: [NgIconComponent, CommonModule, KeyboardActivatableDirective],
   providers: [provideIcons({ heroPlayCircle, heroStopCircle })],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './taskmanager.component.html',

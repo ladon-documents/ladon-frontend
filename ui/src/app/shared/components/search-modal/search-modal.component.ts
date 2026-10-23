@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService } from './search.service';
 import { BucketsFacade } from '../../../buckets/buckets.facade';
+import { KeyboardActivatableDirective } from '../../directive/keyboard-activatable.directive';
 
 @Component({
   selector: 'app-search-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, KeyboardActivatableDirective],
   templateUrl: 'search-modal.component.html',
   styleUrls: ['./search-modal.component.scss'],
 })

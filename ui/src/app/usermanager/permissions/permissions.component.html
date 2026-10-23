@@ -18,6 +18,7 @@
     <tbody>
       @for (permission of filteredPermissions; track permission.permissionId) {
         <tr
+          appKeyboardActivatable
           [routerLink]="permission.permissionId"
           [routerLinkActive]="'bg-primary/10 border-l-4 border-l-primary'"
           class="cursor-pointer hover:bg-primary/10">

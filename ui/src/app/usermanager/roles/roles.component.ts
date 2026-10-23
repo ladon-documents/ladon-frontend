@@ -3,7 +3,7 @@ import { UsermanagerStore } from '../../store/usermanager.store';
 import { FilterComponent } from '../components/filter/filter.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { RoleEntry } from '@ladon/api';
-import { AliasPipe, DialogComponent } from '@ladon/shared';
+import { AliasPipe, DialogComponent, KeyboardActivatableDirective } from '@ladon/shared';
 import { heroDocumentDuplicate, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -12,7 +12,15 @@ import { RouterModule } from '@angular/router';
   selector: 'app-roles',
   standalone: true,
   providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate })],
-  imports: [FilterComponent, NgIconComponent, DialogComponent, AliasPipe, ReactiveFormsModule, RouterModule],
+  imports: [
+    FilterComponent,
+    NgIconComponent,
+    DialogComponent,
+    AliasPipe,
+    ReactiveFormsModule,
+    RouterModule,
+    KeyboardActivatableDirective,
+  ],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.scss',
 })

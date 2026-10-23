@@ -18,6 +18,7 @@
     <tbody>
       @for (user of filteredUsers; track user.id) {
         <tr
+          appKeyboardActivatable
           [routerLink]="user.id"
           [routerLinkActive]="'bg-primary/10 border-l-4 border-l-primary'"
           class="cursor-pointer hover:bg-primary/10">

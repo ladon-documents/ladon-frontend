@@ -17,6 +17,7 @@
     <tbody>
       @for (role of filteredRoles; track role.id) {
         <tr
+          appKeyboardActivatable
           [routerLink]="role.id"
           [routerLinkActive]="'bg-primary/10 border-l-4 border-l-primary'"
           class="cursor-pointer hover:bg-primary/10">

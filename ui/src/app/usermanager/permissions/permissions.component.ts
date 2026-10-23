@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { AliasPipe, DialogComponent } from '@ladon/shared';
+import { AliasPipe, DialogComponent, KeyboardActivatableDirective } from '@ladon/shared';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { FilterComponent } from '../components/filter/filter.component';
 import { UsermanagerStore } from '../../store/usermanager.store';
@@ -12,7 +12,15 @@ import { RouterModule } from '@angular/router';
   selector: 'app-permissions',
   standalone: true,
   providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate })],
-  imports: [AliasPipe, NgIconComponent, DialogComponent, FilterComponent, ReactiveFormsModule, RouterModule],
+  imports: [
+    AliasPipe,
+    NgIconComponent,
+    DialogComponent,
+    FilterComponent,
+    ReactiveFormsModule,
+    RouterModule,
+    KeyboardActivatableDirective,
+  ],
   templateUrl: './permissions.component.html',
   styleUrl: './permissions.component.scss',
 })

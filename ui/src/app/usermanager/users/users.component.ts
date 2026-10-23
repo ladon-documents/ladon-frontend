@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { heroDocumentDuplicate, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { UsermanagerStore } from '../../store/usermanager.store';
-import { AliasPipe, DialogComponent } from '@ladon/shared';
+import { AliasPipe, DialogComponent, KeyboardActivatableDirective } from '@ladon/shared';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
 import { FilterComponent } from '../components/filter/filter.component';
 import { UserEntry } from '@ladon/api';
@@ -21,6 +21,7 @@ import { CommonModule } from '@angular/common';
     ReactiveFormsModule,
     DialogComponent,
     CommonModule,
+    KeyboardActivatableDirective,
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',

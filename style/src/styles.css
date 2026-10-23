@@ -30,3 +30,19 @@
 @source "../../ui/src/app";
 @source "../../wc/clipboard/src/app";
 @source "../../wc/audioplayer/src/app";
+
+/*
+ * Global keyboard focus indicator (a11y / WP-P1.2a).
+ *
+ * :focus-visible gives a VISIBLE ring only for keyboard focus, not for pointer
+ * clicks/hover, so every focusable interactive element (incl. non-<button>
+ * controls like the app's clickable div/span/li) is operable and visible to
+ * keyboard users. It is unlayered so it wins over component-scoped styles that
+ * hide the ring (e.g. `focus:outline-none`). The ring uses the design-system
+ * primary hue token (--primary-hue) with an HSL fallback, never a hard-coded hex.
+ */
+:focus-visible {
+  outline: 3px solid hsl(var(--primary-hue, 212) 85% 42%);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

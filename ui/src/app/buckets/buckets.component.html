@@ -121,7 +121,10 @@
           } @else {
             <div class="grid grid-cols-[auto_1fr_auto_auto_auto] gap-4 p-4 text-sm font-medium text-gray-700">
               <div class="w-8"></div>
-              <div class="cursor-pointer hover:text-primary flex items-center gap-1" (click)="toggleSort('id')">
+              <div
+                appKeyboardActivatable
+                class="cursor-pointer hover:text-primary flex items-center gap-1"
+                (click)="toggleSort('id')">
                 Name
                 @if (sortConfig().field === "id") {
                   <ng-icon
@@ -130,6 +133,7 @@
                 }
               </div>
               <div
+                appKeyboardActivatable
                 class="cursor-pointer hover:text-text-primary flex items-center gap-1 text-center"
                 (click)="toggleSort('created')">
                 Erstellt
@@ -140,6 +144,7 @@
                 }
               </div>
               <div
+                appKeyboardActivatable
                 class="cursor-pointer hover:text-primay-600 flex items-center gap-1 text-center"
                 (click)="toggleSort('favourite')">
                 Favorit

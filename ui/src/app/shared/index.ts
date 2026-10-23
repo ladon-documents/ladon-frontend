@@ -3,6 +3,9 @@ export * from './guards/auth/auth.guard';
 export * from './pipes/alias.pipe';
 export * from './pipes/assetUrl.pipe';
 
+// directives
+export * from './directive/keyboard-activatable.directive';
+
 // components
 export * from './components/folder/folder.component';
 export * from './components/pill/pill.component';

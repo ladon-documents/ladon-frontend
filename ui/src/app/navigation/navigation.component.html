@@ -11,17 +11,18 @@
           class="cursor-pointer"
           [ngStyle]="{ '--order': item.index, order: 'var(--order)' }"
           [attr.data-target]="item.target">
-          <a
+          <button
+            type="button"
             (click)="invokeItem(item)"
             [ngClass]="{ 'text-primary active': routerActiveLink === item.path }"
-            class="flex items-center gap-1 px-2 py-1 hover:cursor-pointer hover:text-primary">
+            class="flex w-full items-center gap-1 px-2 py-1 text-left hover:cursor-pointer hover:text-primary">
             @if (item.icon) {
               <ng-icon [name]="item.icon" style="color: currentColor"></ng-icon>
             }
             <span class="ml-3 text-sm font-medium" [ngClass]="{ hidden: sidebarCollapsed() }">{{
               item.label | translate
             }}</span>
-          </a>
+          </button>
         </li>
       }
     </ul>

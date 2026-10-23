@@ -71,45 +71,89 @@
         <table class="table table-zebra w-full">
           <thead>
             <tr>
-              <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('name')">
-                <div class="flex items-center gap-1">
+              <th
+                class="text-left"
+                [attr.aria-sort]="
+                  sortConfig().field === 'name'
+                    ? sortConfig().direction === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                ">
+                <button
+                  type="button"
+                  (click)="toggleSort('name')"
+                  class="m-0 flex w-full cursor-pointer items-center gap-1 bg-transparent p-0 text-left hover:bg-gray-50">
                   Name
                   @if (sortConfig().field === "name") {
                     <ng-icon
                       [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
                       size="0.8em"></ng-icon>
                   }
-                </div>
+                </button>
               </th>
-              <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('size')">
-                <div class="flex items-center gap-1">
+              <th
+                class="text-left"
+                [attr.aria-sort]="
+                  sortConfig().field === 'size'
+                    ? sortConfig().direction === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                ">
+                <button
+                  type="button"
+                  (click)="toggleSort('size')"
+                  class="m-0 flex w-full cursor-pointer items-center gap-1 bg-transparent p-0 text-left hover:bg-gray-50">
                   Größe
                   @if (sortConfig().field === "size") {
                     <ng-icon
                       [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
                       size="0.8em"></ng-icon>
                   }
-                </div>
+                </button>
               </th>
-              <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('lastModified')">
-                <div class="flex items-center gap-1">
+              <th
+                class="text-left"
+                [attr.aria-sort]="
+                  sortConfig().field === 'lastModified'
+                    ? sortConfig().direction === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                ">
+                <button
+                  type="button"
+                  (click)="toggleSort('lastModified')"
+                  class="m-0 flex w-full cursor-pointer items-center gap-1 bg-transparent p-0 text-left hover:bg-gray-50">
                   Geändert
                   @if (sortConfig().field === "lastModified") {
                     <ng-icon
                       [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
                       size="0.8em"></ng-icon>
                   }
-                </div>
+                </button>
               </th>
-              <th class="text-left cursor-pointer hover:bg-gray-50" (click)="toggleSort('created')">
-                <div class="flex items-center gap-1">
+              <th
+                class="text-left"
+                [attr.aria-sort]="
+                  sortConfig().field === 'created'
+                    ? sortConfig().direction === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                ">
+                <button
+                  type="button"
+                  (click)="toggleSort('created')"
+                  class="m-0 flex w-full cursor-pointer items-center gap-1 bg-transparent p-0 text-left hover:bg-gray-50">
                   Erstellt
                   @if (sortConfig().field === "created") {
                     <ng-icon
                       [name]="sortConfig().direction === 'asc' ? 'heroChevronUp' : 'heroChevronDown'"
                       size="0.8em"></ng-icon>
                   }
-                </div>
+                </button>
               </th>
               <th class="w-16"></th>
             </tr>

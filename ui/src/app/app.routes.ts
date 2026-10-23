@@ -15,7 +15,10 @@ import { pdfviewerRoutes } from './pdf-viewer/pdf-viewer.routes';
 
 interface NavigationData {
   path: string;
-  canActivate: any[];
+  // Guard class references (e.g. AuthGuard) are DI-resolved, so the route
+  // expects a class/constructor ref, not a CanActivate *instance* — hence the
+  // route field's own type (NonNullable strips the `?`) instead of any[].
+  canActivate: NonNullable<Route['canActivate']>;
   loadChildren?: () => Promise<any>;
   loadComponent?: () => Promise<any>;
 }

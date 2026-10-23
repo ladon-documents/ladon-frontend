@@ -4,14 +4,14 @@ import { FilterComponent } from '../components/filter/filter.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { RoleEntry } from '@ladon/api';
 import { AliasPipe, DialogComponent, KeyboardActivatableDirective } from '@ladon/shared';
-import { heroDocumentDuplicate, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import { heroDocumentDuplicate, heroPlus, heroShieldCheck, heroTrash } from '@ng-icons/heroicons/outline';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate })],
+  providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate, heroShieldCheck })],
   imports: [
     FilterComponent,
     NgIconComponent,

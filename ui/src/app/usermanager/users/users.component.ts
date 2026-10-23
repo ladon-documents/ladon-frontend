@@ -1,6 +1,6 @@
 import { Component, ViewChild, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { heroDocumentDuplicate, heroPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import { heroDocumentDuplicate, heroPlus, heroTrash, heroUsers } from '@ng-icons/heroicons/outline';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { UsermanagerStore } from '../../store/usermanager.store';
 import { AliasPipe, DialogComponent, KeyboardActivatableDirective } from '@ladon/shared';
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-users',
   standalone: true,
-  providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate })],
+  providers: [provideIcons({ heroPlus, heroTrash, heroDocumentDuplicate, heroUsers })],
   imports: [
     NgIconComponent,
     FilterComponent,

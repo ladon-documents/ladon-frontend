@@ -16,6 +16,17 @@
       </tr>
     </thead>
     <tbody>
+      @if (filteredPermissions && filteredPermissions.length === 0) {
+        <tr>
+          <td colspan="3" class="text-center py-12">
+            <div class="flex flex-col items-center text-gray-500">
+              <ng-icon name="heroKey" size="3rem" class="mb-3 text-gray-300"></ng-icon>
+              <p class="m-0 text-base font-medium">Keine Berechtigungen gefunden</p>
+              <p class="mt-1 text-sm text-gray-400">Möglicherweise passt kein Eintrag zur aktuellen Auswahl.</p>
+            </div>
+          </td>
+        </tr>
+      }
       @for (permission of filteredPermissions; track permission.permissionId) {
         <tr
           appKeyboardActivatable

@@ -71,6 +71,7 @@ export function buildFetchApiFactoryMock(): FetchApiFactory {
     userControllerApi: subApi(),
     documentsApi: subApi(),
     converterApi: subApi(),
+    filemanagerApi: subApi(),
     tasksApi: subApi(),
     uiApi: subApi(),
     bucketsApi: subApi(),

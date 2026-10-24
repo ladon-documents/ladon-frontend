@@ -144,6 +144,9 @@ export const FilemanagerStore = signalStore(
         showRoot() {
           methods.loadBucket(store.selectedBucket());
         },
+        reloadCurrentLocation() {
+          return reloadCurrentList();
+        },
         resetFilemanagerStore() {
           patchState(store, initialState);
         },

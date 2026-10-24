@@ -35,6 +35,7 @@ export class FetchApiFactory {
   readonly userControllerApi = new fetchClient.UserControllerApi(this.mainConfiguration);
   readonly documentsApi = new fetchClient.DocumentsApi(this.mainConfiguration);
   readonly converterApi = new fetchClient.ConverterApi(this.mainConfiguration);
+  readonly filemanagerApi = new fetchClient.FilemanagerApi(this.mainConfiguration);
   readonly tasksApi = new fetchClient.TasksApi(this.mainConfiguration);
   readonly uiApi = new fetchClient.UIApi(this.mainConfiguration);
   readonly bucketsApi = new fetchClient.BucketsApi(this.mainConfiguration);

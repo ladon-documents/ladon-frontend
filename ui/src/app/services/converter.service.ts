@@ -2,6 +2,7 @@ import { devLog } from '../shared/util/dev-log';
 import { inject, Injectable } from '@angular/core';
 import { ConverterInfo, ConverterJob, Document } from '@ladon/api';
 import { FetchApiFactory } from './api/fetch-api.factory';
+import { ToastService } from '../shared/services/toast.service';
 
 type converterType = 'applyandstore' | 'applyanddownload';
 
@@ -10,6 +11,7 @@ type converterType = 'applyandstore' | 'applyanddownload';
 })
 export class ConverterService {
   private readonly apiFactory = inject(FetchApiFactory);
+  private readonly toastService = inject(ToastService);
   private converters: ConverterInfo[] = [];
   private readonly zip = 'mind/zip';
   private readonly unzip = 'mind/unzip';
@@ -22,29 +24,58 @@ export class ConverterService {
     this.getAvailableConverters();
   }
 
-  public async downloadAsZip(files: string) {
+  public async downloadAsZip(files: string | string[]) {
     if (this.converters.length === 0) {
       await this.getAvailableConverters();
     }
+    const inputPaths = this.normalizeInputPaths(files);
+    if (inputPaths.length === 0) {
+      this.toastService.error('Zip: keine gültigen Dokumente zum komprimieren');
+      return;
+    }
     if (this.checkConverterIsAvailable(this.zip)) {
-      const payload: any = {
-        inputPaths: JSON.parse(files),
-        type: 'applyanddownload',
-        converterId: this.zip,
-      };
-      await this.handleConverter(payload.inputPaths, payload.converterId, payload.type);
+      await this.handleConverter(inputPaths, this.zip, 'applyanddownload');
     }
   }
 
-  public async mergePdf(files: any) {
+  public async mergePdf(files: string | string[]) {
     if (this.checkConverterIsAvailable(this.pdfmerge)) {
-      const payload: any = {
-        inputPaths: JSON.parse(files),
-        type: 'applyanddownload',
-        converterId: this.pdfmerge,
-      };
-      await this.handleConverter(payload.inputPaths, payload.converterId, payload.type);
+      const inputPaths = this.normalizeInputPaths(files);
+      if (inputPaths.length === 0) {
+        this.toastService.error('PDF-Merge: keine gültigen Dokumente');
+        return;
+      }
+      await this.handleConverter(inputPaths, this.pdfmerge, 'applyanddownload');
     }
+  }
+
+  /**
+   * Normalisiert die Converter-Input-Zeile(n) zu einer Liste von Pfaden (O7).
+   * Bewahrt den bestehenden Vertrag: Aufrufer (Clipboard-Store) übergeben
+   * `JSON.stringify(paths)` → wird hier wieder zum Array geparst. Ein roher,
+   * nicht-JSON-Key (wie ihn einzelne UI-Aufrufe übergeben) wird als einzelner
+   * Pfad behandelt statt `JSON.parse`-Fehler zu werfen (B2).
+   */
+  private normalizeInputPaths(input: string | string[]): string[] {
+    if (Array.isArray(input)) {
+      return input.filter((path) => typeof path === 'string' && path.length > 0);
+    }
+
+    const trimmed = typeof input === 'string' ? input.trim() : '';
+    if (!trimmed) {
+      return [];
+    }
+
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) {
+        return parsed.filter((path) => typeof path === 'string' && path.length > 0);
+      }
+    } catch {
+      // Kein JSON: roher Einzel-Pfad statt Wurf.
+    }
+
+    return [trimmed];
   }
 
   public async getPreview(document: Document) {
@@ -102,23 +133,25 @@ export class ConverterService {
           this.downloadURI(blob, fileName);
         }
       } catch (e) {
-        // TODO: dispatch error event
+        // Echte Fehler sichtbar lassen (nicht stumm wie zuvor via TODO).
+        console.error(`Converter "${converterId}" (applyanddownload) fehlgeschlagen:`, e);
+        this.toastService.error(`Converter "${converterId}" ist fehlgeschlagen`);
       }
     } else {
       try {
         const result = await this.apiFactory.converterApi.applyConverterAndStore({ converterJob: data as any });
         if (result && converterId !== this.zipenc) {
           const url = Array.isArray(result) ? result[0] : result;
-          // TODO: dispatch success event with zip file url
           const id = url.slice(url.lastIndexOf('/') + 1);
           const directUrl = this.getDirectLink('_tmp', id);
           window.open(directUrl);
         } else if (result && converterId === this.zipenc) {
           const url = Array.isArray(result) ? result[0] : result;
-          // TODO: dispatch success event with zip file url
+          void url;
         }
       } catch (e) {
-        // this.errorDispatcher[converterId] && this.errorDispatcher[converterId](type, e);
+        console.error(`Converter "${converterId}" (applyandstore) fehlgeschlagen:`, e);
+        this.toastService.error(`Converter "${converterId}" ist fehlgeschlagen`);
       }
     }
   }
@@ -147,7 +180,7 @@ export class ConverterService {
     return filename;
   }
 
-  private getDirectLink(bucket: string, id: string) {
+  getDirectLink(bucket: string, id: string) {
     return '/admin/api/filemanager/' + bucket + '/' + `direct?id=${encodeURIComponent(id)}&download=true`;
   }
 }

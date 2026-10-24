@@ -76,8 +76,29 @@ export class FilemanagerContentFacade {
     }
   }
 
-  getFileSize(fileName: string): string {
-    return '2.5 MB';
+  /**
+   * Zeigt die (echte) Dateigröße des Uploads an, sofern bekannt.
+   * `fileSize` wird bei echten Datei-Uploads gesetzt (`uploadFile`); bei reinen
+   * Tasks fehlt sie — dann wird nichts (erfunden) angezeigt (B5).
+   */
+  getFileSize(upload: UploadStatus): string {
+    if (typeof upload.fileSize === 'number' && upload.fileSize > 0) {
+      return this.formatBytes(upload.fileSize);
+    }
+    return '';
+  }
+
+  private formatBytes(bytes: number): string {
+    if (bytes >= 1024 * 1024 * 1024) {
+      return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+    }
+    if (bytes >= 1024 * 1024) {
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+    if (bytes >= 1024) {
+      return `${(bytes / 1024).toFixed(1)} KB`;
+    }
+    return `${bytes} B`;
   }
 
   getUploadSpeed(upload: UploadStatus): string {

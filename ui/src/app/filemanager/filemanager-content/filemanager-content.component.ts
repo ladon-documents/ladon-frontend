@@ -219,8 +219,43 @@ export class FilemanagerContentComponent implements OnInit, AfterViewInit {
       this.#selectedDocument = document;
       this.#facade.load(this.#selectedDocument);
     } else {
-      await this.select(document);
+      this.openDocumentByType(document);
     }
+  }
+
+  /**
+   * Öffnet eine Datei im passenden Bearbeitungs-/Ansichts-Modus (F9/B8).
+   * Wiederverwendet exakt dieselben Predikat-/Plugin-Checks wie das Kontextmenü:
+   * nur dann öffnen, wenn die entsprechende Webkomponente/Werkzeug installiert ist.
+   * Fällt ansonsten auf das bisherige Verhalten (Auswahl) zurück.
+   */
+  private openDocumentByType(document: Document) {
+    if (filemanagerHelper.isPdf(document) && this.isPdfViewerPluginInstalled()) {
+      void this.workspaceService.openPdfViewer(document);
+      return;
+    }
+
+    if (filemanagerHelper.isImage(document) && this.isImageEditorPluginInstalled()) {
+      void this.workspaceService.openImageEditor(document);
+      return;
+    }
+
+    const canPlayMedia =
+      filemanagerHelper.isImage(document) ||
+      filemanagerHelper.isAudio(document) ||
+      filemanagerHelper.isVideo(document);
+
+    if (canPlayMedia && this.isMediaPlayerPluginInstalled()) {
+      void this.workspaceService.openMediaPlayer(document);
+      return;
+    }
+
+    if (this.monacoEditorService.isEditableFile(document.key)) {
+      void this.workspaceService.openEditor(document);
+      return;
+    }
+
+    void this.select(document);
   }
 
   // ******** //

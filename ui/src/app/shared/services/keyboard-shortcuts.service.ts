@@ -12,6 +12,13 @@ export interface ShortcutHandler {
   alt?: boolean;
   handler: () => void;
   description: string;
+  /**
+   * Ein Shortcut blockiert native Tastaturaktionen (via `preventDefault`) nur,
+   * wenn er aktiv ist. Unaktiv (Standard) werden nicht implementierte Aktionen
+   * an den Browser durchgereicht, damit z. B. natives Kopieren/Einfügen/Auswählen
+   * weiterhin funktioniert (siehe B9/F24).
+   */
+  enabled?: boolean;
 }
 
 @Injectable({
@@ -94,7 +101,11 @@ export class KeyboardShortcutsService {
         return ctrlMatch && shiftMatch && altMatch && keyMatch;
       });
 
-      if (shortcut) {
+      // Nur aktiv (implementierte) Shortcuts interceptieren native Aktionen.
+      // Unimplementierte/ausgeschaltete (`enabled !== true`) geben die Taste an
+      // den Browser weiter, damit z. B. Ctrl+C/X/V/A, Delete, Leertaste und
+      // Escape natives Verhalten nicht blockieren (B9/F24).
+      if (shortcut && shortcut.enabled === true) {
         event.preventDefault();
         shortcut.handler();
       }

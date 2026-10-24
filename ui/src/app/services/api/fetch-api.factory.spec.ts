@@ -15,6 +15,10 @@ describe('FetchApiFactory', () => {
     expect(factory.twoFactorAuthenticationApi).toBeInstanceOf(fetchClient.TwoFactorAuthenticationApi);
   });
 
+  it('provides the filemanager api', () => {
+    expect(factory.filemanagerApi).toBeInstanceOf(fetchClient.FilemanagerApi);
+  });
+
   it('includes cookies in login requests and returns the typed auth response', async () => {
     const authResponse: fetchClient.AuthResponse = {
       accessToken: 'access-token',

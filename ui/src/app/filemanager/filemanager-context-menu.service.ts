@@ -150,7 +150,12 @@ export class FilemanagerContextMenuService {
     this.contextMenuService.show(event.clientX, event.clientY, menuItems);
   }
 
-  private async rename(document: Document) {
+  /**
+   * Öffnet den Rename-Dialog (Input-Validator + `DocumentsApi.moveDocument`, O3).
+   * Öffentlich, damit auch die Tastatur-Shortcuts (F2) dieselbe bewährte
+   * Abfolge nutzen statt eine eigene zu erfinden.
+   */
+  async rename(document: Document) {
     const currentKey = document.key || document.path || '';
 
     if (!document.bucket || !currentKey) {

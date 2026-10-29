@@ -34,7 +34,7 @@ Gehe in dieser Reihenfolge vor:
 2. Untersuche relevante Projektdateien, Konfigurationen, Schnittstellen, Tests und vorhandene Dokumentation.
 3. Ermittle die technischen und fachlichen Randbedingungen.
 4. Nutze verfügbare Werkzeuge und bei Bedarf spezialisierte Subagents, um fehlende Informationen zu beschaffen.
-5. Recherchiere bei relevanter Unsicherheit aktuelle, bewährte Lösungsansätze.
+5. Recherchiere aktuelle, bewährte Lösungsansätze.
 6. Wähle anhand des Gesamtziels die beste vertretbare Lösung.
 7. Dokumentiere wesentliche Annahmen und Entscheidungen und setze die Arbeit fort.
 

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { LoginRequest, User } from '@ladon/api';
-import { Observable, Subject, of, throwError } from 'rxjs';
+import { auth, LoginRequest, User } from '@ladon/api';
+import { Observable, Subject, finalize, of, throwError } from 'rxjs';
 import { AuthService, LoginResult } from '../services/auth.service';
 import type { FetchApiError } from '../services/api/fetch-api.factory';
 import { environment } from '../../environments/environment';
@@ -10,6 +10,11 @@ import { AppStore } from './app.store';
 describe('AppStore authentication flow', () => {
   let authService: jasmine.SpyObj<AuthService>;
   let router: jasmine.SpyObj<Router>;
+  let storedAuthValues: Array<{
+    storage: Storage;
+    authData: string | null;
+    legacyAccessToken: string | null;
+  }>;
 
   const user: User = {
     userId: 'user-id',
@@ -32,9 +37,20 @@ describe('AppStore authentication flow', () => {
       'clearLocalSession',
     ]);
     router = jasmine.createSpyObj<Router>('Router', ['navigateByUrl']);
+    storedAuthValues = [sessionStorage, localStorage].map((storage) => ({
+      storage,
+      authData: storage.getItem(auth.LADON_AUTH_STORAGE_KEY),
+      legacyAccessToken: storage.getItem(auth.LEGACY_ACCESS_TOKEN_KEY),
+    }));
   });
 
-  afterEach(() => TestBed.resetTestingModule());
+  afterEach(() => {
+    TestBed.resetTestingModule();
+    for (const { storage, authData, legacyAccessToken } of storedAuthValues) {
+      restoreStorageValue(storage, auth.LADON_AUTH_STORAGE_KEY, authData);
+      restoreStorageValue(storage, auth.LEGACY_ACCESS_TOKEN_KEY, legacyAccessToken);
+    }
+  });
 
   it('enters the two-factor step without authenticating, storing a user, or navigating', () => {
     const store = createStore();
@@ -263,15 +279,24 @@ describe('AppStore authentication flow', () => {
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
   });
 
-  it('cancels a pending login before logout', () => {
+  it('cancels a pending login after backend logout settles', () => {
     const loginResult = new Subject<LoginResult>();
+    const logoutResult = new Subject<object>();
     const store = createStore();
     authService.login.and.returnValue(loginResult);
-    authService.logout.and.returnValue(of({}));
+    authService.logout.and.returnValue(logoutResult);
     store.login(loginRequest);
     expect(store.auth.isAuthenticating()).toBeTrue();
 
     store.logout();
+
+    expect(loginResult.observed).toBeTrue();
+    expect(store.auth.isAuthenticating()).toBeTrue();
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+
+    logoutResult.next({});
+    logoutResult.complete();
+
     expect(loginResult.observed).toBeFalse();
     loginResult.next({ kind: 'authenticated', user });
 
@@ -279,6 +304,60 @@ describe('AppStore authentication flow', () => {
     expect(store.auth.isAuthenticated()).toBeFalse();
     expect(store.auth.user()).toBeNull();
     expect(store.auth.requiresTwoFactor()).toBeFalse();
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
+  });
+
+  it('clears the local session once when cancelling an owned pending login', () => {
+    const loginResult = new Subject<LoginResult>();
+    const logoutResult = new Subject<object>();
+    let ownerActive = true;
+    const store = createStore();
+    authService.login.and.returnValue(
+      loginResult.pipe(
+        finalize(() => {
+          if (ownerActive) {
+            authService.clearLocalSession();
+          }
+        }),
+      ),
+    );
+    authService.logout.and.returnValue(logoutResult);
+    authService.clearLocalSession.and.callFake(() => {
+      ownerActive = false;
+    });
+    store.login(loginRequest);
+
+    store.logout();
+    logoutResult.next({});
+    logoutResult.complete();
+
+    expect(authService.clearLocalSession).toHaveBeenCalledTimes(1);
+    expect(loginResult.observed).toBeFalse();
+  });
+
+  it('keeps an authenticated session until backend logout completes', () => {
+    const logoutResult = new Subject<object>();
+    const store = createStore(of(user));
+    authService.logout.and.returnValue(logoutResult);
+    auth.storeAccessToken('active-token');
+    authService.clearLocalSession.and.callFake(() => auth.clearAccessToken());
+
+    const logoutCallResult = store.logout();
+
+    expect(logoutCallResult).toBeUndefined();
+    expect(authService.clearLocalSession).not.toHaveBeenCalled();
+    expect(auth.getAccessToken()).toBe('active-token');
+    expect(store.auth.isAuthenticated()).toBeTrue();
+    expect(store.auth.user()).toEqual(user);
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+
+    logoutResult.next({});
+    logoutResult.complete();
+
+    expect(authService.clearLocalSession).toHaveBeenCalledTimes(1);
+    expect(auth.getAccessToken()).toBeNull();
+    expect(store.auth.isAuthenticated()).toBeFalse();
+    expect(store.auth.user()).toBeNull();
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith(`${environment.baseHref}/login`);
   });
 
@@ -382,5 +461,14 @@ describe('AppStore authentication flow', () => {
     });
 
     return TestBed.inject(AppStore);
+  }
+
+  function restoreStorageValue(storage: Storage, key: string, value: string | null): void {
+    if (value === null) {
+      storage.removeItem(key);
+      return;
+    }
+
+    storage.setItem(key, value);
   }
 });

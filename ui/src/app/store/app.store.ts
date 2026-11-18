@@ -1,7 +1,7 @@
 import { patchState, signalStore, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
 import { LoginRequest, User } from '@ladon/api';
 import { inject } from '@angular/core';
-import { catchError, EMPTY, pipe, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, pipe, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import type { FetchApiError } from '../services/api/fetch-api.factory';
 import { environment } from '../../environments/environment';
@@ -288,13 +288,17 @@ export const AppStore = signalStore(
         ),
       ),
       logout() {
-        store._authenticationCancellation$.next();
-        authService.clearLocalSession();
-        resetAuthenticationState(null);
-        router.navigateByUrl(`${environment.baseHref}/login`);
-        return authService
+        authService
           .logout()
-          .pipe(catchError(() => EMPTY))
+          .pipe(
+            catchError(() => EMPTY),
+            finalize(() => {
+              authService.clearLocalSession();
+              store._authenticationCancellation$.next();
+              resetAuthenticationState(null);
+              void router.navigateByUrl(`${environment.baseHref}/login`);
+            }),
+          )
           .subscribe();
       },
       setRedirectUrl(url: string) {

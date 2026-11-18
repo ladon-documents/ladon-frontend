@@ -54,6 +54,17 @@ describe('CanActivateLogin', () => {
     expect(router.serializeUrl(result as UrlTree)).toBe(`/${environment.baseHref}/buckets`);
   });
 
+  it('allows login immediately after the authenticated state is cleared during logout', async () => {
+    isAuthenticated.set(true);
+    user.set({ userId: 'user-id' });
+    expect(await executeGuard()).toBeInstanceOf(UrlTree);
+
+    isAuthenticated.set(false);
+    user.set(null);
+
+    expect(await executeGuard()).toBeTrue();
+  });
+
   function executeGuard(): Promise<boolean | UrlTree> {
     return firstValueFrom(
       guard.canActivate({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot) as Observable<boolean | UrlTree>,

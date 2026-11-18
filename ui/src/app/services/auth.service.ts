@@ -84,13 +84,7 @@ export class AuthService {
   }
 
   public logout() {
-    return this.apiFactory
-      .fromApi(() => this.apiFactory.authControllerApi.logout())
-      .pipe(
-        tap(() => {
-          this.authStorage.removeData();
-        }),
-      );
+    return this.apiFactory.fromApi(() => this.apiFactory.authControllerApi.logout());
   }
 
   public getCurrentUser() {

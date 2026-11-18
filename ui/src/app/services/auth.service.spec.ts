@@ -264,6 +264,15 @@ describe('AuthService', () => {
     expect(authStorage.removeData).not.toHaveBeenCalled();
   }));
 
+  it('leaves local session cleanup to the store after backend logout succeeds', async () => {
+    authControllerApi.logout.and.resolveTo({});
+
+    await firstValueFrom(service.logout());
+
+    expect(authControllerApi.logout).toHaveBeenCalledTimes(1);
+    expect(authStorage.removeData).not.toHaveBeenCalled();
+  });
+
   it('clears structured and legacy tokens from browser storage without backend logout', () => {
     for (const storage of [sessionStorage, localStorage]) {
       storage.setItem(auth.LADON_AUTH_STORAGE_KEY, JSON.stringify({ accessToken: 'stale-token' }));

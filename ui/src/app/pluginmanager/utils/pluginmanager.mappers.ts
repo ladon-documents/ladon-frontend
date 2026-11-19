@@ -18,7 +18,7 @@ function getPluginId(plugin: Plugin): string {
 }
 
 function getPluginType(plugin: Plugin): string | null {
-  return plugin.spec?.type  || null;
+  return plugin.spec?.type || null;
 }
 
 function getPluginName(plugin: Plugin, pluginId: string): string {

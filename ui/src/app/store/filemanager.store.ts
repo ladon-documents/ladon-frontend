@@ -124,9 +124,7 @@ export const FilemanagerStore = signalStore(
         return EMPTY;
       };
 
-      const resolveLoadDocumentListInput = (
-        input: Document | { document: Document; updateBreadcrumb?: boolean },
-      ) => {
+      const resolveLoadDocumentListInput = (input: Document | { document: Document; updateBreadcrumb?: boolean }) => {
         if ('document' in input) {
           return {
             document: input.document,

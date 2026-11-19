@@ -321,11 +321,7 @@ export class PluginInstallationService {
     return !!state && state.state === 'DONE';
   }
 
-  private createErrorState(
-    state: PluginInstallationState,
-    mode: PluginMode,
-    error: unknown,
-  ): PluginInstallationState {
+  private createErrorState(state: PluginInstallationState, mode: PluginMode, error: unknown): PluginInstallationState {
     return {
       ...state,
       mode,

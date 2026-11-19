@@ -42,9 +42,9 @@
           <span class="flex items-center">
             @if (isActionRunning(plugin)) {
               <span class="loading loading-spinner loading-sm"></span>
-            } @else if (plugin.status === 'installed' || plugin.status === 'required') {
+            } @else if (plugin.status === "installed" || plugin.status === "required") {
               <ng-icon name="heroCheck" size="1.25rem" class="text-success"></ng-icon>
-            } @else if (plugin.status === 'actionFailed') {
+            } @else if (plugin.status === "actionFailed") {
               <ng-icon name="heroExclamationTriangle" size="1.25rem" class="text-error"></ng-icon>
             } @else {
               <ng-icon name="heroChevronRight" size="1.25rem" class="opacity-40"></ng-icon>

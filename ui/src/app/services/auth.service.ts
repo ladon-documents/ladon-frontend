@@ -3,15 +3,21 @@ import { mergeMap, tap } from 'rxjs';
 import { LoginRequest, User } from '@ladon/api';
 import { AuthStorageService } from './auth.storage.service';
 import { FetchApiFactory } from './api/fetch-api.factory';
-
+import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private expiryTimer: number | undefined;
+
   constructor(
     private apiFactory: FetchApiFactory,
     private authStorage: AuthStorageService,
-  ) {}
+    private router: Router,
+  ) {
+    this.onVisibilityChangeWatcher();
+  }
 
   public login(Login: LoginRequest) {
     return this.apiFactory
@@ -43,6 +49,11 @@ export class AuthService {
       );
   }
 
+  public async sessionExpired() {
+    this.authStorage.removeData();
+    await this.router.navigate([`${environment.baseHref}/login`]);
+  }
+
   public getCurrentUser() {
     return this.apiFactory
       .fromApi(() => this.apiFactory.userControllerApi.getCurrentUser() as Promise<User>)
@@ -54,6 +65,28 @@ export class AuthService {
         }),
       );
   }
+
+  private onVisibilityChangeWatcher() {
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        this.fetchTokenTtlAndScheduleLogout();
+      }
+    });
+  }
+
+  private fetchTokenTtlAndScheduleLogout() {
+  }
+
+
+    private scheduleLogoutOnTimer(remainingMillis: number) {
+    if (this.expiryTimer) {
+      clearTimeout(this.expiryTimer);
+    }
+    this.expiryTimer = setTimeout(async () => {
+      await this.sessionExpired();
+    }, remainingMillis);
+  }
+
 
   private isDevelopmentEnironment(): boolean {
     return isDevMode();

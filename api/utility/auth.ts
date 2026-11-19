@@ -25,6 +25,14 @@ export interface StaticAuthOptions {
   credentials?: RequestCredentials;
 }
 
+export interface TokenTtlResponse {
+  valid: boolean;
+  expiresAtEpochMillis: number;
+  remainingMillis: number;
+  remainingSeconds: number;
+}
+
+
 export interface StaticAuthMiddlewareOptions extends StaticAuthOptions {
   skipUrls?: Array<string | RegExp>;
 }

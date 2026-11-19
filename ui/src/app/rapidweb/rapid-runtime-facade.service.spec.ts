@@ -45,6 +45,14 @@ describe('RapidRuntimeFacadeService', () => {
     expect(facade.auth).toBe(auth);
   });
 
+  it('exposes the generated two-factor API to Rapids', () => {
+    const facade = service.install();
+
+    expect((facade.fetchClient as typeof fetchClient).TwoFactorAuthenticationApi).toBe(
+      fetchClient.TwoFactorAuthenticationApi,
+    );
+  });
+
   it('exposes concrete @ladon/utility utility exports', () => {
     const facade = service.install();
 
